@@ -1,4 +1,4 @@
-# bosh-installer
+# bosh-install
 single executable to install bosh on different targeted IaaS'
 
 
