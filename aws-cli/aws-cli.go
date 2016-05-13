@@ -60,8 +60,8 @@ func GetFlags() []cli.Flag {
 	}
 }
 
-func GetAction(boshInitDeploy func(string)) func(c *cli.Context) {
-	return func(c *cli.Context) {
+func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
+	return func(c *cli.Context) (e error) {
 		checkRequired("aws-subnet", c)
 		checkRequired("aws-elastic-ip", c)
 		checkRequired("aws-pem-path", c)
@@ -97,6 +97,9 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) {
 			} else {
 				deployYaml(yamlString, boshInitDeploy)
 			}
+		} else {
+			e = err
 		}
+		return
 	}
 }
