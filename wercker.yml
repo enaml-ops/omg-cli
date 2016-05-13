@@ -47,6 +47,7 @@ build:
 
 publish-release:
   steps:
+    - setup-go-workspace
     - script:
         name: install-packages
         code: |
@@ -96,6 +97,7 @@ publish-release:
 
 deploy-pre-release:
   steps:
+    - setup-go-workspace
     - script:
         name: install-packages
         code: |
