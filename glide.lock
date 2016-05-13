@@ -54,7 +54,7 @@ imports:
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
 - name: github.com/xchapter7x/enaml
-  version: fc8dfa9fbfef508c0123cb1515d2d62aba7871f1
+  version: 7479d711c572b639bd757613a3af7cfbd619e9b7
   subpackages:
   - cloudproperties/aws
 - name: golang.org/x/crypto
