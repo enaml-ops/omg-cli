@@ -1,0 +1,69 @@
+hash: 9a2261cc4d4b5d040de29ee7ded32c42ac41b17173696a5fa49d3f4f131deee6
+updated: 2016-05-13T15:11:43.579622638-04:00
+imports:
+- name: github.com/cloudfoundry/bosh-init
+  version: e7b17a6df499bc8aa54161b317a844ef4d9f988b
+  subpackages:
+  - cmd
+  - logger
+  - ui
+  - ui/fmt
+  - blobstore
+  - cloud
+  - config
+  - cpi/release
+  - crypto
+  - deployment
+  - deployment/disk
+  - deployment/instance
+  - deployment/instance/state
+  - deployment/manifest
+  - deployment/release
+  - deployment/sshtunnel
+  - deployment/vm
+  - index
+  - installation
+  - installation/manifest
+  - installation/tarball
+  - registry
+  - release
+  - release/set/manifest
+  - state/pkg
+  - stemcell
+  - templatescompiler
+  - templatescompiler/erbrenderer
+  - release/job
+  - release/pkg
+  - state/job
+  - common/net
+  - common/util
+  - installation/blobextract
+  - installation/pkg
+  - release/manifest
+  - release/job/manifest
+- name: github.com/cloudfoundry/gofileutils
+  version: 94cb17960d629e2ca9a67d381228ec499966a69b
+  subpackages:
+  - glob
+- name: github.com/codegangsta/cli
+  version: 7f0ca9a34958d6702ac8f38530d19001fa5b1560
+- name: github.com/nu7hatch/gouuid
+  version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
+- name: github.com/pivotal-golang/clock
+  version: 3fd3c1944c59d9742e1cd333672181cd1a6f9fa0
+- name: github.com/pivotal-golang/yaml
+  version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
+- name: github.com/xchapter7x/enaml
+  version: fc8dfa9fbfef508c0123cb1515d2d62aba7871f1
+  subpackages:
+  - cloudproperties/aws
+- name: golang.org/x/crypto
+  version: 1e61df8d9ea476e2e1504cd9a32b40280c7c6c7e
+  subpackages:
+  - ssh
+  - curve25519
+  - ed25519
+  - ed25519/internal/edwards25519
+- name: gopkg.in/yaml.v2
+  version: a83829b6f1293c91addabc89d0571c246397bbf4
+devImports: []

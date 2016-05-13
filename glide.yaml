@@ -1,0 +1,13 @@
+package: github.com/bosh-ops/bosh-install
+import:
+- package: github.com/cloudfoundry/bosh-init
+  subpackages:
+  - cmd
+  - logger
+  - ui
+  - ui/fmt
+- package: github.com/codegangsta/cli
+- package: github.com/pivotal-golang/clock
+- package: github.com/xchapter7x/enaml
+  subpackages:
+  - cloudproperties/aws
