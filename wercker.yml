@@ -82,11 +82,11 @@ publish-release:
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
-    - github-upload-asset:
-        token: $GITHUB_TOKEN
-        file: bosh-install-win 
-        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
-        content-type: application/x-gzip
+    #- github-upload-asset:
+    #    token: $GITHUB_TOKEN
+    #    file: bosh-install-win 
+    #    release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+    #    content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
@@ -131,11 +131,11 @@ deploy-pre-release:
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
-    - github-upload-asset:
-        token: $GITHUB_TOKEN
-        file: bosh-install-win 
-        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
-        content-type: application/x-gzip
+    #- github-upload-asset:
+    #    token: $GITHUB_TOKEN
+    #    file: bosh-install-win 
+    #    release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+    #    content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
