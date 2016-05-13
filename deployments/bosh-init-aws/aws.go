@@ -6,7 +6,6 @@ import (
 	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/aws_cpi"
 	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/director"
 	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/health_monitor"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/registry"
 	"github.com/xchapter7x/enaml"
 	"github.com/xchapter7x/enaml/cloudproperties/aws"
 )
@@ -31,23 +30,7 @@ func NewBoshInit(cfg BoshInitConfig) *enaml.DeploymentManifest {
 			},
 		},
 	}
-	var RegistryProperty = AWSRegistryProperty{
-		Address: cfg.BoshPrivateIP,
-		ar: ar{
-			Host:     cfg.BoshPrivateIP,
-			Username: "admin",
-			Password: "admin",
-			Port:     25777,
-		},
-		rr: rr{
-			Db: postgresDB.GetRegistryDB(),
-			Http: &registry.Http{
-				User:     "admin",
-				Password: "admin",
-				Port:     25777,
-			},
-		},
-	}
+	var RegistryProperty = GetRegistry(cfg, postgresDB)
 
 	var NTPProperty = []string{
 		"0.pool.ntp.org",

@@ -27,12 +27,12 @@ type BoshInitConfig struct {
 	AWSRegion             string
 }
 
-type rr registry.Registry
-type ar aws_cpi.Registry
+type Rr registry.Registry
+type Ar aws_cpi.Registry
 
 type AWSRegistryProperty struct {
-	rr      `yaml:",inline"`
-	ar      `yaml:",inline"`
+	Rr      `yaml:",inline"`
+	Ar      `yaml:",inline"`
 	Address string `yaml:"address"`
 }
 type user struct {
