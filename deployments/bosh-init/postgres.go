@@ -1,13 +1,13 @@
-package boshinitaws
+package boshinit
 
 import (
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/director"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/postgres"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/registry"
+	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/director"
+	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/postgres"
+	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/registry"
 )
 
-func NewPostgres(user, host, pass, database, adapter string) (psql *pg) {
-	return &pg{
+func NewPostgres(user, host, pass, database, adapter string) (psql *PgSql) {
+	return &PgSql{
 		User:     user,
 		Host:     host,
 		Password: pass,
@@ -16,7 +16,7 @@ func NewPostgres(user, host, pass, database, adapter string) (psql *pg) {
 	}
 }
 
-func (s *pg) GetDirectorDB() *director.Db {
+func (s *PgSql) GetDirectorDB() *director.Db {
 	return &director.Db{
 		User:     s.User,
 		Host:     s.Host,
@@ -25,7 +25,7 @@ func (s *pg) GetDirectorDB() *director.Db {
 		Adapter:  s.Adapter,
 	}
 }
-func (s *pg) GetRegistryDB() *registry.Db {
+func (s *PgSql) GetRegistryDB() *registry.Db {
 	return &registry.Db{
 		User:     s.User,
 		Host:     s.Host,
@@ -34,7 +34,7 @@ func (s *pg) GetRegistryDB() *registry.Db {
 		Adapter:  s.Adapter,
 	}
 }
-func (s *pg) GetPostgresDB() postgres.Postgres {
+func (s *PgSql) GetPostgresDB() postgres.Postgres {
 	return postgres.Postgres{
 		User:          s.User,
 		ListenAddress: s.Host,

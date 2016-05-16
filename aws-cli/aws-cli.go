@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws"
+	"github.com/bosh-ops/bosh-install/deployments/bosh-init"
 	"github.com/codegangsta/cli"
 	"github.com/xchapter7x/enaml"
 )
@@ -69,7 +69,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		checkRequired("aws-secret", c)
 		checkRequired("aws-region", c)
 
-		manifest := boshinitaws.NewBoshInit(boshinitaws.BoshInitConfig{
+		manifest := boshinit.NewAWSBosh(boshinit.BoshInitConfig{
 			Name:                  c.String("name"),
 			BoshReleaseVersion:    c.String("bosh-release-ver"),
 			BoshPrivateIP:         c.String("bosh-private-ip"),
@@ -80,7 +80,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			GoAgentSHA:            c.String("go-agent-sha"),
 			BoshInstanceSize:      c.String("aws-instance-size"),
 			BoshAvailabilityZone:  c.String("aws-availability-zone"),
-			BoshAWSSubnet:         c.String("aws-subnet"),
+			AWSSubnet:             c.String("aws-subnet"),
 			AWSElasticIP:          c.String("aws-elastic-ip"),
 			BoshDirectorName:      c.String("director-name"),
 			AWSPEMFilePath:        c.String("aws-pem-path"),

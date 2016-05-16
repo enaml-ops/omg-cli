@@ -1,9 +1,9 @@
-package boshinitaws
+package boshinit
 
-import "github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/registry"
+import "github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/registry"
 
-func GetRegistry(cfg BoshInitConfig, postgresDB *pg) AWSRegistryProperty {
-	return AWSRegistryProperty{
+func GetRegistry(cfg BoshInitConfig, postgresDB *PgSql) RegistryProperty {
+	return RegistryProperty{
 		Address: cfg.BoshPrivateIP,
 		Ar: Ar{
 			Host:     cfg.BoshPrivateIP,

@@ -1,7 +1,7 @@
-package boshinitaws_test
+package boshinit_test
 
 import (
-	. "github.com/bosh-ops/bosh-install/deployments/bosh-init-aws"
+	. "github.com/bosh-ops/bosh-install/deployments/bosh-init"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

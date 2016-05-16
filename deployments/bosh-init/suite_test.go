@@ -1,4 +1,4 @@
-package boshinitaws_test
+package boshinit_test
 
 import (
 	. "github.com/onsi/ginkgo"

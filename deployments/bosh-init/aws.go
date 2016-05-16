@@ -1,36 +1,17 @@
-package boshinitaws
+package boshinit
 
 import (
-	"fmt"
-
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/aws_cpi"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/director"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init-aws/enaml-gen/health_monitor"
+	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/aws_cpi"
+	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/director"
+	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/health_monitor"
 	"github.com/xchapter7x/enaml"
 	"github.com/xchapter7x/enaml/cloudproperties/aws"
 )
 
-func NewBoshInit(cfg BoshInitConfig) *enaml.DeploymentManifest {
-	var postgresDB = NewPostgres("postgres", "127.0.0.1", "postgres-password", "bosh", "postgres")
-	var DirectorProperty = directorProperty{
-		Address: "127.0.0.1",
-		Director: director.Director{
-			Name:       cfg.BoshDirectorName,
-			CpiJob:     "aws_cpi",
-			MaxThreads: 10,
-			Db:         postgresDB.GetDirectorDB(),
-			UserManagement: &director.UserManagement{
-				Provider: "local",
-				Local: &director.Local{
-					Users: []user{
-						user{Name: "admin", Password: "admin"},
-						user{Name: "hm", Password: "hm-password"},
-					},
-				},
-			},
-		},
-	}
-	var RegistryProperty = GetRegistry(cfg, postgresDB)
+func NewAWSBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
+	pgsql := NewPostgres("postgres", "127.0.0.1", "postgres-password", "bosh", "postgres")
+	var directorProperty = NewDirectorProperty(cfg.BoshDirectorName, "aws_cpi", pgsql.GetDirectorDB())
+	var registryProperty = GetRegistry(cfg, pgsql)
 
 	var NTPProperty = []string{
 		"0.pool.ntp.org",
@@ -66,7 +47,7 @@ func NewBoshInit(cfg BoshInitConfig) *enaml.DeploymentManifest {
 			Password: "agent-password",
 		},
 	}
-	var PostgresDBProperty = postgresDB.GetPostgresDB()
+
 	var NatsProperty = director.Nats{
 		Address:  "127.0.0.1",
 		User:     "nats",
@@ -75,33 +56,6 @@ func NewBoshInit(cfg BoshInitConfig) *enaml.DeploymentManifest {
 
 	var AgentProperty = aws_cpi.Agent{
 		Mbus: "nats://nats:nats-password@10.0.0.6:4222",
-	}
-
-	var mbusUserPass = "mbus:mbus-password"
-
-	var AWSCloudProvider = enaml.CloudProvider{
-		Template: enaml.Template{
-			Name:    "aws_cpi",
-			Release: "bosh-aws-cpi",
-		},
-		MBus: fmt.Sprintf("https://%s@%s:6868", mbusUserPass, cfg.AWSElasticIP),
-		SSHTunnel: enaml.SSHTunnel{
-			Host:           cfg.AWSElasticIP,
-			Port:           22,
-			User:           "vcap",
-			PrivateKeyPath: cfg.AWSPEMFilePath,
-		},
-		Properties: map[string]interface{}{
-			"aws": AWSProperty,
-			"ntp": NTPProperty,
-			"agent": map[string]string{
-				"mbus": fmt.Sprintf("https://%s@0.0.0.0:6868", mbusUserPass),
-			},
-			"blobstore": map[string]string{
-				"provider": "local",
-				"path":     "/var/vcap/micro_bosh/data/cache",
-			},
-		},
 	}
 
 	manifest := &enaml.DeploymentManifest{}
@@ -148,7 +102,7 @@ func NewBoshInit(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Gateway: "10.0.0.1",
 		DNS:     []string{"10.0.0.2"},
 		CloudProperties: awscloudproperties.Network{
-			Subnet: cfg.BoshAWSSubnet,
+			Subnet: cfg.AWSSubnet,
 		},
 	})
 	manifest.AddNetwork(net)
@@ -175,16 +129,16 @@ func NewBoshInit(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Name:      "public",
 		StaticIPs: []string{cfg.AWSElasticIP},
 	})
-	boshJob.AddProperty("director", DirectorProperty)
+	boshJob.AddProperty("director", directorProperty)
 	boshJob.AddProperty("nats", NatsProperty)
-	boshJob.AddProperty("registry", RegistryProperty)
+	boshJob.AddProperty("registry", registryProperty)
 	boshJob.AddProperty("hm", HMProperty)
 	boshJob.AddProperty("ntp", NTPProperty)
 	boshJob.AddProperty("agent", AgentProperty)
-	boshJob.AddProperty("postgres", PostgresDBProperty)
+	boshJob.AddProperty("postgres", pgsql.GetPostgresDB())
 	boshJob.AddProperty("blobstore", BlobstoreProperty)
 	boshJob.AddProperty("aws", AWSProperty)
 	manifest.AddJob(*boshJob)
-	manifest.SetCloudProvider(AWSCloudProvider)
+	manifest.SetCloudProvider(NewAWSCloudProvider(cfg.AWSElasticIP, cfg.AWSPEMFilePath, AWSProperty, NTPProperty))
 	return manifest
 }
