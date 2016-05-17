@@ -25,6 +25,7 @@ type BoshInitConfig struct {
 	AWSAccessKeyID        string
 	AWSSecretKey          string
 	AWSRegion             string
+	AWSSecurityGroups     []string
 }
 
 type Rr registry.Registry

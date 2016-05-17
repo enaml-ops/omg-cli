@@ -56,6 +56,7 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "aws-access-key", Value: "", Usage: "aws account access key"},
 		cli.StringFlag{Name: "aws-secret", Value: "", Usage: "aws account secret key"},
 		cli.StringFlag{Name: "aws-region", Value: "us-east-1", Usage: "ec2 region to deploy on"},
+		cli.StringSliceFlag{Name: "aws-security-group", Value: &cli.StringSlice{"bosh"}, Usage: "this is for security groups to apply to your VM. you can add as many security group flags as you like"},
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
 }
@@ -87,6 +88,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AWSAccessKeyID:        c.String("aws-access-key"),
 			AWSSecretKey:          c.String("aws-secret"),
 			AWSRegion:             c.String("aws-region"),
+			AWSSecurityGroups:     c.StringSlice("aws-security-group"),
 		})
 
 		if yamlString, err := enaml.Paint(manifest); err == nil {
