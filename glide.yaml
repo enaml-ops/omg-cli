@@ -9,5 +9,7 @@ import:
 - package: github.com/codegangsta/cli
 - package: github.com/pivotal-golang/clock
 - package: github.com/xchapter7x/enaml
+  version: master
   subpackages:
   - cloudproperties/aws
+  - cloudproperties/azure
