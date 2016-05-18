@@ -8,7 +8,7 @@ import (
 
 func NewAWSBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	var ntpProperty = NewNTP("0.pool.ntp.org", "1.pool.ntp.org")
-	var manifest = NewBoshDeployment(cfg, "aws_cpi", ntpProperty)
+	var manifest = NewBoshDeploymentBase(cfg, "aws_cpi", ntpProperty)
 	var awsProperty = aws_cpi.Aws{
 		AccessKeyId:           cfg.AWSAccessKeyID,
 		SecretAccessKey:       cfg.AWSSecretKey,

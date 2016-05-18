@@ -8,24 +8,38 @@ import (
 )
 
 type BoshInitConfig struct {
-	Name                  string
-	BoshReleaseVersion    string
-	BoshReleaseSHA        string
-	BoshPrivateIP         string
-	BoshCPIReleaseVersion string
-	BoshCPIReleaseSHA     string
-	GoAgentVersion        string
-	GoAgentSHA            string
-	BoshAvailabilityZone  string
-	BoshInstanceSize      string
-	BoshDirectorName      string
-	AWSSubnet             string
-	AWSElasticIP          string
-	AWSPEMFilePath        string
-	AWSAccessKeyID        string
-	AWSSecretKey          string
-	AWSRegion             string
-	AWSSecurityGroups     []string
+	Name                      string
+	BoshReleaseVersion        string
+	BoshReleaseSHA            string
+	BoshPrivateIP             string
+	BoshCPIReleaseVersion     string
+	BoshCPIReleaseSHA         string
+	GoAgentVersion            string
+	GoAgentSHA                string
+	BoshAvailabilityZone      string
+	BoshInstanceSize          string
+	BoshDirectorName          string
+	AWSSubnet                 string
+	AWSElasticIP              string
+	AWSPEMFilePath            string
+	AWSAccessKeyID            string
+	AWSSecretKey              string
+	AWSRegion                 string
+	AWSSecurityGroups         []string
+	AzurePublicIP             string
+	AzureVnet                 string
+	AzureSubnet               string
+	AzureSubscriptionID       string
+	AzureTenantID             string
+	AzureClientID             string
+	AzureClientSecret         string
+	AzureResourceGroup        string
+	AzureStorageAccount       string
+	AzureDefaultSecurityGroup string
+	AzureSSHPubKey            string
+	AzureSSHUser              string
+	AzureEnvironment          string
+	AzurePrivateKeyPath       string
 }
 
 type Rr registry.Registry

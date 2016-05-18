@@ -35,6 +35,11 @@ var _ = Describe("NewAWSBosh", func() {
 				manifest = NewAWSBosh(boshConfig)
 			})
 
+			It("then it should be using the aws stemcell", func() {
+				Ω(manifest.ResourcePools[0].Stemcell.URL).ShouldNot(ContainSubstring("azure"))
+				Ω(manifest.ResourcePools[0].Stemcell.URL).Should(ContainSubstring("aws"))
+			})
+
 			It("then it should have the correct job config to deploy a bosh", func() {
 				Ω(len(manifest.Jobs)).Should(Equal(1))
 			})

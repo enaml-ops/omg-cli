@@ -5,7 +5,7 @@ import (
 	"github.com/xchapter7x/enaml"
 )
 
-func NewBoshDeployment(cfg BoshInitConfig, cpiname string, ntpProperty []string) *enaml.DeploymentManifest {
+func NewBoshDeploymentBase(cfg BoshInitConfig, cpiname string, ntpProperty []string) *enaml.DeploymentManifest {
 	var pgsql = NewPostgres("postgres", "127.0.0.1", "postgres-password", "bosh", "postgres")
 
 	var BlobstoreProperty = director.Blobstore{
