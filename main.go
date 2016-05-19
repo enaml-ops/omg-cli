@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/bosh-ops/bosh-install/aws-cli"
 	"github.com/bosh-ops/bosh-install/azure-cli"
@@ -20,33 +22,6 @@ var cloudConfigCommands []cli.Command
 var productCommands []cli.Command
 var productList []string
 var cloudconfigList []string
-
-func init() {
-	files, _ := ioutil.ReadDir(CloudConfigPluginsDir)
-	for _, f := range files {
-		lo.G.Debug("registering: ", f.Name())
-		registry.RegisterCloudConfig(path.Join(CloudConfigPluginsDir, f.Name()))
-	}
-	lo.G.Debug("registered cloud configs: ", registry.ListCloudConfigs())
-
-	cloudConfigCommands = append(cloudConfigCommands, cli.Command{
-		Name:  "test",
-		Usage: "add a new template",
-		Action: func(c *cli.Context) error {
-			fmt.Println("no cloud config plugins supported yet: ", c.Args().First())
-			return nil
-		},
-	})
-
-	productCommands = append(productCommands, cli.Command{
-		Name:  "test",
-		Usage: "add a new template",
-		Action: func(c *cli.Context) error {
-			fmt.Println("no product plugins supported yet: ", c.Args().First())
-			return nil
-		},
-	})
-}
 
 func main() {
 	app := cli.NewApp()
@@ -93,4 +68,35 @@ func main() {
 		},
 	}
 	app.Run(os.Args)
+}
+
+func init() {
+
+	if strings.ToLower(os.Getenv("LOG_LEVEL")) != "debug" {
+		log.SetOutput(ioutil.Discard)
+	}
+	files, _ := ioutil.ReadDir(CloudConfigPluginsDir)
+	for _, f := range files {
+		lo.G.Debug("registering: ", f.Name())
+		registry.RegisterCloudConfig(path.Join(CloudConfigPluginsDir, f.Name()))
+	}
+	lo.G.Debug("registered cloud configs: ", registry.ListCloudConfigs())
+
+	cloudConfigCommands = append(cloudConfigCommands, cli.Command{
+		Name:  "test",
+		Usage: "add a new template",
+		Action: func(c *cli.Context) error {
+			fmt.Println("no cloud config plugins supported yet: ", c.Args().First())
+			return nil
+		},
+	})
+
+	productCommands = append(productCommands, cli.Command{
+		Name:  "test",
+		Usage: "add a new template",
+		Action: func(c *cli.Context) error {
+			fmt.Println("no product plugins supported yet: ", c.Args().First())
+			return nil
+		},
+	})
 }
