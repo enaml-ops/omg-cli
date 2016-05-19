@@ -28,3 +28,4 @@ vendor
 bosh-install
 plugin/registry/fixtures/testplugin-darwin
 plugin/registry/fixtures/testplugin-linux
+sample/

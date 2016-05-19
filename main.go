@@ -93,9 +93,13 @@ func registerCloudConfig() {
 			Usage: "deploy the " + f.Name() + " cloud config",
 			Flags: flags,
 			Action: func(c *cli.Context) error {
+				lo.G.Debug("running the cloud config plugin")
 				client, cc := registry.GetCloudConfigReference(pluginPath)
 				defer client.Kill()
-				manifest := cc.GetCloudConfig(c)
+				lo.G.Debug("we found client and cloud config: ", client, cc)
+				lo.G.Debug("meta", cc.GetMeta())
+				manifest := cc.GetCloudConfig(c.Args())
+				lo.G.Debug("we found a manifest and context: ", manifest, c)
 				processManifest(c, manifest)
 				return nil
 			},

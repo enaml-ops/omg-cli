@@ -22,6 +22,6 @@ func (s *AWSCloudConfig) GetMeta() cloudconfig.Meta {
 	}
 }
 
-func (s *AWSCloudConfig) GetCloudConfig(c *cli.Context) enaml.CloudConfigManifest {
+func (s *AWSCloudConfig) GetCloudConfig(args []string) enaml.CloudConfigManifest {
 	return enaml.CloudConfigManifest{}
 }

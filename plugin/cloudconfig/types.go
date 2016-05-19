@@ -1,6 +1,7 @@
 package cloudconfig
 
 import (
+	"log"
 	"net/rpc"
 
 	"github.com/codegangsta/cli"
@@ -18,7 +19,7 @@ type Meta struct {
 type CloudConfigDeployer interface {
 	GetMeta() Meta
 	GetFlags() []cli.Flag
-	GetCloudConfig(c *cli.Context) enaml.CloudConfigManifest
+	GetCloudConfig(args []string) enaml.CloudConfigManifest
 }
 
 // CloudConfigRPC - Here is an implementation that talks over RPC
@@ -34,10 +35,11 @@ func (s *CloudConfigRPC) GetMeta() Meta {
 	return resp
 }
 
-func (s *CloudConfigRPC) GetCloudConfig(c *cli.Context) enaml.CloudConfigManifest {
+func (s *CloudConfigRPC) GetCloudConfig(args []string) enaml.CloudConfigManifest {
 	var resp enaml.CloudConfigManifest
-	err := s.client.Call("Plugin.GetCloudConfig", c, &resp)
-
+	log.Println("calling rpc client getcloudconfig")
+	err := s.client.Call("Plugin.GetCloudConfig", args, &resp)
+	log.Println("call failed:", err)
 	if err != nil {
 		panic(err)
 	}
@@ -70,8 +72,8 @@ func (s *CloudConfigRPCServer) GetMeta(args interface{}, resp *Meta) error {
 	return nil
 }
 
-func (s *CloudConfigRPCServer) GetCloudConfig(args interface{}, resp *enaml.CloudConfigManifest) error {
-	*resp = s.Impl.GetCloudConfig(args.(*cli.Context))
+func (s *CloudConfigRPCServer) GetCloudConfig(args []string, resp *enaml.CloudConfigManifest) error {
+	*resp = s.Impl.GetCloudConfig(args)
 	return nil
 }
 
