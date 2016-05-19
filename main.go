@@ -68,8 +68,8 @@ func main() {
 			Name: "list-cloudconfigs",
 			Action: func(c *cli.Context) error {
 				fmt.Println("Cloud Configs:")
-				for _, v := range cloudconfigList {
-					fmt.Println(v)
+				for _, plgn := range registry.ListCloudConfigs() {
+					fmt.Println(plgn.Name, " - ", plgn.Path, " - ", plgn.Properties)
 				}
 				return nil
 			},
@@ -78,9 +78,6 @@ func main() {
 			Name: "list-products",
 			Action: func(c *cli.Context) error {
 				fmt.Println("Products:")
-				for _, v := range productList {
-					fmt.Println(v)
-				}
 				return nil
 			},
 		},
