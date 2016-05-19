@@ -1,6 +1,8 @@
 # bosh-install
 single executable to install bosh on different targeted IaaS'
 
+[![wercker status](https://app.wercker.com/status/bb8144ce747caf96c0563e9a9e421bc3/s/master "wercker status")](https://app.wercker.com/project/bykey/bb8144ce747caf96c0563e9a9e421bc3)
+
 
 This simply composes bosh-init and enaml to create a simple bosh cli installer
 
