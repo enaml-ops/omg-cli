@@ -26,3 +26,5 @@ vendor
 .DS_Store
 .cache
 bosh-install
+plugin/registry/fixtures/testplugin-darwin
+plugin/registry/fixtures/testplugin-linux

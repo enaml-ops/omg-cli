@@ -21,6 +21,11 @@ build:
         code: |
           vendorsmash vendor/github.com/cloudfoundry/bosh-init vendor/
 
+    - script:
+        name: generate fixture test plugins
+        code: |
+          ./createRegistryFixturePlugin
+
     # Test the project
     - script:
         name: go test

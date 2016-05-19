@@ -7,6 +7,10 @@ import:
   - ui
   - ui/fmt
 - package: github.com/codegangsta/cli
+- package: github.com/hashicorp/go-plugin
+  version: master
+- package: github.com/xchapter7x/lo
+  version: master
 - package: github.com/pivotal-golang/clock
 - package: github.com/xchapter7x/enaml
   version: master

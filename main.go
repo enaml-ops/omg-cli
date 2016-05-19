@@ -2,20 +2,33 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
+	"path"
 
 	"github.com/bosh-ops/bosh-install/aws-cli"
 	"github.com/bosh-ops/bosh-install/azure-cli"
+	"github.com/bosh-ops/bosh-install/plugin/registry"
 	"github.com/codegangsta/cli"
+	"github.com/xchapter7x/lo"
 )
 
 var Version string
+var CloudConfigPluginsDir = "./.plugins/cloudconfig"
+var ProductPluginsDir = "./.plugins/product"
 var cloudConfigCommands []cli.Command
 var productCommands []cli.Command
 var productList []string
 var cloudconfigList []string
 
 func init() {
+	files, _ := ioutil.ReadDir(CloudConfigPluginsDir)
+	for _, f := range files {
+		lo.G.Debug("registering: ", f.Name())
+		registry.RegisterCloudConfig(path.Join(CloudConfigPluginsDir, f.Name()))
+	}
+	lo.G.Debug("registered cloud configs: ", registry.ListCloudConfigs())
+
 	cloudConfigCommands = append(cloudConfigCommands, cli.Command{
 		Name:  "test",
 		Usage: "add a new template",

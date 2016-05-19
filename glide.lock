@@ -1,6 +1,20 @@
-hash: 9a2261cc4d4b5d040de29ee7ded32c42ac41b17173696a5fa49d3f4f131deee6
-updated: 2016-05-13T15:11:43.579622638-04:00
+hash: cc1c0ad9f57a35db24b19676c5f372b9b17a58691b1c3d80ee449f30e12c1e28
+updated: 2016-05-19T14:20:51.73901931-04:00
 imports:
+- name: github.com/bosh-ops/bosh-install
+  version: 6f0c8ebba89acf91d659c27909c98d7e7d6a878f
+  subpackages:
+  - aws-cli
+  - azure-cli
+  - plugin/registry
+  - deployments/bosh-init
+  - deployments/bosh-init/enaml-gen/aws_cpi
+  - deployments/bosh-init/enaml-gen/cpi
+  - deployments/bosh-init/enaml-gen/director
+  - deployments/bosh-init/enaml-gen/health_monitor
+  - deployments/bosh-init/enaml-gen/postgres
+  - deployments/bosh-init/enaml-gen/registry
+  - plugin/cloudconfig
 - name: github.com/cloudfoundry/bosh-init
   version: e7b17a6df499bc8aa54161b317a844ef4d9f988b
   subpackages:
@@ -41,25 +55,29 @@ imports:
   - installation/pkg
   - release/manifest
   - release/job/manifest
-- name: github.com/cloudfoundry/gofileutils
-  version: 94cb17960d629e2ca9a67d381228ec499966a69b
-  subpackages:
-  - glob
 - name: github.com/codegangsta/cli
-  version: 7f0ca9a34958d6702ac8f38530d19001fa5b1560
+  version: 0eb4e0be6c214f8904ef6989b11072c7b897c657
+- name: github.com/hashicorp/go-plugin
+  version: cccb4a1328abbb89898f3ecf4311a05bddc4de6d
+- name: github.com/hashicorp/yamux
+  version: 172cde3b6ca5c154ff4e6e2ef96b7451332a9946
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
+- name: github.com/op/go-logging
+  version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
   version: 3fd3c1944c59d9742e1cd333672181cd1a6f9fa0
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
 - name: github.com/xchapter7x/enaml
-  version: master 
+  version: 3bec20fff2ff7e3c77d31f1571fbbb62b207b67a
   subpackages:
   - cloudproperties/aws
   - cloudproperties/azure
+- name: github.com/xchapter7x/lo
+  version: aa2602d0e8e8647f0ce7b53109b37040941915aa
 - name: golang.org/x/crypto
-  version: 1e61df8d9ea476e2e1504cd9a32b40280c7c6c7e
+  version: 5bcd134fee4dd1475da17714aac19c0aa0142e2f
   subpackages:
   - ssh
   - curve25519
