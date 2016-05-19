@@ -18,8 +18,7 @@ type Meta struct {
 type CloudConfigDeployer interface {
 	GetMeta() Meta
 	GetFlags() []cli.Flag
-	GetAction() func(c *cli.Context) error
-	GetCloudConfig() enaml.CloudConfigManifest
+	GetCloudConfig(c *cli.Context) enaml.CloudConfigManifest
 }
 
 // CloudConfigRPC - Here is an implementation that talks over RPC
@@ -35,9 +34,9 @@ func (s *CloudConfigRPC) GetMeta() Meta {
 	return resp
 }
 
-func (s *CloudConfigRPC) GetCloudConfig() enaml.CloudConfigManifest {
+func (s *CloudConfigRPC) GetCloudConfig(c *cli.Context) enaml.CloudConfigManifest {
 	var resp enaml.CloudConfigManifest
-	err := s.client.Call("Plugin.GetCloudConfig", new(interface{}), &resp)
+	err := s.client.Call("Plugin.GetCloudConfig", c, &resp)
 
 	if err != nil {
 		panic(err)
@@ -48,16 +47,6 @@ func (s *CloudConfigRPC) GetCloudConfig() enaml.CloudConfigManifest {
 func (s *CloudConfigRPC) GetFlags() []cli.Flag {
 	var resp []cli.Flag
 	err := s.client.Call("Plugin.GetFlags", new(interface{}), &resp)
-
-	if err != nil {
-		panic(err)
-	}
-	return resp
-}
-
-func (s *CloudConfigRPC) GetAction() func(*cli.Context) error {
-	var resp func(*cli.Context) error
-	err := s.client.Call("Plugin.GetAction", new(interface{}), &resp)
 
 	if err != nil {
 		panic(err)
@@ -76,18 +65,13 @@ func (s *CloudConfigRPCServer) GetFlags(args interface{}, resp *[]cli.Flag) erro
 	return nil
 }
 
-func (s *CloudConfigRPCServer) GetAction(args interface{}, resp *func(*cli.Context) error) error {
-	*resp = s.Impl.GetAction()
-	return nil
-}
-
 func (s *CloudConfigRPCServer) GetMeta(args interface{}, resp *Meta) error {
 	*resp = s.Impl.GetMeta()
 	return nil
 }
 
 func (s *CloudConfigRPCServer) GetCloudConfig(args interface{}, resp *enaml.CloudConfigManifest) error {
-	*resp = s.Impl.GetCloudConfig()
+	*resp = s.Impl.GetCloudConfig(args.(*cli.Context))
 	return nil
 }
 

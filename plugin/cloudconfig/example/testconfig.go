@@ -16,18 +16,12 @@ func (s *MyCloudConfig) GetFlags() (flags []cli.Flag) {
 	return
 }
 
-func (s *MyCloudConfig) GetAction() func(c *cli.Context) error {
-	return func(*cli.Context) error {
-		return nil
-	}
-}
-
 func (s *MyCloudConfig) GetMeta() cloudconfig.Meta {
 	return cloudconfig.Meta{
 		Name: "myfakecloudconfig",
 	}
 }
 
-func (s *MyCloudConfig) GetCloudConfig() enaml.CloudConfigManifest {
+func (s *MyCloudConfig) GetCloudConfig(c *cli.Context) enaml.CloudConfigManifest {
 	return enaml.CloudConfigManifest{}
 }

@@ -59,11 +59,13 @@ func main() {
 		{
 			Name:        "deploy-cloudconfig",
 			Usage:       "deploy-cloudconfig <cloudconfig-name> [--flags] - deploy a cloudconfig to bosh",
+			Flags:       getBoshAuthFlags(),
 			Subcommands: cloudConfigCommands,
 		},
 		{
 			Name:        "deploy-product",
 			Usage:       "deploy-product <prod-name> [--flags] - deploy a product via bosh",
+			Flags:       getBoshAuthFlags(),
 			Subcommands: productCommands,
 		},
 	}
@@ -75,28 +77,36 @@ func init() {
 	if strings.ToLower(os.Getenv("LOG_LEVEL")) != "debug" {
 		log.SetOutput(ioutil.Discard)
 	}
+	registerCloudConfig()
+}
+
+func registerCloudConfig() {
 	files, _ := ioutil.ReadDir(CloudConfigPluginsDir)
 	for _, f := range files {
 		lo.G.Debug("registering: ", f.Name())
-		registry.RegisterCloudConfig(path.Join(CloudConfigPluginsDir, f.Name()))
+		pluginPath := path.Join(CloudConfigPluginsDir, f.Name())
+		flags, _ := registry.RegisterCloudConfig(pluginPath)
+
+		cloudConfigCommands = append(cloudConfigCommands, cli.Command{
+			Name:  f.Name(),
+			Usage: "deploy the " + f.Name() + " cloud config",
+			Flags: flags,
+			Action: func(c *cli.Context) error {
+				client, cc := registry.GetCloudConfigReference(pluginPath)
+				defer client.Kill()
+				manifest := cc.GetCloudConfig(c)
+				fmt.Println("TODO: do something with my manifest here", manifest)
+				return nil
+			},
+		})
 	}
 	lo.G.Debug("registered cloud configs: ", registry.ListCloudConfigs())
+}
 
-	cloudConfigCommands = append(cloudConfigCommands, cli.Command{
-		Name:  "test",
-		Usage: "add a new template",
-		Action: func(c *cli.Context) error {
-			fmt.Println("no cloud config plugins supported yet: ", c.Args().First())
-			return nil
-		},
-	})
-
-	productCommands = append(productCommands, cli.Command{
-		Name:  "test",
-		Usage: "add a new template",
-		Action: func(c *cli.Context) error {
-			fmt.Println("no product plugins supported yet: ", c.Args().First())
-			return nil
-		},
-	})
+func getBoshAuthFlags() []cli.Flag {
+	return []cli.Flag{
+		cli.StringFlag{Name: "bosh-url", Value: "https://mybosh.com", Usage: "this is the url or ip of your bosh director"},
+		cli.StringFlag{Name: "bosh-user", Value: "bosh", Usage: "this is the username for your bosh director"},
+		cli.StringFlag{Name: "bosh-pass", Value: "", Usage: "this is the pasword for your bosh director"},
+	}
 }

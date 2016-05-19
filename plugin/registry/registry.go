@@ -5,8 +5,8 @@ import (
 	"os/exec"
 
 	"github.com/bosh-ops/bosh-install/plugin/cloudconfig"
+	"github.com/codegangsta/cli"
 	"github.com/hashicorp/go-plugin"
-	"github.com/xchapter7x/lo"
 )
 
 var (
@@ -33,7 +33,19 @@ func ListCloudConfigs() map[string]registryRecord {
 	return cloudconfigs
 }
 
-func RegisterCloudConfig(pluginpath string) error {
+func RegisterCloudConfig(pluginpath string) ([]cli.Flag, error) {
+	client, ccPlugin := GetCloudConfigReference(pluginpath)
+	defer client.Kill()
+	meta := ccPlugin.GetMeta()
+	cloudconfigs[meta.Name] = registryRecord{
+		Name:       meta.Name,
+		Path:       pluginpath,
+		Properties: meta.Properties,
+	}
+	return ccPlugin.GetFlags(), nil
+}
+
+func GetCloudConfigReference(pluginpath string) (*plugin.Client, cloudconfig.CloudConfigDeployer) {
 	client := plugin.NewClient(&plugin.ClientConfig{
 		HandshakeConfig: cloudconfig.HandshakeConfig,
 		Plugins: map[string]plugin.Plugin{
@@ -41,24 +53,16 @@ func RegisterCloudConfig(pluginpath string) error {
 		},
 		Cmd: exec.Command(pluginpath, "plugin"),
 	})
-	defer client.Kill()
+
 	rpcClient, err := client.Client()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 	raw, err := rpcClient.Dispense(cloudconfig.PluginsMapHash)
-	lo.G.Debug("we have a raw: ", raw)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	cloudconfigPlugin := raw.(cloudconfig.CloudConfigDeployer)
-	meta := cloudconfigPlugin.GetMeta()
-	cloudconfigs[meta.Name] = registryRecord{
-		Name:       meta.Name,
-		Path:       pluginpath,
-		Properties: meta.Properties,
-	}
-	return nil
+	return client, raw.(cloudconfig.CloudConfigDeployer)
 }
