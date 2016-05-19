@@ -12,6 +12,7 @@ import (
 	"github.com/bosh-ops/bosh-install/azure-cli"
 	"github.com/bosh-ops/bosh-install/plugin/registry"
 	"github.com/codegangsta/cli"
+	"github.com/xchapter7x/enaml"
 	"github.com/xchapter7x/lo"
 )
 
@@ -95,7 +96,7 @@ func registerCloudConfig() {
 				client, cc := registry.GetCloudConfigReference(pluginPath)
 				defer client.Kill()
 				manifest := cc.GetCloudConfig(c)
-				fmt.Println("TODO: do something with my manifest here", manifest)
+				processManifest(c, manifest)
 				return nil
 			},
 		})
@@ -108,5 +109,21 @@ func getBoshAuthFlags() []cli.Flag {
 		cli.StringFlag{Name: "bosh-url", Value: "https://mybosh.com", Usage: "this is the url or ip of your bosh director"},
 		cli.StringFlag{Name: "bosh-user", Value: "bosh", Usage: "this is the username for your bosh director"},
 		cli.StringFlag{Name: "bosh-pass", Value: "", Usage: "this is the pasword for your bosh director"},
+		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
+}
+
+func processManifest(c *cli.Context, manifest enaml.CloudConfigManifest) (e error) {
+	if yamlString, err := enaml.Cloud(&manifest); err == nil {
+
+		if c.Bool("print-manifest") {
+			fmt.Println(yamlString)
+
+		} else {
+			fmt.Println("TODO: do something with my manifest here", manifest)
+		}
+	} else {
+		e = err
+	}
+	return
 }
