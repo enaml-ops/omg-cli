@@ -70,7 +70,7 @@ imports:
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
 - name: github.com/xchapter7x/enaml
-  version: 3bec20fff2ff7e3c77d31f1571fbbb62b207b67a
+  version: master 
   subpackages:
   - cloudproperties/aws
   - cloudproperties/azure

@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/bosh-ops/bosh-install/plugin/cloudconfig"
 	"github.com/codegangsta/cli"
-	"github.com/xchapter7x/enaml"
 )
 
 func main() {
@@ -22,6 +21,6 @@ func (s *MyCloudConfig) GetMeta() cloudconfig.Meta {
 	}
 }
 
-func (s *MyCloudConfig) GetCloudConfig(args []string) enaml.CloudConfigManifest {
-	return enaml.CloudConfigManifest{}
+func (s *MyCloudConfig) GetCloudConfig(args []string) []byte {
+	return []byte("")
 }

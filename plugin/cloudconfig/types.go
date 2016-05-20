@@ -6,7 +6,6 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/hashicorp/go-plugin"
-	"github.com/xchapter7x/enaml"
 )
 
 type Meta struct {
@@ -19,7 +18,7 @@ type Meta struct {
 type CloudConfigDeployer interface {
 	GetMeta() Meta
 	GetFlags() []cli.Flag
-	GetCloudConfig(args []string) enaml.CloudConfigManifest
+	GetCloudConfig(args []string) []byte
 }
 
 // CloudConfigRPC - Here is an implementation that talks over RPC
@@ -35,8 +34,8 @@ func (s *CloudConfigRPC) GetMeta() Meta {
 	return resp
 }
 
-func (s *CloudConfigRPC) GetCloudConfig(args []string) enaml.CloudConfigManifest {
-	var resp enaml.CloudConfigManifest
+func (s *CloudConfigRPC) GetCloudConfig(args []string) []byte {
+	var resp []byte
 	log.Println("calling rpc client getcloudconfig")
 	err := s.client.Call("Plugin.GetCloudConfig", args, &resp)
 	log.Println("call failed:", err)
@@ -72,7 +71,7 @@ func (s *CloudConfigRPCServer) GetMeta(args interface{}, resp *Meta) error {
 	return nil
 }
 
-func (s *CloudConfigRPCServer) GetCloudConfig(args []string, resp *enaml.CloudConfigManifest) error {
+func (s *CloudConfigRPCServer) GetCloudConfig(args []string, resp *[]byte) error {
 	*resp = s.Impl.GetCloudConfig(args)
 	return nil
 }

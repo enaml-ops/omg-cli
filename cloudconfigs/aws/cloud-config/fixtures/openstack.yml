@@ -1,0 +1,47 @@
+azs:
+- name: z1
+  cloud_properties:
+    availability_zone: east1
+- name: z2
+  cloud_properties:
+    availability_zone: east2
+
+vm_types:
+- name: default
+  cloud_properties:
+    instance_type: small
+- name: large
+  cloud_properties:
+    instance_type: large
+
+disk_types:
+- name: default
+  disk_size: 3000
+- name: large
+  disk_size: 50_000
+
+networks:
+- name: default
+  type: manual
+  subnets:
+  - range: 10.10.0.0/24
+    gateway: 10.10.0.1
+    az: z1
+    dns: [8.8.8.8]
+    cloud_properties:
+      net_id: net-b98ab66e-6fae-4c6a-81af-566e630d21d1
+  - range: 10.10.1.0/24
+    gateway: 10.10.1.1
+    az: z2
+    dns: [8.8.8.8]
+    cloud_properties:
+      net_id: net-85940t48-8ffe-3c3a-81af-27d499ff9842
+- name: vip
+  type: vip
+
+compilation:
+  workers: 5
+  reuse_compilation_vms: true
+  az: z1
+  vm_type: large
+  network: default

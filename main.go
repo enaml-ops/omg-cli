@@ -12,7 +12,6 @@ import (
 	"github.com/bosh-ops/bosh-install/azure-cli"
 	"github.com/bosh-ops/bosh-install/plugin/registry"
 	"github.com/codegangsta/cli"
-	"github.com/xchapter7x/enaml"
 	"github.com/xchapter7x/lo"
 )
 
@@ -117,17 +116,14 @@ func getBoshAuthFlags() []cli.Flag {
 	}
 }
 
-func processManifest(c *cli.Context, manifest enaml.CloudConfigManifest) (e error) {
-	if yamlString, err := enaml.Cloud(&manifest); err == nil {
+func processManifest(c *cli.Context, manifest []byte) (e error) {
+	yamlString := string(manifest)
 
-		if c.Bool("print-manifest") {
-			fmt.Println(yamlString)
+	if c.Parent().Bool("print-manifest") {
+		fmt.Println(yamlString)
 
-		} else {
-			fmt.Println("TODO: do something with my manifest here", manifest)
-		}
 	} else {
-		e = err
+		fmt.Println("TODO: do something with my manifest here", manifest)
 	}
 	return
 }
