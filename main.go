@@ -97,7 +97,8 @@ func registerCloudConfig() {
 				defer client.Kill()
 				lo.G.Debug("we found client and cloud config: ", client, cc)
 				lo.G.Debug("meta", cc.GetMeta())
-				manifest := cc.GetCloudConfig(c.Args())
+				lo.G.Debug("args: ", c.Parent().Args())
+				manifest := cc.GetCloudConfig(c.Parent().Args())
 				lo.G.Debug("we found a manifest and context: ", manifest, c)
 				processManifest(c, manifest)
 				return nil
