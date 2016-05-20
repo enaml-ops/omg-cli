@@ -12,6 +12,7 @@ func NewContext(args []string, myflags []cli.Flag) (context *cli.Context) {
 	var wg sync.WaitGroup
 	app := cli.NewApp()
 	app.Name = args[0]
+	app.HideHelp = true
 	app.Flags = myflags
 	app.Action = func(c *cli.Context) error {
 		defer wg.Done()

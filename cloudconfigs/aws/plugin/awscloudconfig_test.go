@@ -1,8 +1,6 @@
 package awsccplugin_test
 
 import (
-	"os"
-
 	. "github.com/bosh-ops/bosh-install/cloudconfigs/aws/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -17,7 +15,12 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 		Context("when GetCloudConfig is called with valid args", func() {
 			var mycloud []byte
 			BeforeEach(func() {
-				mycloud = myplugin.GetCloudConfig(os.Args)
+				mycloud = myplugin.GetCloudConfig([]string{
+					"test",
+					"--az-subnet-map", "us-east-1c:subnet-12345",
+					"--region", "us-east-1",
+					"--security-group", "bosh",
+				})
 			})
 			It("then it should return the bytes representation of the object", func() {
 				Ω(mycloud).ShouldNot(BeEmpty())
