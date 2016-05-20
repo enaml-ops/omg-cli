@@ -38,7 +38,7 @@ func (s *CloudConfigRPC) GetCloudConfig(args []string) []byte {
 	var resp []byte
 	log.Println("calling rpc client getcloudconfig")
 	err := s.client.Call("Plugin.GetCloudConfig", args, &resp)
-	log.Println("call failed:", err)
+	log.Println("call:", err)
 	if err != nil {
 		panic(err)
 	}
@@ -48,6 +48,7 @@ func (s *CloudConfigRPC) GetCloudConfig(args []string) []byte {
 func (s *CloudConfigRPC) GetFlags() []cli.Flag {
 	var resp []cli.Flag
 	err := s.client.Call("Plugin.GetFlags", new(interface{}), &resp)
+	log.Println("call: ", err)
 
 	if err != nil {
 		panic(err)

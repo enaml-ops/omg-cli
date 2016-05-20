@@ -36,7 +36,11 @@ func parseAZSubnetSlice(azSubnetSlice []string) (azSubnetMap map[string]string) 
 
 func (s *AWSCloudConfig) GetCloudConfig(args []string) (b []byte) {
 	var err error
-	cloud := aws.NewAWSCloudConfig("bosh", parseAZSubnetSlice([]string{"us-east-1c:subnet-12345us-east-1c:subnet-1234566"}), []string{"bosh", "bosh"})
+	cloud := aws.NewAWSCloudConfig(
+		"bosh",
+		parseAZSubnetSlice([]string{"us-east-1c:subnet-12345us-east-1c:subnet-1234566"}),
+		[]string{"bosh"},
+	)
 	if b, err = cloud.Bytes(); err != nil {
 		lo.G.Error("cloud bytes call yielded error: ", err)
 	}
