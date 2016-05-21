@@ -1,4 +1,4 @@
-# omg  
+# - omg -   
 #### it's kind of like an (o)ps (m)anager in (g)olang
 an iaas independent plugable executable to install bosh, cloud configs and product deployments
 
