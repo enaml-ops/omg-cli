@@ -7,6 +7,7 @@ import:
   - ui
   - ui/fmt
 - package: github.com/codegangsta/cli
+  version: master
 - package: github.com/hashicorp/go-plugin
   version: master
 - package: github.com/xchapter7x/lo

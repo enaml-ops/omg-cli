@@ -56,7 +56,7 @@ imports:
   - release/manifest
   - release/job/manifest
 - name: github.com/codegangsta/cli
-  version: 0eb4e0be6c214f8904ef6989b11072c7b897c657
+  version: master 
 - name: github.com/hashicorp/go-plugin
   version: cccb4a1328abbb89898f3ecf4311a05bddc4de6d
 - name: github.com/hashicorp/yamux

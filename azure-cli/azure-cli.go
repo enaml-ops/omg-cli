@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init"
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init"
 )
 
 func deployYaml(myYaml string, boshInitDeploy func(string)) {
@@ -39,9 +39,9 @@ func checkRequired(name string, c *cli.Context) {
 
 func GetFlags() []cli.Flag {
 	return []cli.Flag{
-		cli.StringFlag{Name: "name", Value: "bosh", Usage: "the vm name to be created in your ec2 account"},
+		cli.StringFlag{Name: "name", Value: "bosh", Usage: "the vm name to be created in your azure account"},
 		cli.StringFlag{Name: "bosh-release-ver", Value: "256.2", Usage: "the version of the bosh release you wish to use (found on bosh.io)"},
-		cli.StringFlag{Name: "bosh-private-ip", Value: "10.0.0.4", Usage: "the private ip for the bosh vm to be created in ec2"},
+		cli.StringFlag{Name: "bosh-private-ip", Value: "10.0.0.4", Usage: "the private ip for the bosh vm to be created in azure"},
 		cli.StringFlag{Name: "bosh-cpi-release-ver", Value: "11", Usage: "the bosh cpi version you wish to use (found on bosh.io)"},
 		cli.StringFlag{Name: "go-agent-ver", Value: "3169", Usage: "the go agent version you wish to use (found on bosh.io)"},
 		cli.StringFlag{Name: "bosh-release-sha", Value: "ff2f4e16e02f66b31c595196052a809100cfd5a8", Usage: "sha1 of the bosh release being used (found on bosh.io)"},
