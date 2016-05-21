@@ -1,6 +1,6 @@
 package boshinit
 
-import "github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/registry"
+import "github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/registry"
 
 func GetRegistry(cfg BoshInitConfig, postgresDB *PgSql) RegistryProperty {
 	return RegistryProperty{

@@ -1,6 +1,6 @@
 package boshinit
 
-import "github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/director"
+import "github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/director"
 
 func NewDirectorProperty(name, cpijob string, db *director.Db) DirectorProperty {
 	return DirectorProperty{

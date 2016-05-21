@@ -3,10 +3,10 @@ package boshinit_test
 import (
 	"errors"
 
-	. "github.com/bosh-ops/bosh-install/deployments/bosh-init"
+	. "github.com/enaml-ops/omg-cli/deployments/bosh-init"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/xchapter7x/enaml"
+	"github.com/enaml-ops/enaml"
 )
 
 var _ = Describe("NewAWSBosh", func() {

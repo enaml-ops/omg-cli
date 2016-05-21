@@ -3,8 +3,8 @@ package cloudconfig
 import (
 	"errors"
 
-	"github.com/xchapter7x/enaml"
-	"github.com/xchapter7x/enaml/cloudproperties/aws"
+	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/enaml/cloudproperties/aws"
 	"github.com/xchapter7x/lo"
 )
 

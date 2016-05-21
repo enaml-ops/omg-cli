@@ -8,9 +8,9 @@ import (
 	"path"
 	"strings"
 
-	"github.com/bosh-ops/bosh-install/aws-cli"
-	"github.com/bosh-ops/bosh-install/azure-cli"
-	"github.com/bosh-ops/bosh-install/plugin/registry"
+	"github.com/enaml-ops/omg-cli/aws-cli"
+	"github.com/enaml-ops/omg-cli/azure-cli"
+	"github.com/enaml-ops/omg-cli/plugin/registry"
 	"github.com/codegangsta/cli"
 	"github.com/xchapter7x/lo"
 )

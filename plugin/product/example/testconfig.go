@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/bosh-ops/bosh-install/plugin/product"
+	"github.com/enaml-ops/omg-cli/plugin/product"
 	"github.com/codegangsta/cli"
-	"github.com/xchapter7x/enaml"
+	"github.com/enaml-ops/enaml"
 )
 
 func main() {

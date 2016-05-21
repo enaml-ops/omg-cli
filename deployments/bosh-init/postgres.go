@@ -1,9 +1,9 @@
 package boshinit
 
 import (
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/director"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/postgres"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/registry"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/director"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/postgres"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/registry"
 )
 
 func NewPostgres(user, host, pass, database, adapter string) (psql *PgSql) {

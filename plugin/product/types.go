@@ -6,7 +6,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/hashicorp/go-plugin"
-	"github.com/xchapter7x/enaml"
+	"github.com/enaml-ops/enaml"
 )
 
 type Meta struct {

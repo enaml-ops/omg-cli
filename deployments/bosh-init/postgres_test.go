@@ -1,10 +1,10 @@
 package boshinit_test
 
 import (
-	. "github.com/bosh-ops/bosh-install/deployments/bosh-init"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/director"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/postgres"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/registry"
+	. "github.com/enaml-ops/omg-cli/deployments/bosh-init"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/director"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/postgres"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/registry"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

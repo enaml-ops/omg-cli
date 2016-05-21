@@ -1,7 +1,7 @@
 package awsccplugin_test
 
 import (
-	. "github.com/bosh-ops/bosh-install/cloudconfigs/aws/plugin"
+	. "github.com/enaml-ops/omg-cli/cloudconfigs/aws/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

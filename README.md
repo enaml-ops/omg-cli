@@ -1,4 +1,4 @@
-# bosh-install
+# omg
 single executable to install bosh on different targeted IaaS'
 
 [![wercker status](https://app.wercker.com/status/bb8144ce747caf96c0563e9a9e421bc3/s/master "wercker status")](https://app.wercker.com/project/bykey/bb8144ce747caf96c0563e9a9e421bc3)
@@ -8,23 +8,23 @@ This simply composes bosh-init and enaml to create a simple bosh cli installer
 
 
 ## download here: 
-https://github.com/bosh-ops/bosh-install/releases/latest
+https://github.com/enaml-ops/omg-cli/releases/latest
 
 
 ## install bosh on aws
 *check the bosh docs to setup your vpc (https://bosh.io/docs/init-aws.html)*
 ```
-bosh-install-osx aws --aws-subnet subnet-123456 --aws-elastic-ip 12.34.567.890 --aws-pem-path ~/boshstuff/bosh.pem --aws-access-key  xxxxxxxxxxxx --aws-secret xxxxxxxxxx --aws-instance-size t2.micro --aws-region us-east-1 --aws-availability-zone us-east-1c
+omg-osx aws --aws-subnet subnet-123456 --aws-elastic-ip 12.34.567.890 --aws-pem-path ~/boshstuff/bosh.pem --aws-access-key  xxxxxxxxxxxx --aws-secret xxxxxxxxxx --aws-instance-size t2.micro --aws-region us-east-1 --aws-availability-zone us-east-1c
 ```
 
 ## AWS available options
 ```
-bosh-install-osx aws --help
+omg-osx aws --help
 NAME:
-   bosh-install-osx aws - aws [--flags] - deploy a bosh to aws
+   omg-osx aws - aws [--flags] - deploy a bosh to aws
 
 USAGE:
-   bosh-install-osx aws [command options] [arguments...]
+   omg-osx aws [command options] [arguments...]
 
 OPTIONS:
    --name value                the vm name to be created in your ec2 account (default: "bosh")

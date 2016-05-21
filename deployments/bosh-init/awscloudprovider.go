@@ -3,8 +3,8 @@ package boshinit
 import (
 	"fmt"
 
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/aws_cpi"
-	"github.com/xchapter7x/enaml"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/aws_cpi"
+	"github.com/enaml-ops/enaml"
 )
 
 func NewAWSCloudProvider(awsElasticIP, awsPEMFilePath string, awsProperty aws_cpi.Aws, ntpProperty []string) enaml.CloudProvider {

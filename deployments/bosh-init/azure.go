@@ -3,10 +3,10 @@ package boshinit
 import (
 	"fmt"
 
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/aws_cpi"
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/cpi"
-	"github.com/xchapter7x/enaml"
-	"github.com/xchapter7x/enaml/cloudproperties/azure"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/aws_cpi"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/cpi"
+	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/enaml/cloudproperties/azure"
 )
 
 func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {

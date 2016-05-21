@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init"
 	"github.com/codegangsta/cli"
-	"github.com/xchapter7x/enaml"
+	"github.com/enaml-ops/enaml"
 )
 
 func deployYaml(myYaml string, boshInitDeploy func(string)) {

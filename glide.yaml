@@ -1,4 +1,4 @@
-package: github.com/bosh-ops/bosh-install
+package: github.com/enaml-ops/omg-cli
 import:
 - package: github.com/cloudfoundry/bosh-init
   subpackages:
@@ -12,7 +12,7 @@ import:
 - package: github.com/xchapter7x/lo
   version: master
 - package: github.com/pivotal-golang/clock
-- package: github.com/xchapter7x/enaml
+- package: github.com/enaml-ops/enaml
   version: master
   subpackages:
   - cloudproperties/aws

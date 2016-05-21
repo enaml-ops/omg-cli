@@ -1,9 +1,9 @@
 package boshinit
 
 import (
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/aws_cpi"
-	"github.com/xchapter7x/enaml"
-	"github.com/xchapter7x/enaml/cloudproperties/aws"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/aws_cpi"
+	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/enaml/cloudproperties/aws"
 )
 
 func NewAWSBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {

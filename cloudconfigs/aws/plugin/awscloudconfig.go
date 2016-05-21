@@ -3,9 +3,9 @@ package awsccplugin
 import (
 	"strings"
 
-	aws "github.com/bosh-ops/bosh-install/cloudconfigs/aws/cloud-config"
-	"github.com/bosh-ops/bosh-install/plugin/cloudconfig"
-	"github.com/bosh-ops/bosh-install/plugin/util"
+	aws "github.com/enaml-ops/omg-cli/cloudconfigs/aws/cloud-config"
+	"github.com/enaml-ops/omg-cli/plugin/cloudconfig"
+	"github.com/enaml-ops/omg-cli/plugin/util"
 	"github.com/codegangsta/cli"
 	"github.com/xchapter7x/lo"
 )

@@ -1,8 +1,8 @@
 package boshinit
 
 import (
-	"github.com/bosh-ops/bosh-install/deployments/bosh-init/enaml-gen/director"
-	"github.com/xchapter7x/enaml"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/director"
+	"github.com/enaml-ops/enaml"
 )
 
 func NewBoshDeploymentBase(cfg BoshInitConfig, cpiname string, ntpProperty []string) *enaml.DeploymentManifest {

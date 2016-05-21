@@ -1,7 +1,7 @@
 package boshinit_test
 
 import (
-	. "github.com/bosh-ops/bosh-install/deployments/bosh-init"
+	. "github.com/enaml-ops/omg-cli/deployments/bosh-init"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

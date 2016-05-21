@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/bosh-ops/bosh-install/cloudconfigs/aws/plugin"
-	"github.com/bosh-ops/bosh-install/plugin/cloudconfig"
+	"github.com/enaml-ops/omg-cli/cloudconfigs/aws/plugin"
+	"github.com/enaml-ops/omg-cli/plugin/cloudconfig"
 )
 
 func main() {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/bosh-ops/bosh-install/plugin/cloudconfig"
+	"github.com/enaml-ops/omg-cli/plugin/cloudconfig"
 	"github.com/codegangsta/cli"
 )
 

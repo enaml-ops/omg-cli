@@ -4,11 +4,11 @@ import (
 	"errors"
 	"fmt"
 
-	. "github.com/bosh-ops/bosh-install/cloudconfigs/aws/cloud-config"
+	. "github.com/enaml-ops/omg-cli/cloudconfigs/aws/cloud-config"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/xchapter7x/enaml"
-	"github.com/xchapter7x/enaml/cloudproperties/aws"
+	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/enaml/cloudproperties/aws"
 )
 
 var _ = Describe("given CloudConfig Deployment for AWS", func() {
