@@ -9,6 +9,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/deployments/bosh-init"
+	"github.com/xchapter7x/lo"
 )
 
 func deployYaml(myYaml string, boshInitDeploy func(string)) {
@@ -59,7 +60,7 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "azure-resource-group", Value: "", Usage: "azure resource group"},
 		cli.StringFlag{Name: "azure-storage-account", Value: "", Usage: "azure storage account"},
 		cli.StringFlag{Name: "azure-security-group", Value: "", Usage: "azure security group"},
-		cli.StringFlag{Name: "azure-ssh-pub-key", Value: "", Usage: "azure ssh public key"},
+		cli.StringFlag{Name: "azure-ssh-pub-key-path", Value: "", Usage: "the path to your azure ssh public key"},
 		cli.StringFlag{Name: "azure-ssh-user", Value: "", Usage: "azure ssh user"},
 		cli.StringFlag{Name: "azure-environment", Value: "AzureCloud", Usage: "the name of your azure environment"},
 		cli.StringFlag{Name: "azure-private-key-path", Value: "", Usage: "the path to your private bosh key"},
@@ -69,6 +70,7 @@ func GetFlags() []cli.Flag {
 
 func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
+		var publicKey string
 		checkRequired("azure-public-ip", c)
 		checkRequired("azure-vnet", c)
 		checkRequired("azure-subnet", c)
@@ -79,9 +81,16 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		checkRequired("azure-resource-group", c)
 		checkRequired("azure-storage-account", c)
 		checkRequired("azure-security-group", c)
-		checkRequired("azure-ssh-pub-key", c)
+		checkRequired("azure-ssh-pub-key-path", c)
 		checkRequired("azure-ssh-user", c)
 		checkRequired("azure-private-key-path", c)
+
+		if keybytes, err := ioutil.ReadFile(c.String("azure-ssh-pub-key-path")); err != nil {
+			lo.G.Error("error in reading pubkey file: ", c.String("azure-ssh-pub-key-path"), err)
+			os.Exit(1)
+		} else {
+			publicKey = string(keybytes)
+		}
 
 		manifest := boshinit.NewAzureBosh(boshinit.BoshInitConfig{
 			Name:                      c.String("name"),
@@ -104,7 +113,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AzureResourceGroup:        c.String("azure-resource-group"),
 			AzureStorageAccount:       c.String("azure-storage-account"),
 			AzureDefaultSecurityGroup: c.String("azure-security-group"),
-			AzureSSHPubKey:            c.String("azure-ssh-pub-key"),
+			AzureSSHPubKey:            publicKey,
 			AzureSSHUser:              c.String("azure-ssh-user"),
 			AzureEnvironment:          c.String("azure-environment"),
 			AzurePrivateKeyPath:       c.String("azure-private-key-path"),
