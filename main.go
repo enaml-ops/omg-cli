@@ -1,17 +1,20 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"strings"
 
+	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
 	"github.com/enaml-ops/omg-cli/plugin/registry"
-	"github.com/codegangsta/cli"
+	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
 )
 
@@ -56,6 +59,22 @@ func main() {
 				return nil
 			},
 		},
+
+		{
+			Name:  "register-plugin",
+			Usage: "register-plugin -type [cloudconfig, product] -pluginpath <plugin-binary>",
+			Action: func(c *cli.Context) (err error) {
+
+				if c.String("type") != "" && c.String("pluginpath") != "" {
+					err = registerPlugin(c.String("type"), c.String("pluginpath"))
+				}
+				return
+			},
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "type", Value: "product", Usage: "define if the plugin to be registered is a cloud-config or a product"},
+				cli.StringFlag{Name: "pluginpath", Value: "", Usage: "the path to the plugin you wish to register"},
+			},
+		},
 		{
 			Name:        "deploy-cloudconfig",
 			Usage:       "deploy-cloudconfig <cloudconfig-name> [--flags] - deploy a cloudconfig to bosh",
@@ -78,6 +97,32 @@ func init() {
 		log.SetOutput(ioutil.Discard)
 	}
 	registerCloudConfig()
+}
+
+func registerPlugin(typename, pluginpath string) (err error) {
+	var srcPlugin *os.File
+	var dstPlugin *os.File
+
+	if srcPlugin, err = os.Open(pluginpath); err == nil {
+		defer srcPlugin.Close()
+
+		switch typename {
+		case "cloudconfig":
+			if dstPlugin, err = osutils.SafeCreate(path.Join(CloudConfigPluginsDir, path.Base(pluginpath))); err == nil {
+				defer dstPlugin.Close()
+				_, err = io.Copy(dstPlugin, srcPlugin)
+			}
+		case "product":
+			if dstPlugin, err = osutils.SafeCreate(path.Join(ProductPluginsDir, path.Base(pluginpath))); err == nil {
+				defer dstPlugin.Close()
+				_, err = io.Copy(dstPlugin, srcPlugin)
+			}
+		default:
+			err = errors.New("invalid type selected")
+			lo.G.Error("error: ", err)
+		}
+	}
+	return
 }
 
 func registerCloudConfig() {

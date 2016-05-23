@@ -69,6 +69,16 @@ imports:
   version: 3fd3c1944c59d9742e1cd333672181cd1a6f9fa0
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
+- name: github.com/kr/fs
+  version: master 
+- name: github.com/pkg/errors
+  version: master 
+- name: github.com/pkg/sftp
+  version: master 
+- name: github.com/pivotalservices/gtils
+  version: master 
+  subpackages:
+  - osutils
 - name: github.com/enaml-ops/enaml
   version: master 
   subpackages:

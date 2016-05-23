@@ -1,5 +1,15 @@
 package: github.com/enaml-ops/omg-cli
 import:
+- package: github.com/pivotalservices/gtils
+  version: master
+  subpackages:
+  - osutils
+- package: github.com/pkg/sftp
+  version: master
+- package: github.com/kr/fs
+  version: master
+- package: github.com/pkg/errors
+  version: master
 - package: github.com/cloudfoundry/bosh-init
   subpackages:
   - cmd
