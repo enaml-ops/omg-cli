@@ -24,7 +24,7 @@ $ $ ./omg-osx azure --name bosh --azure-public-ip xxxx --azure-vnet xxxx --azure
 ```
 
 ## register a plugin
-### plugins are your way of extending omg, providing a deployment definition or cloud config definition. instead of dealing with yaml or tiles, we build testable plugins and simply register them with omg.
+#### plugins are your way of extending omg, providing a deployment definition or cloud config definition. instead of dealing with yaml or tiles, we build testable plugins using `enaml` and simply register them with omg.
 *download a bundled plugin from a omg release or build your own*
 *available plugin types are `cloudconfig` or `product` for more info about how to build a plugin take a look at one of the bundled plugins (ie. https://github.com/enaml-ops/omg-cli/tree/master/cloudconfigs/aws)*
 ```
