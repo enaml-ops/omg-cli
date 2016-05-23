@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
@@ -183,7 +184,10 @@ func processManifest(c *cli.Context, manifest []byte) (e error) {
 		ccm := enaml.NewCloudConfigManifest(manifest)
 		boshclient := boshapi.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
 		if req, err := boshclient.NewCloudConfigRequest(*ccm); err == nil {
-			httpClient := new(http.Client)
+			tr := &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			}
+			httpClient := &http.Client{Transport: tr}
 
 			if res, err := httpClient.Do(req); err != nil {
 				lo.G.Error("res: ", res)
