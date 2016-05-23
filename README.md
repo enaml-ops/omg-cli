@@ -11,16 +11,38 @@ composes bosh-init, enaml and plugins to create a simple cli installer
 ## download here: 
 https://github.com/enaml-ops/omg-cli/releases/latest
 
-
 ## install bosh on aws
 *check the bosh docs to setup your vpc (https://bosh.io/docs/init-aws.html)*
 ```
-omg-osx aws --aws-subnet subnet-123456 --aws-elastic-ip 12.34.567.890 --aws-pem-path ~/boshstuff/bosh.pem --aws-access-key  xxxxxxxxxxxx --aws-secret xxxxxxxxxx --aws-instance-size t2.micro --aws-region us-east-1 --aws-availability-zone us-east-1c
+$ omg-osx aws --aws-subnet subnet-123456 --aws-elastic-ip 12.34.567.890 --aws-pem-path ~/boshstuff/bosh.pem --aws-access-key  xxxxxxxxxxxx --aws-secret xxxxxxxxxx --aws-instance-size t2.micro --aws-region us-east-1 --aws-availability-zone us-east-1c
 ```
 
-## AWS available options
+## install bosh on azure
+*check the bosh docs to setup your vpc (https://bosh.io/docs/init-azure.html)*
 ```
-omg-osx aws --help
+$ $ ./omg-osx azure --name bosh --azure-public-ip xxxx --azure-vnet xxxx --azure-subnet xxxx --azure-subscription-id xxxx --azure-tenant-id xxxx --azure-client-id xxxx --azure-client-secret xxxx --azure-resource-group xxxx --azure-storage-account xxxx --azure-security-group xxxx --azure-ssh-pub-key xxxx --azure-ssh-user xxxx --azure-private-key-path xxxx
+```
+
+## register a plugin
+### plugins are your way of extending omg, providing a deployment definition or cloud config definition. instead of dealing with yaml or tiles, we build testable plugins and simply register them with omg.
+*download a bundled plugin from a omg release or build your own*
+*available plugin types are `cloudconfig` or `product` for more info about how to build a plugin take a look at one of the bundled plugins (ie. https://github.com/enaml-ops/omg-cli/tree/master/cloudconfigs/aws)*
+```
+$ ./omg-osx register-plugin --type cloudconfig --pluginpath ~/Downloads/aws-cloudconfigplugin-osx
+
+# to see your newly added plugin
+$ ./omg-osx list-cloudconfigs
+Cloud Configs:
+aws  -  .plugins/cloudconfig/aws-cloudconfigplugin-osx  -  map[]
+```
+
+
+
+
+## List available options using `--help` or `-h`
+ie.
+```
+$ ./omg-osx aws --help
 NAME:
    omg-osx aws - aws [--flags] - deploy a bosh to aws
 
