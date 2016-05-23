@@ -101,26 +101,33 @@ func init() {
 
 func registerPlugin(typename, pluginpath string) (err error) {
 	var srcPlugin *os.File
-	var dstPlugin *os.File
 
 	if srcPlugin, err = os.Open(pluginpath); err == nil {
 		defer srcPlugin.Close()
 
 		switch typename {
 		case "cloudconfig":
-			if dstPlugin, err = osutils.SafeCreate(path.Join(CloudConfigPluginsDir, path.Base(pluginpath))); err == nil {
-				defer dstPlugin.Close()
-				_, err = io.Copy(dstPlugin, srcPlugin)
-			}
+			dstFilepath := path.Join(CloudConfigPluginsDir, path.Base(pluginpath))
+			err = copyPlugin(srcPlugin, dstFilepath)
+
 		case "product":
-			if dstPlugin, err = osutils.SafeCreate(path.Join(ProductPluginsDir, path.Base(pluginpath))); err == nil {
-				defer dstPlugin.Close()
-				_, err = io.Copy(dstPlugin, srcPlugin)
-			}
+			dstFilepath := path.Join(ProductPluginsDir, path.Base(pluginpath))
+			err = copyPlugin(srcPlugin, dstFilepath)
+
 		default:
 			err = errors.New("invalid type selected")
 			lo.G.Error("error: ", err)
 		}
+	}
+	return
+}
+
+func copyPlugin(src io.Reader, dst string) (err error) {
+	var dstPlugin *os.File
+	if dstPlugin, err = osutils.SafeCreate(dst); err == nil {
+		defer dstPlugin.Close()
+		_, err = io.Copy(dstPlugin, src)
+		os.Chmod(dst, 755)
 	}
 	return
 }
