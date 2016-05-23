@@ -6,9 +6,10 @@ import (
 	"log"
 	"os"
 
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init"
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/deployments/bosh-init"
+	"github.com/enaml-ops/omg-cli/utils"
 )
 
 func deployYaml(myYaml string, boshInitDeploy func(string)) {
@@ -88,7 +89,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AWSAccessKeyID:        c.String("aws-access-key"),
 			AWSSecretKey:          c.String("aws-secret"),
 			AWSRegion:             c.String("aws-region"),
-			AWSSecurityGroups:     c.StringSlice("aws-security-group"),
+			AWSSecurityGroups:     utils.ClearDefaultStringSliceValue(c.StringSlice("aws-security-group")...),
 		})
 
 		if yamlString, err := enaml.Paint(manifest); err == nil {
