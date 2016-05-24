@@ -14,10 +14,10 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
 	"github.com/enaml-ops/omg-cli/plugin/registry"
-	"github.com/enaml-ops/omg-cli/utils/boshapi"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
 )
@@ -183,7 +183,7 @@ func processManifest(c *cli.Context, manifest []byte) (e error) {
 
 	} else {
 		ccm := enaml.NewCloudConfigManifest(manifest)
-		boshclient := boshapi.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
+		boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
 		if req, err := boshclient.NewCloudConfigRequest(*ccm); err == nil {
 			tr := &http.Transport{
 				TLSClientConfig: &tls.Config{InsecureSkipVerify: c.Parent().Bool("ssl-ignore")},
