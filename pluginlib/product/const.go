@@ -8,4 +8,4 @@ var HandshakeConfig = plugin.HandshakeConfig{
 	MagicCookieValue: "hello",
 }
 
-const PluginsMapHash = "cloudconfig"
+const PluginsMapHash = "product"

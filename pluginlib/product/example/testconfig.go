@@ -1,9 +1,8 @@
 package main
 
 import (
-	"github.com/enaml-ops/omg-cli/pluginlib/product"
 	"github.com/codegangsta/cli"
-	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/pluginlib/product"
 )
 
 func main() {
@@ -22,6 +21,6 @@ func (s *MyProduct) GetMeta() product.Meta {
 	}
 }
 
-func (s *MyProduct) GetProduct(args []string) enaml.DeploymentManifest {
-	return enaml.DeploymentManifest{}
+func (s *MyProduct) GetProduct(args []string) []byte {
+	return []byte("")
 }

@@ -43,7 +43,6 @@ build:
         code: |
           GOOS=darwin go build -o omg-osx -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" main.go bosh-init-wrapper.go
           GOOS=linux go build -o omg-linux -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" main.go bosh-init-wrapper.go
-          #GOOS=windows go build -o omg-win -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" main.go bosh-init-wrapper.go
 
     - script:
         name: compile built in plugins
@@ -93,12 +92,6 @@ publish-release:
         file: omg-osx 
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
-
-    #- github-upload-asset:
-    #    token: $GITHUB_TOKEN
-    #    file: omg-win 
-    #    release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
-    #    content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
@@ -155,12 +148,6 @@ deploy-pre-release:
         file: omg-osx 
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
-
-    #- github-upload-asset:
-    #    token: $GITHUB_TOKEN
-    #    file: omg-win 
-    #    release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
-    #    content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN

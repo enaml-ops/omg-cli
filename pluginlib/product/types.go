@@ -6,7 +6,6 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/hashicorp/go-plugin"
-	"github.com/enaml-ops/enaml"
 )
 
 type Meta struct {
@@ -19,7 +18,7 @@ type Meta struct {
 type ProductDeployer interface {
 	GetMeta() Meta
 	GetFlags() []cli.Flag
-	GetProduct(args []string) enaml.DeploymentManifest
+	GetProduct(args []string) []byte
 }
 
 // ProductRPC - Here is an implementation that talks over RPC
@@ -35,11 +34,11 @@ func (s *ProductRPC) GetMeta() Meta {
 	return resp
 }
 
-func (s *ProductRPC) GetProduct(args []string) enaml.DeploymentManifest {
-	var resp enaml.DeploymentManifest
+func (s *ProductRPC) GetProduct(args []string) []byte {
+	var resp []byte
 	log.Println("calling rpc client getcloudconfig")
 	err := s.client.Call("Plugin.GetProduct", args, &resp)
-	log.Println("call failed:", err)
+	log.Println("call:", err)
 	if err != nil {
 		panic(err)
 	}
@@ -49,6 +48,7 @@ func (s *ProductRPC) GetProduct(args []string) enaml.DeploymentManifest {
 func (s *ProductRPC) GetFlags() []cli.Flag {
 	var resp []cli.Flag
 	err := s.client.Call("Plugin.GetFlags", new(interface{}), &resp)
+	log.Println("call: ", err)
 
 	if err != nil {
 		panic(err)
@@ -72,7 +72,7 @@ func (s *ProductRPCServer) GetMeta(args interface{}, resp *Meta) error {
 	return nil
 }
 
-func (s *ProductRPCServer) GetProduct(args []string, resp *enaml.DeploymentManifest) error {
+func (s *ProductRPCServer) GetProduct(args []string, resp *[]byte) error {
 	*resp = s.Impl.GetProduct(args)
 	return nil
 }
