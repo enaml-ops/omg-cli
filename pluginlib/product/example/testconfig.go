@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/enaml-ops/omg-cli/plugin/product"
+	"github.com/enaml-ops/omg-cli/pluginlib/product"
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 )

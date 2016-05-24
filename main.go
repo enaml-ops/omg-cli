@@ -17,7 +17,7 @@ import (
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
-	"github.com/enaml-ops/omg-cli/plugin/registry"
+	"github.com/enaml-ops/omg-cli/pluginlib/registry"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
 )

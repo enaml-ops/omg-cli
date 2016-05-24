@@ -4,7 +4,7 @@ import (
 	"log"
 	"os/exec"
 
-	"github.com/enaml-ops/omg-cli/plugin/cloudconfig"
+	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
 	"github.com/codegangsta/cli"
 	"github.com/hashicorp/go-plugin"
 )

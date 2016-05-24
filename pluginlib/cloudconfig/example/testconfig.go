@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/enaml-ops/omg-cli/plugin/cloudconfig"
+	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
 	"github.com/codegangsta/cli"
 )
 

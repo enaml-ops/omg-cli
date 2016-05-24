@@ -1,7 +1,7 @@
 package pluginutil_test
 
 import (
-	. "github.com/enaml-ops/omg-cli/plugin/util"
+	. "github.com/enaml-ops/omg-cli/pluginlib/util"
 	"github.com/codegangsta/cli"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

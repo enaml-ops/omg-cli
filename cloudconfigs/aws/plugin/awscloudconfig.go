@@ -4,8 +4,8 @@ import (
 	"strings"
 
 	aws "github.com/enaml-ops/omg-cli/cloudconfigs/aws/cloud-config"
-	"github.com/enaml-ops/omg-cli/plugin/cloudconfig"
-	"github.com/enaml-ops/omg-cli/plugin/util"
+	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
+	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	"github.com/codegangsta/cli"
 	"github.com/xchapter7x/lo"
 )

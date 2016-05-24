@@ -3,7 +3,7 @@ package registry_test
 import (
 	"runtime"
 
-	. "github.com/enaml-ops/omg-cli/plugin/registry"
+	. "github.com/enaml-ops/omg-cli/pluginlib/registry"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
