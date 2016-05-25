@@ -21,6 +21,6 @@ func (s *MyProduct) GetMeta() product.Meta {
 	}
 }
 
-func (s *MyProduct) GetProduct(args []string) []byte {
+func (s *MyProduct) GetProduct(args []string, cloudconfig []byte) []byte {
 	return []byte("")
 }

@@ -18,7 +18,7 @@ type Meta struct {
 type ProductDeployer interface {
 	GetMeta() Meta
 	GetFlags() []cli.Flag
-	GetProduct(args []string) []byte
+	GetProduct(args []string, cloudConfig []byte) []byte
 }
 
 // ProductRPC - Here is an implementation that talks over RPC
@@ -34,10 +34,18 @@ func (s *ProductRPC) GetMeta() Meta {
 	return resp
 }
 
-func (s *ProductRPC) GetProduct(args []string) []byte {
+type rpcArgs struct {
+	Arg1 []string
+	Arg2 []byte
+}
+
+func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) []byte {
 	var resp []byte
 	log.Println("calling rpc client getcloudconfig")
-	err := s.client.Call("Plugin.GetProduct", args, &resp)
+	err := s.client.Call("Plugin.GetProduct", rpcArgs{
+		Arg1: args,
+		Arg2: cloudConfig,
+	}, &resp)
 	log.Println("call:", err)
 	if err != nil {
 		panic(err)
@@ -56,7 +64,7 @@ func (s *ProductRPC) GetFlags() []cli.Flag {
 	return resp
 }
 
-//ProductRPCServer - Here is the RPC server that GreeterRPC talks to, conforming to
+//ProductRPCServer - Here is the RPC server that ProductRPC talks to, conforming to
 // the requirements of net/rpc
 type ProductRPCServer struct {
 	Impl ProductDeployer
@@ -72,8 +80,8 @@ func (s *ProductRPCServer) GetMeta(args interface{}, resp *Meta) error {
 	return nil
 }
 
-func (s *ProductRPCServer) GetProduct(args []string, resp *[]byte) error {
-	*resp = s.Impl.GetProduct(args)
+func (s *ProductRPCServer) GetProduct(args rpcArgs, resp *[]byte) error {
+	*resp = s.Impl.GetProduct(args.Arg1, args.Arg2)
 	return nil
 }
 

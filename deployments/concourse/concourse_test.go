@@ -239,7 +239,7 @@ var _ = Describe("Concourse Deployment", func() {
 
 			deployment.ConcoursePassword = "test"
 			It("then we should error and prompt the user for a better pass", func() {
-				err := deployment.Initialize()
+				err := deployment.Initialize([]byte(""))
 				Ω(err).ShouldNot(BeNil())
 			})
 		})
