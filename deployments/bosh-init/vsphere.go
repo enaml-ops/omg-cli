@@ -76,9 +76,9 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 }
 
 type vspherecloudpropertiesResourcePool struct {
-	CPU  int `yaml:"cpu,omitempty"` // [Integer, required]: Number of CPUs.
-	RAM  int `yaml:"ram,omitempty"` // [Integer, required]: Specified the amount of RAM in megabytes.
-	Disk int `yaml:"cpu,omitempty"` // [Integer, required]: Specifies the disk size in megabytes.
+	CPU  int `yaml:"cpu,omitempty"`  // [Integer, required]: Number of CPUs.
+	RAM  int `yaml:"ram,omitempty"`  // [Integer, required]: Specified the amount of RAM in megabytes.
+	Disk int `yaml:"disk,omitempty"` // [Integer, required]: Specifies the disk size in megabytes.
 }
 
 type vspherecloudpropertiesNetwork struct {
