@@ -78,7 +78,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		checkRequired("vsphere-clusters", c)
 		checkRequired("vsphere-network-name", c)
 
-		manifest := boshinit.NewAWSBosh(boshinit.BoshInitConfig{
+		manifest := boshinit.NewVSphereBosh(boshinit.BoshInitConfig{
 			Name:                  c.String("name"),
 			BoshReleaseVersion:    c.String("bosh-release-ver"),
 			BoshPrivateIP:         c.String("bosh-private-ip"),
