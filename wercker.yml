@@ -45,10 +45,16 @@ build:
           GOOS=linux go build -o omg-linux -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" main.go bosh-init-wrapper.go
 
     - script:
-        name: compile built in plugins
+        name: compile built in cloud config plugins
         code: |
           GOOS=darwin go build -o aws-cloudconfigplugin-osx ./cloudconfigs/aws/main.go
           GOOS=linux go build -o aws-cloudconfigplugin-linux ./cloudconfigs/aws/main.go
+
+    - script:
+        name: compile built in product plugins
+        code: |
+          GOOS=darwin go build -o concourse-plugin-osx ./deployments/concourse/cmd/concourse-plugin/main.go
+          GOOS=linux go build -o concourse-plugin-linux ./deployments/concourse/cmd/concourse-plugin/main.go
 
     - script:
         name: add repo to artifact
@@ -111,6 +117,18 @@ publish-release:
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: concourse-plugin-linux 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: concourse-plugin-osx 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
 deploy-pre-release:
   steps:
     - setup-go-workspace
@@ -164,5 +182,17 @@ deploy-pre-release:
     - github-upload-asset:
         token: $GITHUB_TOKEN
         file: aws-cloudconfigplugin-linux 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: concourse-plugin-linux 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: concourse-plugin-osx 
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
