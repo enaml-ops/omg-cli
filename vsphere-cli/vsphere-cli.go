@@ -49,18 +49,34 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "go-agent-sha", Value: "3380b55948abe4c437dee97f67d2d8df4eec3fc1", Usage: "sha1 of the go agent being use (found on bosh.io)"},
 		cli.StringFlag{Name: "director-name", Value: "my-bosh", Usage: "the name of your director"},
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
+		// vsphere specific flags
+		cli.StringFlag{Name: "vsphere-address", Value: "", Usage: "IP of the vCenter"},
+		cli.StringFlag{Name: "vsphere-user", Value: "", Usage: "vSphere user"},
+		cli.StringFlag{Name: "vsphere-password", Value: "", Usage: "vSphere user's password"},
+		cli.StringFlag{Name: "vsphere-datacenter-name", Value: "", Usage: "name of the datacenter the Director will use for VM creation"},
+		cli.StringFlag{Name: "vsphere-vm-folder", Value: "", Usage: "name of the folder created to hold VMs"},
+		cli.StringFlag{Name: "vsphere-template-folder", Value: "", Usage: "the name of the folder created to hold stemcells"},
+		cli.StringFlag{Name: "vsphere-datastore-pattern", Value: "", Usage: "name of the datastore the Director will use for storing VMs"},
+		cli.StringFlag{Name: "vsphere-persistent-datastore-pattern", Value: "", Usage: "name of the datastore the Director will use for storing persistent disks. Defaults to vsphere-datastore-pattern"},
+		cli.StringFlag{Name: "vsphere-disk-path", Value: "", Usage: "name of the VMs folder, disk folder will be automatically created in the chosen datastore."},
+		cli.StringSliceFlag{Name: "vsphere-clusters", Value: &cli.StringSlice{""}, Usage: "one or more vSphere datacenter cluster names"},
+		cli.StringFlag{Name: "vsphere-network-name", Value: "", Usage: "name of the vSphere network"},
 	}
 }
 
 // GetAction returns a function action that can be registered with the CLI
 func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
-		checkRequired("aws-subnet", c)
-		checkRequired("aws-elastic-ip", c)
-		checkRequired("aws-pem-path", c)
-		checkRequired("aws-access-key", c)
-		checkRequired("aws-secret", c)
-		checkRequired("aws-region", c)
+		checkRequired("vsphere-address", c)
+		checkRequired("vsphere-user", c)
+		checkRequired("vsphere-password", c)
+		checkRequired("vsphere-datacenter-name", c)
+		checkRequired("vsphere-vm-folder", c)
+		checkRequired("vsphere-template-folder", c)
+		checkRequired("vsphere-datastore-pattern", c)
+		checkRequired("vsphere-disk-path", c)
+		checkRequired("vsphere-clusters", c)
+		checkRequired("vsphere-network-name", c)
 
 		manifest := boshinit.NewAWSBosh(boshinit.BoshInitConfig{
 			Name:                  c.String("name"),
@@ -71,16 +87,18 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			BoshReleaseSHA:        c.String("bosh-release-sha"),
 			BoshCPIReleaseSHA:     c.String("bosh-cpi-release-sha"),
 			GoAgentSHA:            c.String("go-agent-sha"),
-			BoshInstanceSize:      c.String("aws-instance-size"),
-			BoshAvailabilityZone:  c.String("aws-availability-zone"),
-			AWSSubnet:             c.String("aws-subnet"),
-			AWSElasticIP:          c.String("aws-elastic-ip"),
-			BoshDirectorName:      c.String("director-name"),
-			AWSPEMFilePath:        c.String("aws-pem-path"),
-			AWSAccessKeyID:        c.String("aws-access-key"),
-			AWSSecretKey:          c.String("aws-secret"),
-			AWSRegion:             c.String("aws-region"),
-			AWSSecurityGroups:     utils.ClearDefaultStringSliceValue(c.StringSlice("aws-security-group")...),
+			// vsphere specific
+			VSphereAddress:                    c.String("vsphere-address"),
+			VSphereUser:                       c.String("vsphere-user"),
+			VSpherePassword:                   c.String("vsphere-password"),
+			VSphereDatacenterName:             c.String("vsphere-datacenter-name"),
+			VSphereVMFolder:                   c.String("vsphere-vm-folder"),
+			VSphereTemplateFolder:             c.String("vsphere-template-folder"),
+			VSphereDatastorePattern:           c.String("vsphere-datastore-pattern"),
+			VSpherePersistentDatastorePattern: c.String("vsphere-persistent-datastore-pattern"),
+			VSphereDiskPath:                   c.String("vsphere-disk-path"),
+			VSphereClusters:                   utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-clusters")...),
+			VSphereNetworkName:                c.String("vsphere-network-name"),
 		})
 
 		if yamlString, err := enaml.Paint(manifest); err == nil {
