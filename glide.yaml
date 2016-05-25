@@ -11,6 +11,9 @@ import:
 - package: github.com/pkg/errors
   version: master
 - package: github.com/cloudfoundry/bosh-init
+  vcs: git
+  version: afa267bec2ba83d7572075ca34ac4c000a29023d
+  repo: git@github.com:sneal/bosh-init.git
   subpackages:
   - cmd
   - logger
