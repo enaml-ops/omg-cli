@@ -136,6 +136,14 @@ func copyPlugin(src io.Reader, dst string) (err error) {
 	return
 }
 
+func registerProduct() {
+	files, _ := ioutil.ReadDir(ProductPluginsDir)
+	for _, f := range files {
+
+	}
+	lo.G.Debug("registered product plugins: ", registry.ListProducts())
+}
+
 func registerCloudConfig() {
 	files, _ := ioutil.ReadDir(CloudConfigPluginsDir)
 	for _, f := range files {
