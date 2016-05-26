@@ -15,7 +15,7 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Address:  cfg.VSphereAddress,
 		User:     cfg.VSphereUser,
 		Password: cfg.VSpherePassword,
-		Datacenters: map[string]interface{}{
+		Datacenters: []map[string]interface{}{{
 			"name":                         cfg.VSphereDatacenterName,
 			"vm_folder":                    cfg.VSphereVMFolder,
 			"template_folder":              cfg.VSphereTemplateFolder,
@@ -23,7 +23,7 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 			"persistent_datastore_pattern": cfg.VSpherePersistentDatastorePattern,
 			"disk_path":                    cfg.VSphereDiskPath,
 			"clusters":                     cfg.VSphereClusters,
-		},
+		}},
 	}
 	var agentProperty = vsphere_cpi.Agent{
 		Mbus: fmt.Sprintf("nats://nats:nats-password@%s:4222", cfg.BoshPrivateIP),
