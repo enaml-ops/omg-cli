@@ -15,14 +15,14 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Address:  cfg.VSphereAddress,
 		User:     cfg.VSphereUser,
 		Password: cfg.VSpherePassword,
-		Datacenters: []map[string]interface{}{{
-			"name":                         cfg.VSphereDatacenterName,
-			"vm_folder":                    cfg.VSphereVMFolder,
-			"template_folder":              cfg.VSphereTemplateFolder,
-			"datastore_pattern":            cfg.VSphereDatastorePattern,
-			"persistent_datastore_pattern": cfg.VSpherePersistentDatastorePattern,
-			"disk_path":                    cfg.VSphereDiskPath,
-			"clusters":                     cfg.VSphereClusters,
+		Datacenters: VSphereDatacenters{VSphereDatacenter{
+			Name:                       cfg.VSphereDatacenterName,
+			VMFolder:                   cfg.VSphereVMFolder,
+			TemplateFolder:             cfg.VSphereTemplateFolder,
+			DatastorePattern:           cfg.VSphereDatastorePattern,
+			PersistentDatastorePattern: cfg.VSpherePersistentDatastorePattern,
+			DiskPath:                   cfg.VSphereDiskPath,
+			Clusters:                   cfg.VSphereClusters,
 		}},
 	}
 	var agentProperty = vsphere_cpi.Agent{
@@ -43,7 +43,7 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		URL:  "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=" + cfg.GoAgentVersion,
 		SHA1: cfg.GoAgentSHA,
 	}
-	resourcePool.CloudProperties = vspherecloudpropertiesResourcePool{
+	resourcePool.CloudProperties = VSpherecloudpropertiesResourcePool{
 		CPU:  2,
 		Disk: 20000,
 		RAM:  4096,
@@ -65,7 +65,7 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Range:   cfg.VSphereNetworks[0].Range,
 		Gateway: cfg.VSphereNetworks[0].Gateway,
 		DNS:     cfg.VSphereNetworks[0].DNS,
-		CloudProperties: vspherecloudpropertiesNetwork{
+		CloudProperties: VSpherecloudpropertiesNetwork{
 			Name: cfg.VSphereNetworks[0].Name,
 		},
 	})
@@ -80,12 +80,24 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	return manifest
 }
 
-type vspherecloudpropertiesResourcePool struct {
+type VSpherecloudpropertiesResourcePool struct {
 	CPU  int `yaml:"cpu,omitempty"`  // [Integer, required]: Number of CPUs.
 	RAM  int `yaml:"ram,omitempty"`  // [Integer, required]: Specified the amount of RAM in megabytes.
 	Disk int `yaml:"disk,omitempty"` // [Integer, required]: Specifies the disk size in megabytes.
 }
 
-type vspherecloudpropertiesNetwork struct {
+type VSpherecloudpropertiesNetwork struct {
 	Name string `yaml:"name,omitempty"` // [String, required]: vSphere network name.
+}
+
+type VSphereDatacenters []VSphereDatacenter
+
+type VSphereDatacenter struct {
+	Name                       string   `yaml:"name"`                         // [String, required]: vSphere datacenter name.
+	VMFolder                   string   `yaml:"vm_folder"`                    // [String, required]: The folder to create PCF VMs in.
+	TemplateFolder             string   `yaml:"template_folder"`              // [String, required]: The folder to store stemcells in.
+	DatastorePattern           string   `yaml:"datastore_pattern"`            // [String, required]: The pattern to the vSphere datastore.
+	PersistentDatastorePattern string   `yaml:"persistent_datastore_pattern"` // [String, required]: The pattern to the vSphere datastore for persistent disks.
+	DiskPath                   string   `yaml:"disk_path"`                    // [String, required]: The disk path.
+	Clusters                   []string `yaml:"clusters"`                     // [[]String], required]: The vSphere cluster(s).
 }
