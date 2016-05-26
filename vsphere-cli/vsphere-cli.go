@@ -93,6 +93,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			BoshReleaseSHA:        c.String("bosh-release-sha"),
 			BoshCPIReleaseSHA:     c.String("bosh-cpi-release-sha"),
 			GoAgentSHA:            c.String("go-agent-sha"),
+			BoshDirectorName:      c.String("director-name"),
 			// vsphere specific
 			VSphereAddress:                    c.String("vsphere-address"),
 			VSphereUser:                       c.String("vsphere-user"),
