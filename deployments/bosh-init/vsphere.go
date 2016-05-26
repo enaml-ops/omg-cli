@@ -11,6 +11,11 @@ import (
 func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	var ntpProperty = NewNTP("0.pool.ntp.org", "1.pool.ntp.org")
 	var manifest = NewBoshDeploymentBase(cfg, "vsphere_cpi", ntpProperty)
+
+	persistentDatastorePattern := cfg.VSpherePersistentDatastorePattern
+	if len(persistentDatastorePattern) == 0 {
+		persistentDatastorePattern = cfg.VSphereDatastorePattern
+	}
 	var vcenterProperty = vsphere_cpi.Vcenter{
 		Address:  cfg.VSphereAddress,
 		User:     cfg.VSphereUser,
@@ -20,11 +25,12 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 			VMFolder:                   cfg.VSphereVMFolder,
 			TemplateFolder:             cfg.VSphereTemplateFolder,
 			DatastorePattern:           cfg.VSphereDatastorePattern,
-			PersistentDatastorePattern: cfg.VSpherePersistentDatastorePattern,
+			PersistentDatastorePattern: persistentDatastorePattern,
 			DiskPath:                   cfg.VSphereDiskPath,
 			Clusters:                   cfg.VSphereClusters,
 		}},
 	}
+
 	var agentProperty = vsphere_cpi.Agent{
 		Mbus: fmt.Sprintf("nats://nats:nats-password@%s:4222", cfg.BoshPrivateIP),
 	}

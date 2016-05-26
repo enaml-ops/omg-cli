@@ -113,6 +113,19 @@ var _ = Describe("NewVSphereBosh", func() {
 				Ω(dc.Clusters).Should(HaveLen(1))
 				Ω(dc.Clusters[0]).Should(Equal("PCF1"))
 			})
+
+			Context("When PersistentDatastorePattern isn't specified", func() {
+				BeforeEach(func() {
+					boshConfig.VSpherePersistentDatastorePattern = ""
+					manifest = NewVSphereBosh(boshConfig)
+				})
+				It("then it should fallback to DatastorePattern", func() {
+					vcenter := manifest.Jobs[0].Properties["vcenter"].(vsphere_cpi.Vcenter)
+					dc := vcenter.Datacenters.(VSphereDatacenters)[0]
+					Ω(dc.DatastorePattern).Should(Equal("DS1"))
+					Ω(dc.PersistentDatastorePattern).Should(Equal("DS1"))
+				})
+			})
 		})
 	})
 })
