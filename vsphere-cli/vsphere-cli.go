@@ -62,7 +62,11 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "vsphere-persistent-datastore-pattern", Value: "", Usage: "name of the datastore the Director will use for storing persistent disks. Defaults to vsphere-datastore-pattern"},
 		cli.StringFlag{Name: "vsphere-disk-path", Value: "", Usage: "name of the VMs folder, disk folder will be automatically created in the chosen datastore."},
 		cli.StringSliceFlag{Name: "vsphere-clusters", Value: &cli.StringSlice{""}, Usage: "one or more vSphere datacenter cluster names"},
-		cli.StringFlag{Name: "vsphere-network-name", Value: "", Usage: "name of the vSphere network"},
+		// vsphere subnet1 flags
+		cli.StringFlag{Name: "vsphere-subnet1-name", Value: "", Usage: "name of the vSphere network for subnet1"},
+		cli.StringFlag{Name: "vsphere-subnet1-range", Value: "10.0.0.0/24", Usage: "CIDR range for subnet1"},
+		cli.StringFlag{Name: "vsphere-subnet1-gateway", Value: "10.0.0.1", Usage: "IP of the default gateway for subnet1"},
+		cli.StringSliceFlag{Name: "vsphere-subnet1-dns", Value: &cli.StringSlice{"10.0.0.2"}, Usage: "IP of the DNS server(s) for subnet1"},
 	}
 }
 
@@ -78,7 +82,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		checkRequired("vsphere-datastore-pattern", c)
 		checkRequired("vsphere-disk-path", c)
 		checkRequired("vsphere-clusters", c)
-		checkRequired("vsphere-network-name", c)
+		checkRequired("vsphere-subnet1-name", c)
 
 		manifest := boshinit.NewVSphereBosh(boshinit.BoshInitConfig{
 			Name:                  c.String("name"),
@@ -100,7 +104,12 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			VSpherePersistentDatastorePattern: c.String("vsphere-persistent-datastore-pattern"),
 			VSphereDiskPath:                   c.String("vsphere-disk-path"),
 			VSphereClusters:                   utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-clusters")...),
-			VSphereNetworkName:                c.String("vsphere-network-name"),
+			VSphereNetworks: []boshinit.Network{boshinit.Network{
+				Name:    c.String("vsphere-subnet1-name"),
+				Range:   c.String("vsphere-subnet1-range"),
+				Gateway: c.String("vsphere-subnet1-gateway"),
+				DNS:     utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-subnet1-dns")...),
+			}},
 		})
 
 		if yamlString, err := enaml.Paint(manifest); err == nil {

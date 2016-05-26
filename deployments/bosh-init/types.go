@@ -50,7 +50,14 @@ type BoshInitConfig struct {
 	VSpherePersistentDatastorePattern string
 	VSphereDiskPath                   string
 	VSphereClusters                   []string
-	VSphereNetworkName                string
+	VSphereNetworks                   []Network
+}
+
+type Network struct {
+	Name    string
+	Range   string
+	Gateway string
+	DNS     []string
 }
 
 type Rr registry.Registry

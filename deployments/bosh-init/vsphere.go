@@ -62,11 +62,11 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 
 	net := enaml.NewManualNetwork("private")
 	net.AddSubnet(enaml.Subnet{
-		Range:   "10.0.0.0/24",
-		Gateway: "10.0.0.1",
-		DNS:     []string{"10.0.0.2"},
+		Range:   cfg.VSphereNetworks[0].Range,
+		Gateway: cfg.VSphereNetworks[0].Gateway,
+		DNS:     cfg.VSphereNetworks[0].DNS,
 		CloudProperties: vspherecloudpropertiesNetwork{
-			Name: cfg.VSphereNetworkName,
+			Name: cfg.VSphereNetworks[0].Name,
 		},
 	})
 	manifest.AddNetwork(net)
