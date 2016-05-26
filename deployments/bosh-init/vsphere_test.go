@@ -75,13 +75,25 @@ var _ = Describe("NewVSphereBosh", func() {
 			})
 
 			It("then it should properly define job networks", func() {
-				Ω(len(manifest.Jobs[0].Networks)).Should(Equal(1))
-				Ω(func() (r []string) {
-					for _, v := range manifest.Jobs[0].Networks {
-						r = append(r, v.Name)
-					}
-					return
-				}()).Should(ConsistOf("private"))
+				Ω(manifest.Jobs[0].Networks).Should(HaveLen(1))
+				net := manifest.Jobs[0].Networks[0]
+				Ω(net.Name).Should(Equal("private"))
+				Ω(net.StaticIPs).Should(ContainElement("172.16.1.6"))
+			})
+
+			It("then it should properly define networks", func() {
+				Ω(manifest.Networks).Should(HaveLen(1))
+				net := manifest.Networks[0].(enaml.ManualNetwork)
+				Ω(net.Name).Should(Equal("private"))
+				Ω(net.Type).Should(Equal("manual"))
+				Ω(net.Subnets).Should(HaveLen(1))
+				subnet := net.Subnets[0]
+				Ω(subnet.DNS).Should(HaveLen(1))
+				Ω(subnet.DNS[0]).Should(Equal("172.16.1.2"))
+				Ω(subnet.Gateway).Should(Equal("172.16.1.1"))
+				Ω(subnet.Range).Should(Equal("172.16.0.0/23"))
+				cloudprops := subnet.CloudProperties.(VSpherecloudpropertiesNetwork)
+				Ω(cloudprops.Name).Should(Equal("PCF_Net1"))
 			})
 
 			It("then it should properly define vcenter properties", func() {
