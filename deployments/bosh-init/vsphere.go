@@ -48,7 +48,12 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Disk: 20000,
 		RAM:  4096,
 	}
-	//resourcePool.Env =
+	// c1oudc0w is a default password for vcap user
+	resourcePool.Env = map[string]interface{}{
+		"bosh": map[string]string{
+			"password": "$6$4gDD3aV0rdqlrKC$2axHCxGKIObs6tAmMTqYCspcdvQXh3JJcvWOY2WGb4SrdXtnCyNaWlrf3WEqvYR2MYizEGp3kMmbpwBC6jsHt0",
+		},
+	}
 	manifest.AddResourcePool(resourcePool)
 	manifest.AddDiskPool(enaml.DiskPool{
 		Name:     "disks",
