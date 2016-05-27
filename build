@@ -1,8 +1,18 @@
 #!/bin/sh
 
 WorkspaceRoot="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+# compile main CLI
+go build -o $GOPATH/bin/omg-cli $WorkspaceRoot/main.go $WorkspaceRoot/bosh-init-wrapper.go
+
+# compile bosh init "plugins"
 go build -o $GOPATH/bin/vsphere-osx $WorkspaceRoot/vsphere-cli/vsphere-cli.go
 go build -o $GOPATH/bin/aws-osx $WorkspaceRoot/aws-cli/aws-cli.go
 go build -o $GOPATH/bin/azure-osx $WorkspaceRoot/azure-cli/azure-cli.go
-go build -o $GOPATH/bin/omg-cli $WorkspaceRoot/main.go $WorkspaceRoot/bosh-init-wrapper.go
-go build -o $GOPATH/bin/.plugins/aws-cloudconfigplugin-osx $WorkspaceRoot/plugins/cloudconfigs/aws/main.go
+
+# compile cloud config plugins
+go build -o $GOPATH/bin/.plugins/cloudconfig/aws-cloudconfig-plugin-osx $WorkspaceRoot/plugins/cloudconfigs/aws/main.go
+
+# compile product deployment plugins
+go build -o $GOPATH/bin/.plugins/product/concourse-plugin-osx $WorkspaceRoot/plugins/deployments/concourse/cmd/concourse-plugin/main.go
+

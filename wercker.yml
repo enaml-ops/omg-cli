@@ -48,8 +48,8 @@ build:
     - script:
         name: compile built in product plugins
         code: |
-          GOOS=darwin go build -o concourse-plugin-osx ./deployments/concourse/cmd/concourse-plugin/main.go
-          GOOS=linux go build -o concourse-plugin-linux ./deployments/concourse/cmd/concourse-plugin/main.go
+          GOOS=darwin go build -o concourse-plugin-osx ./plugins/deployments/concourse/cmd/concourse-plugin/main.go
+          GOOS=linux go build -o concourse-plugin-linux ./plugins/deployments/concourse/cmd/concourse-plugin/main.go
 
     - script:
         name: add repo to artifact
