@@ -1,33 +1,66 @@
-hash: a2d3450e897be2b8c801aa277cfa500ba04d2c109332068e24fbefb8c3cefdb7
-updated: 2016-05-25T09:34:51.215097134-07:00
+hash: 73f822656d0adbec547b117b3b6289bf8cd2e770352dc5ee29fabfdb8fc09add
+updated: 2016-05-26T22:10:11.332809301-07:00
 imports:
-- name: github.com/bradfitz/go-smtpd
-  version: 5007902cae51dc77f74e84580cee990909e5ea3b
-  repo: https://github.com/bradfitz/go-smtpd
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
-  - /agentclient
-  - agentclient/applyspec
   - agentclient/http
+  - agentclient
+  - agentclient/applyspec
+  - settings
+  - platform/disk
+  - platform/deviceutil
 - name: github.com/cloudfoundry/bosh-davcli
   version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
   subpackages:
-  - /client
+  - client
   - config
 - name: github.com/cloudfoundry/bosh-init
   version: afa267bec2ba83d7572075ca34ac4c000a29023d
-  repo: git@github.com:sneal/bosh-init.git
+  repo: https://github.com/sneal/bosh-init.git
   vcs: git
   subpackages:
   - cmd
   - logger
   - ui
   - ui/fmt
+  - blobstore
+  - cloud
+  - config
+  - cpi/release
+  - crypto
+  - deployment
+  - deployment/disk
+  - deployment/instance
+  - deployment/instance/state
+  - deployment/manifest
+  - deployment/release
+  - deployment/sshtunnel
+  - deployment/vm
+  - index
+  - installation
+  - installation/manifest
+  - installation/tarball
+  - registry
+  - release
+  - release/set/manifest
+  - state/pkg
+  - stemcell
+  - templatescompiler
+  - templatescompiler/erbrenderer
+  - release/job
+  - release/pkg
+  - state/job
+  - common/net
+  - common/util
+  - installation/blobextract
+  - installation/pkg
+  - release/manifest
+  - release/job/manifest
 - name: github.com/cloudfoundry/bosh-utils
   version: 99c230d990674e484143e3b1452576912ab55380
   subpackages:
-  - /blobstore
+  - blobstore
   - errors
   - fileutil
   - httpclient
@@ -37,117 +70,55 @@ imports:
   - retrystrategy
   - system
   - uuid
+  - http
 - name: github.com/cloudfoundry/gofileutils
   version: 94cb17960d629e2ca9a67d381228ec499966a69b
-- name: github.com/cloudfoundry/gosigar
-  version: e949f427d77a939c605a87205a56b84434bc29e5
-- name: github.com/cloudfoundry/yagnats
-  version: 6bbfbf6a9a16a5b4b2cde6c9907a656a1b0853a3
+  subpackages:
+  - glob
 - name: github.com/codegangsta/cli
   version: 595ba45e735c1e9c1f9ddc9e2ef21997fca893f2
-- name: github.com/davecgh/go-spew
-  version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
-  subpackages:
-  - spew
 - name: github.com/enaml-ops/enaml
   version: a4558f88fa5ba5a39dc29244f41e9ae679dabf78
   subpackages:
   - cloudproperties/aws
   - cloudproperties/azure
-- name: github.com/golang/mock
-  version: bd3c8e81be01eef76d4b503f5e687d2d1354d2d9
-  subpackages:
-  - /gomock
-- name: github.com/golang/protobuf
-  version: 9e6977f30c91c78396e719e164e57f9287fff42c
-  subpackages:
-  - proto
+  - enamlbosh
 - name: github.com/hashicorp/go-plugin
   version: cccb4a1328abbb89898f3ecf4311a05bddc4de6d
 - name: github.com/hashicorp/yamux
   version: 172cde3b6ca5c154ff4e6e2ef96b7451332a9946
-  repo: https://github.com/hashicorp/yamux
-- name: github.com/jeromer/syslogparser
-  version: ff71fe7a7d5279df4b964b31f7ee4adf117277f6
-- name: github.com/jessevdk/go-flags
-  version: b350cb1deecd3da4b80a29ccc4054abfd6329001
-  repo: https://github.com/jessevdk/go-flags
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
-- name: github.com/kr/pretty
-  version: add1dbc86daf0f983cd4a48ceb39deb95c729b67
-- name: github.com/kr/pty
-  version: 0467868096dbfab4b683e41dd7aaba1c12363233
-  repo: https://github.com/kr/pty
-- name: github.com/kr/text
-  version: 7cafcd837844e784b526369c9bce262804aebc60
-- name: github.com/mitchellh/ioprogress
-  version: 8163955264568045f462ae7e2d6d07b2001fc997
-- name: github.com/mitchellh/mapstructure
-  version: d2dd0262208475919e1a362f675cfc0e7c10e905
-- name: github.com/nats-io/gnatsd
-  version: 249173d331ace1ac5cf51002e14081a592f8ddc7
-  repo: https://github.com/nats-io/gnatsd
-- name: github.com/nats-io/nats
-  version: fc85f44c1659ab6610d76fd6bd0e44ad2cadf697
-  repo: https://github.com/nats-io/nats
-- name: github.com/nats-io/nuid
-  version: a5152d67cf63cbfb5d992a395458722a45194715
-  repo: https://github.com/nats-io/nuid
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
 - name: github.com/onsi/ginkgo
-  version: 6481765dda39cbaae281109e6945449642329197
+  version: 5437a97bf824dec14e58d68c56ee36e772670c2e
 - name: github.com/onsi/gomega
-  version: a78ae492d53aad5a7a232d0d0462c14c400e3ee7
+  version: c73e51675ad2455a4515b6213eb7145eaade4824
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
-- name: github.com/pborman/uuid
-  version: c55201b036063326c5b1b89ccfe45a184973d073
 - name: github.com/pivotal-golang/clock
-  version: 270608bba0223b4ee5e0ac06f85e7964378f57a3
-- name: github.com/pivotal-golang/lager
-  version: 7639e31ce6622c55c15aa64144b85d5f4873d127
+  version: 3fd3c1944c59d9742e1cd333672181cd1a6f9fa0
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
-- name: github.com/pivotal/go-smtpd
-  version: 0af6982457e5e683c4e238a1abf5dcd73b014504
 - name: github.com/pivotalservices/gtils
   version: 0370901aca28d8df6fe01b40e0baab574d172270
   subpackages:
   - osutils
+  - command
 - name: github.com/pkg/errors
-  version: 936b5d744d061b4142dbe0f26cb08fd10e2079be
+  version: 431554f80b8ecf5058547f6c65b87fad81d90b03
 - name: github.com/pkg/sftp
   version: dfb5f84e82365817319e43a24df2caab12ea0d10
-- name: github.com/pmezard/go-difflib
-  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
-  subpackages:
-  - difflib
-- name: github.com/rlmcpherson/s3gof3r
-  version: 39f5507f61031141057f3f880d9fb9eb97b8afd7
-- name: github.com/stretchr/objx
-  version: cbeaeb16a013161a98496fad62933b1d21786672
-- name: github.com/stretchr/testify
-  version: 8d64eb7173c7753d6419fd4a9caf057398611364
-- name: github.com/technoweenie/multipartstreamer
-  version: a90a01d73ae432e2611d178c18367fbaa13e0154
-- name: github.com/urfave/cli
-  version: 595ba45e735c1e9c1f9ddc9e2ef21997fca893f2
-  repo: https://github.com/urfave/cli
 - name: github.com/xchapter7x/lo
   version: aa2602d0e8e8647f0ce7b53109b37040941915aa
 - name: golang.org/x/crypto
-  version: 9e7f5dc375abeb9619ea3c5c58502c428f457aa2
+  version: 5bcd134fee4dd1475da17714aac19c0aa0142e2f
   subpackages:
   - ssh
-- name: golang.org/x/net
-  version: 0c607074acd38c5f23d1344dfe74c977464d1257
-  repo: https://golang.org/x/net
-- name: golang.org/x/text
-  version: f773ec03ce334298742df7f3108fc0d402646d22
-  repo: https://golang.org/x/text
+  - curve25519
+  - ed25519
+  - ed25519/internal/edwards25519
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
-  repo: https://gopkg.in/yaml.v2
 devImports: []
