@@ -3,10 +3,10 @@ package awsccplugin
 import (
 	"strings"
 
-	aws "github.com/enaml-ops/omg-cli/cloudconfigs/aws/cloud-config"
+	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
 	"github.com/enaml-ops/omg-cli/pluginlib/util"
-	"github.com/codegangsta/cli"
+	aws "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/cloud-config"
 	"github.com/xchapter7x/lo"
 )
 
