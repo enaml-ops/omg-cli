@@ -14,5 +14,5 @@ go build -o $GOPATH/bin/azure-osx $WorkspaceRoot/azure-cli/azure-cli.go
 go build -o $GOPATH/bin/.plugins/cloudconfig/aws-cloudconfig-plugin-osx $WorkspaceRoot/plugins/cloudconfigs/aws/main.go
 
 # compile product deployment plugins
-go build -o $GOPATH/bin/.plugins/product/concourse-plugin-osx $WorkspaceRoot/plugins/deployments/concourse/cmd/concourse-plugin/main.go
+go build -o $GOPATH/bin/.plugins/product/concourse-plugin-osx $WorkspaceRoot/plugins/products/concourse/cmd/concourse-plugin/main.go
 

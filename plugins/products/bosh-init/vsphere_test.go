@@ -2,8 +2,8 @@ package boshinit_test
 
 import (
 	"github.com/enaml-ops/enaml"
-	. "github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init"
-	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/vsphere_cpi"
+	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/vsphere_cpi"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

@@ -3,7 +3,7 @@ package boshinit
 import (
 	"fmt"
 
-	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/aws_cpi"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/aws_cpi"
 	"github.com/enaml-ops/enaml"
 )
 

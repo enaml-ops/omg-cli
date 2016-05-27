@@ -1,6 +1,6 @@
 package boshinit
 
-import "github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/health_monitor"
+import "github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/health_monitor"
 
 func NewHealthMonitor(resurrectorEnabled bool) health_monitor.Hm {
 	return health_monitor.Hm{
