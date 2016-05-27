@@ -51,7 +51,7 @@ func GetCloudConfigCommands(target string) (commands []cli.Command) {
 				lo.G.Debug("args: ", c.Parent().Args())
 				manifest := cc.GetCloudConfig(c.Parent().Args())
 				lo.G.Debug("we found a manifest and context: ", manifest, c)
-				processManifest(c, manifest)
+				processCloudConfig(c, manifest)
 				return nil
 			},
 		})
@@ -60,7 +60,50 @@ func GetCloudConfigCommands(target string) (commands []cli.Command) {
 	return
 }
 
-func processManifest(c *cli.Context, manifest []byte) (e error) {
+func GetProductCommands(target string) (commands []cli.Command) {
+	files, _ := ioutil.ReadDir(target)
+	for _, f := range files {
+		lo.G.Debug("registering: ", f.Name())
+		pluginPath := path.Join(target, f.Name())
+		flags, _ := registry.RegisterProduct(pluginPath)
+
+		commands = append(commands, cli.Command{
+			Name:  f.Name(),
+			Usage: "deploy the " + f.Name() + " product",
+			Flags: flags,
+			Action: func(c *cli.Context) (err error) {
+				var cloudConfig *enaml.CloudConfigManifest
+				client, productDeployment := registry.GetProductReference(pluginPath)
+				defer client.Kill()
+				boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
+				httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"))
+
+				if cloudConfig, err = boshclient.GetCloudConfig(httpClient); err == nil {
+					var cloudConfigBytes []byte
+					cloudConfigBytes, err = cloudConfig.Bytes()
+					deploymentManifest := productDeployment.GetProduct(c.Parent().Args(), cloudConfigBytes)
+					processProductDeployment(c, deploymentManifest)
+				}
+				return nil
+			},
+		})
+	}
+	lo.G.Debug("registered product plugins: ", registry.ListProducts())
+	return
+}
+
+func processProductDeployment(c *cli.Context, manifest []byte) (e error) {
+	if c.Parent().Bool("print-manifest") {
+		yamlString := string(manifest)
+		fmt.Println(yamlString)
+
+	} else {
+		lo.G.Error("not yet implemented :(")
+	}
+	return
+}
+
+func processCloudConfig(c *cli.Context, manifest []byte) (e error) {
 
 	if c.Parent().Bool("print-manifest") {
 		yamlString := string(manifest)
@@ -70,10 +113,7 @@ func processManifest(c *cli.Context, manifest []byte) (e error) {
 		ccm := enaml.NewCloudConfigManifest(manifest)
 		boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
 		if req, err := boshclient.NewCloudConfigRequest(*ccm); err == nil {
-			tr := &http.Transport{
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: c.Parent().Bool("ssl-ignore")},
-			}
-			httpClient := &http.Client{Transport: tr}
+			httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"))
 
 			if res, err := httpClient.Do(req); err != nil {
 				lo.G.Error("res: ", res)
@@ -85,4 +125,11 @@ func processManifest(c *cli.Context, manifest []byte) (e error) {
 		}
 	}
 	return
+}
+
+func defaultHTTPClient(sslIngore bool) *http.Client {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: sslIngore},
+	}
+	return &http.Client{Transport: tr}
 }

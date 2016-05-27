@@ -91,7 +91,7 @@ func main() {
 			Name:        "deploy-product",
 			Usage:       "deploy-product <prod-name> [--flags] - deploy a product via bosh",
 			Flags:       getBoshAuthFlags(),
-			Subcommands: GetProductCommands(ProductPluginsDir),
+			Subcommands: utils.GetProductCommands(ProductPluginsDir),
 		},
 	}
 	app.Run(os.Args)
@@ -134,31 +134,6 @@ func copyPlugin(src io.Reader, dst string) (err error) {
 		_, err = io.Copy(dstPlugin, src)
 		os.Chmod(dst, 755)
 	}
-	return
-}
-
-func GetProductCommands(target string) (commands []cli.Command) {
-	files, _ := ioutil.ReadDir(target)
-	for _, f := range files {
-		lo.G.Debug("registering: ", f.Name())
-		pluginPath := path.Join(target, f.Name())
-		flags, _ := registry.RegisterProduct(pluginPath)
-
-		commands = append(commands, cli.Command{
-			Name:  f.Name(),
-			Usage: "deploy the " + f.Name() + " product",
-			Flags: flags,
-			Action: func(c *cli.Context) error {
-				client, productDeployment := registry.GetProductReference(pluginPath)
-				defer client.Kill()
-				_ = productDeployment
-				//call bosh
-				//deploymentManifest := productDeployment.GetProduct(c.Parent().Args())
-				return nil
-			},
-		})
-	}
-	lo.G.Debug("registered product plugins: ", registry.ListProducts())
 	return
 }
 
