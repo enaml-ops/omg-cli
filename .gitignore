@@ -26,6 +26,12 @@ vendor
 .DS_Store
 .cache
 omg
+
+# build generated output
 plugin/registry/fixtures/testplugin-darwin
 plugin/registry/fixtures/testplugin-linux
 sample/
+.plugins/
+_builds/
+_projects/
+_steps/
