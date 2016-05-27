@@ -34,7 +34,7 @@ func (s *ProductRPC) GetMeta() Meta {
 	return resp
 }
 
-type rpcArgs struct {
+type RPCArgs struct {
 	Arg1 []string
 	Arg2 []byte
 }
@@ -42,7 +42,7 @@ type rpcArgs struct {
 func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) []byte {
 	var resp []byte
 	log.Println("calling rpc client getcloudconfig")
-	err := s.client.Call("Plugin.GetProduct", rpcArgs{
+	err := s.client.Call("Plugin.GetProduct", RPCArgs{
 		Arg1: args,
 		Arg2: cloudConfig,
 	}, &resp)
@@ -80,7 +80,7 @@ func (s *ProductRPCServer) GetMeta(args interface{}, resp *Meta) error {
 	return nil
 }
 
-func (s *ProductRPCServer) GetProduct(args rpcArgs, resp *[]byte) error {
+func (s *ProductRPCServer) GetProduct(args RPCArgs, resp *[]byte) error {
 	*resp = s.Impl.GetProduct(args.Arg1, args.Arg2)
 	return nil
 }

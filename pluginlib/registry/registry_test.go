@@ -14,7 +14,7 @@ var _ = Describe("Registry", func() {
 		Context("when called w/ valid parameters", func() {
 
 			BeforeEach(func() {
-				RegisterProduct("./fixtures/testproductplugin-" + runtime.GOOS)
+				RegisterProduct("./fixtures/product/testproductplugin-" + runtime.GOOS)
 			})
 
 			It("then it should register the plugin from the given path in the registry", func() {
@@ -28,7 +28,7 @@ var _ = Describe("Registry", func() {
 		Context("when called w/ valid parameters", func() {
 
 			BeforeEach(func() {
-				RegisterCloudConfig("./fixtures/testplugin-" + runtime.GOOS)
+				RegisterCloudConfig("./fixtures/cloudconfig/testplugin-" + runtime.GOOS)
 			})
 
 			It("then it should register the plugin from the given path in the registry", func() {

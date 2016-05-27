@@ -1,23 +1,20 @@
 package main
 
 import (
-	"crypto/tls"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
-	"net/http"
 	"os"
 	"path"
 	"strings"
 
 	"github.com/codegangsta/cli"
-	"github.com/enaml-ops/enaml"
-	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
 	"github.com/enaml-ops/omg-cli/pluginlib/registry"
+	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
 )
@@ -25,10 +22,6 @@ import (
 var Version string
 var CloudConfigPluginsDir = "./.plugins/cloudconfig"
 var ProductPluginsDir = "./.plugins/product"
-var cloudConfigCommands []cli.Command
-var productCommands []cli.Command
-var productList []string
-var cloudconfigList []string
 
 func main() {
 	app := cli.NewApp()
@@ -60,10 +53,12 @@ func main() {
 			Name: "list-products",
 			Action: func(c *cli.Context) error {
 				fmt.Println("Products:")
+				for _, plgn := range registry.ListProducts() {
+					fmt.Println(plgn.Name, " - ", plgn.Path, " - ", plgn.Properties)
+				}
 				return nil
 			},
 		},
-
 		{
 			Name:  "register-plugin",
 			Usage: "register-plugin -type [cloudconfig, product] -pluginpath <plugin-binary>",
@@ -83,13 +78,13 @@ func main() {
 			Name:        "deploy-cloudconfig",
 			Usage:       "deploy-cloudconfig <cloudconfig-name> [--flags] - deploy a cloudconfig to bosh",
 			Flags:       getBoshAuthFlags(),
-			Subcommands: cloudConfigCommands,
+			Subcommands: utils.GetCloudConfigCommands(CloudConfigPluginsDir),
 		},
 		{
 			Name:        "deploy-product",
 			Usage:       "deploy-product <prod-name> [--flags] - deploy a product via bosh",
 			Flags:       getBoshAuthFlags(),
-			Subcommands: productCommands,
+			Subcommands: GetProductCommands(ProductPluginsDir),
 		},
 	}
 	app.Run(os.Args)
@@ -100,7 +95,6 @@ func init() {
 	if strings.ToLower(os.Getenv("LOG_LEVEL")) != "debug" {
 		log.SetOutput(ioutil.Discard)
 	}
-	registerCloudConfig()
 }
 
 func registerPlugin(typename, pluginpath string) (err error) {
@@ -136,40 +130,29 @@ func copyPlugin(src io.Reader, dst string) (err error) {
 	return
 }
 
-func registerProduct() {
-	files, _ := ioutil.ReadDir(ProductPluginsDir)
-	for _, f := range files {
-
-	}
-	lo.G.Debug("registered product plugins: ", registry.ListProducts())
-}
-
-func registerCloudConfig() {
-	files, _ := ioutil.ReadDir(CloudConfigPluginsDir)
+func GetProductCommands(target string) (commands []cli.Command) {
+	files, _ := ioutil.ReadDir(target)
 	for _, f := range files {
 		lo.G.Debug("registering: ", f.Name())
-		pluginPath := path.Join(CloudConfigPluginsDir, f.Name())
-		flags, _ := registry.RegisterCloudConfig(pluginPath)
+		pluginPath := path.Join(target, f.Name())
+		flags, _ := registry.RegisterProduct(pluginPath)
 
-		cloudConfigCommands = append(cloudConfigCommands, cli.Command{
+		commands = append(commands, cli.Command{
 			Name:  f.Name(),
-			Usage: "deploy the " + f.Name() + " cloud config",
+			Usage: "deploy the " + f.Name() + " product",
 			Flags: flags,
 			Action: func(c *cli.Context) error {
-				lo.G.Debug("running the cloud config plugin")
-				client, cc := registry.GetCloudConfigReference(pluginPath)
+				client, productDeployment := registry.GetProductReference(pluginPath)
 				defer client.Kill()
-				lo.G.Debug("we found client and cloud config: ", client, cc)
-				lo.G.Debug("meta", cc.GetMeta())
-				lo.G.Debug("args: ", c.Parent().Args())
-				manifest := cc.GetCloudConfig(c.Parent().Args())
-				lo.G.Debug("we found a manifest and context: ", manifest, c)
-				processManifest(c, manifest)
+				_ = productDeployment
+				//call bosh
+				//deploymentManifest := productDeployment.GetProduct(c.Parent().Args())
 				return nil
 			},
 		})
 	}
-	lo.G.Debug("registered cloud configs: ", registry.ListCloudConfigs())
+	lo.G.Debug("registered product plugins: ", registry.ListProducts())
+	return
 }
 
 func getBoshAuthFlags() []cli.Flag {
@@ -181,31 +164,4 @@ func getBoshAuthFlags() []cli.Flag {
 		cli.BoolFlag{Name: "ssl-ignore", Usage: "ingore ssl self signed cert warnings"},
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
-}
-
-func processManifest(c *cli.Context, manifest []byte) (e error) {
-
-	if c.Parent().Bool("print-manifest") {
-		yamlString := string(manifest)
-		fmt.Println(yamlString)
-
-	} else {
-		ccm := enaml.NewCloudConfigManifest(manifest)
-		boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
-		if req, err := boshclient.NewCloudConfigRequest(*ccm); err == nil {
-			tr := &http.Transport{
-				TLSClientConfig: &tls.Config{InsecureSkipVerify: c.Parent().Bool("ssl-ignore")},
-			}
-			httpClient := &http.Client{Transport: tr}
-
-			if res, err := httpClient.Do(req); err != nil {
-				lo.G.Error("res: ", res)
-				lo.G.Error("error: ", err)
-				e = err
-			}
-		} else {
-			e = err
-		}
-	}
-	return
 }

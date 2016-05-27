@@ -24,7 +24,9 @@ build:
     - script:
         name: generate fixture test plugins
         code: |
-          ./createRegistryFixturePlugin
+          rm pluginlib/registry/fixtures/cloudconfig/.keep
+          rm pluginlib/registry/fixtures/product/.keep
+          GOOS=linux ./createRegistryFixturePlugin
 
     # Test the project
     - script:
