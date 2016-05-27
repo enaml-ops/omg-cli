@@ -15,6 +15,7 @@ import (
 	"github.com/enaml-ops/omg-cli/azure-cli"
 	"github.com/enaml-ops/omg-cli/pluginlib/registry"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/omg-cli/vsphere-cli"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
 )
@@ -38,6 +39,12 @@ func main() {
 			Usage:  "aws [--flags] - deploy a bosh to aws",
 			Action: awscli.GetAction(BoshInitDeploy),
 			Flags:  awscli.GetFlags(),
+		},
+		{
+			Name:   "vsphere",
+			Usage:  "vsphere [--flags] - deploy a bosh to vsphere",
+			Action: vspherecli.GetAction(BoshInitDeploy),
+			Flags:  vspherecli.GetFlags(),
 		},
 		{
 			Name: "list-cloudconfigs",

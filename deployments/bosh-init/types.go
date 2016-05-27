@@ -8,38 +8,56 @@ import (
 )
 
 type BoshInitConfig struct {
-	Name                      string
-	BoshReleaseVersion        string
-	BoshReleaseSHA            string
-	BoshPrivateIP             string
-	BoshCPIReleaseVersion     string
-	BoshCPIReleaseSHA         string
-	GoAgentVersion            string
-	GoAgentSHA                string
-	BoshAvailabilityZone      string
-	BoshInstanceSize          string
-	BoshDirectorName          string
-	AWSSubnet                 string
-	AWSElasticIP              string
-	AWSPEMFilePath            string
-	AWSAccessKeyID            string
-	AWSSecretKey              string
-	AWSRegion                 string
-	AWSSecurityGroups         []string
-	AzurePublicIP             string
-	AzureVnet                 string
-	AzureSubnet               string
-	AzureSubscriptionID       string
-	AzureTenantID             string
-	AzureClientID             string
-	AzureClientSecret         string
-	AzureResourceGroup        string
-	AzureStorageAccount       string
-	AzureDefaultSecurityGroup string
-	AzureSSHPubKey            string
-	AzureSSHUser              string
-	AzureEnvironment          string
-	AzurePrivateKeyPath       string
+	Name                              string
+	BoshReleaseVersion                string
+	BoshReleaseSHA                    string
+	BoshPrivateIP                     string
+	BoshCPIReleaseVersion             string
+	BoshCPIReleaseSHA                 string
+	GoAgentVersion                    string
+	GoAgentSHA                        string
+	BoshAvailabilityZone              string
+	BoshInstanceSize                  string
+	BoshDirectorName                  string
+	AWSSubnet                         string
+	AWSElasticIP                      string
+	AWSPEMFilePath                    string
+	AWSAccessKeyID                    string
+	AWSSecretKey                      string
+	AWSRegion                         string
+	AWSSecurityGroups                 []string
+	AzurePublicIP                     string
+	AzureVnet                         string
+	AzureSubnet                       string
+	AzureSubscriptionID               string
+	AzureTenantID                     string
+	AzureClientID                     string
+	AzureClientSecret                 string
+	AzureResourceGroup                string
+	AzureStorageAccount               string
+	AzureDefaultSecurityGroup         string
+	AzureSSHPubKey                    string
+	AzureSSHUser                      string
+	AzureEnvironment                  string
+	AzurePrivateKeyPath               string
+	VSphereAddress                    string
+	VSphereUser                       string
+	VSpherePassword                   string
+	VSphereDatacenterName             string
+	VSphereVMFolder                   string
+	VSphereTemplateFolder             string
+	VSphereDatastorePattern           string
+	VSpherePersistentDatastorePattern string
+	VSphereDiskPath                   string
+	VSphereClusters                   []string
+	VSphereNetworks                   []Network
+}
+
+type Network struct {
+	Name    string
+	Range   string
+	Gateway string
+	DNS     []string
 }
 
 type Rr registry.Registry

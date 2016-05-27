@@ -1,22 +1,24 @@
-hash: cc1c0ad9f57a35db24b19676c5f372b9b17a58691b1c3d80ee449f30e12c1e28
-updated: 2016-05-19T14:20:51.73901931-04:00
+hash: 73f822656d0adbec547b117b3b6289bf8cd2e770352dc5ee29fabfdb8fc09add
+updated: 2016-05-26T22:10:11.332809301-07:00
 imports:
-- name: github.com/enaml-ops/omg-cli
-  version: 6f0c8ebba89acf91d659c27909c98d7e7d6a878f
+- name: github.com/cloudfoundry/bosh-agent
+  version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
-  - aws-cli
-  - azure-cli
-  - plugin/registry
-  - deployments/bosh-init
-  - deployments/bosh-init/enaml-gen/aws_cpi
-  - deployments/bosh-init/enaml-gen/cpi
-  - deployments/bosh-init/enaml-gen/director
-  - deployments/bosh-init/enaml-gen/health_monitor
-  - deployments/bosh-init/enaml-gen/postgres
-  - deployments/bosh-init/enaml-gen/registry
-  - plugin/cloudconfig
+  - agentclient/http
+  - agentclient
+  - agentclient/applyspec
+  - settings
+  - platform/disk
+  - platform/deviceutil
+- name: github.com/cloudfoundry/bosh-davcli
+  version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
+  subpackages:
+  - client
+  - config
 - name: github.com/cloudfoundry/bosh-init
-  version: e7b17a6df499bc8aa54161b317a844ef4d9f988b
+  version: afa267bec2ba83d7572075ca34ac4c000a29023d
+  repo: https://github.com/sneal/bosh-init.git
+  vcs: git
   subpackages:
   - cmd
   - logger
@@ -55,35 +57,59 @@ imports:
   - installation/pkg
   - release/manifest
   - release/job/manifest
+- name: github.com/cloudfoundry/bosh-utils
+  version: 99c230d990674e484143e3b1452576912ab55380
+  subpackages:
+  - blobstore
+  - errors
+  - fileutil
+  - httpclient
+  - logger
+  - logger/file
+  - property
+  - retrystrategy
+  - system
+  - uuid
+  - http
+- name: github.com/cloudfoundry/gofileutils
+  version: 94cb17960d629e2ca9a67d381228ec499966a69b
+  subpackages:
+  - glob
 - name: github.com/codegangsta/cli
-  version: master 
+  version: 595ba45e735c1e9c1f9ddc9e2ef21997fca893f2
+- name: github.com/enaml-ops/enaml
+  version: a4558f88fa5ba5a39dc29244f41e9ae679dabf78
+  subpackages:
+  - cloudproperties/aws
+  - cloudproperties/azure
+  - enamlbosh
 - name: github.com/hashicorp/go-plugin
   version: cccb4a1328abbb89898f3ecf4311a05bddc4de6d
 - name: github.com/hashicorp/yamux
   version: 172cde3b6ca5c154ff4e6e2ef96b7451332a9946
+- name: github.com/kr/fs
+  version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
+- name: github.com/onsi/ginkgo
+  version: 5437a97bf824dec14e58d68c56ee36e772670c2e
+- name: github.com/onsi/gomega
+  version: c73e51675ad2455a4515b6213eb7145eaade4824
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
   version: 3fd3c1944c59d9742e1cd333672181cd1a6f9fa0
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
-- name: github.com/kr/fs
-  version: master 
-- name: github.com/pkg/errors
-  version: master 
-- name: github.com/pkg/sftp
-  version: master 
 - name: github.com/pivotalservices/gtils
-  version: master 
+  version: 0370901aca28d8df6fe01b40e0baab574d172270
   subpackages:
   - osutils
-- name: github.com/enaml-ops/enaml
-  version: master 
-  subpackages:
-  - cloudproperties/aws
-  - cloudproperties/azure
+  - command
+- name: github.com/pkg/errors
+  version: 431554f80b8ecf5058547f6c65b87fad81d90b03
+- name: github.com/pkg/sftp
+  version: dfb5f84e82365817319e43a24df2caab12ea0d10
 - name: github.com/xchapter7x/lo
   version: aa2602d0e8e8647f0ce7b53109b37040941915aa
 - name: golang.org/x/crypto

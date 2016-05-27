@@ -2,8 +2,6 @@ box: golang
 build:
   steps:
     - setup-go-workspace
-    #- wercker/golint:
-    #    exclude: "^vendor\\|omg"
 
     # Gets the dependencies
     - script:
@@ -12,14 +10,9 @@ build:
           cd $WERCKER_SOURCE_DIR
           go version
           go get github.com/Masterminds/glide
-          go get github.com/xchapter7x/vendorsmash
           export PATH=$WERCKER_SOURCE_DIR/bin:$PATH
+          glide --version
           glide install
-    
-    - script:
-        name: smash nested vendor directories
-        code: |
-          vendorsmash vendor/github.com/cloudfoundry/bosh-init vendor/
 
     - script:
         name: generate fixture test plugins

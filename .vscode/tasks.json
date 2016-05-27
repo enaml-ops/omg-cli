@@ -1,0 +1,26 @@
+{
+    "version": "0.1.0",
+    "command": "bash",
+    "isShellCommand": true,
+    "showOutput": "always",
+    "args": [
+        "-c"
+    ],
+    "options": {
+        "cwd": "${fileDirname}"
+    },
+    "tasks": [
+        {
+            "taskName": "Go Build",
+            "suppressTaskName": true,
+            "isBuildCommand": true,
+            "args": ["go build -o $GOPATH/bin/vsphere-osx ${workspaceRoot}/vsphere-cli/vsphere-cli.go && go build -o $GOPATH/bin/aws-osx ${workspaceRoot}/aws-cli/aws-cli.go && go build -o $GOPATH/bin/azure-osx ${workspaceRoot}/azure-cli/azure-cli.go && go build -o $GOPATH/bin/omg-cli ${workspaceRoot}/main.go ${workspaceRoot}/bosh-init-wrapper.go"]
+        },
+        {
+            "taskName": "Go Test",
+            "suppressTaskName": true,
+            "isTestCommand": true,
+            "args": ["go test . -v"]
+        }
+    ]
+}

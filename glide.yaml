@@ -11,6 +11,9 @@ import:
 - package: github.com/pkg/errors
   version: master
 - package: github.com/cloudfoundry/bosh-init
+  version: afa267bec2ba83d7572075ca34ac4c000a29023d
+  repo: https://github.com/sneal/bosh-init.git
+  vcs: git
   subpackages:
   - cmd
   - logger
@@ -28,3 +31,5 @@ import:
   subpackages:
   - cloudproperties/aws
   - cloudproperties/azure
+- package: github.com/onsi/ginkgo
+- package: github.com/onsi/gomega
