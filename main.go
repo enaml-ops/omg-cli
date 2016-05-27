@@ -77,7 +77,7 @@ func main() {
 				return
 			},
 			Flags: []cli.Flag{
-				cli.StringFlag{Name: "type", Value: "product", Usage: "define if the plugin to be registered is a cloud-config or a product"},
+				cli.StringFlag{Name: "type", Value: "product", Usage: "define if the plugin to be registered is a cloudconfig or a product"},
 				cli.StringFlag{Name: "pluginpath", Value: "", Usage: "the path to the plugin you wish to register"},
 			},
 		},
