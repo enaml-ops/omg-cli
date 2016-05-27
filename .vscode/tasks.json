@@ -14,7 +14,7 @@
             "taskName": "Go Build",
             "suppressTaskName": true,
             "isBuildCommand": true,
-            "args": ["go build -o $GOPATH/bin/vsphere-osx ${workspaceRoot}/vsphere-cli/vsphere-cli.go && go build -o $GOPATH/bin/aws-osx ${workspaceRoot}/aws-cli/aws-cli.go && go build -o $GOPATH/bin/azure-osx ${workspaceRoot}/azure-cli/azure-cli.go && go build -o $GOPATH/bin/omg-cli ${workspaceRoot}/main.go ${workspaceRoot}/bosh-init-wrapper.go && go build -o $GOPATH/bin/.plugins/aws-cloudconfigplugin-osx ${workspaceRoot}/plugins/cloudconfigs/aws/main.go"]
+            "args": ["${workspaceRoot}/build"]
         },
         {
             "taskName": "Go Test",

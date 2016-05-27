@@ -1,0 +1,8 @@
+#!/bin/sh
+
+WorkspaceRoot="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+go build -o $GOPATH/bin/vsphere-osx $WorkspaceRoot/vsphere-cli/vsphere-cli.go
+go build -o $GOPATH/bin/aws-osx $WorkspaceRoot/aws-cli/aws-cli.go
+go build -o $GOPATH/bin/azure-osx $WorkspaceRoot/azure-cli/azure-cli.go
+go build -o $GOPATH/bin/omg-cli $WorkspaceRoot/main.go $WorkspaceRoot/bosh-init-wrapper.go
+go build -o $GOPATH/bin/.plugins/aws-cloudconfigplugin-osx $WorkspaceRoot/plugins/cloudconfigs/aws/main.go
