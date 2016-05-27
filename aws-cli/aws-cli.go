@@ -8,7 +8,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
 )
 

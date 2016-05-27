@@ -6,12 +6,12 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/enaml-ops/enaml"
-	"github.com/enaml-ops/omg-cli/deployments/concourse/enaml-gen/atc"
-	"github.com/enaml-ops/omg-cli/deployments/concourse/enaml-gen/baggageclaim"
-	"github.com/enaml-ops/omg-cli/deployments/concourse/enaml-gen/garden"
-	"github.com/enaml-ops/omg-cli/deployments/concourse/enaml-gen/groundcrew"
-	"github.com/enaml-ops/omg-cli/deployments/concourse/enaml-gen/postgresql"
-	"github.com/enaml-ops/omg-cli/deployments/concourse/enaml-gen/tsa"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/concourse/enaml-gen/atc"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/concourse/enaml-gen/baggageclaim"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/concourse/enaml-gen/garden"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/concourse/enaml-gen/groundcrew"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/concourse/enaml-gen/postgresql"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/concourse/enaml-gen/tsa"
 )
 
 const (

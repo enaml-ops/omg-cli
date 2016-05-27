@@ -1,10 +1,10 @@
 package boshinit
 
 import (
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/aws_cpi"
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/director"
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/postgres"
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/registry"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/aws_cpi"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/director"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/postgres"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/registry"
 )
 
 type BoshInitConfig struct {

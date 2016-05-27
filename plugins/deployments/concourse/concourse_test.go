@@ -1,7 +1,7 @@
 package concourse_test
 
 import (
-	. "github.com/enaml-ops/omg-cli/deployments/concourse"
+	. "github.com/enaml-ops/omg-cli/plugins/deployments/concourse"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

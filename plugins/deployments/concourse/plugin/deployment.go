@@ -3,7 +3,7 @@ package concourseplugin
 import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
-	"github.com/enaml-ops/omg-cli/deployments/concourse"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/concourse"
 )
 
 func NewDeploymentManifest(c *cli.Context, cloudConfig []byte) enaml.DeploymentManifest {

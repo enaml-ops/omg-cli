@@ -1,7 +1,7 @@
 package boshinit
 
 import (
-	"github.com/enaml-ops/omg-cli/deployments/bosh-init/enaml-gen/director"
+	"github.com/enaml-ops/omg-cli/plugins/deployments/bosh-init/enaml-gen/director"
 	"github.com/enaml-ops/enaml"
 )
 
