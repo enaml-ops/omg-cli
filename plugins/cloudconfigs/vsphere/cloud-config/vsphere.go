@@ -6,10 +6,11 @@ import (
 )
 
 // NewVSphereCloudConfig creates a new ready to execute vSphere cloud config
-func NewVSphereCloudConfig(cfg *VSphereCloudConfig) (vsphereCloudConfig *enaml.CloudConfigManifest) {
+func NewVSphereCloudConfig(cfg *VSphereCloudConfig) *enaml.CloudConfigManifest {
+	lo.G.Debugf("New vSphere cloud config: %+v", cfg)
 	if err := cfg.validate(); err != nil {
 		lo.G.Error(err)
-		return
+		return nil
 	}
 	manifest := &enaml.CloudConfigManifest{}
 	addAZs(manifest, cfg)
@@ -17,7 +18,7 @@ func NewVSphereCloudConfig(cfg *VSphereCloudConfig) (vsphereCloudConfig *enaml.C
 	addDisk(manifest)
 	addNetworks(manifest, cfg)
 	addCompilation(manifest, cfg)
-	return
+	return manifest
 }
 
 // azs:
