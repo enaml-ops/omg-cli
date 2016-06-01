@@ -29,6 +29,7 @@ import:
 - package: github.com/enaml-ops/enaml
   version: master
   subpackages:
+  - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
 - package: github.com/onsi/ginkgo

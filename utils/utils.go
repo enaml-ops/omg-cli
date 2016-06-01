@@ -14,6 +14,8 @@ import (
 	"github.com/xchapter7x/lo"
 )
 
+var UIPrint = fmt.Println
+
 //ClearDefaultStringSliceValue - this is simply to work around a defect in the
 //cli package, where the default is appended to rather than replaced by user
 //defined flags for StringSliceFlag values.
@@ -92,15 +94,35 @@ func GetProductCommands(target string) (commands []cli.Command) {
 	return
 }
 
-func processProductDeployment(c *cli.Context, manifest []byte) (e error) {
-	if c.Parent().Bool("print-manifest") {
+func ProcessProductBytes(manifest []byte, printManifest, sslIgnore bool, user, pass, url string, port int) (err error) {
+	if printManifest {
 		yamlString := string(manifest)
-		fmt.Println(yamlString)
+		UIPrint(yamlString)
 
 	} else {
-		lo.G.Error("not yet implemented :(")
+		lo.G.Error("still only supports deployment upload.... stemcell and releases to follow")
+		var task []enamlbosh.BoshTask
+		dm := enaml.NewDeploymentManifest(manifest)
+		httpClient := defaultHTTPClient(sslIgnore)
+		boshclient := enamlbosh.NewClient(user, pass, url, port)
+
+		if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
+			lo.G.Debug("res: ", task, err)
+		}
 	}
 	return
+}
+
+func processProductDeployment(c *cli.Context, manifest []byte) (e error) {
+	return ProcessProductBytes(
+		manifest,
+		c.Parent().Bool("print-manifest"),
+		c.Parent().Bool("ssl-ignore"),
+		c.Parent().String("bosh-user"),
+		c.Parent().String("bosh-pass"),
+		c.Parent().String("bosh-url"),
+		c.Parent().Int("bosh-port"),
+	)
 }
 
 func processCloudConfig(c *cli.Context, manifest []byte) (e error) {
