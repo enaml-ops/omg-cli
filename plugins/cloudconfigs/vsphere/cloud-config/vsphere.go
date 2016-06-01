@@ -25,24 +25,24 @@ func NewVSphereCloudConfig(cfg *VSphereCloudConfig) *enaml.CloudConfigManifest {
 // - name: az1
 //   cloud_properties:
 //     datacenters:
-//       clusters:
+//     - clusters:
 //       - PCF_CLUSTER_2:
 //         resource_pool: SERVICES_RP
 func addAZs(manifest *enaml.CloudConfigManifest, cfg *VSphereCloudConfig) {
 	for _, az := range cfg.AZs {
 		newAZ := enaml.AZ{
 			Name: az.Name,
-			CloudProperties: []vspherecloudpropertiesDatacenter{
-				vspherecloudpropertiesDatacenter{
+			CloudProperties: vspherecloudpropertiesCloudProps{
+				DataCenters: []vspherecloudpropertiesDatacenter{vspherecloudpropertiesDatacenter{
 					Clusters: make([]map[string]map[string]string, 1),
-				},
+				}},
 			},
 		}
 		cluster := make(map[string]map[string]string)
 		cluster[az.Cluster.Name] = map[string]string{
 			"resource_pool": az.Cluster.ResourcePool,
 		}
-		newAZ.CloudProperties.([]vspherecloudpropertiesDatacenter)[0].Clusters[0] = cluster
+		newAZ.CloudProperties.(vspherecloudpropertiesCloudProps).DataCenters[0].Clusters[0] = cluster
 		manifest.AddAZ(newAZ)
 	}
 }
@@ -114,6 +114,10 @@ func addCompilation(manifest *enaml.CloudConfigManifest, cfg *VSphereCloudConfig
 		VMType:              "medium",
 		Network:             "private",
 	})
+}
+
+type vspherecloudpropertiesCloudProps struct {
+	DataCenters []vspherecloudpropertiesDatacenter `yaml:"datacenters"`
 }
 
 type vspherecloudpropertiesDatacenter struct {
