@@ -34,19 +34,15 @@ func addAZs(manifest *enaml.CloudConfigManifest, cfg *VSphereCloudConfig) {
 			Name: az.Name,
 			CloudProperties: []vspherecloudpropertiesDatacenter{
 				vspherecloudpropertiesDatacenter{
-					Clusters: []map[string]map[string]string{},
+					Clusters: make([]map[string]map[string]string, 1),
 				},
 			},
 		}
-
-		props := newAZ.CloudProperties.([]vspherecloudpropertiesDatacenter)
-		dc := props[0]
-		dc.Clusters = make([]map[string]map[string]string, 1)
-		dc.Clusters[0] = make(map[string]map[string]string)
-		dc.Clusters[0][az.Cluster.Name] = map[string]string{
+		cluster := make(map[string]map[string]string)
+		cluster[az.Cluster.Name] = map[string]string{
 			"resource_pool": az.Cluster.ResourcePool,
 		}
-
+		newAZ.CloudProperties.([]vspherecloudpropertiesDatacenter)[0].Clusters[0] = cluster
 		manifest.AddAZ(newAZ)
 	}
 }
