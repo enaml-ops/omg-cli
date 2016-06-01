@@ -2,10 +2,14 @@ package utils_test
 
 import (
 	"fmt"
+	"net/http"
+	"os"
 	"sync/atomic"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/enaml/enamlbosh"
+	"github.com/enaml-ops/enaml/enamlbosh/enamlboshfakes"
 	. "github.com/enaml-ops/omg-cli/utils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -28,6 +32,30 @@ var _ = Describe("utils", func() {
 	})
 
 	Describe("given a ProcessProductBytes function", func() {
+		var (
+			printManifest  = true
+			deployManifest = false
+		)
+
+		Context("when called with valid arguments for deploying the manifest", func() {
+			var err error
+			var task []enamlbosh.BoshTask
+			BeforeEach(func() {
+				doer := new(enamlboshfakes.FakeHttpClientDoer)
+
+				body, _ := os.Open("fixtures/deployment_tasks.json")
+				doer.DoReturns(&http.Response{
+					Body: body,
+				}, nil)
+				task, err = ProcessProductBytes(new(enaml.DeploymentManifest).Bytes(), deployManifest, "user", "pass", "https://192.168.1.1", 25555, doer)
+			})
+			It("Then it should deploy the given manifest bytes", func() {
+				Ω(err).ShouldNot(HaveOccurred())
+				Ω(task).ShouldNot(BeNil())
+				Ω(len(task)).Should(Equal(1))
+			})
+		})
+
 		Context("when called with valid arguments for printing", func() {
 			var callCount *int64
 			var err error
@@ -38,11 +66,18 @@ var _ = Describe("utils", func() {
 					atomic.AddInt64(callCount, 1)
 					return
 				}
-				err = ProcessProductBytes(new(enaml.DeploymentManifest).Bytes(), true, true, "", "", "", 25555)
+				doer := new(enamlboshfakes.FakeHttpClientDoer)
+				body, _ := os.Open("fixtures/deployment_tasks.json")
+				doer.DoReturns(&http.Response{
+					Body: body,
+				}, nil)
+				_, err = ProcessProductBytes(new(enaml.DeploymentManifest).Bytes(), printManifest, "", "", "", 25555, doer)
 			})
+
 			AfterEach(func() {
 				UIPrint = fmt.Println
 			})
+
 			It("Then it should print the yaml of the manifest", func() {
 				Ω(err).ShouldNot(HaveOccurred())
 				Ω(*callCount).Should(BeNumerically(">", 0))

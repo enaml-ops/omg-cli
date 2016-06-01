@@ -82,11 +82,13 @@ func GetProductCommands(target string) (commands []cli.Command) {
 
 				if cloudConfig, err = boshclient.GetCloudConfig(httpClient); err == nil {
 					var cloudConfigBytes []byte
+					var task []enamlbosh.BoshTask
 					cloudConfigBytes, err = cloudConfig.Bytes()
 					deploymentManifest := productDeployment.GetProduct(c.Parent().Args(), cloudConfigBytes)
-					processProductDeployment(c, deploymentManifest)
+					task, err = processProductDeployment(c, deploymentManifest)
+					lo.G.Debug("bosh task: ", task)
 				}
-				return nil
+				return
 			},
 		})
 	}
@@ -94,16 +96,14 @@ func GetProductCommands(target string) (commands []cli.Command) {
 	return
 }
 
-func ProcessProductBytes(manifest []byte, printManifest, sslIgnore bool, user, pass, url string, port int) (err error) {
+func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url string, port int, httpClient HttpClientDoer) (task []enamlbosh.BoshTask, err error) {
 	if printManifest {
 		yamlString := string(manifest)
 		UIPrint(yamlString)
 
 	} else {
-		lo.G.Error("still only supports deployment upload.... stemcell and releases to follow")
-		var task []enamlbosh.BoshTask
+		lo.G.Info("still only supports deployment upload.... stemcell and releases to follow")
 		dm := enaml.NewDeploymentManifest(manifest)
-		httpClient := defaultHTTPClient(sslIgnore)
 		boshclient := enamlbosh.NewClient(user, pass, url, port)
 
 		if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
@@ -113,15 +113,16 @@ func ProcessProductBytes(manifest []byte, printManifest, sslIgnore bool, user, p
 	return
 }
 
-func processProductDeployment(c *cli.Context, manifest []byte) (e error) {
+func processProductDeployment(c *cli.Context, manifest []byte) ([]enamlbosh.BoshTask, error) {
+	httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"))
 	return ProcessProductBytes(
 		manifest,
 		c.Parent().Bool("print-manifest"),
-		c.Parent().Bool("ssl-ignore"),
 		c.Parent().String("bosh-user"),
 		c.Parent().String("bosh-pass"),
 		c.Parent().String("bosh-url"),
 		c.Parent().Int("bosh-port"),
+		httpClient,
 	)
 }
 
