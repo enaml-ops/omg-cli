@@ -106,7 +106,7 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 		dm := enaml.NewDeploymentManifest(manifest)
 		boshclient := enamlbosh.NewClient(user, pass, url, port)
 
-		if err = ProcessRemoteBoshAssets(dm, boshclient, httpClient); err == nil {
+		if err = processRemoteBoshAssets(dm, boshclient, httpClient); err == nil {
 			UIPrint("Uploading product deployment...")
 
 			if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
@@ -118,10 +118,13 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 	return
 }
 
-//ProcessRemoteBoshAssets - upload any remote assets to bosh required for the given deployment. this is a composed function which attempts to upload stemcells and releases
-func ProcessRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
+func processRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
 	defer UIPrint("remote asset check complete.")
 	UIPrint("Checking product deployment for remote assets...")
+
+	if err = ProcessRemoteStemcells(dm.Stemcells, boshClient, httpClient); err == nil {
+		err = ProcessRemoteReleases(dm.Releases, boshClient, httpClient)
+	}
 	return
 }
 

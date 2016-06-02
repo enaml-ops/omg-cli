@@ -31,10 +31,6 @@ var _ = Describe("utils", func() {
 		})
 	})
 
-	Describe("given ProcessRemoteBoshAssets", func() {
-
-	})
-
 	Describe("given ProcessRemoteStemcells", func() {
 		var doer *enamlboshfakes.FakeHttpClientDoer
 
