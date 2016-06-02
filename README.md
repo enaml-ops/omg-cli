@@ -7,7 +7,6 @@ an iaas independent plugable executable to install bosh, cloud configs and produ
 ### how we do bosh / cloud config / deployments
 composes bosh-init, enaml and plugins to create a simple cli installer
 
-
 ## download here: 
 https://github.com/enaml-ops/omg-cli/releases/latest
 
@@ -36,36 +35,86 @@ Cloud Configs:
 aws  -  .plugins/cloudconfig/aws-cloudconfigplugin-osx  -  map[]
 ```
 
+## How to use omg + plugins to install concourse (bosh, cloud-config, aws and osx)
 
+*tips & tricks*
+- set `LOG_LEVEL=debug` for verbose output
+- adding the `--print-manifest` flag with the bosh creds will simply print the manifest you are about to deploy
 
-
-## List available options using `--help` or `-h`
-ie.
+### initial setup
+*install your omg-cli & plugins*
 ```
-$ ./omg-osx aws --help
-NAME:
-   omg-osx aws - aws [--flags] - deploy a bosh to aws
+export VERSION=v0.0.12
+export OS=osx
+$ wget https://github.com/enaml-ops/omg-cli/releases/download/${VERSION}/omg-${OS}
+$ wget https://github.com/enaml-ops/omg-cli/releases/download/${VERSION}/concourse-plugin-${OS}
+$ wget https://github.com/enaml-ops/omg-cli/releases/download/${VERSION}/aws-cloudconfigplugin-${OS}
 
-USAGE:
-   omg-osx aws [command options] [arguments...]
+$ mv ./omg-${OS} omg && chmod +x omg
+$ ./omg register-plugin --type cloudconfig --pluginpath aws-cloudconfigplugin-${OS}
+$ ./omg list-cloudconfigs
+$ ./omg register-plugin --type product --pluginpath concourse-plugin-${OS}
+$ ./omg list-products
+```
 
-OPTIONS:
-   --name value                the vm name to be created in your ec2 account (default: "bosh")
-   --bosh-release-ver value        the version of the bosh release you wish to use (found on bosh.io) (default: "256.2")
-   --bosh-private-ip value        the private ip for the bosh vm to be created in ec2 (default: "10.0.0.6")
-   --bosh-cpi-release-ver value        the bosh cpi version you wish to use (found on bosh.io) (default: "52")
-   --go-agent-ver value            the go agent version you wish to use (found on bosh.io) (default: "3012")
-   --bosh-release-sha value        sha1 of the bosh release being used (found on bosh.io) (default: "ff2f4e16e02f66b31c595196052a809100cfd5a8")
-   --bosh-cpi-release-sha value        sha1 of the cpi release being used (found on bosh.io) (default: "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324")
-   --go-agent-sha value            sha1 of the go agent being use (found on bosh.io) (default: "3380b55948abe4c437dee97f67d2d8df4eec3fc1")
-   --aws-instance-size value        the size of aws instance you wish to create (default: "m3.xlarge")
-   --aws-availability-zone value    the ec2 az you wish to deploy to (default: "us-east-1c")
-   --director-name value        the name of your director (default: "my-bosh")
-   --aws-subnet value            your target vpc subnet
-   --aws-elastic-ip value        your elastic ip to assign to the bosh vm
-   --aws-pem-path value            your aws pem file path
-   --aws-access-key value        aws account access key
-   --aws-secret value            aws account secret key
-   --aws-region value            ec2 region to deploy on (default: "us-east-1")
-   --print-manifest            if you would simply like to output a manifest the set this flag as true.
-   ```
+### bosh install
+*build your bosh*
+```
+$ ./omg aws \
+--aws-subnet subnet-123456 \
+--aws-elastic-ip bosh.url.com \
+--aws-pem-path ~/boshstuff/bosh.pem \
+--aws-access-key  xxxxxxxxxxxxxxxxxxxx \
+--aws-secret xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
+--aws-instance-size t2.micro \
+--aws-region us-east-1 \
+--aws-availability-zone us-east-1c
+```
+
+### setup cloud config
+*setup a cloud config*
+```
+$ ./omg deploy-cloudconfig \
+--bosh-url https://bosh.url.com \
+--bosh-port 25555 \
+--bosh-user admin \
+--bosh-pass admin \
+--ssl-ignore \
+aws-cloudconfigplugin-osx \
+--az-subnet-map us-east-1c:subnet-123456 \
+--region us-east-1 \
+--security-group bosh
+```
+
+### bosh deployed concourse
+*deploy a concourse*
+```
+# please only upload your releases and stemcells manually if your deployment does not use remote urls
+# otherwise this will be automatically uploaded via omg-cli
+$ bosh upload release https://bosh.io/d/github.com/concourse/concourse?v=1.0.1
+$ bosh upload release https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.337.0
+$ bosh upload stemcell https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3232.4 
+
+$ ./omg deploy-product \
+--bosh-url https://bosh.url.com \
+--bosh-port 25555 \
+--bosh-user admin \
+--bosh-pass admin \
+--ssl-ignore \
+concourse-plugin-osx \
+--web-vm-type small \
+--worker-vm-type small \
+--database-vm-type small \
+--network-name private \
+--url my.concourse.com \
+--username concourse \
+--password concourse \
+--web-instances 1 \
+--web-azs us-east-1c \
+--worker-azs us-east-1c \
+--database-azs us-east-1c \
+--bosh-stemcell-alias trusty \
+--postgresql-db-pwd secret \
+--database-storage-type medium
+```
+
