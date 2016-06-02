@@ -31,6 +31,158 @@ var _ = Describe("utils", func() {
 		})
 	})
 
+	Describe("given ProcessRemoteBoshAssets", func() {
+
+	})
+
+	Describe("given ProcessRemoteStemcells", func() {
+		var doer *enamlboshfakes.FakeHttpClientDoer
+
+		BeforeEach(func() {
+			doer = new(enamlboshfakes.FakeHttpClientDoer)
+			body, _ := os.Open("fixtures/deployment_tasks.json")
+			doer.DoReturns(&http.Response{
+				Body: body, //will only support a single call
+			}, nil)
+		})
+
+		Context("when called with a valid list of remote stemcells", func() {
+			var err error
+			var myStemcells = []enaml.Stemcell{
+				enaml.Stemcell{URL: "someurl.com", SHA1: "lkasdgklhasdglakshdgasdg"},
+			}
+
+			BeforeEach(func() {
+				err = ProcessRemoteStemcells(
+					myStemcells,
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+				)
+			})
+
+			It("then it should upload the given stemcell to bosh", func() {
+				Ω(doer.DoCallCount()).Should(Equal(len(myStemcells)))
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		Context("when called with a valid list of NON remote stemcells", func() {
+			var err error
+			var myStemcells = []enaml.Stemcell{
+				enaml.Stemcell{Name: "hi", Version: "1.2"},
+				enaml.Stemcell{Name: "hello", Version: "0.333.4"},
+			}
+
+			BeforeEach(func() {
+				err = ProcessRemoteStemcells(
+					myStemcells,
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+				)
+			})
+
+			It("then it should pass over all and exit successfully", func() {
+				Ω(doer.DoCallCount()).Should(Equal(0))
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		Context("when called with a mixed list of NON remote stemcells and remote stemcells", func() {
+			var err error
+			var myStemcells = []enaml.Stemcell{
+				enaml.Stemcell{Name: "hi", Version: "1.2"},
+				enaml.Stemcell{Name: "hello", Version: "0.333.4"},
+			}
+			var remoteStemcell = enaml.Stemcell{URL: "boshstuff.com", SHA1: "kljaslhdg9ashdgklahsdgklasdg"}
+
+			BeforeEach(func() {
+				err = ProcessRemoteStemcells(
+					append(myStemcells, remoteStemcell),
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+				)
+			})
+			It("then it only upload the remote stemcells and exit successfully", func() {
+				Ω(doer.DoCallCount()).Should(Equal(1))
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+	})
+
+	Describe("given ProcessRemoteReleases", func() {
+		var doer *enamlboshfakes.FakeHttpClientDoer
+
+		BeforeEach(func() {
+			doer = new(enamlboshfakes.FakeHttpClientDoer)
+			body, _ := os.Open("fixtures/deployment_tasks.json")
+			doer.DoReturns(&http.Response{
+				Body: body, //will only support a single call
+			}, nil)
+		})
+
+		Context("when called with a valid list of remote stemcells", func() {
+			var err error
+			var myReleases = []enaml.Release{
+				enaml.Release{URL: "someurl.com", SHA1: "lkasdgklhasdglakshdgasdg"},
+			}
+
+			BeforeEach(func() {
+				err = ProcessRemoteReleases(
+					myReleases,
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+				)
+			})
+
+			It("then it should upload the given stemcell to bosh", func() {
+				Ω(doer.DoCallCount()).Should(Equal(len(myReleases)))
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		Context("when called with a valid list of NON remote stemcells", func() {
+			var err error
+			var myReleases = []enaml.Release{
+				enaml.Release{Name: "hi", Version: "1.2"},
+				enaml.Release{Name: "hello", Version: "0.333.4"},
+			}
+
+			BeforeEach(func() {
+				err = ProcessRemoteReleases(
+					myReleases,
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+				)
+			})
+
+			It("then it should pass over all and exit successfully", func() {
+				Ω(doer.DoCallCount()).Should(Equal(0))
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		Context("when called with a mixed list of NON remote stemcells and remote stemcells", func() {
+			var err error
+			var myReleases = []enaml.Release{
+				enaml.Release{Name: "hi", Version: "1.2"},
+				enaml.Release{Name: "hello", Version: "0.333.4"},
+			}
+			var remoteRelease = enaml.Release{URL: "boshstuff.com", SHA1: "kljaslhdg9ashdgklahsdgklasdg"}
+
+			BeforeEach(func() {
+				err = ProcessRemoteReleases(
+					append(myReleases, remoteRelease),
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+				)
+			})
+			It("then it only upload the remote stemcells and exit successfully", func() {
+				Ω(doer.DoCallCount()).Should(Equal(1))
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+	})
+
 	Describe("given a ProcessProductBytes function", func() {
 		var (
 			printManifest  = true

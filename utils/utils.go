@@ -96,18 +96,68 @@ func GetProductCommands(target string) (commands []cli.Command) {
 	return
 }
 
+//ProcessProductBytes - upload a product deployments bytes to bosh
 func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url string, port int, httpClient HttpClientDoer) (task []enamlbosh.BoshTask, err error) {
 	if printManifest {
 		yamlString := string(manifest)
 		UIPrint(yamlString)
 
 	} else {
-		lo.G.Info("still only supports deployment upload.... stemcell and releases to follow")
 		dm := enaml.NewDeploymentManifest(manifest)
 		boshclient := enamlbosh.NewClient(user, pass, url, port)
 
-		if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
-			lo.G.Debug("res: ", task, err)
+		if err = ProcessRemoteBoshAssets(dm, boshclient, httpClient); err == nil {
+			UIPrint("Uploading product deployment...")
+
+			if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
+				UIPrint("upload complete.")
+				lo.G.Debug("res: ", task, err)
+			}
+		}
+	}
+	return
+}
+
+//ProcessRemoteBoshAssets - upload any remote assets to bosh required for the given deployment. this is a composed function which attempts to upload stemcells and releases
+func ProcessRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
+	defer UIPrint("remote asset check complete.")
+	UIPrint("Checking product deployment for remote assets...")
+	return
+}
+
+//ProcessRemoteStemcells - upload any remote stemcells given
+func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
+	defer UIPrint("remote stemcells complete")
+	UIPrint("Checking for remote stemcells...")
+	var isRemoteStemcell = func(stemcell enaml.Stemcell) bool {
+		return stemcell.URL != "" && stemcell.SHA1 != ""
+	}
+
+	for _, stemcell := range scl {
+		var task []enamlbosh.BoshTask
+
+		if isRemoteStemcell(stemcell) {
+			task, err = boshClient.PostRemoteStemcell(stemcell, httpClient)
+			lo.G.Debug("task: ", task)
+		}
+	}
+	return
+}
+
+//ProcessRemoteReleases - upload any remote Releases given
+func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
+	defer UIPrint("remote releases complete")
+	UIPrint("Checking for remote releases...")
+	var isRemoteRelease = func(release enaml.Release) bool {
+		return release.URL != "" && release.SHA1 != ""
+	}
+
+	for _, release := range rl {
+		var task []enamlbosh.BoshTask
+
+		if isRemoteRelease(release) {
+			task, err = boshClient.PostRemoteRelease(release, httpClient)
+			lo.G.Debug("task: ", task)
 		}
 	}
 	return
