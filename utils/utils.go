@@ -112,7 +112,13 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 			if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
 				UIPrint("upload complete.")
 				lo.G.Debug("res: ", task, err)
+
+			} else {
+				lo.G.Error("error: ", err)
 			}
+
+		} else {
+			lo.G.Error("error: ", err)
 		}
 	}
 	return
