@@ -16,7 +16,17 @@ import (
 
 const (
 	concourseReleaseName string = "concourse"
+	concourseReleaseVer  string = "1.0.1"
+	concourseReleaseURL  string = "https://bosh.io/d/github.com/concourse/concourse"
+	concourseReleaseSHA  string = "ef60fe5182a7b09df324d167f36d26481e7f5e01"
 	gardenReleaseName    string = "garden-linux"
+	gardenReleaseVer     string = "0.337.0"
+	gardenReleaseURL     string = "https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release"
+	gardenReleaseSHA     string = "d1d81d56c3c07f6f9f04ebddc68e51b8a3cf541d"
+	stemcellName         string = "ubuntu-trusty"
+	stemcellVer          string = "3232.4"
+	stemcellURL          string = "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent"
+	stemcellSHA          string = "a57ef43974387441b4e8f79e8bb74834"
 )
 
 //Deployment -
@@ -109,11 +119,12 @@ func (d *Deployment) Initialize(cloudConfig []byte) (err error) {
 	var worker *enaml.InstanceGroup
 	d.manifest.SetName(d.DeploymentName)
 	d.manifest.SetDirectorUUID(d.DirectorUUID)
-	d.manifest.AddReleaseByName(concourseReleaseName)
-	d.manifest.AddReleaseByName(gardenReleaseName)
+	d.manifest.AddRemoteRelease(concourseReleaseName, concourseReleaseVer, concourseReleaseURL, concourseReleaseSHA)
+	d.manifest.AddRemoteRelease(gardenReleaseName, gardenReleaseVer, gardenReleaseURL, gardenReleaseSHA)
 
 	if d.CloudConfig {
-		d.manifest.AddStemcellByName("ubuntu-trusty", d.StemcellAlias)
+		d.manifest.AddRemoteStemcell(stemcellName, d.StemcellAlias, stemcellVer, stemcellURL, stemcellSHA)
+
 	} else {
 		resourcePool := d.CreateResourcePool(d.NetworkName)
 		d.manifest.AddResourcePool(resourcePool)
