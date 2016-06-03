@@ -26,7 +26,7 @@ const (
 	stemcellName         string = "ubuntu-trusty"
 	stemcellVer          string = "3232.4"
 	stemcellURL          string = "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent"
-	stemcellSHA          string = "a57ef43974387441b4e8f79e8bb74834"
+	stemcellSHA          string = "ac920cae17c7159dee3bf1ebac727ce2d01564e9"
 )
 
 //Deployment -
