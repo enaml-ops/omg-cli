@@ -147,7 +147,7 @@ func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, 
 
 		if isRemoteStemcell(stemcell) {
 			task, err = boshClient.PostRemoteStemcell(stemcell, httpClient)
-			lo.G.Debug("task: ", task)
+			lo.G.Debug("task: ", task, err)
 		}
 	}
 	return
@@ -166,7 +166,7 @@ func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, htt
 
 		if isRemoteRelease(release) {
 			task, err = boshClient.PostRemoteRelease(release, httpClient)
-			lo.G.Debug("task: ", task)
+			lo.G.Debug("task: ", task, err)
 		}
 	}
 	return
