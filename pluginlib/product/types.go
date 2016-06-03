@@ -13,7 +13,7 @@ type Meta struct {
 	Properties map[string]interface{}
 }
 
-// ProductDeployer is the interface that we will expose for cloud config
+// ProductDeployer is the interface that we will expose for product
 // plugins
 type ProductDeployer interface {
 	GetMeta() Meta
