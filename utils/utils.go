@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"path"
+	"time"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
@@ -86,7 +87,7 @@ func GetProductCommands(target string) (commands []cli.Command) {
 					var task enamlbosh.BoshTask
 					cloudConfigBytes, err = cloudConfig.Bytes()
 					deploymentManifest := productDeployment.GetProduct(c.Parent().Args(), cloudConfigBytes)
-					task, err = processProductDeployment(c, deploymentManifest)
+					task, err = processProductDeployment(c, deploymentManifest, true)
 					lo.G.Debug("bosh task: ", task)
 				}
 				return
@@ -98,7 +99,7 @@ func GetProductCommands(target string) (commands []cli.Command) {
 }
 
 //ProcessProductBytes - upload a product deployments bytes to bosh
-func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url string, port int, httpClient HttpClientDoer) (task enamlbosh.BoshTask, err error) {
+func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url string, port int, httpClient HttpClientDoer, poll bool) (task enamlbosh.BoshTask, err error) {
 	if printManifest {
 		yamlString := string(manifest)
 		UIPrint(yamlString)
@@ -113,6 +114,10 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 			if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
 				UIPrint("upload complete.")
 				lo.G.Debug("res: ", task, err)
+
+				if poll {
+					err = PollTaskAndWait(task, boshclient, httpClient, -1)
+				}
 
 			} else {
 				lo.G.Error("error: ", err)
@@ -129,14 +134,14 @@ func processRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh
 	defer UIPrint("remote asset check complete.")
 	UIPrint("Checking product deployment for remote assets...")
 
-	if err = ProcessRemoteStemcells(dm.Stemcells, boshClient, httpClient); err == nil {
-		err = ProcessRemoteReleases(dm.Releases, boshClient, httpClient)
+	if err = ProcessRemoteStemcells(dm.Stemcells, boshClient, httpClient, true); err == nil {
+		err = ProcessRemoteReleases(dm.Releases, boshClient, httpClient, true)
 	}
 	return
 }
 
 //ProcessRemoteStemcells - upload any remote stemcells given
-func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
+func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, httpClient HttpClientDoer, poll bool) (err error) {
 	defer UIPrint("remote stemcells complete")
 	UIPrint("Checking for remote stemcells...")
 	var isRemoteStemcell = func(stemcell enaml.Stemcell) bool {
@@ -147,15 +152,20 @@ func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, 
 		var task enamlbosh.BoshTask
 
 		if isRemoteStemcell(stemcell) {
-			task, err = boshClient.PostRemoteStemcell(stemcell, httpClient)
-			lo.G.Debug("task: ", task, err)
+			if task, err = boshClient.PostRemoteStemcell(stemcell, httpClient); err == nil {
+				lo.G.Debug("task: ", task, err)
+
+				if poll {
+					err = PollTaskAndWait(task, boshClient, httpClient, -1)
+				}
+			}
 		}
 	}
 	return
 }
 
 //ProcessRemoteReleases - upload any remote Releases given
-func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
+func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, httpClient HttpClientDoer, poll bool) (err error) {
 	defer UIPrint("remote releases complete")
 	UIPrint("Checking for remote releases...")
 	var isRemoteRelease = func(release enaml.Release) bool {
@@ -166,14 +176,59 @@ func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, htt
 		var task enamlbosh.BoshTask
 
 		if isRemoteRelease(release) {
-			task, err = boshClient.PostRemoteRelease(release, httpClient)
-			lo.G.Debug("task: ", task, err)
+
+			if task, err = boshClient.PostRemoteRelease(release, httpClient); err == nil {
+				lo.G.Debug("task: ", task, err)
+
+				if poll {
+					err = PollTaskAndWait(task, boshClient, httpClient, -1)
+				}
+			}
 		}
 	}
 	return
 }
 
-func processProductDeployment(c *cli.Context, manifest []byte) (enamlbosh.BoshTask, error) {
+//PollTaskAndWait - will poll the give task until its status is cancelled, done
+//or error. a -1 tries value indicates infinite
+func PollTaskAndWait(task enamlbosh.BoshTask, boshClient *enamlbosh.Client, httpClient HttpClientDoer, tries int) (err error) {
+	defer UIPrint(fmt.Sprintf("Task %s is %s", task.Description, task.State))
+	UIPrint("Polling task...")
+	var cnt = 0
+
+Loop:
+	for {
+
+		if task, err = boshClient.GetTask(task.ID, httpClient); err != nil {
+			break
+
+		} else {
+
+			switch task.State {
+			case enamlbosh.StatusDone:
+				break Loop
+
+			case enamlbosh.StatusCancelled, enamlbosh.StatusError:
+				lo.G.Error("task error: ", task.State, task.Description)
+				err = fmt.Errorf("%s - %s", task.State, task.Description)
+				break Loop
+
+			default:
+				UIPrint(fmt.Sprintf("task is %s - %s", task.State, task.Description))
+				time.Sleep(1 * time.Second)
+			}
+		}
+		cnt += 1
+
+		if tries != -1 && cnt >= tries {
+			UIPrint("hit poll limit, exiting task poller without error")
+			break Loop
+		}
+	}
+	return
+}
+
+func processProductDeployment(c *cli.Context, manifest []byte, poll bool) (enamlbosh.BoshTask, error) {
 	httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"), c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"))
 	return ProcessProductBytes(
 		manifest,
@@ -183,6 +238,7 @@ func processProductDeployment(c *cli.Context, manifest []byte) (enamlbosh.BoshTa
 		c.Parent().String("bosh-url"),
 		c.Parent().Int("bosh-port"),
 		httpClient,
+		poll,
 	)
 }
 

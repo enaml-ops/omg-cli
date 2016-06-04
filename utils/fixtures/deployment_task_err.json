@@ -1,6 +1,6 @@
 {
   "id": 1180,
-  "state": "done",
+  "state": "errored",
   "description": "run errand acceptance_tests from deployment cf-warden",
   "timestamp": 1447033291,
   "result": null,

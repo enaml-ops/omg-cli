@@ -53,6 +53,7 @@ var _ = Describe("utils", func() {
 					myStemcells,
 					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
 					doer,
+					false,
 				)
 			})
 
@@ -74,6 +75,7 @@ var _ = Describe("utils", func() {
 					myStemcells,
 					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
 					doer,
+					false,
 				)
 			})
 
@@ -96,11 +98,56 @@ var _ = Describe("utils", func() {
 					append(myStemcells, remoteStemcell),
 					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
 					doer,
+					false,
 				)
 			})
 			It("then it only upload the remote stemcells and exit successfully", func() {
 				Ω(doer.DoCallCount()).Should(Equal(1))
 				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+	})
+
+	Describe("given PollTaskAndWait", func() {
+		Context("when task status is succesfully complete", func() {
+			var doer *enamlboshfakes.FakeHttpClientDoer
+
+			BeforeEach(func() {
+				doer = new(enamlboshfakes.FakeHttpClientDoer)
+				body, _ := os.Open("fixtures/deployment_task.json")
+				doer.DoReturns(&http.Response{
+					Body: body, //will only support a single call
+				}, nil)
+			})
+			It("Then it should exit without error", func() {
+				err := PollTaskAndWait(
+					enamlbosh.BoshTask{ID: 1180},
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+					1,
+				)
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+		})
+
+		Context("when task status completes with a non-successful state", func() {
+			var doer *enamlboshfakes.FakeHttpClientDoer
+
+			BeforeEach(func() {
+				doer = new(enamlboshfakes.FakeHttpClientDoer)
+				body, _ := os.Open("fixtures/deployment_task_err.json")
+				doer.DoReturns(&http.Response{
+					Body: body, //will only support a single call
+				}, nil)
+			})
+			It("Then it should exit without error", func() {
+				err := PollTaskAndWait(
+					enamlbosh.BoshTask{ID: 1180},
+					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+					doer,
+					1,
+				)
+				Ω(err).Should(HaveOccurred())
 			})
 		})
 	})
@@ -127,6 +174,7 @@ var _ = Describe("utils", func() {
 					myReleases,
 					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
 					doer,
+					false,
 				)
 			})
 
@@ -148,6 +196,7 @@ var _ = Describe("utils", func() {
 					myReleases,
 					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
 					doer,
+					false,
 				)
 			})
 
@@ -170,6 +219,7 @@ var _ = Describe("utils", func() {
 					append(myReleases, remoteRelease),
 					enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
 					doer,
+					false,
 				)
 			})
 			It("then it only upload the remote stemcells and exit successfully", func() {
@@ -195,7 +245,8 @@ var _ = Describe("utils", func() {
 				doer.DoReturns(&http.Response{
 					Body: body,
 				}, nil)
-				task, err = ProcessProductBytes(new(enaml.DeploymentManifest).Bytes(), deployManifest, "user", "pass", "https://192.168.1.1", 25555, doer)
+				task, err = ProcessProductBytes(
+					new(enaml.DeploymentManifest).Bytes(), deployManifest, "user", "pass", "https://192.168.1.1", 25555, doer, false)
 			})
 			It("Then it should deploy the given manifest bytes", func() {
 				Ω(err).ShouldNot(HaveOccurred())
@@ -218,7 +269,7 @@ var _ = Describe("utils", func() {
 				doer.DoReturns(&http.Response{
 					Body: body,
 				}, nil)
-				_, err = ProcessProductBytes(new(enaml.DeploymentManifest).Bytes(), printManifest, "", "", "", 25555, doer)
+				_, err = ProcessProductBytes(new(enaml.DeploymentManifest).Bytes(), printManifest, "", "", "", 25555, doer, false)
 			})
 
 			AfterEach(func() {
