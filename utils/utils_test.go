@@ -36,7 +36,7 @@ var _ = Describe("utils", func() {
 
 		BeforeEach(func() {
 			doer = new(enamlboshfakes.FakeHttpClientDoer)
-			body, _ := os.Open("fixtures/deployment_tasks.json")
+			body, _ := os.Open("fixtures/deployment_task.json")
 			doer.DoReturns(&http.Response{
 				Body: body, //will only support a single call
 			}, nil)
@@ -110,7 +110,7 @@ var _ = Describe("utils", func() {
 
 		BeforeEach(func() {
 			doer = new(enamlboshfakes.FakeHttpClientDoer)
-			body, _ := os.Open("fixtures/deployment_tasks.json")
+			body, _ := os.Open("fixtures/deployment_task.json")
 			doer.DoReturns(&http.Response{
 				Body: body, //will only support a single call
 			}, nil)
@@ -187,11 +187,11 @@ var _ = Describe("utils", func() {
 
 		Context("when called with valid arguments for deploying the manifest", func() {
 			var err error
-			var task []enamlbosh.BoshTask
+			var task enamlbosh.BoshTask
 			BeforeEach(func() {
 				doer := new(enamlboshfakes.FakeHttpClientDoer)
 
-				body, _ := os.Open("fixtures/deployment_tasks.json")
+				body, _ := os.Open("fixtures/deployment_task.json")
 				doer.DoReturns(&http.Response{
 					Body: body,
 				}, nil)
@@ -200,7 +200,6 @@ var _ = Describe("utils", func() {
 			It("Then it should deploy the given manifest bytes", func() {
 				Ω(err).ShouldNot(HaveOccurred())
 				Ω(task).ShouldNot(BeNil())
-				Ω(len(task)).Should(Equal(1))
 			})
 		})
 

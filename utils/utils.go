@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"path"
 
 	"github.com/codegangsta/cli"
@@ -78,11 +79,11 @@ func GetProductCommands(target string) (commands []cli.Command) {
 				client, productDeployment := registry.GetProductReference(pluginPath)
 				defer client.Kill()
 				boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
-				httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"))
+				httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"), c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"))
 
 				if cloudConfig, err = boshclient.GetCloudConfig(httpClient); err == nil {
 					var cloudConfigBytes []byte
-					var task []enamlbosh.BoshTask
+					var task enamlbosh.BoshTask
 					cloudConfigBytes, err = cloudConfig.Bytes()
 					deploymentManifest := productDeployment.GetProduct(c.Parent().Args(), cloudConfigBytes)
 					task, err = processProductDeployment(c, deploymentManifest)
@@ -97,7 +98,7 @@ func GetProductCommands(target string) (commands []cli.Command) {
 }
 
 //ProcessProductBytes - upload a product deployments bytes to bosh
-func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url string, port int, httpClient HttpClientDoer) (task []enamlbosh.BoshTask, err error) {
+func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url string, port int, httpClient HttpClientDoer) (task enamlbosh.BoshTask, err error) {
 	if printManifest {
 		yamlString := string(manifest)
 		UIPrint(yamlString)
@@ -143,7 +144,7 @@ func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, 
 	}
 
 	for _, stemcell := range scl {
-		var task []enamlbosh.BoshTask
+		var task enamlbosh.BoshTask
 
 		if isRemoteStemcell(stemcell) {
 			task, err = boshClient.PostRemoteStemcell(stemcell, httpClient)
@@ -162,7 +163,7 @@ func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, htt
 	}
 
 	for _, release := range rl {
-		var task []enamlbosh.BoshTask
+		var task enamlbosh.BoshTask
 
 		if isRemoteRelease(release) {
 			task, err = boshClient.PostRemoteRelease(release, httpClient)
@@ -172,8 +173,8 @@ func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, htt
 	return
 }
 
-func processProductDeployment(c *cli.Context, manifest []byte) ([]enamlbosh.BoshTask, error) {
-	httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"))
+func processProductDeployment(c *cli.Context, manifest []byte) (enamlbosh.BoshTask, error) {
+	httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"), c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"))
 	return ProcessProductBytes(
 		manifest,
 		c.Parent().Bool("print-manifest"),
@@ -195,7 +196,7 @@ func processCloudConfig(c *cli.Context, manifest []byte) (e error) {
 		ccm := enaml.NewCloudConfigManifest(manifest)
 		boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
 		if req, err := boshclient.NewCloudConfigRequest(*ccm); err == nil {
-			httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"))
+			httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"), c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"))
 
 			if res, err := httpClient.Do(req); err != nil {
 				lo.G.Error("res: ", res)
@@ -209,9 +210,18 @@ func processCloudConfig(c *cli.Context, manifest []byte) (e error) {
 	return
 }
 
-func defaultHTTPClient(sslIngore bool) *http.Client {
+//defaultHTTPClient - generates a client which can ignore ssl warnings as well
+//as correctly assign the host:port on bosh rest call redirects.
+func defaultHTTPClient(sslIngore bool, user, pass string) *http.Client {
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: sslIngore},
 	}
-	return &http.Client{Transport: tr}
+	client := &http.Client{Transport: tr}
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) (err error) {
+		req.URL, err = url.Parse(req.URL.Scheme + "://" + via[0].URL.Host + req.URL.Path)
+		req.SetBasicAuth(user, pass)
+		lo.G.Debug("new req: ", req)
+		return nil
+	}
+	return client
 }
