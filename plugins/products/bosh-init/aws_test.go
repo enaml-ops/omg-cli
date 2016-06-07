@@ -1,10 +1,10 @@
 package boshinit_test
 
 import (
+	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/enaml-ops/enaml"
 )
 
 var _ = Describe("NewAWSBosh", func() {
@@ -20,6 +20,9 @@ var _ = Describe("NewAWSBosh", func() {
 				BoshCPIReleaseSHA:     "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
 				GoAgentSHA:            "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
 				BoshInstanceSize:      "m3.xlarge",
+				BoshCIDR:              "10.0.0.0/24",
+				BoshGateway:           "10.0.0.1",
+				BoshDNS:               []string{"10.0.0.2"},
 				BoshAvailabilityZone:  "us-east-1c",
 				AWSSubnet:             "subnet-xxxxxx",
 				AWSElasticIP:          "1.0.2.3",

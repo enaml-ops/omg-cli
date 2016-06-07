@@ -3,10 +3,10 @@ package boshinit_test
 import (
 	"errors"
 
+	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/enaml-ops/enaml"
 )
 
 var _ = Describe("NewAWSBosh", func() {
@@ -23,6 +23,9 @@ var _ = Describe("NewAWSBosh", func() {
 				GoAgentSHA:                "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
 				BoshInstanceSize:          "Standard_D1",
 				BoshDirectorName:          "my-bosh",
+				BoshCIDR:                  "10.0.0.0/24",
+				BoshGateway:               "10.0.0.1",
+				BoshDNS:                   []string{"168.63.129.16"},
 				AzurePublicIP:             "x.x.x.x",
 				AzureVnet:                 "something",
 				AzureSubnet:               "sub-somthing",

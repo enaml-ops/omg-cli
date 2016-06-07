@@ -9,6 +9,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
+	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
 )
 
@@ -41,6 +42,9 @@ func checkRequired(name string, c *cli.Context) {
 func GetFlags() []cli.Flag {
 	return []cli.Flag{
 		cli.StringFlag{Name: "name", Value: "bosh", Usage: "the vm name to be created in your azure account"},
+		cli.StringFlag{Name: "cidr", Value: "10.0.0.0/24", Usage: "the network cidr range for your bosh deployment"},
+		cli.StringFlag{Name: "gateway", Value: "10.0.0.1", Usage: "the gateway ip"},
+		cli.StringSliceFlag{Name: "dns", Value: &cli.StringSlice{"168.63.129.16"}, Usage: "the dns ip"},
 		cli.StringFlag{Name: "bosh-release-ver", Value: "256.2", Usage: "the version of the bosh release you wish to use (found on bosh.io)"},
 		cli.StringFlag{Name: "bosh-private-ip", Value: "10.0.0.4", Usage: "the private ip for the bosh vm to be created in azure"},
 		cli.StringFlag{Name: "bosh-cpi-release-ver", Value: "11", Usage: "the bosh cpi version you wish to use (found on bosh.io)"},
@@ -94,6 +98,9 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 
 		manifest := boshinit.NewAzureBosh(boshinit.BoshInitConfig{
 			Name:                      c.String("name"),
+			BoshCIDR:                  c.String("cidr"),
+			BoshGateway:               c.String("gateway"),
+			BoshDNS:                   utils.ClearDefaultStringSliceValue(c.StringSlice("dns")...),
 			BoshReleaseVersion:        c.String("bosh-release-ver"),
 			BoshPrivateIP:             c.String("bosh-private-ip"),
 			BoshCPIReleaseVersion:     c.String("bosh-cpi-release-ver"),

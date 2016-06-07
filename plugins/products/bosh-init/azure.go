@@ -3,10 +3,10 @@ package boshinit
 import (
 	"fmt"
 
-	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/aws_cpi"
-	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/cpi"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/cloudproperties/azure"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/aws_cpi"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/cpi"
 )
 
 func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
@@ -14,7 +14,7 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	var cpiTemplate = enaml.Template{Name: "cpi", Release: "bosh-azure-cpi"}
 	var manifest = NewBoshDeploymentBase(cfg, "cpi", ntpProperty)
 	var agentProperty = aws_cpi.Agent{
-		Mbus: "nats://nats:nats-password@10.0.0.6:4222",
+		Mbus: "nats://nats:nats-password@" + cfg.BoshPrivateIP + ":4222",
 	}
 
 	manifest.AddRelease(enaml.Release{
@@ -41,9 +41,9 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	})
 	net := enaml.NewManualNetwork("private")
 	net.AddSubnet(enaml.Subnet{
-		Range:   "10.0.0.0/24",
-		Gateway: "10.0.0.1",
-		DNS:     []string{"168.63.129.16"},
+		Range:   cfg.BoshCIDR,
+		Gateway: cfg.BoshGateway,
+		DNS:     cfg.BoshDNS,
 		CloudProperties: azurecloudproperties.Network{
 			VnetName:   cfg.AzureVnet,
 			SubnetName: cfg.AzureSubnet,

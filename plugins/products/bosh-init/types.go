@@ -19,6 +19,9 @@ type BoshInitConfig struct {
 	BoshAvailabilityZone              string
 	BoshInstanceSize                  string
 	BoshDirectorName                  string
+	BoshCIDR                          string
+	BoshGateway                       string
+	BoshDNS                           []string
 	AWSSubnet                         string
 	AWSElasticIP                      string
 	AWSPEMFilePath                    string
