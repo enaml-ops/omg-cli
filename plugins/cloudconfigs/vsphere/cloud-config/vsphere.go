@@ -76,16 +76,19 @@ func addVMTypes(manifest *enaml.CloudConfigManifest) {
 
 func addDisk(manifest *enaml.CloudConfigManifest) {
 	manifest.AddDiskType(enaml.DiskType{
-		Name:     "small",
-		DiskSize: 3240,
+		Name:            "small",
+		DiskSize:        3240,
+		CloudProperties: make(map[string]string),
 	})
 	manifest.AddDiskType(enaml.DiskType{
-		Name:     "medium",
-		DiskSize: 20000,
+		Name:            "medium",
+		DiskSize:        20000,
+		CloudProperties: make(map[string]string),
 	})
 	manifest.AddDiskType(enaml.DiskType{
-		Name:     "large",
-		DiskSize: 50000,
+		Name:            "large",
+		DiskSize:        50000,
+		CloudProperties: make(map[string]string),
 	})
 }
 
