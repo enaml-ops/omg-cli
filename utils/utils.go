@@ -55,8 +55,7 @@ func GetCloudConfigCommands(target string) (commands []cli.Command) {
 				lo.G.Debug("args: ", c.Parent().Args())
 				manifest := cc.GetCloudConfig(c.Parent().Args())
 				lo.G.Debug("we found a manifest and context: ", manifest, c)
-				processCloudConfig(c, manifest)
-				return nil
+				return processCloudConfig(c, manifest)
 			},
 		})
 	}
@@ -253,11 +252,25 @@ func processCloudConfig(c *cli.Context, manifest []byte) (e error) {
 		boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
 		if req, err := boshclient.NewCloudConfigRequest(*ccm); err == nil {
 			httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"), c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"))
-
-			if res, err := httpClient.Do(req); err != nil {
+			var res *http.Response
+			var err error
+			res, err = httpClient.Do(req)
+			if err != nil {
 				lo.G.Error("res: ", res)
 				lo.G.Error("error: ", err)
 				e = err
+			} else {
+				defer res.Body.Close()
+				body, err := ioutil.ReadAll(res.Body)
+				if err != nil {
+					e = err
+				} else {
+					sbody := string(body)
+					lo.G.Debugf("%d HTTP response:\n%s", res.StatusCode, sbody)
+					if res.StatusCode >= 400 {
+						e = fmt.Errorf("%s error pushing cloud config to BOSH: %s", res.Status, sbody)
+					}
+				}
 			}
 		} else {
 			e = err
