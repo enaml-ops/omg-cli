@@ -36,6 +36,8 @@ const (
 	concourseDatabaseStorageType string = "DATABASE_STORAGE_TYPE"
 	concoursePostgresqlDbPwd     string = "POSTGRESQL_DB_PWD"
 	cloudConfigYml               string = "CLOUD_CONFIG_YML"
+	remoteStemcellURL            string = "REMOTE_STEMCELL_URL"
+	remoteStemcellSHA            string = "REMOTE_STEMCELL_SHA"
 )
 
 func getFlag(input string) (flag string) {
@@ -136,6 +138,14 @@ func generateFlags() (flags []cli.Flag) {
 		cloudConfigYml: flagBucket{
 			Desc:   "location of cloud config yml",
 			EnvVar: cloudConfigYml,
+		},
+		remoteStemcellURL: flagBucket{
+			Desc:   "url to the remote stemcell you wish to use.",
+			EnvVar: remoteStemcellURL,
+		},
+		remoteStemcellSHA: flagBucket{
+			Desc:   "sha1 of the remote stemcell.",
+			EnvVar: remoteStemcellSHA,
 		},
 	}
 	for _, v := range flagList {

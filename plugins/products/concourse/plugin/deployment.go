@@ -22,6 +22,8 @@ func NewDeploymentManifest(c *cli.Context, cloudConfig []byte) enaml.DeploymentM
 	} else {
 		deployment.PostgresPassword = "dummy-postgres-password"
 	}
+	deployment.StemcellURL = c.String(getFlag(remoteStemcellURL))
+	deployment.StemcellSHA = c.String(getFlag(remoteStemcellSHA))
 	deployment.ConcoursePassword = c.String(getFlag(concoursePassword))
 	deployment.ConcourseUserName = c.String(getFlag(concourseUsername))
 	deployment.ConcourseURL = c.String(getFlag(concourseURL))

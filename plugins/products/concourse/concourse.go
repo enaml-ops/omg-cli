@@ -55,6 +55,8 @@ type Deployment struct {
 	DatabaseVMType      string
 	DatabaseStorageType string
 	CloudConfigYml      string
+	StemcellURL         string
+	StemcellSHA         string
 }
 
 //NewDeployment -
@@ -123,7 +125,7 @@ func (d *Deployment) Initialize(cloudConfig []byte) (err error) {
 	d.manifest.AddRemoteRelease(gardenReleaseName, gardenReleaseVer, gardenReleaseURL, gardenReleaseSHA)
 
 	if d.CloudConfig {
-		d.manifest.AddRemoteStemcell(stemcellName, d.StemcellAlias, stemcellVer, stemcellURL, stemcellSHA)
+		d.manifest.AddRemoteStemcell(stemcellName, d.StemcellAlias, stemcellVer, d.StemcellURL, d.StemcellSHA)
 
 	} else {
 		resourcePool := d.CreateResourcePool(d.NetworkName)
