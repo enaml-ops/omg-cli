@@ -94,7 +94,11 @@ func main() {
 			Subcommands: utils.GetProductCommands(ProductPluginsDir),
 		},
 	}
-	app.Run(os.Args)
+	err := app.Run(os.Args)
+	if err != nil {
+		fmt.Println("ERROR:", err)
+		os.Exit(1)
+	}
 }
 
 func init() {
