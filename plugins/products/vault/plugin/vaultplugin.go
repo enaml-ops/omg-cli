@@ -29,7 +29,6 @@ type Plugin struct{}
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{
 		cli.StringSliceFlag{Name: "ip", Usage: "multiple static ips for each redis leader vm"},
-		cli.IntFlag{Name: "instances", Value: 1, Usage: "the number of instances to provision"},
 		cli.StringFlag{Name: "disk-size", Value: "4096", Usage: "size of disk on VMs"},
 		cli.StringFlag{Name: "network-name", Usage: "name of your target network"},
 		cli.StringFlag{Name: "vm-size", Usage: "name of your desired vm size"},
@@ -64,7 +63,7 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	dm.AddRemoteRelease("vault", BoshVaultReleaseVer, BoshVaultReleaseURL, BoshVaultReleaseSHA)
 	dm.AddRemoteRelease("consul", BoshConsulReleaseVer, BoshConsulReleaseURL, BoshConsulReleaseSHA)
 	dm.AddRemoteStemcell(c.String("stemcell-name"), c.String("stemcell-name"), c.String("stemcell-ver"), c.String("stemcell-url"), c.String("stemcell-sha"))
-	dm.AddJob(NewVaultJob("vault", c.String("network-name"), c.String("disk-size"), c.String("vm-size"), c.Int("instances"), c.StringSlice("ip")))
+	dm.AddJob(NewVaultJob("vault", c.String("network-name"), c.String("disk-size"), c.String("vm-size"), c.StringSlice("ip")))
 	return dm.Bytes()
 }
 
@@ -141,7 +140,7 @@ func (s *Plugin) flagValidation(c *cli.Context) (err error) {
 	return
 }
 
-func NewVaultJob(name, networkName, disk, vmSize string, instances int, ips []string) (job enaml.Job) {
+func NewVaultJob(name, networkName, disk, vmSize string, ips []string) (job enaml.Job) {
 	network := enaml.Network{
 		Name:      networkName,
 		StaticIPs: ips,
@@ -160,7 +159,7 @@ func NewVaultJob(name, networkName, disk, vmSize string, instances int, ips []st
 	job = enaml.Job{
 		Name:       name,
 		Properties: properties,
-		Instances:  instances,
+		Instances:  len(ips),
 		Networks: []enaml.Network{
 			network,
 		},

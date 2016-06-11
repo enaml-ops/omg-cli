@@ -20,7 +20,6 @@ var _ = Describe("given vault Plugin", func() {
 
 	Context("when calling GetProduct while targeting an un-compatible cloud config'd bosh", func() {
 		var cloudConfigBytes []byte
-		var controlInstances = "1"
 		var controlNetName = "hello"
 		var controlDisk = "4033"
 		var controlVM = "large"
@@ -35,7 +34,6 @@ var _ = Describe("given vault Plugin", func() {
 				plgn.GetProduct([]string{
 					"appname",
 					"--disk-size", controlDisk,
-					"--instances", controlInstances,
 					"--network-name", controlNetName,
 					"--vm-size", controlVM,
 					"--ip", controlIP,
@@ -57,7 +55,6 @@ var _ = Describe("given vault Plugin", func() {
 
 	Context("when calling GetProduct w/ valid flags and matching cloud config", func() {
 		var deployment *enaml.DeploymentManifest
-		var controlInstances = "1"
 		var controlNetName = "private"
 		var controlDisk = "4033"
 		var controlVM = "medium"
@@ -68,7 +65,6 @@ var _ = Describe("given vault Plugin", func() {
 			dmBytes := plgn.GetProduct([]string{
 				"appname",
 				"--disk-size", controlDisk,
-				"--instances", controlInstances,
 				"--network-name", controlNetName,
 				"--vm-size", controlVM,
 				"--ip", controlIP,
@@ -95,7 +91,6 @@ var _ = Describe("given vault Plugin", func() {
 		It("then there should be valid flags available", func() {
 			for _, flagname := range []string{
 				"ip",
-				"instances",
 				"disk-size",
 				"network-name",
 				"vm-size",
