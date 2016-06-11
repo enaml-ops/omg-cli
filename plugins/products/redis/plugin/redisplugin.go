@@ -1,6 +1,8 @@
 package redis
 
 import (
+	"fmt"
+
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/pluginlib/product"
@@ -52,6 +54,16 @@ func (s *Plugin) GetMeta() product.Meta {
 
 func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	c := pluginutil.NewContext(args, s.GetFlags())
+
+	if err := s.flagValidation(c); err != nil {
+		lo.G.Error("invalid arguments: ", err)
+		lo.G.Panic("exiting due to invalid args")
+	}
+
+	if err := s.cloudconfigValidation(c); err != nil {
+		lo.G.Error("invalid settings for cloud config on target bosh: ", err)
+		lo.G.Panic("your deployment is not compatible with your cloud config, exiting")
+	}
 	lo.G.Debug("context", c)
 	var dm = new(enaml.DeploymentManifest)
 	dm.SetName("enaml-redis")
@@ -86,6 +98,43 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 		))
 	}
 	return dm.Bytes()
+}
+
+func (s *Plugin) cloudconfigValidation(c *cli.Context) (err error) {
+	return
+}
+
+func (s *Plugin) flagValidation(c *cli.Context) (err error) {
+	lo.G.Debug("validating given flags")
+
+	if len(c.StringSlice("leader-ip")) <= 0 {
+		err = fmt.Errorf("no `leader-ip` given")
+	}
+
+	if len(c.StringSlice("slave-ip")) <= 0 {
+		err = fmt.Errorf("no `slave-ip` given")
+	}
+
+	if len(c.String("network-name")) <= 0 {
+		err = fmt.Errorf("no `network-name` given")
+	}
+
+	if len(c.String("vm-size")) <= 0 {
+		err = fmt.Errorf("no `vm-size` given")
+	}
+
+	if len(c.String("stemcell-url")) <= 0 {
+		err = fmt.Errorf("no `stemcell-url` given")
+	}
+
+	if len(c.String("stemcell-ver")) <= 0 {
+		err = fmt.Errorf("no `stemcell-ver` given")
+	}
+
+	if len(c.String("stemcell-sha")) <= 0 {
+		err = fmt.Errorf("no `stemcell-sha` given")
+	}
+	return
 }
 
 func NewRedisJob(name, networkName, pass, disk, vmSize string, masterIPs, slaveIPs []string, instances int, jobType int) (job enaml.Job) {

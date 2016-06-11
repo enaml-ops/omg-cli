@@ -23,6 +23,14 @@ var _ = Describe("given redis Plugin", func() {
 		})
 	})
 
+	Context("when calling plugin without all required flags", func() {
+		It("then it should fail fast and give the user guidance on what is wrong", func() {
+			Ω(func() {
+				plgn.GetProduct([]string{"appname"}, []byte(``))
+			}).Should(Panic())
+		})
+	})
+
 	Context("when calling GetProduct w/ valid flags", func() {
 		var deployment *enaml.DeploymentManifest
 		var controlInstances = "1"
