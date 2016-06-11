@@ -60,7 +60,7 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 		lo.G.Panic("exiting due to invalid args")
 	}
 
-	if err := s.cloudconfigValidation(c); err != nil {
+	if err := s.cloudconfigValidation(c, enaml.NewCloudConfigManifest(cloudConfig)); err != nil {
 		lo.G.Error("invalid settings for cloud config on target bosh: ", err)
 		lo.G.Panic("your deployment is not compatible with your cloud config, exiting")
 	}
@@ -100,7 +100,47 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	return dm.Bytes()
 }
 
-func (s *Plugin) cloudconfigValidation(c *cli.Context) (err error) {
+func (s *Plugin) cloudconfigValidation(c *cli.Context, cloudConfig *enaml.CloudConfigManifest) (err error) {
+	lo.G.Debug("running cloud config validation")
+	var vmsize = c.String("vm-size")
+	var disksize = c.String("disk-size")
+	var netname = c.String("network-name")
+
+	for _, vmtype := range cloudConfig.VMTypes {
+		err = fmt.Errorf("vm size %s does not exist in cloud config. options are: %v", vmsize, cloudConfig.VMTypes)
+		if vmtype.Name == vmsize {
+			err = nil
+			break
+		}
+	}
+
+	for _, disktype := range cloudConfig.DiskTypes {
+		err = fmt.Errorf("disk size %s does not exist in cloud config. options are: %v", disksize, cloudConfig.DiskTypes)
+		if disktype.Name == disksize {
+			err = nil
+			break
+		}
+	}
+
+	for _, net := range cloudConfig.Networks {
+		err = fmt.Errorf("network %s does not exist in cloud config. options are: %v", netname, cloudConfig.Networks)
+		if net.(map[interface{}]interface{})["name"] == netname {
+			err = nil
+			break
+		}
+	}
+
+	if len(cloudConfig.VMTypes) == 0 {
+		err = fmt.Errorf("no vm sizes found in cloud config")
+	}
+
+	if len(cloudConfig.DiskTypes) == 0 {
+		err = fmt.Errorf("no disk sizes found in cloud config")
+	}
+
+	if len(cloudConfig.Networks) == 0 {
+		err = fmt.Errorf("no networks found in cloud config")
+	}
 	return
 }
 
