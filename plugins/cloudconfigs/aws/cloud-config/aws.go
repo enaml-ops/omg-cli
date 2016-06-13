@@ -30,8 +30,18 @@ var (
 	DefaultSecurityGroups []string
 )
 
-func NewAWSCloudConfig(region string, azSubnetMap map[string]string, securityGroupList []string) (awsCloudConfig *enaml.CloudConfigManifest) {
-	if err := validateFlags(region, azSubnetMap, securityGroupList); err != nil {
+type SubnetBucket struct {
+	BoshAZName string
+	Cidr string
+	Gateway string
+	DNS string
+	AWSAZName string
+	AWSSubnetName string
+	BoshReserveRange []string
+}
+
+func NewAWSCloudConfig(region string, securityGroupList []string, subnets []SubnetBucket) (awsCloudConfig *enaml.CloudConfigManifest) {
+	if err := validateFlags(region, subnets, securityGroupList); err != nil {
 		lo.G.Error(err)
 		return
 	}
@@ -39,25 +49,25 @@ func NewAWSCloudConfig(region string, azSubnetMap map[string]string, securityGro
 	Region = region
 
 	awsCloudConfig = &enaml.CloudConfigManifest{}
-	AddAZs(awsCloudConfig, azSubnetMap)
+	AddAZs(awsCloudConfig, subnets)
 	AddDisk(awsCloudConfig)
-	AddNetwork(awsCloudConfig, azSubnetMap)
+	AddNetwork(awsCloudConfig, subnets)
 	AddVMTypes(awsCloudConfig)
 
-	for azname, _ := range azSubnetMap {
-		AddCompilation(awsCloudConfig, azname, MediumVMName, PrivateNetworkName)
+	for _, azname := range subnets {
+		AddCompilation(awsCloudConfig, azname.BoshAZName, MediumVMName, PrivateNetworkName)
 		break
 	}
 	return
 }
 
-func validateFlags(region string, azSubnetMap map[string]string, securityGroupList []string) error {
+func validateFlags(region string, subnets []SubnetBucket, securityGroupList []string) error {
 
 	if len(securityGroupList) == 0 {
 		return errors.New("!!!!!!!!!!\n\nyou should give at least one security group\n\n!!!!!!!!!!!")
 	}
 
-	if len(azSubnetMap) < 1 {
+	if len(subnets) < 1 {
 		return errors.New("!!!!!!!!!!!\n\nyou have not given any subnets\n\n!!!!!!!!!!!")
 	}
 
@@ -77,12 +87,12 @@ func AddCompilation(cfg *enaml.CloudConfigManifest, az string, vmtype string, ne
 	})
 }
 
-func AddAZs(cfg *enaml.CloudConfigManifest, azSubnetMap map[string]string) {
-	for azname, _ := range azSubnetMap {
+func AddAZs(cfg *enaml.CloudConfigManifest, subnets []SubnetBucket) {
+	for _, az := range subnets {
 		cfg.AddAZ(enaml.AZ{
-			Name: azname,
+			Name: az.BoshAZName,
 			CloudProperties: awscloudproperties.AZ{
-				AvailabilityZoneName: azname,
+				AvailabilityZoneName: az.AWSAZName,
 				SecurityGroups:       DefaultSecurityGroups,
 			},
 		})
@@ -104,24 +114,24 @@ func createDiskType(name string, size int, typename string) enaml.DiskType {
 		}}
 }
 
-func AddNetwork(cfg *enaml.CloudConfigManifest, azSubnetMap map[string]string) {
-	octet1 := "10.0.0"
-	dns := octet1 + ".2"
+func AddNetwork(cfg *enaml.CloudConfigManifest, subnets []SubnetBucket) {
 	privateNetwork := enaml.NewManualNetwork(PrivateNetworkName)
 
-	for azname, subnetname := range azSubnetMap {
-		privateNetwork.AddSubnet(createSubnet(octet1, dns, azname, subnetname))
+	for _, subnet := range subnets {
+		privateNetwork.AddSubnet(createSubnet(subnet))
 	}
 	cfg.AddNetwork(privateNetwork)
 	cfg.AddNetwork(enaml.NewVIPNetwork(VIPNetworkName))
 }
 
-func createSubnet(octet, dns, azname, subnetPropertyName string) enaml.Subnet {
-	subnet := enaml.NewSubnet(octet, azname)
-	subnet.AddDNS(dns)
-	subnet.AddReserved(octet + ".1-" + octet + ".10")
+func createSubnet(subnetBucket SubnetBucket) enaml.Subnet {
+	subnet := enaml.NewSubnet(subnetBucket.Cidr, subnetBucket.Gateway, subnetBucket.AWSAZName)
+	subnet.AddDNS(subnetBucket.DNS)
+	for _, r := range subnetBucket.BoshReserveRange {
+		subnet.AddReserved(r)
+	}
 	subnet.CloudProperties = awscloudproperties.Network{
-		Subnet: subnetPropertyName,
+		Subnet: subnetBucket.AWSSubnetName,
 	}
 	return subnet
 }

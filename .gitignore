@@ -35,3 +35,7 @@ sample/
 _builds/
 _projects/
 _steps/
+*.iml
+*.ipr
+*.iws
+.idea/

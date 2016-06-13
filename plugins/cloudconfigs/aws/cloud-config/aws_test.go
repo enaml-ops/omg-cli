@@ -14,7 +14,18 @@ import (
 var _ = Describe("given CloudConfig Deployment for AWS", func() {
 	var awsConfig *enaml.CloudConfigManifest
 	BeforeEach(func() {
-		awsConfig = NewAWSCloudConfig(awscloudproperties.USWest, map[string]string{"us-east-1b": "subnet-asdfasdfa", "us-east-2c": "subnet-4444444"}, []string{"security-group-for-something-secure"})
+		subnets := []SubnetBucket{
+			SubnetBucket{
+				BoshAZName: "bosh-az1",
+				Cidr: "10.0.0.0/24",
+				Gateway: "10.0.0.1",
+				DNS: "10.1.1.1",
+				AWSAZName: "us-east-1c",
+				AWSSubnetName: "subnet-124kjlq3t",
+				BoshReserveRange: []string{"10.0.0.1-10.0.0.10"},
+			},
+		}
+		awsConfig = NewAWSCloudConfig(awscloudproperties.USWest, []string{"security-group-for-something-secure"}, subnets)
 	})
 
 	Context("when AZs are defined", func() {
