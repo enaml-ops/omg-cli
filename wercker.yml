@@ -52,6 +52,8 @@ build:
           GOOS=linux go build -o concourse-plugin-linux ./plugins/products/concourse/cmd/concourse-plugin/main.go
           GOOS=darwin go build -o vault-plugin-osx ./plugins/products/vault/cmd/vault/main.go
           GOOS=linux go build -o vault-plugin-linux ./plugins/products/vault/cmd/vault/main.go
+          GOOS=darwin go build -o redis-plugin-osx ./plugins/products/redis/cmd/redis/main.go
+          GOOS=linux go build -o redis-plugin-linux ./plugins/products/redis/cmd/redis/main.go
 
     - script:
         name: add repo to artifact
@@ -138,6 +140,18 @@ publish-release:
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: redis-plugin-linux 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: redis-plugin-osx 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
 deploy-pre-release:
   steps:
     - setup-go-workspace
@@ -215,5 +229,17 @@ deploy-pre-release:
     - github-upload-asset:
         token: $GITHUB_TOKEN
         file: vault-plugin-osx 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: redis-plugin-linux 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: redis-plugin-osx 
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
