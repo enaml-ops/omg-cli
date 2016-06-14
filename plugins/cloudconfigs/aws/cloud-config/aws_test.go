@@ -19,7 +19,7 @@ var _ = Describe("given CloudConfig Deployment for AWS", func() {
 				BoshAZName: "bosh-az1",
 				Cidr: "10.0.0.0/24",
 				Gateway: "10.0.0.1",
-				DNS: "10.1.1.1",
+				DNS: []string{"10.1.1.1"},
 				AWSAZName: "us-east-1c",
 				AWSSubnetName: "subnet-124kjlq3t",
 				BoshReserveRange: []string{"10.0.0.1-10.0.0.10"},

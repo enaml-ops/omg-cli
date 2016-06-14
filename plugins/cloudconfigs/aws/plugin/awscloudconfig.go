@@ -1,8 +1,6 @@
 package awsccplugin
 
 import (
-	"strings"
-
 	"strconv"
 
 	"github.com/codegangsta/cli"
@@ -33,7 +31,7 @@ func (s *AWSCloudConfig) GetFlags() (flags []cli.Flag) {
 		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("bosh-az-name", i), Usage: "name for bosh availablility zone in cloud config"})
 		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("cidr", i), Usage: "cidr range for the given network"})
 		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("gateway", i), Usage: "gateway for given network"})
-		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("dns", i), Usage: "dns for given network"})
+		flags = append(flags, cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("dns", i), Usage: "dns for given network"})
 		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-az-name", i), Usage: "aws az name for given network"})
 		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-subnet-name", i), Usage: "aws subnet name for given network"})
 		flags = append(flags, cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("bosh-reserve-range", i), Usage: "bosh reserve range for given network"})
@@ -46,15 +44,6 @@ func (s *AWSCloudConfig) GetMeta() cloudconfig.Meta {
 	return cloudconfig.Meta{
 		Name: "aws",
 	}
-}
-
-func parseAZSubnetSlice(azSubnetSlice []string) (azSubnetMap map[string]string) {
-	azSubnetMap = make(map[string]string)
-	for _, v := range azSubnetSlice {
-		ss := strings.SplitN(v, ":", 2)
-		azSubnetMap[ss[0]] = ss[1]
-	}
-	return
 }
 
 //GetCloudConfig - get a serialized form of AWS cloud configuration
@@ -79,7 +68,7 @@ func getSubnetBucketList(c *cli.Context) (bucket []aws.SubnetBucket) {
 			BoshAZName:       c.String(CreateFlagnameWithSuffix("bosh-az-name", i)),
 			Cidr:             c.String(CreateFlagnameWithSuffix("cidr", i)),
 			Gateway:          c.String(CreateFlagnameWithSuffix("gateway", i)),
-			DNS:              c.String(CreateFlagnameWithSuffix("dns", i)),
+			DNS:              c.StringSlice(CreateFlagnameWithSuffix("dns", i)),
 			AWSAZName:        c.String(CreateFlagnameWithSuffix("aws-az-name", i)),
 			AWSSubnetName:    c.String(CreateFlagnameWithSuffix("aws-subnet-name", i)),
 			BoshReserveRange: c.StringSlice(CreateFlagnameWithSuffix("bosh-reserve-range", i)),
@@ -95,7 +84,7 @@ func isValidSubnetBucket(bucket aws.SubnetBucket) bool {
 	return (bucket.BoshAZName != "" &&
 		bucket.Cidr != "" &&
 		bucket.Gateway != "" &&
-		bucket.DNS != "" &&
+		len(bucket.DNS) > 0 &&
 		bucket.AWSAZName != "" &&
 		bucket.AWSSubnetName != "" &&
 		len(bucket.BoshReserveRange) > 0)

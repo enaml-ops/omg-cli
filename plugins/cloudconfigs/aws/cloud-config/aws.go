@@ -34,7 +34,7 @@ type SubnetBucket struct {
 	BoshAZName string
 	Cidr string
 	Gateway string
-	DNS string
+	DNS[] string
 	AWSAZName string
 	AWSSubnetName string
 	BoshReserveRange []string
@@ -125,14 +125,19 @@ func AddNetwork(cfg *enaml.CloudConfigManifest, subnets []SubnetBucket) {
 }
 
 func createSubnet(subnetBucket SubnetBucket) enaml.Subnet {
-	subnet := enaml.NewSubnet(subnetBucket.Cidr, subnetBucket.Gateway, subnetBucket.AWSAZName)
-	subnet.AddDNS(subnetBucket.DNS)
+	subnet := enaml.NewSubnet(subnetBucket.Cidr, subnetBucket.Gateway, subnetBucket.BoshAZName)
+
+	for _, dns := range subnetBucket.DNS {
+		subnet.AddDNS(dns)
+	}
+
 	for _, r := range subnetBucket.BoshReserveRange {
 		subnet.AddReserved(r)
 	}
 	subnet.CloudProperties = awscloudproperties.Network{
 		Subnet: subnetBucket.AWSSubnetName,
 	}
+
 	return subnet
 }
 

@@ -61,6 +61,7 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 					"--cidr-1", "10.0.0.0/24",
 					"--gateway-1", "10.0.0.1",
 					"--dns-1", "10.0.0.240",
+					"--dns-1", "8.8.8.8",
 					"--aws-az-name-1", "aws-az1-blah",
 					"--aws-subnet-name-1", "my-aws-subnet-13857298354792835",
 					"--bosh-reserve-range-1", "10.0.0.1-10.0.0.10",
@@ -72,7 +73,7 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 			})
 			It("then should contain the correct number of networks and azs", func() {
 				var mynetwork = new(enaml.ManualNetwork)
-				fmt.Println(string(mycloud))
+				//fmt.Println(string(mycloud))
 				ccManifest := enaml.NewCloudConfigManifest(mycloud)
 				testNetwork, _ := yaml.Marshal(ccManifest.Networks[0])
 				yaml.Unmarshal(testNetwork, mynetwork)
@@ -80,6 +81,8 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 				azCount := len(ccManifest.AZs)
 				Ω(azCount).Should(Equal(1))
 				Ω(subnetCount).Should(Equal(1))
+				Ω(mynetwork.Subnets[0].AZ).Should(Equal("bosh-az1"))
+				Ω(len(mynetwork.Subnets[0].DNS)).Should(Equal(2))
 			})
 		})
 		Context("when GetCloudConfig is called with valid args for a multi az & network", func() {
@@ -112,7 +115,7 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 			})
 			It("then should contain the correct number of networks and azs", func() {
 				var mynetwork = new(enaml.ManualNetwork)
-				fmt.Println(string(mycloud))
+				//fmt.Println(string(mycloud))
 				ccManifest := enaml.NewCloudConfigManifest(mycloud)
 				testNetwork, _ := yaml.Marshal(ccManifest.Networks[0])
 				yaml.Unmarshal(testNetwork, mynetwork)
