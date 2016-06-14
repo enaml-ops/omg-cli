@@ -75,24 +75,29 @@ $ ./omg aws \
 *setup a cloud config*
 ```
 $ ./omg deploy-cloudconfig \
-  --bosh-url https://bosh.url.com \
-  --bosh-port 25555 \
-  --bosh-user admin \
-  --bosh-pass admin \
-  --ssl-ignore \
-  --print-manifest \
-  aws-cloudconfigplugin-osx \
-  --aws-region us-east-1 \
-  --aws-security-group bosh \
-  --bosh-az-name-1 az1 \
-  --aws-az-name-1 us-east-1c \
-  --cidr-1 10.0.0.0/22 \
-  --gateway-1 10.0.0.1 \
-  --aws-subnet-name-1 my-aws-subnet-13857298354792835 \
-  --dns-1 8.8.8.8 \
-  --bosh-reserve-range-1 10.0.0.2 \
-  --bosh-reserve-range-1 "10.0.0.48-10.0.3.254"
-
+--bosh-url https://bosh.url.com \
+--bosh-port 25555 \
+--bosh-user admin \
+--bosh-pass admin \
+--ssl-ignore \
+--print-manifest \
+aws-cloudconfigplugin-osx \
+--aws-region us-east-1 \
+--aws-security-group bosh \
+--bosh-az-name-1 z1 \
+--aws-az-name-1 us-east-1a \
+--cidr-1 10.10.0.0/24 \
+--gateway-1 10.0.0.1 \
+--aws-subnet-name-1 aws-subnet-1 \
+--dns-1 10.10.0.2 \
+--bosh-reserve-range-1 "10.10.0.3-10.10.0.25" \
+--bosh-az-name-2 z2 \
+--aws-az-name-2 us-east-1b \
+--cidr-2 10.10.64.0/24 \
+--gateway-2 10.10.64.1 \
+--aws-subnet-name-2 aws-subnet-2 \
+--dns-2 10.10.0.2 \
+--bosh-reserve-range-2 "10.10.64.3-10.10.64.25"
 ```
 
 ### bosh deployed concourse
