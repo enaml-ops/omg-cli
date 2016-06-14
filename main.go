@@ -20,8 +20,13 @@ import (
 	"github.com/xchapter7x/lo"
 )
 
+//Version of product
 var Version string
+
+// CloudConfigPluginsDir - location of cloud config plugins directory
 var CloudConfigPluginsDir = "./.plugins/cloudconfig"
+
+//ProductPluginsDir location of products plugins
 var ProductPluginsDir = "./.plugins/product"
 
 func main() {

@@ -7,7 +7,7 @@ an iaas independent plugable executable to install bosh, cloud configs and produ
 ### how we do bosh / cloud config / deployments
 composes bosh-init, enaml and plugins to create a simple cli installer
 
-## download here: 
+## download here:
 https://github.com/enaml-ops/omg-cli/releases/latest
 
 ## install bosh on aws
@@ -75,15 +75,24 @@ $ ./omg aws \
 *setup a cloud config*
 ```
 $ ./omg deploy-cloudconfig \
---bosh-url https://bosh.url.com \
---bosh-port 25555 \
---bosh-user admin \
---bosh-pass admin \
---ssl-ignore \
-aws-cloudconfigplugin-osx \
---az-subnet-map us-east-1c:subnet-123456 \
---region us-east-1 \
---security-group bosh
+  --bosh-url https://bosh.url.com \
+  --bosh-port 25555 \
+  --bosh-user admin \
+  --bosh-pass admin \
+  --ssl-ignore \
+  --print-manifest \
+  aws-cloudconfigplugin-osx \
+  --aws-region us-east-1 \
+  --aws-security-group bosh \
+  --bosh-az-name-1 az1 \
+  --aws-az-name-1 us-east-1c \
+  --cidr-1 10.0.0.0/22 \
+  --gateway-1 10.0.0.1 \
+  --aws-subnet-name-1 my-aws-subnet-13857298354792835 \
+  --dns-1 8.8.8.8 \
+  --bosh-reserve-range-1 10.0.0.2 \
+  --bosh-reserve-range-1 "10.0.0.48-10.0.3.254"
+
 ```
 
 ### bosh deployed concourse
@@ -93,7 +102,7 @@ aws-cloudconfigplugin-osx \
 # otherwise this will be automatically uploaded via omg-cli
 $ bosh upload release https://bosh.io/d/github.com/concourse/concourse?v=1.0.1
 $ bosh upload release https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.337.0
-$ bosh upload stemcell https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3232.4 
+$ bosh upload stemcell https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3232.4
 
 $ ./omg deploy-product \
 --bosh-url https://bosh.url.com \
@@ -117,4 +126,3 @@ concourse-plugin-osx \
 --postgresql-db-pwd secret \
 --database-storage-type medium
 ```
-

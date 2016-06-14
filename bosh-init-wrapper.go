@@ -23,6 +23,7 @@ import (
 
 const mainLogTag = "main"
 
+// BoshInitDeploy ...
 func BoshInitDeploy(manifestPath string) {
 	logger := newLogger()
 	defer logger.HandlePanic("Main")

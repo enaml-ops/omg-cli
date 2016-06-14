@@ -2,11 +2,12 @@ package awsccplugin_test
 
 import (
 	"fmt"
+
 	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"github.com/enaml-ops/enaml"
 	"gopkg.in/yaml.v2"
 )
 
@@ -117,8 +118,8 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 				yaml.Unmarshal(testNetwork, mynetwork)
 				subnetCount := len(mynetwork.Subnets)
 				azCount := len(ccManifest.AZs)
-				Ω(azCount).Should(BeNumerically(">",1))
-				Ω(subnetCount).Should(BeNumerically(">",1))
+				Ω(azCount).Should(BeNumerically(">", 1))
+				Ω(subnetCount).Should(BeNumerically(">", 1))
 			})
 		})
 	})

@@ -3,22 +3,27 @@ package awsccplugin
 import (
 	"strings"
 
+	"strconv"
+
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
 	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	aws "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/cloud-config"
 	"github.com/xchapter7x/lo"
-	"strconv"
 )
 
+//AZCountSupported - number of supported AZ's, setting to 10 to start with.
 const AZCountSupported = 10
 
+// AWSCloudConfig --
 type AWSCloudConfig struct{}
 
+//CreateFlagnameWithSuffix - creates a CLI flag with flagname-index pattern
 func CreateFlagnameWithSuffix(name string, suffix int) (flagname string) {
 	return name + "-" + strconv.Itoa(suffix)
 }
 
+//GetFlags - Get flags associated with plugin
 func (s *AWSCloudConfig) GetFlags() (flags []cli.Flag) {
 	flags = []cli.Flag{
 		cli.StringFlag{Name: "aws-region", Usage: "aws region"},
@@ -36,6 +41,7 @@ func (s *AWSCloudConfig) GetFlags() (flags []cli.Flag) {
 	return
 }
 
+//GetMeta - Get metadata of the plugin
 func (s *AWSCloudConfig) GetMeta() cloudconfig.Meta {
 	return cloudconfig.Meta{
 		Name: "aws",
@@ -51,6 +57,7 @@ func parseAZSubnetSlice(azSubnetSlice []string) (azSubnetMap map[string]string) 
 	return
 }
 
+//GetCloudConfig - get a serialized form of AWS cloud configuration
 func (s *AWSCloudConfig) GetCloudConfig(args []string) (b []byte) {
 	var err error
 	c := pluginutil.NewContext(args, s.GetFlags())
