@@ -25,7 +25,7 @@ build:
     - script:
         name: go test
         code: |
-          go test $(glide novendor) -v -cover -race
+          LOG_LEVEL=debug go test $(glide novendor) -v -cover -race
 
     - script:
         name: set release id variable for version

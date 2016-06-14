@@ -229,6 +229,33 @@ var _ = Describe("utils", func() {
 		})
 	})
 
+	Describe("given ProcessRemoteBoshAssets", func() {
+		Context("when calling yields a task that does not complete successfully", func() {
+			var err error
+			BeforeEach(func() {
+				doer := new(enamlboshfakes.FakeHttpClientDoer)
+				body, _ := os.Open("fixtures/deployment_task_err.json")
+				doer.DoReturns(&http.Response{
+					Body: body,
+				}, nil)
+				err = ProcessRemoteBoshAssets(
+					&enaml.DeploymentManifest{
+						Stemcells: []enaml.Stemcell{
+							enaml.Stemcell{URL: "blah", SHA1: "blahblahbleeblu"},
+						},
+					},
+					enamlbosh.NewClient("user", "pass", "https://192.168.1.1", 25555),
+					doer,
+					false,
+				)
+			})
+
+			It("then we should return an error", func() {
+				Ω(err).Should(HaveOccurred())
+			})
+		})
+	})
+
 	Describe("given a ProcessProductBytes function", func() {
 		var (
 			printManifest  = true
@@ -246,7 +273,15 @@ var _ = Describe("utils", func() {
 					Body: body,
 				}, nil)
 				task, err = ProcessProductBytes(
-					new(enaml.DeploymentManifest).Bytes(), deployManifest, "user", "pass", "https://192.168.1.1", 25555, doer, false)
+					new(enaml.DeploymentManifest).Bytes(),
+					deployManifest,
+					"user",
+					"pass",
+					"https://192.168.1.1",
+					25555,
+					doer,
+					false,
+				)
 			})
 			It("Then it should deploy the given manifest bytes", func() {
 				Ω(err).ShouldNot(HaveOccurred())

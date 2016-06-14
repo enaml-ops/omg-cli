@@ -106,20 +106,21 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 	} else {
 		dm := enaml.NewDeploymentManifest(manifest)
 		boshclient := enamlbosh.NewClient(user, pass, url, port)
+		ProcessRemoteBoshAssets(dm, boshclient, httpClient, true)
+		UIPrint("Uploading product deployment...")
 
-		if err = processRemoteBoshAssets(dm, boshclient, httpClient); err == nil {
-			UIPrint("Uploading product deployment...")
+		if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
+			UIPrint("upload complete.")
+			lo.G.Debug("res: ", task, err)
 
-			if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
-				UIPrint("upload complete.")
-				lo.G.Debug("res: ", task, err)
+			switch task.State {
+			case enamlbosh.StatusCancelled, enamlbosh.StatusError:
+				err = fmt.Errorf("task is in failed state: ", task)
 
+			default:
 				if poll {
 					err = PollTaskAndWait(task, boshclient, httpClient, -1)
 				}
-
-			} else {
-				lo.G.Error("error: ", err)
 			}
 
 		} else {
@@ -129,12 +130,22 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 	return
 }
 
-func processRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (err error) {
+func ProcessRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh.Client, httpClient HttpClientDoer, poll bool) (err error) {
+	var errStemcells error
+	var errReleases error
 	defer UIPrint("remote asset check complete.")
 	UIPrint("Checking product deployment for remote assets...")
 
-	if err = ProcessRemoteStemcells(dm.Stemcells, boshClient, httpClient, true); err == nil {
-		err = ProcessRemoteReleases(dm.Releases, boshClient, httpClient, true)
+	if errStemcells = ProcessRemoteStemcells(dm.Stemcells, boshClient, httpClient, poll); errStemcells != nil {
+		lo.G.Info("issues processing stemcell: ", errStemcells)
+	}
+
+	if errReleases = ProcessRemoteReleases(dm.Releases, boshClient, httpClient, poll); errReleases != nil {
+		lo.G.Info("issues processing release: ", errReleases)
+	}
+
+	if errReleases != nil || errStemcells != nil {
+		err = fmt.Errorf("stemcell err: %v   release err: %v", errStemcells, errReleases)
 	}
 	return
 }
@@ -151,11 +162,18 @@ func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, 
 		var task enamlbosh.BoshTask
 
 		if isRemoteStemcell(stemcell) {
+
 			if task, err = boshClient.PostRemoteStemcell(stemcell, httpClient); err == nil {
 				lo.G.Debug("task: ", task, err)
 
-				if poll {
-					err = PollTaskAndWait(task, boshClient, httpClient, -1)
+				switch task.State {
+				case enamlbosh.StatusCancelled, enamlbosh.StatusError:
+					err = fmt.Errorf("task is in failed state: ", task)
+
+				default:
+					if poll {
+						err = PollTaskAndWait(task, boshClient, httpClient, -1)
+					}
 				}
 			}
 		}
@@ -179,8 +197,14 @@ func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, htt
 			if task, err = boshClient.PostRemoteRelease(release, httpClient); err == nil {
 				lo.G.Debug("task: ", task, err)
 
-				if poll {
-					err = PollTaskAndWait(task, boshClient, httpClient, -1)
+				switch task.State {
+				case enamlbosh.StatusCancelled, enamlbosh.StatusError:
+					err = fmt.Errorf("task is in failed state: ", task)
+
+				default:
+					if poll {
+						err = PollTaskAndWait(task, boshClient, httpClient, -1)
+					}
 				}
 			}
 		}
@@ -205,6 +229,7 @@ Loop:
 
 			switch task.State {
 			case enamlbosh.StatusDone:
+				UIPrint("task state %s", task.State)
 				break Loop
 
 			case enamlbosh.StatusCancelled, enamlbosh.StatusError:
