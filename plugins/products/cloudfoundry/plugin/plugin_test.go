@@ -53,6 +53,12 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 				Ω(network.StaticIPs).Should(ConsistOf("1.0.0.1", "1.0.0.2"))
 			})
 
+			It("then it should configure the correct number of instances automatically from the count of given IPs", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				network := ig.Networks[0]
+				Ω(len(network.StaticIPs)).Should(Equal(ig.Instances))
+			})
+
 			XIt("then it should allow the user to configure the AZs", func() {
 				Ω(Plugin{}).Should(BeNil())
 			})

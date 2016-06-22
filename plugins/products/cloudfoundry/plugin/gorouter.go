@@ -12,6 +12,7 @@ import (
 
 func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 	grtr = &gorouter{
+		Instances:    len(c.StringSlice("router-ip")),
 		AZs:          c.StringSlice("az"),
 		StemcellName: c.String("stemcell-name"),
 		NetworkIPs:   c.StringSlice("router-ip"),
@@ -40,7 +41,8 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 
 func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	ig = &enaml.InstanceGroup{
-		Name: "router-partition",
+		Name:      "router-partition",
+		Instances: s.Instances,
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
 		},
