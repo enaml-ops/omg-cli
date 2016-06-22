@@ -1,11 +1,29 @@
 package cloudfoundry
 
-import "github.com/codegangsta/cli"
+import (
+	"fmt"
+
+	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/enaml"
+)
 
 func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
-	grtr = new(gorouter)
+	grtr = &gorouter{
+		NetworkName: c.String("router-network"),
+		NetworkIPs:  c.StringSlice("router-ip"),
+	}
 	if !grtr.hasValidValues() {
+		err = fmt.Errorf("invalid values in GoRouter: %v", grtr)
 		grtr = nil
+	}
+	return
+}
+
+func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
+	ig = &enaml.InstanceGroup{
+		Networks: []enaml.Network{
+			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
+		},
 	}
 	return
 }
