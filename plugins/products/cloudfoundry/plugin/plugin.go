@@ -7,9 +7,6 @@ import (
 	"github.com/enaml-ops/omg-cli/pluginlib/util"
 )
 
-type Plugin struct {
-}
-
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{}
 }
