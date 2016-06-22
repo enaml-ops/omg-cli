@@ -10,16 +10,26 @@ import (
 
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{
+		cli.StringFlag{Name: "stemcell-name", Usage: "the name of your desired stemcell"},
+		cli.StringSliceFlag{Name: "az", Usage: "list of AZ names to use"},
 		cli.StringSliceFlag{Name: "router-ip", Usage: "a list of the router ips you wish to use"},
 		cli.StringFlag{Name: "router-network", Usage: "the name of the network you wish to place your routers in"},
-		cli.StringFlag{},
-		cli.StringFlag{},
+		cli.StringFlag{Name: "router-vm-type", Usage: "the name of your desired vm size"},
+		cli.StringFlag{Name: "router-ssl-cert-file", Usage: "the file location of your go router ssl cert"},
+		cli.StringFlag{Name: "router-ssl-cert", Usage: "the go router ssl cert"},
+		cli.StringFlag{Name: "router-ssl-key-file", Usage: "the file location of your go router ssl key"},
+		cli.StringFlag{Name: "router-ssl-key", Usage: "the go router ssl key"},
+		cli.BoolFlag{Name: "router-enable-ssl", Usage: "enable or disable ssl on your routers"},
+		cli.StringFlag{Name: "nats-user", Value: "nats", Usage: "username for your nats pool"},
+		cli.StringFlag{Name: "nats-pass", Value: "nats-password", Usage: "password for your nats pool"},
+		cli.StringSliceFlag{Name: "nats-machine-ip", Usage: "ip of a nats node vm"},
+		cli.StringSliceFlag{Name: "etcd-machine-ip", Usage: "ip of a etcd node vm"},
 	}
 }
 
 func (s *Plugin) GetMeta() product.Meta {
 	return product.Meta{
-		Name: "cf-shortcut",
+		Name: "cloudfoundry",
 	}
 }
 
@@ -29,7 +39,7 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 
 	if goRouterPartition, err := NewGoRouterPartition(c); err == nil {
 		ig := goRouterPartition.ToInstanceGroup()
-		lo.G.Debug("grrrrr", ig)
+		lo.G.Debug("instance-group: ", ig)
 		dm.AddInstanceGroup(ig)
 
 	} else {

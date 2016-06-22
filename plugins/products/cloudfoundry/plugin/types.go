@@ -1,8 +1,8 @@
 package cloudfoundry
 
 import (
+	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/loggregator_trafficcontroller"
-	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nats"
 )
 
 type gorouter struct {
@@ -15,7 +15,7 @@ type gorouter struct {
 	SSLCert      string
 	SSLKey       string
 	EnableSSL    bool
-	Nats         nats.Nats
+	Nats         grtrlib.Nats
 	Loggregator  loggregator_trafficcontroller.Loggregator
 }
 type Plugin struct{}

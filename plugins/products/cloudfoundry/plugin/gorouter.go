@@ -1,19 +1,38 @@
 package cloudfoundry
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/loggregator_trafficcontroller"
 )
 
 func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 	grtr = &gorouter{
-		NetworkName: c.String("router-network"),
-		NetworkIPs:  c.StringSlice("router-ip"),
+		AZs:          c.StringSlice("az"),
+		StemcellName: c.String("stemcell-name"),
+		NetworkIPs:   c.StringSlice("router-ip"),
+		NetworkName:  c.String("router-network"),
+		VMTypeName:   c.String("router-vm-type"),
+		SSLCert:      c.String("router-ssl-cert"),
+		SSLKey:       c.String("router-ssl-key"),
+		Nats: grtrlib.Nats{
+			User:     c.String("nats-user"),
+			Password: c.String("nats-pass"),
+			Machines: c.StringSlice("nats-machine-ip"),
+		},
+		Loggregator: loggregator_trafficcontroller.Loggregator{
+			Etcd: &loggregator_trafficcontroller.Etcd{
+				Machines: c.StringSlice("etcd-machine-ip"),
+			},
+		},
 	}
 	if !grtr.hasValidValues() {
-		err = fmt.Errorf("invalid values in GoRouter: %v", grtr)
+		b, _ := json.Marshal(grtr)
+		err = fmt.Errorf("invalid values in GoRouter: %v", string(b))
 		grtr = nil
 	}
 	return
@@ -21,6 +40,7 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 
 func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	ig = &enaml.InstanceGroup{
+		Name: "router-partition",
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
 		},
