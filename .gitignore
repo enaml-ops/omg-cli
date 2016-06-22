@@ -39,3 +39,4 @@ _steps/
 *.ipr
 *.iws
 .idea/
+.vscode
