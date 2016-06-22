@@ -2,7 +2,7 @@
 #### it's kind of like an (o)ps (m)anager in (g)olang
 an iaas independent plugable executable to install bosh, cloud configs and product deployments
 
-[![wercker status](https://app.wercker.com/status/3ebf8db4be00a8cc9fb51fc669ed6026/s/master "wercker status")](https://app.wercker.com/project/bykey/3ebf8db4be00a8cc9fb51fc669ed6026)
+[![wercker status](https://app.wercker.com/status/c2ef4a65c6f9b1f4d6292529b3c6fd77/s/master "wercker status")](https://app.wercker.com/project/bykey/c2ef4a65c6f9b1f4d6292529b3c6fd77)
 
 ### how we do bosh / cloud config / deployments
 composes bosh-init, enaml and plugins to create a simple cli installer
