@@ -59,8 +59,10 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 				Ω(len(network.StaticIPs)).Should(Equal(ig.Instances))
 			})
 
-			XIt("then it should allow the user to configure the AZs", func() {
-				Ω(Plugin{}).Should(BeNil())
+			It("then it should allow the user to configure the AZs", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				Ω(len(ig.AZs)).Should(Equal(1))
+				Ω(ig.AZs[0]).Should(Equal("eastprod-1"))
 			})
 
 			XIt("then it should allow the user to configure vm-type", func() {

@@ -43,6 +43,7 @@ func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	ig = &enaml.InstanceGroup{
 		Name:      "router-partition",
 		Instances: s.Instances,
+		AZs:       s.AZs,
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
 		},
