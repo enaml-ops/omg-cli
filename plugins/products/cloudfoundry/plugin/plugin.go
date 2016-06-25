@@ -36,6 +36,9 @@ func (s *Plugin) GetMeta() product.Meta {
 func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	c := pluginutil.NewContext(args, s.GetFlags())
 	dm := enaml.NewDeploymentManifest([]byte(``))
+	dm.SetName(DeploymentName)
+	dm.AddRelease(enaml.Release{Name: CFReleaseName, Version: CFReleaseVersion})
+	dm.AddStemcell(enaml.Stemcell{OS: StemcellName, Version: StemcellVersion, Alias: StemcellAlias})
 
 	if goRouterPartition, err := NewGoRouterPartition(c); err == nil {
 		ig := goRouterPartition.ToInstanceGroup()

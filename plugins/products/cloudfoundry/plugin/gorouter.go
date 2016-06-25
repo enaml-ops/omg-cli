@@ -14,6 +14,7 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 	grtr = &gorouter{
 		Instances:    len(c.StringSlice("router-ip")),
 		AZs:          c.StringSlice("az"),
+		EnableSSL:    c.Bool("router-enable-ssl"),
 		StemcellName: c.String("stemcell-name"),
 		NetworkIPs:   c.StringSlice("router-ip"),
 		NetworkName:  c.String("router-network"),
@@ -31,6 +32,7 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 			},
 		},
 	}
+
 	if !grtr.hasValidValues() {
 		b, _ := json.Marshal(grtr)
 		err = fmt.Errorf("invalid values in GoRouter: %v", string(b))
@@ -46,6 +48,27 @@ func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 		VMType:    s.VMTypeName,
 		AZs:       s.AZs,
 		Stemcell:  s.StemcellName,
+		Jobs: []enaml.InstanceJob{
+			enaml.InstanceJob{
+				Name:    "gorouter",
+				Release: "cf",
+				Properties: &grtrlib.Gorouter{
+					RequestTimeoutInSeconds: 180,
+					Router: &grtrlib.Router{
+						EnableSsl:     s.EnableSSL,
+						SecureCookies: false,
+						Status: &grtrlib.Status{
+							User:     "router_status",
+							Password: "router-status-pass-ouaoihsdgoihasdg",
+						},
+					},
+				},
+			},
+			enaml.InstanceJob{
+				Name:    "metron_agent",
+				Release: "cf",
+			},
+		},
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
 		},

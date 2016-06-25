@@ -2,6 +2,7 @@ package cloudfoundry_test
 
 import (
 	"github.com/enaml-ops/enaml"
+
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -43,6 +44,7 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 					"--nats-machine-ip", "1.0.0.6",
 					"--etcd-machine-ip", "1.0.0.7",
 					"--etcd-machine-ip", "1.0.0.8",
+					"--router-enable-ssl",
 				}, []byte(``))
 				deploymentManifest = enaml.NewDeploymentManifest(dm)
 			})
@@ -83,12 +85,11 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 				Ω(ig.Stemcell).Should(Equal("cool-ubuntu-animal"))
 			})
 
-			XIt("then it should allow the user to configure the cert & key used", func() {
-				Ω(Plugin{}).Should(BeNil())
-			})
-
-			XIt("then it should allow the user to configure if we enable ssl", func() {
-				Ω(Plugin{}).Should(BeNil())
+			It("then it should allow the user to configure if we enable ssl", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("gorouter")
+				castedPropertiesMap := job.Properties.(map[interface{}]interface{})
+				Ω(castedPropertiesMap["router"]).Should(HaveKeyWithValue("enable_ssl", true))
 			})
 
 			XIt("then it should allow the user to configure the nats pool to use", func() {
@@ -98,6 +99,15 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 			XIt("then it should allow the user to configure the loggregator pool to use", func() {
 				Ω(Plugin{}).Should(BeNil())
 			})
+
+			XIt("then it should allow the user to configure the router user/pass", func() {
+				Ω(Plugin{}).Should(BeNil())
+			})
+
+			XIt("then it should allow the user to configure the cert & key used", func() {
+				Ω(Plugin{}).Should(BeNil())
+			})
+
 		})
 	})
 })
