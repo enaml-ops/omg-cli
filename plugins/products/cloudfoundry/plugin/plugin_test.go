@@ -77,8 +77,10 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 				Ω(network).ShouldNot(BeNil())
 			})
 
-			XIt("then it should allow the user to configure the used stemcell", func() {
-				Ω(Plugin{}).Should(BeNil())
+			It("then it should allow the user to configure the used stemcell", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				Ω(ig.Stemcell).ShouldNot(BeEmpty())
+				Ω(ig.Stemcell).Should(Equal("cool-ubuntu-animal"))
 			})
 
 			XIt("then it should allow the user to configure the cert & key used", func() {

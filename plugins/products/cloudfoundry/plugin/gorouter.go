@@ -45,6 +45,7 @@ func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 		Instances: s.Instances,
 		VMType:    s.VMTypeName,
 		AZs:       s.AZs,
+		Stemcell:  s.StemcellName,
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
 		},
