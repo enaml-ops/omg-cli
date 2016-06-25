@@ -71,8 +71,10 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 				Ω(ig.VMType).Should(Equal("blah"))
 			})
 
-			XIt("then it should allow the user to configure network to use", func() {
-				Ω(Plugin{}).Should(BeNil())
+			It("then it should allow the user to configure network to use", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				network := ig.GetNetworkByName("foundry-net")
+				Ω(network).ShouldNot(BeNil())
 			})
 
 			XIt("then it should allow the user to configure the used stemcell", func() {
