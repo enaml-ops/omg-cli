@@ -23,6 +23,10 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 		VMTypeName:   c.String("router-vm-type"),
 		SSLCert:      c.String("router-ssl-cert"),
 		SSLKey:       c.String("router-ssl-key"),
+		RouterUser:   c.String("router-user"),
+		RouterPass:   c.String("router-pass"),
+		MetronZone:   c.String("metron-zone"),
+		MetronSecret: c.String("metron-secret"),
 		Nats: grtrlib.Nats{
 			User:     c.String("nats-user"),
 			Password: c.String("nats-pass"),
@@ -43,6 +47,24 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 	return
 }
 
+func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
+	ig = &enaml.InstanceGroup{
+		Name:      "router-partition",
+		Instances: s.Instances,
+		VMType:    s.VMTypeName,
+		AZs:       s.AZs,
+		Stemcell:  s.StemcellName,
+		Jobs: []enaml.InstanceJob{
+			s.newRouterJob(),
+			s.newMetronJob(),
+		},
+		Networks: []enaml.Network{
+			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
+		},
+	}
+	return
+}
+
 func (s *gorouter) newNats() *grtrlib.Nats {
 	s.Nats.Port = natsPort
 	return &s.Nats
@@ -53,58 +75,52 @@ func (s *gorouter) newRouter() *grtrlib.Router {
 		EnableSsl:     s.EnableSSL,
 		SecureCookies: false,
 		Status: &grtrlib.Status{
-			User:     "router_status",
-			Password: "router-status-pass-ouaoihsdgoihasdg",
+			User:     s.RouterUser,
+			Password: s.RouterPass,
 		},
 	}
 }
 
-func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
-	ig = &enaml.InstanceGroup{
-		Name:      "router-partition",
-		Instances: s.Instances,
-		VMType:    s.VMTypeName,
-		AZs:       s.AZs,
-		Stemcell:  s.StemcellName,
-		Jobs: []enaml.InstanceJob{
-			enaml.InstanceJob{
-				Name:    "gorouter",
-				Release: "cf",
-				Properties: &grtrlib.Gorouter{
-					RequestTimeoutInSeconds: 180,
-					Nats:   s.newNats(),
-					Router: s.newRouter(),
-				},
-			},
-			enaml.InstanceJob{
-				Name:    "metron_agent",
-				Release: "cf",
-				Properties: &metron_agent.MetronAgent{
-					SyslogDaemonConfig: &metron_agent.SyslogDaemonConfig{
-						Transport: "tcp",
-					},
-					MetronAgent: &metron_agent.MetronAgent{
-						Zone:       "oiwehg09weh09g0pwa9ehg0waeg",
-						Deployment: DeploymentName,
-					},
-					MetronEndpoint: &metron_agent.MetronEndpoint{
-						SharedSecret: "lhkjasiodhgioashdgsadg",
-					},
-					Loggregator: &s.Loggregator,
-				},
-			},
-		},
-		Networks: []enaml.Network{
-			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
+func (s *gorouter) newRouterJob() enaml.InstanceJob {
+	return enaml.InstanceJob{
+		Name:    "gorouter",
+		Release: "cf",
+		Properties: &grtrlib.Gorouter{
+			RequestTimeoutInSeconds: 180,
+			Nats:   s.newNats(),
+			Router: s.newRouter(),
 		},
 	}
-	return
+}
+
+func (s *gorouter) newMetronJob() enaml.InstanceJob {
+	return enaml.InstanceJob{
+		Name:    "metron_agent",
+		Release: "cf",
+		Properties: &metron_agent.MetronAgent{
+			SyslogDaemonConfig: &metron_agent.SyslogDaemonConfig{
+				Transport: "tcp",
+			},
+			MetronAgent: &metron_agent.MetronAgent{
+				Zone:       s.MetronZone,
+				Deployment: DeploymentName,
+			},
+			MetronEndpoint: &metron_agent.MetronEndpoint{
+				SharedSecret: s.MetronSecret,
+			},
+			Loggregator: &s.Loggregator,
+		},
+	}
 }
 
 func (s *gorouter) hasValidValues() bool {
 	return (len(s.AZs) > 0 &&
 		s.StemcellName != "" &&
 		s.VMTypeName != "" &&
+		s.MetronZone != "" &&
+		s.MetronSecret != "" &&
+		s.RouterPass != "" &&
+		s.RouterUser != "" &&
 		s.NetworkName != "" &&
 		len(s.NetworkIPs) > 0 &&
 		s.SSLCert != "" &&

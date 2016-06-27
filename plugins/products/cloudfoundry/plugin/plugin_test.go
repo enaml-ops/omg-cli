@@ -40,6 +40,9 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 					"--router-vm-type", "blah",
 					"--router-ssl-cert", "blah",
 					"--router-ssl-key", "blah",
+					"--router-pass", "blabadebleblahblah",
+					"--metron-secret", "metronsecret",
+					"--metron-zone", "metronzoneguid",
 					"--nats-user", "nats",
 					"--nats-pass", "pass",
 					"--nats-machine-ip", "1.0.0.5",
@@ -129,19 +132,41 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 				job := ig.GetJobByName("metron_agent")
 				Ω(job.Properties).Should(
 					HaveKeyWithValue("metron_agent",
-						HaveKeyWithValue("machines", ConsistOf("1.0.0.7", "1.0.0.8"))))
+						HaveKeyWithValue("zone", Equal("not sure yet"))))
+
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("metron_agent",
+						HaveKeyWithValue("deployment", Equal(DeploymentName))))
 
 				Ω(job.Properties).Should(
 					HaveKeyWithValue("metron_endpoint",
-						HaveKeyWithValue("machines", ConsistOf("1.0.0.7", "1.0.0.8"))))
+						HaveKeyWithValue("shared_secret", Equal("not sure yet"))))
 			})
 
-			XIt("then it should allow the user to configure the router user/pass", func() {
-				Ω(Plugin{}).Should(BeNil())
+			It("then it should allow the user to configure the router user/pass", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("gorouter")
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("router",
+						HaveKeyWithValue("status",
+							HaveKeyWithValue("user", Equal("router_status")))))
+
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("router",
+						HaveKeyWithValue("status",
+							HaveKeyWithValue("password", Equal("blabadebleblahblah")))))
 			})
 
-			XIt("then it should allow the user to configure the cert & key used", func() {
-				Ω(Plugin{}).Should(BeNil())
+			XIt("then it should allow the user to configure the cert & key used from a file", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("gorouter")
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("router",
+						HaveKeyWithValue("ssl_cert", Equal("router_status"))))
+
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("router",
+						HaveKeyWithValue("ssl_key", Equal("blabadebleblahblah"))))
 			})
 		})
 	})

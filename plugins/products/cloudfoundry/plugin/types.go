@@ -17,5 +17,9 @@ type gorouter struct {
 	EnableSSL    bool
 	Nats         grtrlib.Nats
 	Loggregator  metron_agent.Loggregator
+	RouterUser   string
+	RouterPass   string
+	MetronZone   string
+	MetronSecret string
 }
 type Plugin struct{}

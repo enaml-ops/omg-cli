@@ -19,11 +19,15 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "router-ssl-cert", Usage: "the go router ssl cert"},
 		cli.StringFlag{Name: "router-ssl-key-file", Usage: "the file location of your go router ssl key"},
 		cli.StringFlag{Name: "router-ssl-key", Usage: "the go router ssl key"},
+		cli.StringFlag{Name: "router-user", Value: "router_status", Usage: "the username of the go-routers"},
+		cli.StringFlag{Name: "router-pass", Usage: "the password of the go-routers"},
 		cli.BoolFlag{Name: "router-enable-ssl", Usage: "enable or disable ssl on your routers"},
 		cli.StringFlag{Name: "nats-user", Value: "nats", Usage: "username for your nats pool"},
 		cli.StringFlag{Name: "nats-pass", Value: "nats-password", Usage: "password for your nats pool"},
 		cli.StringSliceFlag{Name: "nats-machine-ip", Usage: "ip of a nats node vm"},
 		cli.StringSliceFlag{Name: "etcd-machine-ip", Usage: "ip of a etcd node vm"},
+		cli.StringFlag{Name: "metron-zone", Usage: "zone guid for the metron agent"},
+		cli.StringFlag{Name: "metron-secret", Usage: "shared secret for the metron agent endpoint"},
 	}
 }
 
