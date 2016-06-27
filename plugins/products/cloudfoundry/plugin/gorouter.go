@@ -7,7 +7,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
-	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/loggregator_trafficcontroller"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 )
 
 const natsPort = 4222
@@ -28,8 +28,8 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 			Password: c.String("nats-pass"),
 			Machines: c.StringSlice("nats-machine-ip"),
 		},
-		Loggregator: loggregator_trafficcontroller.Loggregator{
-			Etcd: &loggregator_trafficcontroller.Etcd{
+		Loggregator: metron_agent.Loggregator{
+			Etcd: &metron_agent.Etcd{
 				Machines: c.StringSlice("etcd-machine-ip"),
 			},
 		},
@@ -79,6 +79,19 @@ func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 			enaml.InstanceJob{
 				Name:    "metron_agent",
 				Release: "cf",
+				Properties: &metron_agent.MetronAgent{
+					SyslogDaemonConfig: &metron_agent.SyslogDaemonConfig{
+						Transport: "tcp",
+					},
+					MetronAgent: &metron_agent.MetronAgent{
+						Zone:       "oiwehg09weh09g0pwa9ehg0waeg",
+						Deployment: DeploymentName,
+					},
+					MetronEndpoint: &metron_agent.MetronEndpoint{
+						SharedSecret: "lhkjasiodhgioashdgsadg",
+					},
+					Loggregator: &s.Loggregator,
+				},
 			},
 		},
 		Networks: []enaml.Network{

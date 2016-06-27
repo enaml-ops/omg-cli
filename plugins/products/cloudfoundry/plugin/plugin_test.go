@@ -91,28 +91,49 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 			It("then it should allow the user to configure if we enable ssl", func() {
 				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 				job := ig.GetJobByName("gorouter")
-				castedPropertiesMap := job.Properties.(map[interface{}]interface{})
-				Ω(castedPropertiesMap["router"]).Should(HaveKeyWithValue("enable_ssl", true))
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("router",
+						HaveKeyWithValue("enable_ssl", true)))
 			})
 
 			It("then it should allow the user to configure the nats pool to use", func() {
 				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 				job := ig.GetJobByName("gorouter")
-				castedPropertiesMap := job.Properties.(map[interface{}]interface{})
-				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("machines", ConsistOf("1.0.0.5", "1.0.0.6")))
-				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("user", "nats"))
-				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("password", "pass"))
-				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("port", 4222))
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("nats",
+						HaveKeyWithValue("machines", ConsistOf("1.0.0.5", "1.0.0.6"))))
+
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("nats",
+						HaveKeyWithValue("user", "nats")))
+
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("nats",
+						HaveKeyWithValue("password", "pass")))
+
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("nats", HaveKeyWithValue("port", 4222)))
 			})
 
-			XIt("then it should allow the user to configure the loggregator pool to use", func() {
+			It("then it should allow the user to configure the loggregator pool to use", func() {
 				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 				job := ig.GetJobByName("metron_agent")
-				castedPropertiesMap := job.Properties.(map[interface{}]interface{})
-				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("machines", ConsistOf("1.0.0.5", "1.0.0.6")))
-				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("user", "nats"))
-				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("password", "pass"))
-				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("port", 4222))
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("loggregator",
+						HaveKeyWithValue("etcd",
+							HaveKeyWithValue("machines", ConsistOf("1.0.0.7", "1.0.0.8")))))
+			})
+
+			XIt("then it should allow the user to configure the metron agent", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("metron_agent")
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("metron_agent",
+						HaveKeyWithValue("machines", ConsistOf("1.0.0.7", "1.0.0.8"))))
+
+				Ω(job.Properties).Should(
+					HaveKeyWithValue("metron_endpoint",
+						HaveKeyWithValue("machines", ConsistOf("1.0.0.7", "1.0.0.8"))))
 			})
 
 			XIt("then it should allow the user to configure the router user/pass", func() {
