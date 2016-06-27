@@ -29,6 +29,7 @@ type BoshInitConfig struct {
 	AWSSecretKey                      string
 	AWSRegion                         string
 	AWSSecurityGroups                 []string
+	AWSKeyName                        string
 	AzurePublicIP                     string
 	AzureVnet                         string
 	AzureSubnet                       string

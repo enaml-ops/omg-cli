@@ -12,7 +12,7 @@ func NewAWSBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	var awsProperty = aws_cpi.Aws{
 		AccessKeyId:           cfg.AWSAccessKeyID,
 		SecretAccessKey:       cfg.AWSSecretKey,
-		DefaultKeyName:        "bosh",
+		DefaultKeyName:        cfg.AWSKeyName,
 		DefaultSecurityGroups: cfg.AWSSecurityGroups,
 		Region:                cfg.AWSRegion,
 	}

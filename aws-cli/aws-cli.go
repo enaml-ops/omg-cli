@@ -58,6 +58,7 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "aws-elastic-ip", Value: "", Usage: "your elastic ip to assign to the bosh vm"},
 		cli.StringFlag{Name: "aws-pem-path", Value: "", Usage: "your aws pem file path"},
 		cli.StringFlag{Name: "aws-access-key", Value: "", Usage: "aws account access key"},
+		cli.StringFlag{Name: "aws-keyname", Value: "bosh", Usage: "aws keyname"},
 		cli.StringFlag{Name: "aws-secret", Value: "", Usage: "aws account secret key"},
 		cli.StringFlag{Name: "aws-region", Value: "us-east-1", Usage: "ec2 region to deploy on"},
 		cli.StringSliceFlag{Name: "aws-security-group", Value: &cli.StringSlice{"bosh"}, Usage: "this is for security groups to apply to your VM. you can add as many security group flags as you like"},
@@ -95,6 +96,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AWSAccessKeyID:        c.String("aws-access-key"),
 			AWSSecretKey:          c.String("aws-secret"),
 			AWSRegion:             c.String("aws-region"),
+			AWSKeyName:            c.String("aws-keyname"),
 			AWSSecurityGroups:     utils.ClearDefaultStringSliceValue(c.StringSlice("aws-security-group")...),
 		})
 
