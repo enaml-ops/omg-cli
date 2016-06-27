@@ -10,6 +10,8 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/loggregator_trafficcontroller"
 )
 
+const natsPort = 4222
+
 func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 	grtr = &gorouter{
 		Instances:    len(c.StringSlice("router-ip")),
@@ -41,6 +43,22 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 	return
 }
 
+func (s *gorouter) newNats() *grtrlib.Nats {
+	s.Nats.Port = natsPort
+	return &s.Nats
+}
+
+func (s *gorouter) newRouter() *grtrlib.Router {
+	return &grtrlib.Router{
+		EnableSsl:     s.EnableSSL,
+		SecureCookies: false,
+		Status: &grtrlib.Status{
+			User:     "router_status",
+			Password: "router-status-pass-ouaoihsdgoihasdg",
+		},
+	}
+}
+
 func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	ig = &enaml.InstanceGroup{
 		Name:      "router-partition",
@@ -54,14 +72,8 @@ func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 				Release: "cf",
 				Properties: &grtrlib.Gorouter{
 					RequestTimeoutInSeconds: 180,
-					Router: &grtrlib.Router{
-						EnableSsl:     s.EnableSSL,
-						SecureCookies: false,
-						Status: &grtrlib.Status{
-							User:     "router_status",
-							Password: "router-status-pass-ouaoihsdgoihasdg",
-						},
-					},
+					Nats:   s.newNats(),
+					Router: s.newRouter(),
 				},
 			},
 			enaml.InstanceJob{

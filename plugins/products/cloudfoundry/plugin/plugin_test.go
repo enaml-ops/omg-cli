@@ -1,6 +1,8 @@
 package cloudfoundry_test
 
 import (
+	"fmt"
+
 	"github.com/enaml-ops/enaml"
 
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
@@ -46,6 +48,7 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 					"--etcd-machine-ip", "1.0.0.8",
 					"--router-enable-ssl",
 				}, []byte(``))
+				fmt.Println(string(dm))
 				deploymentManifest = enaml.NewDeploymentManifest(dm)
 			})
 			It("then it should allow the user to configure the router IPs", func() {
@@ -92,12 +95,24 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 				Ω(castedPropertiesMap["router"]).Should(HaveKeyWithValue("enable_ssl", true))
 			})
 
-			XIt("then it should allow the user to configure the nats pool to use", func() {
-				Ω(Plugin{}).Should(BeNil())
+			It("then it should allow the user to configure the nats pool to use", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("gorouter")
+				castedPropertiesMap := job.Properties.(map[interface{}]interface{})
+				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("machines", ConsistOf("1.0.0.5", "1.0.0.6")))
+				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("user", "nats"))
+				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("password", "pass"))
+				Ω(castedPropertiesMap["nats"]).Should(HaveKeyWithValue("port", 4222))
 			})
 
 			XIt("then it should allow the user to configure the loggregator pool to use", func() {
-				Ω(Plugin{}).Should(BeNil())
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("metron_agent")
+				castedPropertiesMap := job.Properties.(map[interface{}]interface{})
+				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("machines", ConsistOf("1.0.0.5", "1.0.0.6")))
+				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("user", "nats"))
+				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("password", "pass"))
+				Ω(castedPropertiesMap["loggregator"]).Should(HaveKeyWithValue("port", 4222))
 			})
 
 			XIt("then it should allow the user to configure the router user/pass", func() {
@@ -107,7 +122,6 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 			XIt("then it should allow the user to configure the cert & key used", func() {
 				Ω(Plugin{}).Should(BeNil())
 			})
-
 		})
 	})
 })
