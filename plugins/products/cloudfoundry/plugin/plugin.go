@@ -37,6 +37,9 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "consul-agent-key", Usage: "agent key contents for consul"},
 		cli.StringFlag{Name: "consul-server-cert", Usage: "server cert contents for consul"},
 		cli.StringFlag{Name: "consul-server-key", Usage: "server key contents for consul"},
+		cli.StringFlag{Name: "syslog-address", Usage: "address of syslog server"},
+		cli.IntFlag{Name: "syslog-port", Usage: "port of syslog server"},
+		cli.StringFlag{Name: "syslog-transport", Usage: "transport to syslog server"},
 	}
 }
 

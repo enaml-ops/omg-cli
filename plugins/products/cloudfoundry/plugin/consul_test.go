@@ -16,6 +16,13 @@ var _ = Describe("Consul Partition", func() {
 				"--consul-ip", "1.0.0.1",
 				"--consul-ip", "1.0.0.2",
 				"--consul-network", "foundry-net",
+				"--metron-secret", "metronsecret",
+				"--metron-zone", "metronzoneguid",
+				"--syslog-address", "syslog-server",
+				"--syslog-port", "10601",
+				"--syslog-transport", "tcp",
+				"--etcd-machine-ip", "1.0.0.7",
+				"--etcd-machine-ip", "1.0.0.8",
 			})
 			_, err := NewConsulPartition(c)
 			Ω(err).ShouldNot(BeNil())
@@ -40,6 +47,13 @@ var _ = Describe("Consul Partition", func() {
 				"--consul-agent-key", "agent-key",
 				"--consul-server-cert", "server-cert",
 				"--consul-server-key", "server-key",
+				"--metron-secret", "metronsecret",
+				"--metron-zone", "metronzoneguid",
+				"--syslog-address", "syslog-server",
+				"--syslog-port", "10601",
+				"--syslog-transport", "tcp",
+				"--etcd-machine-ip", "1.0.0.7",
+				"--etcd-machine-ip", "1.0.0.8",
 			})
 			consul, err = NewConsulPartition(c)
 		})

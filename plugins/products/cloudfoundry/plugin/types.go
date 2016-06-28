@@ -43,5 +43,17 @@ type Consul struct {
 	AgentKey     string
 	ServerCert   string
 	ServerKey    string
+	Metron       *Metron
 }
+
+//Metron -
+type Metron struct {
+	Zone            string
+	Secret          string
+	SyslogAddress   string
+	SyslogPort      int
+	SyslogTransport string
+	Loggregator     metron_agent.Loggregator
+}
+
 type Plugin struct{}

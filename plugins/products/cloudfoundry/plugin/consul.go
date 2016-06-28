@@ -12,18 +12,22 @@ import (
 
 //NewConsulPartition -
 func NewConsulPartition(c *cli.Context) (igf InstanceGroupFactory, err error) {
-	igf = &Consul{
-		AZs:          c.StringSlice("az"),
-		StemcellName: c.String("stemcell-name"),
-		NetworkIPs:   c.StringSlice("consul-ip"),
-		NetworkName:  c.String("consul-network"),
-		VMTypeName:   c.String("consul-vm-type"),
-		EncryptKeys:  c.StringSlice("consul-encryption-key"),
-		CaCert:       c.String("consul-ca-cert"),
-		AgentCert:    c.String("consul-agent-cert"),
-		AgentKey:     c.String("consul-agent-key"),
-		ServerCert:   c.String("consul-server-cert"),
-		ServerKey:    c.String("consul-server-key"),
+	var metron *Metron
+	if metron, err = NewMetron(c); err == nil {
+		igf = &Consul{
+			AZs:          c.StringSlice("az"),
+			StemcellName: c.String("stemcell-name"),
+			NetworkIPs:   c.StringSlice("consul-ip"),
+			NetworkName:  c.String("consul-network"),
+			VMTypeName:   c.String("consul-vm-type"),
+			EncryptKeys:  c.StringSlice("consul-encryption-key"),
+			CaCert:       c.String("consul-ca-cert"),
+			AgentCert:    c.String("consul-agent-cert"),
+			AgentKey:     c.String("consul-agent-key"),
+			ServerCert:   c.String("consul-server-cert"),
+			ServerKey:    c.String("consul-server-key"),
+			Metron:       metron,
+		}
 	}
 
 	if !igf.hasValidValues() {
@@ -44,6 +48,7 @@ func (s *Consul) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 		Stemcell:  s.StemcellName,
 		Jobs: []enaml.InstanceJob{
 			s.newConsulAgentJob(),
+			s.Metron.CreateMetronJob(),
 		},
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
