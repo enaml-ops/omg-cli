@@ -26,7 +26,7 @@ func NewConsulPartition(c *cli.Context) (igf InstanceGroupFactory, err error) {
 		ServerKey:    c.String("consul-server-key"),
 	}
 
-	if !igf.hasValidValues() {
+	if !igf.HasValidValues() {
 		b, _ := yaml.Marshal(igf)
 		err = fmt.Errorf("invalid values in Consul: %v", string(b))
 		igf = nil
@@ -73,7 +73,7 @@ func (s *Consul) newConsulAgentJob() enaml.InstanceJob {
 		},
 	}
 }
-func (s *Consul) hasValidValues() bool {
+func (s *Consul) HasValidValues() bool {
 	return (len(s.AZs) > 0 &&
 		s.StemcellName != "" &&
 		s.VMTypeName != "" &&

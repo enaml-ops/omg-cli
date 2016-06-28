@@ -9,7 +9,7 @@ import (
 //InstanceGroupFactory -
 type InstanceGroupFactory interface {
 	ToInstanceGroup() (ig *enaml.InstanceGroup)
-	hasValidValues() bool
+	HasValidValues() bool
 }
 
 type gorouter struct {
