@@ -60,6 +60,10 @@ func (s *NatsPartition) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
 		},
+		Update: enaml.Update{
+			MaxInFlight: 1,
+			Serial:      true,
+		},
 	}
 	return
 }
