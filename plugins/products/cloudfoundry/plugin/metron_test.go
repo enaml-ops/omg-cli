@@ -39,7 +39,7 @@ var _ = Describe("Metron", func() {
 			Ω(err).Should(BeNil())
 		})
 		It("then it should allow the user to configure the metron agent", func() {
-			job := metron.CreateMetronJob()
+			job := metron.CreateJob()
 			Ω(job).ShouldNot(BeNil())
 			props, _ := job.Properties.(*metron_agent.MetronAgent)
 			Ω(props.MetronAgent.Zone).Should(Equal("metronzoneguid"))
