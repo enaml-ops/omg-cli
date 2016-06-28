@@ -48,7 +48,7 @@ func (s *Consul) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 		Stemcell:  s.StemcellName,
 		Jobs: []enaml.InstanceJob{
 			s.newConsulAgentJob(),
-			s.Metron.CreateMetronJob(),
+			s.Metron.CreateJob(),
 		},
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},

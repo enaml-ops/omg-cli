@@ -35,8 +35,8 @@ func NewMetron(c *cli.Context) (metron *Metron, err error) {
 	return
 }
 
-//CreateMetronJob -
-func (s *Metron) CreateMetronJob() enaml.InstanceJob {
+//CreateJob -
+func (s *Metron) CreateJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "metron_agent",
 		Release: "cf",
