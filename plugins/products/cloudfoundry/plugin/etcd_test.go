@@ -101,6 +101,11 @@ var _ = Describe("Etcd Partition", func() {
 			ig := etcdPartition.ToInstanceGroup()
 			Ω(ig.PersistentDiskType).Should(Equal("blah-disk"))
 		})
+		It("then it should have update max in-flight 1 and serial", func() {
+			ig := etcdPartition.ToInstanceGroup()
+			Ω(ig.Update.MaxInFlight).Should(Equal(1))
+			Ω(ig.Update.Serial).Should(Equal(false))
+		})
 		It("then it should then have 4 jobs", func() {
 			ig := etcdPartition.ToInstanceGroup()
 			Ω(len(ig.Jobs)).Should(Equal(4))

@@ -62,6 +62,10 @@ func (s *Etcd) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
 		},
 		PersistentDiskType: s.PersistentDiskType,
+		Update: enaml.Update{
+			MaxInFlight: 1,
+			Serial:      false,
+		},
 	}
 	return
 }
