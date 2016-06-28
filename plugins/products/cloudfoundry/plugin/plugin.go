@@ -28,6 +28,15 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringSliceFlag{Name: "etcd-machine-ip", Usage: "ip of a etcd node vm"},
 		cli.StringFlag{Name: "metron-zone", Usage: "zone guid for the metron agent"},
 		cli.StringFlag{Name: "metron-secret", Usage: "shared secret for the metron agent endpoint"},
+		cli.StringSliceFlag{Name: "consul-ip", Usage: "a list of the consul ips you wish to use"},
+		cli.StringFlag{Name: "consul-network", Usage: "the name of the network you wish to place your consuls in"},
+		cli.StringFlag{Name: "consul-vm-type", Usage: "the name of your desired vm size for consul"},
+		cli.StringSliceFlag{Name: "consul-encryption-key", Usage: "encryption key for consul"},
+		cli.StringFlag{Name: "consul-ca-cert", Usage: "ca cert contents for consul"},
+		cli.StringFlag{Name: "consul-agent-cert", Usage: "agent cert contents for consul"},
+		cli.StringFlag{Name: "consul-agent-key", Usage: "agent key contents for consul"},
+		cli.StringFlag{Name: "consul-server-cert", Usage: "server cert contents for consul"},
+		cli.StringFlag{Name: "consul-server-key", Usage: "server key contents for consul"},
 	}
 }
 
@@ -54,4 +63,10 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 		lo.G.Panic("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! invalid go router group response:", err)
 	}
 	return dm.Bytes()
+}
+
+//GetContext -
+func (s *Plugin) GetContext(args []string) (c *cli.Context) {
+	c = pluginutil.NewContext(args, s.GetFlags())
+	return
 }
