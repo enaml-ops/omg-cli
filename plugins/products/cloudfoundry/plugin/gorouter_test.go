@@ -15,15 +15,15 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 
 		Context("when the plugin is called by a operator WITHOUT a complete set of arguments", func() {
 			It("then it should return the error and exit", func() {
-				Ω(func() {
-					cf := new(Plugin)
-					cf.GetProduct([]string{
-						"cloudfoundry",
-						"--router-ip", "1.0.0.1",
-						"--router-ip", "1.0.0.2",
-						"--router-network", "foundry-net",
-					}, []byte(``))
-				}).Should(Panic())
+				cf := new(Plugin)
+				c := cf.GetContext([]string{
+					"cloudfoundry",
+					"--router-ip", "1.0.0.1",
+					"--router-ip", "1.0.0.2",
+					"--router-network", "foundry-net",
+				})
+				_, err := NewGoRouterPartition(c)
+				Ω(err).ShouldNot(BeNil())
 			})
 		})
 		Context("when the plugin is called by a operator with a complete set of arguments", func() {
