@@ -99,6 +99,11 @@ var _ = Describe("Consul Partition", func() {
 			Ω(ig.Stemcell).ShouldNot(BeEmpty())
 			Ω(ig.Stemcell).Should(Equal("cool-ubuntu-animal"))
 		})
+		It("then it should have update max in-flight 1 and serial", func() {
+			ig := consul.ToInstanceGroup()
+			Ω(ig.Update.MaxInFlight).Should(Equal(1))
+			Ω(ig.Update.Serial).Should(Equal(true))
+		})
 
 		It("then it should then have 3 jobs", func() {
 			ig := consul.ToInstanceGroup()
