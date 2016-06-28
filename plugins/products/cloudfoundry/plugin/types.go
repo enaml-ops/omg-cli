@@ -4,6 +4,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	etcdmetricslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/etcd_metrics_server"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
+	natslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nats"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 )
 
@@ -73,6 +74,19 @@ type Metron struct {
 
 //StatsdInjector -
 type StatsdInjector struct {
+
+}
+
+//NatsPartition -
+type NatsPartition struct {
+	AZs            []string
+	StemcellName   string
+	VMTypeName     string
+	NetworkName    string
+	NetworkIPs     []string
+	Nats           natslib.Nats
+	Metron         *Metron
+	StatsdInjector *StatsdInjector
 }
 
 type Plugin struct{}

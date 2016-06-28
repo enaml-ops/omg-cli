@@ -43,6 +43,8 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "etcd-network", Usage: "the name of the network you wish to place your etcd in"},
 		cli.StringFlag{Name: "etcd-vm-type", Usage: "the name of your desired vm size for etcd"},
 		cli.StringFlag{Name: "etcd-disk-type", Usage: "the name of your desired persistent disk type for etcd"},
+		cli.StringFlag{Name: "nats-network", Usage: "the name of the network you wish to place your NATS in"},
+		cli.StringFlag{Name: "nats-vm-type", Usage: "the name of your desired vm size for NATS"},
 	}
 }
 
@@ -68,6 +70,7 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 		lo.G.Error("invalid go router group response:", err)
 		lo.G.Panic("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! invalid go router group response:", err)
 	}
+
 	return dm.Bytes()
 }
 
