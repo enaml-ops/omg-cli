@@ -100,7 +100,7 @@ var _ = Describe("Consul Partition", func() {
 			Ω(ig.Stemcell).Should(Equal("cool-ubuntu-animal"))
 		})
 
-		XIt("then it should then have 3 jobs", func() {
+		It("then it should then have 3 jobs", func() {
 			ig := consul.ToInstanceGroup()
 			Ω(len(ig.Jobs)).Should(Equal(3))
 		})

@@ -32,18 +32,19 @@ type gorouter struct {
 
 //Consul -
 type Consul struct {
-	AZs          []string
-	StemcellName string
-	VMTypeName   string
-	NetworkName  string
-	NetworkIPs   []string
-	EncryptKeys  []string
-	CaCert       string
-	AgentCert    string
-	AgentKey     string
-	ServerCert   string
-	ServerKey    string
-	Metron       *Metron
+	AZs            []string
+	StemcellName   string
+	VMTypeName     string
+	NetworkName    string
+	NetworkIPs     []string
+	EncryptKeys    []string
+	CaCert         string
+	AgentCert      string
+	AgentKey       string
+	ServerCert     string
+	ServerKey      string
+	Metron         *Metron
+	StatsdInjector *StatsdInjector
 }
 
 //Metron -
@@ -54,6 +55,10 @@ type Metron struct {
 	SyslogPort      int
 	SyslogTransport string
 	Loggregator     metron_agent.Loggregator
+}
+
+//StatsdInjector -
+type StatsdInjector struct {
 }
 
 type Plugin struct{}
