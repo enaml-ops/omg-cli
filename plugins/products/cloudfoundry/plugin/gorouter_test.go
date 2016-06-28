@@ -1,8 +1,6 @@
 package cloudfoundry_test
 
 import (
-	"fmt"
-
 	"github.com/enaml-ops/enaml"
 
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
@@ -51,7 +49,6 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 					"--etcd-machine-ip", "1.0.0.8",
 					"--router-enable-ssl",
 				}, []byte(``))
-				fmt.Println(string(dm))
 				deploymentManifest = enaml.NewDeploymentManifest(dm)
 			})
 			It("then it should allow the user to configure the router IPs", func() {
