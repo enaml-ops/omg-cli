@@ -57,9 +57,13 @@ func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 		Jobs: []enaml.InstanceJob{
 			s.newRouterJob(),
 			s.newMetronJob(),
+			s.newStatsdInjectorJob(),
 		},
 		Networks: []enaml.Network{
 			enaml.Network{Name: s.NetworkName, StaticIPs: s.NetworkIPs},
+		},
+		Update: enaml.Update{
+			MaxInFlight: 1,
 		},
 	}
 	return
@@ -78,6 +82,14 @@ func (s *gorouter) newRouter() *grtrlib.Router {
 			User:     s.RouterUser,
 			Password: s.RouterPass,
 		},
+	}
+}
+
+func (s *gorouter) newStatsdInjectorJob() enaml.InstanceJob {
+	return enaml.InstanceJob{
+		Name:       "statsd-injector",
+		Release:    "cf",
+		Properties: make(map[interface{}]interface{}),
 	}
 }
 

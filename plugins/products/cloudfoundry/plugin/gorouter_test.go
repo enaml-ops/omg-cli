@@ -127,12 +127,12 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 							HaveKeyWithValue("machines", ConsistOf("1.0.0.7", "1.0.0.8")))))
 			})
 
-			XIt("then it should allow the user to configure the metron agent", func() {
+			It("then it should allow the user to configure the metron agent", func() {
 				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 				job := ig.GetJobByName("metron_agent")
 				Ω(job.Properties).Should(
 					HaveKeyWithValue("metron_agent",
-						HaveKeyWithValue("zone", Equal("not sure yet"))))
+						HaveKeyWithValue("zone", Equal("metronzoneguid"))))
 
 				Ω(job.Properties).Should(
 					HaveKeyWithValue("metron_agent",
@@ -140,7 +140,7 @@ var _ = Describe("Cloud Foundry Plugin", func() {
 
 				Ω(job.Properties).Should(
 					HaveKeyWithValue("metron_endpoint",
-						HaveKeyWithValue("shared_secret", Equal("not sure yet"))))
+						HaveKeyWithValue("shared_secret", Equal("metronsecret"))))
 			})
 
 			It("then it should allow the user to configure the router user/pass", func() {
