@@ -2,6 +2,7 @@ package cloudfoundry
 
 import (
 	"github.com/enaml-ops/enaml"
+	etcdmetricslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/etcd_metrics_server"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 )
@@ -45,6 +46,19 @@ type Consul struct {
 	ServerKey      string
 	Metron         *Metron
 	StatsdInjector *StatsdInjector
+}
+
+//Etcd -
+type Etcd struct {
+	AZs                []string
+	StemcellName       string
+	VMTypeName         string
+	NetworkName        string
+	NetworkIPs         []string
+	PersistentDiskType string
+	Metron             *Metron
+	StatsdInjector     *StatsdInjector
+	Nats               *etcdmetricslib.Nats
 }
 
 //Metron -
