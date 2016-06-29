@@ -24,13 +24,13 @@ var _ = Describe("Consul Partition", func() {
 				"--etcd-machine-ip", "1.0.0.7",
 				"--etcd-machine-ip", "1.0.0.8",
 			})
-			_, err := NewConsulPartition(c)
-			Ω(err).ShouldNot(BeNil())
+			consul := NewConsulPartition(c)
+			Ω(consul.HasValidValues()).Should(BeFalse())
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
 		var err error
-		var consul InstanceGroupFactory
+		var consul InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{
@@ -55,7 +55,7 @@ var _ = Describe("Consul Partition", func() {
 				"--etcd-machine-ip", "1.0.0.7",
 				"--etcd-machine-ip", "1.0.0.8",
 			})
-			consul, err = NewConsulPartition(c)
+			consul = NewConsulPartition(c)
 		})
 		It("then it should not return an error", func() {
 			Ω(err).Should(BeNil())
@@ -123,6 +123,5 @@ var _ = Describe("Consul Partition", func() {
 			agent := props.Agent
 			Ω(agent.Servers.Lan).Should(Equal([]string{"1.0.0.1", "1.0.0.2"}))
 		})
-
 	})
 })

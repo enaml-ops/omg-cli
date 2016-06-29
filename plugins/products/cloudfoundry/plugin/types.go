@@ -1,6 +1,7 @@
 package cloudfoundry
 
 import (
+	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	etcdmetricslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/etcd_metrics_server"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
@@ -8,11 +9,14 @@ import (
 	natslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nats"
 )
 
-//InstanceGroupFactory -
-type InstanceGroupFactory interface {
+// InstanceGrouper creates and validates InstanceGroups.
+type InstanceGrouper interface {
 	ToInstanceGroup() (ig *enaml.InstanceGroup)
 	HasValidValues() bool
 }
+
+// InstanceGrouperFactory is a function that creates InstanceGroupers from CLI args.
+type InstanceGrouperFactory func(*cli.Context) InstanceGrouper
 
 type gorouter struct {
 	Instances    int
@@ -32,7 +36,7 @@ type gorouter struct {
 	MetronSecret string
 }
 
-//Consul -
+// Consul -
 type Consul struct {
 	AZs            []string
 	StemcellName   string
@@ -127,4 +131,5 @@ type MySQLSeededDatabase struct {
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 }
+
 type Plugin struct{}

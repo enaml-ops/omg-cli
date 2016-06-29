@@ -20,7 +20,7 @@ var _ = Describe("MySQL Partition", func() {
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
 		var err error
-		var mysqlPartition InstanceGroupFactory
+		var mysqlPartition InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{

@@ -6,7 +6,13 @@ import (
 	"github.com/enaml-ops/omg-cli/pluginlib/product"
 	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/yaml.v2"
 )
+
+func init() {
+	RegisterInstanceGrouperFactory(NewGoRouterPartition)
+	RegisterInstanceGrouperFactory(NewConsulPartition)
+}
 
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{
@@ -75,14 +81,17 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	dm.AddRelease(enaml.Release{Name: CFReleaseName, Version: CFReleaseVersion})
 	dm.AddStemcell(enaml.Stemcell{OS: StemcellName, Version: StemcellVersion, Alias: StemcellAlias})
 
-	if goRouterPartition, err := NewGoRouterPartition(c); err == nil {
-		ig := goRouterPartition.ToInstanceGroup()
-		lo.G.Debug("instance-group: ", ig)
-		dm.AddInstanceGroup(ig)
-
-	} else {
-		lo.G.Error("invalid go router group response:", err)
-		lo.G.Panic("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! invalid go router group response:", err)
+	for _, factory := range factories {
+		// create and validate all registered instance groups
+		grouper := factory(c)
+		if grouper.HasValidValues() {
+			ig := grouper.ToInstanceGroup()
+			lo.G.Debug("instance-group: ", ig)
+			dm.AddInstanceGroup(ig)
+		} else {
+			b, _ := yaml.Marshal(grouper)
+			lo.G.Panic("invalid values in instance group: ", string(b))
+		}
 	}
 
 	return dm.Bytes()

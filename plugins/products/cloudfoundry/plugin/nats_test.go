@@ -24,7 +24,7 @@ var _ = Describe("Nats Partition", func() {
 
 	Context("when initialized WITH a complete set of arguments", func() {
 		var err error
-		 var natsPartition InstanceGroupFactory
+		 var natsPartition InstanceGrouper
 
 		BeforeEach(func() {
 			plugin := new(Plugin)

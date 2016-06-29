@@ -1,26 +1,24 @@
 package cloudfoundry
 
 import (
-	"fmt"
-
-	"gopkg.in/yaml.v2"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	consullib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/consul_agent"
+	"github.com/xchapter7x/lo"
 )
 
 //NewConsulPartition -
-func NewConsulPartition(c *cli.Context) (igf InstanceGroupFactory, err error) {
+func NewConsulPartition(c *cli.Context) InstanceGrouper {
 	var metron *Metron
 	var statsdInjector *StatsdInjector
+	var err error
 	if metron, err = NewMetron(c); err != nil {
-		return
+		lo.G.Error("metron init error:", err)
 	}
 	if statsdInjector, err = NewStatsdInjector(c); err != nil {
-		return
+		lo.G.Error("metron init error:", err)
 	}
-	igf = &Consul{
+	return &Consul{
 		AZs:            c.StringSlice("az"),
 		StemcellName:   c.String("stemcell-name"),
 		NetworkIPs:     c.StringSlice("consul-ip"),
@@ -35,13 +33,6 @@ func NewConsulPartition(c *cli.Context) (igf InstanceGroupFactory, err error) {
 		Metron:         metron,
 		StatsdInjector: statsdInjector,
 	}
-
-	if !igf.HasValidValues() {
-		b, _ := yaml.Marshal(igf)
-		err = fmt.Errorf("invalid values in Consul: %v", string(b))
-		igf = nil
-	}
-	return
 }
 
 //ToInstanceGroup -
@@ -89,6 +80,7 @@ func (s *Consul) newConsulAgentJob() enaml.InstanceJob {
 		},
 	}
 }
+
 func (s *Consul) HasValidValues() bool {
 	return (len(s.AZs) > 0 &&
 		s.StemcellName != "" &&

@@ -27,7 +27,7 @@ var _ = Describe("NFS Partition", func() {
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
 		var err error
-		var nfsPartition InstanceGroupFactory
+		var nfsPartition InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{

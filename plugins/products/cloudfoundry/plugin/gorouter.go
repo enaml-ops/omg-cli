@@ -1,9 +1,6 @@
 package cloudfoundry
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
@@ -12,8 +9,8 @@ import (
 
 const natsPort = 4222
 
-func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
-	grtr = &gorouter{
+func NewGoRouterPartition(c *cli.Context) InstanceGrouper {
+	return &gorouter{
 		Instances:    len(c.StringSlice("router-ip")),
 		AZs:          c.StringSlice("az"),
 		EnableSSL:    c.Bool("router-enable-ssl"),
@@ -38,13 +35,6 @@ func NewGoRouterPartition(c *cli.Context) (grtr *gorouter, err error) {
 			},
 		},
 	}
-
-	if !grtr.hasValidValues() {
-		b, _ := json.Marshal(grtr)
-		err = fmt.Errorf("invalid values in GoRouter: %v", string(b))
-		grtr = nil
-	}
-	return
 }
 
 func (s *gorouter) ToInstanceGroup() (ig *enaml.InstanceGroup) {
@@ -125,7 +115,7 @@ func (s *gorouter) newMetronJob() enaml.InstanceJob {
 	}
 }
 
-func (s *gorouter) hasValidValues() bool {
+func (s *gorouter) HasValidValues() bool {
 	return (len(s.AZs) > 0 &&
 		s.StemcellName != "" &&
 		s.VMTypeName != "" &&

@@ -30,7 +30,7 @@ var _ = Describe("Etcd Partition", func() {
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
 		var err error
-		var etcdPartition InstanceGroupFactory
+		var etcdPartition InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{

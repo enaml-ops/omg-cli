@@ -11,7 +11,7 @@ import (
 )
 
 //NewMySQLPartition -
-func NewMySQLPartition(c *cli.Context) (igf InstanceGroupFactory, err error) {
+func NewMySQLPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 	var seededDBs []MySQLSeededDatabase
 	if seededDBs, err = MySQLParseSeededDBs(c); err != nil {
 		return

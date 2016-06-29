@@ -11,3 +11,5 @@ var (
 	CFReleaseVersion = "235.5"
 	StemcellVersion  = "3232.4"
 )
+
+var factories []InstanceGrouperFactory

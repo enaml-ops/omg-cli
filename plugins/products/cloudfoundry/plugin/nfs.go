@@ -11,7 +11,7 @@ import (
 )
 
 //NewNFSPartition -
-func NewNFSPartition(c *cli.Context) (igf InstanceGroupFactory, err error) {
+func NewNFSPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 	var metron *Metron
 	var statsdInjector *StatsdInjector
 	if metron, err = NewMetron(c); err != nil {
