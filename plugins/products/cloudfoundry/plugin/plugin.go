@@ -73,6 +73,23 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "MySQL proxy API user name"},
 		cli.StringFlag{Name: "mysql-proxy-api-password", Usage: "MySQL proxy API password"},
 
+		//CC Worker Partition Flags
+		cli.StringFlag{Name: "cc-worker-vm-type", Usage: "the name of the desired vm type for cc worker"},
+		cli.StringFlag{Name: "cc-worker-network", Usage: "the name of the network for cc worker"},
+		cli.StringFlag{Name: "cc-staging-upload-user", Usage: "user name for staging upload"},
+		cli.StringFlag{Name: "cc-staging-upload-password", Usage: "password for staging upload"},
+		cli.StringFlag{Name: "cc-bulk-api-user", Usage: "user name for bulk api calls"},
+		cli.StringFlag{Name: "cc-bulk-api-password", Usage: "password for bulk api calls"},
+		cli.StringFlag{Name: "cc-db-encryption-key", Usage: "Cloud Controller DB encryption key"},
+		cli.StringFlag{Name: "cc-internal-api-user", Usage: "user name for Internal API calls"},
+		cli.StringFlag{Name: "cc-internal-api-password", Usage: "password for Internal API calls"},
+		cli.StringFlag{Name: "system-domain", Usage: "System Domain"},
+		cli.StringSliceFlag{Name: "app-domain", Usage: "Applications Domain"},
+		cli.StringFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH Access?"},
+		cli.StringFlag{Name: "nfs-server-address", Usage: "NFS Server address"},
+		cli.StringFlag{Name: "nfs-share-path", Usage: "NFS Share Path"},
+
+
 	}
 }
 

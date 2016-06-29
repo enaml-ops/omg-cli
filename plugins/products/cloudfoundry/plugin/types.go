@@ -87,6 +87,12 @@ type Metron struct {
 type StatsdInjector struct {
 }
 
+//NFSMounter -
+type NFSMounter struct {
+	NFSServerAddress  string
+	SharePath string
+}
+
 //NatsPartition -
 type NatsPartition struct {
 	AZs            []string
@@ -152,6 +158,30 @@ type MySQLProxy struct {
 	ClusterIPs       []string
 	Nats             *mysqlproxylib.Nats
 	SyslogAggregator *mysqlproxylib.SyslogAggregator
+}
+
+
+//CloudControllerWorkerPartition - Cloud Controller Worker Partition
+type CloudControllerWorkerPartition struct {
+	AZs                []string
+	VMTypeName         string
+	StemcellName       string
+	NetworkName        string
+	SystemDomain       string
+	AppDomains         []string
+	AllowedCorsDomains []string
+	AllowAppSshAccess  bool
+	Metron             *Metron
+	ConsulAgent        *ConsulAgent
+	StatsdInjector     *StatsdInjector
+	NFSMounter         *NFSMounter
+	StagingUploadUser  string
+	StagingUploadPassword string
+	BulkApiUser  string
+	BulkApiPassword string
+	DbEncryptionKey string
+	InternalApiUser string
+	InternalApiPassword string
 }
 
 type Plugin struct{}

@@ -57,6 +57,7 @@ func (s *Consul) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	return
 }
 
+//HasValidValues - Check if the datastructure has valid fields
 func (s *Consul) HasValidValues() bool {
 	return (len(s.AZs) > 0 &&
 		s.StemcellName != "" &&
