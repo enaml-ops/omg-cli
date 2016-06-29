@@ -43,14 +43,20 @@ type Consul struct {
 	VMTypeName     string
 	NetworkName    string
 	NetworkIPs     []string
-	EncryptKeys    []string
-	CaCert         string
-	AgentCert      string
-	AgentKey       string
-	ServerCert     string
-	ServerKey      string
+	ConsulAgent    *ConsulAgent
 	Metron         *Metron
 	StatsdInjector *StatsdInjector
+}
+
+//ConsulAgent
+type ConsulAgent struct {
+	EncryptKeys []string
+	CaCert      string
+	AgentCert   string
+	AgentKey    string
+	ServerCert  string
+	ServerKey   string
+	NetworkIPs  []string
 }
 
 //Etcd -
