@@ -1,13 +1,28 @@
 package cloudfoundry
 
 import (
+	"io/ioutil"
+
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
+	"github.com/xchapter7x/lo"
 )
 
 const natsPort = 4222
+
+func loadSSLFromContext(c *cli.Context, strFlag, fileFlag string) string {
+	flag := c.String(strFlag)
+	if file := c.String(fileFlag); file != "" {
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			lo.G.Panicf("error reading SSL cert/key file (%s): %s", fileFlag, err.Error())
+		}
+		flag = string(b)
+	}
+	return flag
+}
 
 func NewGoRouterPartition(c *cli.Context) InstanceGrouper {
 	return &gorouter{
@@ -18,8 +33,8 @@ func NewGoRouterPartition(c *cli.Context) InstanceGrouper {
 		NetworkIPs:   c.StringSlice("router-ip"),
 		NetworkName:  c.String("router-network"),
 		VMTypeName:   c.String("router-vm-type"),
-		SSLCert:      c.String("router-ssl-cert"),
-		SSLKey:       c.String("router-ssl-key"),
+		SSLCert:      loadSSLFromContext(c, "router-ssl-cert", "router-ssl-cert-file"),
+		SSLKey:       loadSSLFromContext(c, "router-ssl-key", "router-ssl-key-file"),
 		RouterUser:   c.String("router-user"),
 		RouterPass:   c.String("router-pass"),
 		MetronZone:   c.String("metron-zone"),
@@ -68,6 +83,8 @@ func (s *gorouter) newRouter() *grtrlib.Router {
 	return &grtrlib.Router{
 		EnableSsl:     s.EnableSSL,
 		SecureCookies: false,
+		SslKey:        s.SSLKey,
+		SslCert:       s.SSLCert,
 		Status: &grtrlib.Status{
 			User:     s.RouterUser,
 			Password: s.RouterPass,

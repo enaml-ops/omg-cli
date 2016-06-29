@@ -1,6 +1,8 @@
 package cloudfoundry_test
 
 import (
+	"io/ioutil"
+
 	"github.com/enaml-ops/enaml"
 
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
@@ -36,8 +38,8 @@ var _ = Describe("Go-Router Partition", func() {
 				"--router-ip", "1.0.0.2",
 				"--router-network", "foundry-net",
 				"--router-vm-type", "blah",
-				"--router-ssl-cert", "blah",
-				"--router-ssl-key", "blah",
+				"--router-ssl-cert-file", "fixtures/sample.cert",
+				"--router-ssl-key-file", "fixtures/sample.key",
 				"--router-pass", "blabadebleblahblah",
 				"--metron-secret", "metronsecret",
 				"--metron-zone", "metronzoneguid",
@@ -53,6 +55,7 @@ var _ = Describe("Go-Router Partition", func() {
 			deploymentManifest = new(enaml.DeploymentManifest)
 			deploymentManifest.AddInstanceGroup(gr.ToInstanceGroup())
 		})
+
 		It("then it should allow the user to configure the router IPs", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			network := ig.Networks[0]
@@ -131,16 +134,66 @@ var _ = Describe("Go-Router Partition", func() {
 			Ω(properties.Router.Status.Password).Should(Equal("blabadebleblahblah"))
 		})
 
-		XIt("then it should allow the user to configure the cert & key used from a file", func() {
+		It("then it should allow the user to configure the cert & key used from a file", func() {
+			certBytes, _ := ioutil.ReadFile("fixtures/sample.cert")
+			keyBytes, _ := ioutil.ReadFile("fixtures/sample.key")
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			job := ig.GetJobByName("gorouter")
-			Ω(job.Properties).Should(
-				HaveKeyWithValue("router",
-					HaveKeyWithValue("ssl_cert", Equal("router_status"))))
-
-			Ω(job.Properties).Should(
-				HaveKeyWithValue("router",
-					HaveKeyWithValue("ssl_key", Equal("blabadebleblahblah"))))
+			properties := job.Properties.(*grtrlib.Gorouter)
+			Ω(properties.Router.SslCert).Should(Equal(string(certBytes)))
+			Ω(properties.Router.SslKey).Should(Equal(string(keyBytes)))
 		})
+
+		Context("when the plugin is called by a operator with arguments for ssl cert/key strings & ssl cert/key files", func() {
+			var deploymentManifest *enaml.DeploymentManifest
+			BeforeEach(func() {
+				cf := new(Plugin)
+				c := cf.GetContext([]string{
+					"cloudfoundry",
+					"--router-ssl-cert", "blah",
+					"--router-ssl-key", "blahblah",
+					"--router-ssl-cert-file", "fixtures/sample.cert",
+					"--router-ssl-key-file", "fixtures/sample.key",
+				})
+				gr := NewGoRouterPartition(c)
+				deploymentManifest = new(enaml.DeploymentManifest)
+				deploymentManifest.AddInstanceGroup(gr.ToInstanceGroup())
+			})
+
+			It("then it should overwrite the given string values with the contents of the cert/key files", func() {
+				certBytes, _ := ioutil.ReadFile("fixtures/sample.cert")
+				keyBytes, _ := ioutil.ReadFile("fixtures/sample.key")
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("gorouter")
+				properties := job.Properties.(*grtrlib.Gorouter)
+				Ω(properties.Router.SslCert).Should(Equal(string(certBytes)))
+				Ω(properties.Router.SslKey).Should(Equal(string(keyBytes)))
+			})
+		})
+
+		Context("when the plugin is called by a operator with arguments for just ssl cert/key strings", func() {
+			var deploymentManifest *enaml.DeploymentManifest
+			BeforeEach(func() {
+				cf := new(Plugin)
+				c := cf.GetContext([]string{
+					"cloudfoundry",
+					"--router-ssl-cert", "blah",
+					"--router-ssl-key", "blahblah",
+				})
+				gr := NewGoRouterPartition(c)
+				deploymentManifest = new(enaml.DeploymentManifest)
+				deploymentManifest.AddInstanceGroup(gr.ToInstanceGroup())
+			})
+
+			It("then it should allow the user to configure the cert & key used from a string flag", func() {
+				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
+				job := ig.GetJobByName("gorouter")
+				properties := job.Properties.(*grtrlib.Gorouter)
+				Ω(properties.Router.SslCert).Should(Equal("blah"))
+				Ω(properties.Router.SslKey).Should(Equal("blahblah"))
+			})
+
+		})
+
 	})
 })
