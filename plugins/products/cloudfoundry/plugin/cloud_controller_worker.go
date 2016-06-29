@@ -133,6 +133,7 @@ func (s *CloudControllerWorkerPartition) HasValidValues() bool {
 		s.Metron.Zone != "" &&
 		s.Metron.Secret != "" &&
 		s.NetworkName != "" &&
-		s.NFSMounter.NFSServerAddress != "" &&
-		s.NFSMounter.SharePath != "")
+		s.NFSMounter.hasValidValues() &&
+		s.ConsulAgent.hasValidValues())
+
 }

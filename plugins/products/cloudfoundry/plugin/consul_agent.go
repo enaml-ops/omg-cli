@@ -41,3 +41,13 @@ func (s *ConsulAgent) CreateJob() enaml.InstanceJob {
 		},
 	}
 }
+
+func (s *ConsulAgent) hasValidValues() bool {
+	return len(s.NetworkIPs) > 0 &&
+		len(s.EncryptKeys) > 0 &&
+		s.CaCert != "" &&
+		s.AgentCert != "" &&
+		s.AgentKey != "" &&
+		s.ServerCert != "" &&
+		s.ServerKey != ""
+}

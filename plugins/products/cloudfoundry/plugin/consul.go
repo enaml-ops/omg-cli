@@ -65,9 +65,5 @@ func (s *Consul) HasValidValues() bool {
 		s.NetworkName != "" &&
 		len(s.NetworkIPs) > 0 &&
 		len(s.ConsulAgent.EncryptKeys) > 0 &&
-		s.ConsulAgent.CaCert != "" &&
-		s.ConsulAgent.AgentCert != "" &&
-		s.ConsulAgent.AgentKey != "" &&
-		s.ConsulAgent.ServerCert != "" &&
-		s.ConsulAgent.ServerKey != "")
+		s.ConsulAgent.hasValidValues())
 }

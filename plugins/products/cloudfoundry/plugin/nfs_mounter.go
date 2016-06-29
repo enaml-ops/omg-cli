@@ -6,7 +6,7 @@ import (
 	nfsmounterlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nfs_mounter"
 )
 
-//NewNfsMounter -
+//NewNFSMounter - Creates a new NFS Mounter
 func NewNFSMounter(c *cli.Context) *NFSMounter {
 	return &NFSMounter{
 		NFSServerAddress: c.String("nfs-server-address"),
@@ -26,4 +26,9 @@ func (s *NFSMounter) CreateJob() enaml.InstanceJob {
 			},
 		},
 	}
+}
+
+func (s *NFSMounter) hasValidValues() bool {
+	return s.NFSServerAddress != "" &&
+		s.SharePath != ""
 }

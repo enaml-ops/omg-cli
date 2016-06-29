@@ -18,8 +18,12 @@ var _ = Describe("Cloud Controller Worker Partition", func() {
 				"cloudfoundry",
 				"--consul-ip", "1.0.0.1",
 				"--consul-ip", "1.0.0.2",
+				"--az", "az",
+				"--stemcell-name", "stemcell",
+				"--consul-encryption-key", "consulencryptionkey",
 				"--consul-ca-cert", "consul-ca-cert",
 				"--consul-agent-cert", "consul-agent-cert",
+				"--consul-agent-key", "consul-agent-key",
 				"--consul-server-cert", "consulservercert",
 				"--consul-server-key", "consulserverkey",
 				"--cc-worker-vm-type", "ccworkervmtype",
@@ -45,6 +49,9 @@ var _ = Describe("Cloud Controller Worker Partition", func() {
 
 		It("then should not be nil", func() {
 			Ω(cloudControllerWorker).ShouldNot(BeNil())
+		})
+		It("should have valid values", func() {
+			Ω(cloudControllerWorker.HasValidValues()).Should(BeTrue())
 		})
 		It("should have the name of the Network correctly set", func() {
 			igf := cloudControllerWorker.ToInstanceGroup()
