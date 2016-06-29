@@ -9,6 +9,10 @@ type Cc struct {
 */
 	BasicAuthUsername interface{} `yaml:"basic_auth_username,omitempty"`
 
+	/*BasicAuthPassword - Descr: Basic auth password for CC internal API Default: <nil>
+*/
+	BasicAuthPassword interface{} `yaml:"basic_auth_password,omitempty"`
+
 	/*ExternalPort - Descr: External port to access the Cloud Controller Default: 9022
 */
 	ExternalPort interface{} `yaml:"external_port,omitempty"`
@@ -16,9 +20,5 @@ type Cc struct {
 	/*InternalServiceHostname - Descr: Internal CC host name Default: cloud-controller-ng.service.cf.internal
 */
 	InternalServiceHostname interface{} `yaml:"internal_service_hostname,omitempty"`
-
-	/*BasicAuthPassword - Descr: Basic auth password for CC internal API Default: <nil>
-*/
-	BasicAuthPassword interface{} `yaml:"basic_auth_password,omitempty"`
 
 }

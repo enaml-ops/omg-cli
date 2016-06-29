@@ -5,17 +5,9 @@ package cc_uploader
 */
 type CcUploader struct {
 
-	/*Diego - Descr: local metron agent's port Default: 3457
+	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
-	Diego *Diego `yaml:"diego,omitempty"`
-
-	/*ConsulAgentPort - Descr: local consul agent's port Default: 8500
-*/
-	ConsulAgentPort interface{} `yaml:"consul_agent_port,omitempty"`
-
-	/*Cc - Descr: the interval between job polling requests Default: <nil>
-*/
-	Cc *Cc `yaml:"cc,omitempty"`
+	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
 
 	/*ListenAddr - Descr: Address of interface on which to serve files Default: 0.0.0.0:9090
 */
@@ -25,12 +17,16 @@ type CcUploader struct {
 */
 	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
 
+	/*Cc - Descr: the interval between job polling requests Default: <nil>
+*/
+	Cc *Cc `yaml:"cc,omitempty"`
+
 	/*LogLevel - Descr: Log level Default: info
 */
 	LogLevel interface{} `yaml:"log_level,omitempty"`
 
-	/*DropsondePort - Descr: local metron agent's port Default: 3457
+	/*Diego - Descr: Log level Default: info
 */
-	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
+	Diego *Diego `yaml:"diego,omitempty"`
 
 }

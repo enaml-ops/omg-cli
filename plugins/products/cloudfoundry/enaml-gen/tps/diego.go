@@ -5,7 +5,7 @@ package tps
 */
 type Diego struct {
 
-	/*Tps - Descr: Maximum number of requests to handle at once. Default: 200
+	/*Tps - Descr: URL of Traffic controller Default: ws://loggregator-trafficcontroller.service.cf.internal:8081
 */
 	Tps *Tps `yaml:"tps,omitempty"`
 

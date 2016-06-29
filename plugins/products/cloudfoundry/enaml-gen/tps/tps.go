@@ -5,41 +5,37 @@ package tps
 */
 type Tps struct {
 
-	/*TrafficControllerUrl - Descr: URL of Traffic controller Default: ws://loggregator-trafficcontroller.service.cf.internal:8081
+	/*Cc - Descr: Basic auth password for CC internal API Default: <nil>
 */
-	TrafficControllerUrl interface{} `yaml:"traffic_controller_url,omitempty"`
-
-	/*ConsulAgentPort - Descr: local consul agent's port Default: 8500
-*/
-	ConsulAgentPort interface{} `yaml:"consul_agent_port,omitempty"`
-
-	/*LogLevel - Descr: Log level Default: info
-*/
-	LogLevel interface{} `yaml:"log_level,omitempty"`
+	Cc *Cc `yaml:"cc,omitempty"`
 
 	/*Watcher - Descr: address at which to serve debug info Default: 0.0.0.0:17015
 */
 	Watcher *Watcher `yaml:"watcher,omitempty"`
 
+	/*Diego - Descr: URL of Traffic controller Default: ws://loggregator-trafficcontroller.service.cf.internal:8081
+*/
+	Diego *Diego `yaml:"diego,omitempty"`
+
 	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
 	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
 
-	/*Bbs - Descr: maximum number of idle http connections Default: <nil>
+	/*Bbs - Descr: PEM-encoded client key Default: <nil>
 */
 	Bbs *Bbs `yaml:"bbs,omitempty"`
 
-	/*Diego - Descr: Maximum number of requests to handle at once. Default: 200
+	/*TrafficControllerUrl - Descr: URL of Traffic controller Default: ws://loggregator-trafficcontroller.service.cf.internal:8081
 */
-	Diego *Diego `yaml:"diego,omitempty"`
+	TrafficControllerUrl interface{} `yaml:"traffic_controller_url,omitempty"`
 
-	/*Cc - Descr: Internal CC host name Default: cloud-controller-ng.service.cf.internal
-*/
-	Cc *Cc `yaml:"cc,omitempty"`
-
-	/*Listener - Descr: address at which to serve debug info Default: 0.0.0.0:17014
+	/*Listener - Descr: address at which to serve API requests Default: 0.0.0.0:1518
 */
 	Listener *Listener `yaml:"listener,omitempty"`
+
+	/*LogLevel - Descr: Log level Default: info
+*/
+	LogLevel interface{} `yaml:"log_level,omitempty"`
 
 	/*MaxInFlightRequests - Descr: Maximum number of requests to handle at once. Default: 200
 */

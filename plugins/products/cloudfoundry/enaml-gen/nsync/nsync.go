@@ -5,48 +5,44 @@ package nsync
 */
 type Nsync struct {
 
-	/*ListenAddr - Descr: Address from which NSYNC serves requests Default: 0.0.0.0:8787
+	/*ListenerDebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17006
 */
-	ListenAddr interface{} `yaml:"listen_addr,omitempty"`
-
-	/*DropsondePort - Descr: local metron agent's port Default: 3457
-*/
-	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
-
-	/*ConsulAgentPort - Descr: local consul agent's port Default: 8500
-*/
-	ConsulAgentPort interface{} `yaml:"consul_agent_port,omitempty"`
+	ListenerDebugAddr interface{} `yaml:"listener_debug_addr,omitempty"`
 
 	/*LogLevel - Descr: Log level Default: info
 */
 	LogLevel interface{} `yaml:"log_level,omitempty"`
 
-	/*Cc - Descr: basic auth password for CC bulk API Default: <nil>
-*/
-	Cc *Cc `yaml:"cc,omitempty"`
-
 	/*FileServerUrl - Descr: URL of file server Default: http://file-server.service.cf.internal:8080
 */
 	FileServerUrl interface{} `yaml:"file_server_url,omitempty"`
+
+	/*Diego - Descr: URL of file server Default: http://file-server.service.cf.internal:8080
+*/
+	Diego *Diego `yaml:"diego,omitempty"`
 
 	/*Bbs - Descr: capacity of the tls client cache Default: <nil>
 */
 	Bbs *Bbs `yaml:"bbs,omitempty"`
 
-	/*BulkerDebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17007
+	/*Cc - Descr: number of apps to fetch at once from bulk API Default: 500
 */
-	BulkerDebugAddr interface{} `yaml:"bulker_debug_addr,omitempty"`
+	Cc *Cc `yaml:"cc,omitempty"`
 
-	/*Diego - Descr: capacity of the tls client cache Default: <nil>
+	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
-	Diego *Diego `yaml:"diego,omitempty"`
+	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
+
+	/*ListenAddr - Descr: Address from which NSYNC serves requests Default: 0.0.0.0:8787
+*/
+	ListenAddr interface{} `yaml:"listen_addr,omitempty"`
 
 	/*LifecycleBundles - Descr: List of lifecycle bundles arguments for different stacks in form 'lifecycle-name:path/to/bundle' Default: [buildpack/cflinuxfs2:buildpack_app_lifecycle/buildpack_app_lifecycle.tgz buildpack/windows2012R2:windows_app_lifecycle/windows_app_lifecycle.tgz docker:docker_app_lifecycle/docker_app_lifecycle.tgz]
 */
 	LifecycleBundles interface{} `yaml:"lifecycle_bundles,omitempty"`
 
-	/*ListenerDebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17006
+	/*BulkerDebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17007
 */
-	ListenerDebugAddr interface{} `yaml:"listener_debug_addr,omitempty"`
+	BulkerDebugAddr interface{} `yaml:"bulker_debug_addr,omitempty"`
 
 }

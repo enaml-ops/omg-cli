@@ -5,12 +5,12 @@ package nsync
 */
 type Diego struct {
 
-	/*Nsync - Descr: capacity of the tls client cache Default: <nil>
-*/
-	Nsync *Nsync `yaml:"nsync,omitempty"`
-
 	/*Ssl - Descr: when connecting over https, ignore bad ssl certificates Default: false
 */
 	Ssl *Ssl `yaml:"ssl,omitempty"`
+
+	/*Nsync - Descr: URL of file server Default: http://file-server.service.cf.internal:8080
+*/
+	Nsync *Nsync `yaml:"nsync,omitempty"`
 
 }
