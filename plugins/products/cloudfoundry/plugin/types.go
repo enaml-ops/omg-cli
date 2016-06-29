@@ -3,11 +3,11 @@ package cloudfoundry
 import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	mysqlproxylib "github.com/enaml-ops/omg-cli/plugins/products/cf-mysql/enaml-gen/proxy"
 	etcdmetricslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/etcd_metrics_server"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 	natslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nats"
-	mysqlproxylib "github.com/enaml-ops/omg-cli/plugins/products/cf-mysql/enaml-gen/proxy"
 )
 
 // InstanceGrouper creates and validates InstanceGroups.
@@ -147,13 +147,11 @@ type MySQLProxy struct {
 	NetworkName      string
 	NetworkIPs       []string
 	ExternalHost     string
-	ProxyApiUsername string
-	ProxyApiPassword string
+	ApiUsername      string
+	ApiPassword      string
 	ClusterIPs       []string
-	Nats             mysqlproxylib.Nats
-	SyslogAddress    string
-	SyslogPort       int
-	SyslogTransport  string
+	Nats             *mysqlproxylib.Nats
+	SyslogAggregator *mysqlproxylib.SyslogAggregator
 }
 
 type Plugin struct{}

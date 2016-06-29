@@ -40,3 +40,4 @@ _steps/
 *.iws
 .idea/
 .vscode
+bosh-init-wrapper

@@ -65,6 +65,14 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "mysql-admin-password", Usage: "admin password for mysql"},
 		cli.StringFlag{Name: "mysql-bootstrap-username", Usage: "bootstrap username for mysql"},
 		cli.StringFlag{Name: "mysql-bootstrap-password", Usage: "bootstrap password for mysql"},
+
+		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of the mysql proxy ips you wish to use"},
+		cli.StringFlag{Name: "mysql-proxy-network", Usage: "the name of the network you wish to place your mysql proxy in"},
+		cli.StringFlag{Name: "mysql-proxy-vm-type", Usage: "the name of your desired vm size for mysql proxy"},
+		cli.StringFlag{Name: "mysql-proxy-external-host", Usage: "Host name of MySQL proxy"},
+		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "MySQL proxy API user name"},
+		cli.StringFlag{Name: "mysql-proxy-api-password", Usage: "MySQL proxy API password"},
+
 	}
 }
 
