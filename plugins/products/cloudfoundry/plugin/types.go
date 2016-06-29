@@ -7,6 +7,7 @@ import (
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 	natslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nats"
+	mysqlproxylib "github.com/enaml-ops/omg-cli/plugins/products/cf-mysql/enaml-gen/proxy"
 )
 
 // InstanceGrouper creates and validates InstanceGroups.
@@ -123,8 +124,8 @@ type MySQL struct {
 	DatabaseStartupTimeout int
 	InnodbBufferPoolSize   int
 	MaxConnections         int
-	BootrapUsername        string
-	BootrapPassword        string
+	BootstrapUsername      string
+	BootstrapPassword      string
 	SyslogAddress          string
 	SyslogPort             int
 	SyslogTransport        string
@@ -136,6 +137,23 @@ type MySQLSeededDatabase struct {
 	Name     string `yaml:"name"`
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
+}
+
+//MySQL Proxy Partition
+type MySQLProxy struct {
+	AZs              []string
+	StemcellName     string
+	VMTypeName       string
+	NetworkName      string
+	NetworkIPs       []string
+	ExternalHost     string
+	ProxyApiUsername string
+	ProxyApiPassword string
+	ClusterIPs       []string
+	Nats             mysqlproxylib.Nats
+	SyslogAddress    string
+	SyslogPort       int
+	SyslogTransport  string
 }
 
 type Plugin struct{}

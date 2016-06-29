@@ -24,8 +24,8 @@ func NewMySQLPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 		VMTypeName:             c.String("mysql-vm-type"),
 		PersistentDiskType:     c.String("mysql-disk-type"),
 		AdminPassword:          c.String("mysql-admin-password"),
-		BootrapUsername:        c.String("mysql-bootstrap-username"),
-		BootrapPassword:        c.String("mysql-bootstrap-password"),
+		BootstrapUsername:      c.String("mysql-bootstrap-username"),
+		BootstrapPassword:      c.String("mysql-bootstrap-password"),
 		DatabaseStartupTimeout: 1200,
 		InnodbBufferPoolSize:   2147483648,
 		MaxConnections:         1500,
@@ -80,8 +80,8 @@ func (s *MySQL) newMySQLJob() enaml.InstanceJob {
 			InnodbBufferPoolSize:   s.InnodbBufferPoolSize,
 			MaxConnections:         s.MaxConnections,
 			BootstrapEndpoint: &mysqllib.BootstrapEndpoint{
-				Username: s.BootrapUsername,
-				Password: s.BootrapPassword,
+				Username: s.BootstrapUsername,
+				Password: s.BootstrapPassword,
 			},
 			SeededDatabases: s.MySQLSeededDatabases,
 			SyslogAggregator: &mysqllib.SyslogAggregator{
@@ -102,6 +102,6 @@ func (s *MySQL) HasValidValues() bool {
 		len(s.NetworkIPs) > 0 &&
 		s.PersistentDiskType != "" &&
 		s.AdminPassword != "" &&
-		s.BootrapUsername != "" &&
-		s.BootrapPassword != "")
+	s.BootstrapUsername != "" &&
+	s.BootstrapPassword != "")
 }
