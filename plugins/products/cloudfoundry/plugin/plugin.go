@@ -50,6 +50,15 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "nfs-vm-type", Usage: "the name of your desired vm size for nfs"},
 		cli.StringFlag{Name: "nfs-disk-type", Usage: "the name of your desired persistent disk type for nfs"},
 		cli.StringSliceFlag{Name: "nfs-allow-from-network-cidr", Usage: "the network cidr you wish to allow connections to nfs from"},
+
+		//Mysql Flags
+		cli.StringSliceFlag{Name: "mysql-ip", Usage: "a list of the mysql ips you wish to use"},
+		cli.StringFlag{Name: "mysql-network", Usage: "the name of the network you wish to place your mysql in"},
+		cli.StringFlag{Name: "mysql-vm-type", Usage: "the name of your desired vm size for mysql"},
+		cli.StringFlag{Name: "mysql-disk-type", Usage: "the name of your desired persistent disk type for mysql"},
+		cli.StringFlag{Name: "mysql-admin-password", Usage: "admin password for mysql"},
+		cli.StringFlag{Name: "mysql-bootstrap-username", Usage: "bootstrap username for mysql"},
+		cli.StringFlag{Name: "mysql-bootstrap-password", Usage: "bootstrap password for mysql"},
 	}
 }
 

@@ -101,4 +101,30 @@ type NFS struct {
 	StatsdInjector       *StatsdInjector
 }
 
+//MySQL -
+type MySQL struct {
+	AZs                    []string
+	StemcellName           string
+	VMTypeName             string
+	NetworkName            string
+	NetworkIPs             []string
+	PersistentDiskType     string
+	AdminPassword          string
+	DatabaseStartupTimeout int
+	InnodbBufferPoolSize   int
+	MaxConnections         int
+	BootrapUsername        string
+	BootrapPassword        string
+	SyslogAddress          string
+	SyslogPort             int
+	SyslogTransport        string
+	MySQLSeededDatabases   []MySQLSeededDatabase
+}
+
+//MySQLSeededDatabase -
+type MySQLSeededDatabase struct {
+	Name     string `yaml:"name"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+}
 type Plugin struct{}
