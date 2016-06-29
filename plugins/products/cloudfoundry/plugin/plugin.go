@@ -45,6 +45,11 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "etcd-disk-type", Usage: "the name of your desired persistent disk type for etcd"},
 		cli.StringFlag{Name: "nats-network", Usage: "the name of the network you wish to place your NATS in"},
 		cli.StringFlag{Name: "nats-vm-type", Usage: "the name of your desired vm size for NATS"},
+		cli.StringSliceFlag{Name: "nfs-ip", Usage: "a list of the nfs ips you wish to use"},
+		cli.StringFlag{Name: "nfs-network", Usage: "the name of the network you wish to place your nfs in"},
+		cli.StringFlag{Name: "nfs-vm-type", Usage: "the name of your desired vm size for nfs"},
+		cli.StringFlag{Name: "nfs-disk-type", Usage: "the name of your desired persistent disk type for nfs"},
+		cli.StringSliceFlag{Name: "nfs-allow-from-network-cidr", Usage: "the network cidr you wish to allow connections to nfs from"},
 	}
 }
 
