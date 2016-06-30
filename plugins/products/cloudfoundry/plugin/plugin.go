@@ -39,10 +39,8 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 
 		cli.StringSliceFlag{Name: "router-ip", Usage: "a list of the router ips you wish to use"},
 		cli.StringFlag{Name: "router-vm-type", Usage: "the name of your desired vm size"},
-		cli.StringFlag{Name: "router-ssl-cert-file", Usage: "the file location of your go router ssl cert"},
-		cli.StringFlag{Name: "router-ssl-cert", Usage: "the go router ssl cert"},
-		cli.StringFlag{Name: "router-ssl-key-file", Usage: "the file location of your go router ssl key"},
-		cli.StringFlag{Name: "router-ssl-key", Usage: "the go router ssl key"},
+		cli.StringFlag{Name: "router-ssl-cert", Usage: "the go router ssl cert, or a filename preceded by '@'"},
+		cli.StringFlag{Name: "router-ssl-key", Usage: "the go router ssl key, or a filename preceded by '@'"},
 		cli.StringFlag{Name: "router-user", Value: "router_status", Usage: "the username of the go-routers"},
 		cli.StringFlag{Name: "router-pass", Usage: "the password of the go-routers"},
 		cli.BoolFlag{Name: "router-enable-ssl", Usage: "enable or disable ssl on your routers"},

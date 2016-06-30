@@ -38,8 +38,8 @@ var _ = Describe("Go-Router Partition", func() {
 				"--router-ip", "1.0.0.2",
 				"--network", "foundry-net",
 				"--router-vm-type", "blah",
-				"--router-ssl-cert-file", "fixtures/sample.cert",
-				"--router-ssl-key-file", "fixtures/sample.key",
+				"--router-ssl-cert", "@fixtures/sample.cert",
+				"--router-ssl-key", "@fixtures/sample.key",
 				"--router-pass", "blabadebleblahblah",
 				"--metron-secret", "metronsecret",
 				"--metron-zone", "metronzoneguid",
@@ -144,7 +144,7 @@ var _ = Describe("Go-Router Partition", func() {
 			Ω(properties.Router.SslKey).Should(Equal(string(keyBytes)))
 		})
 
-		Context("when the plugin is called by a operator with arguments for ssl cert/key strings & ssl cert/key files", func() {
+		Context("when the plugin is called by a operator with arguments for ssl cert/key strings", func() {
 			var deploymentManifest *enaml.DeploymentManifest
 			BeforeEach(func() {
 				cf := new(Plugin)
@@ -152,22 +152,18 @@ var _ = Describe("Go-Router Partition", func() {
 					"cloudfoundry",
 					"--router-ssl-cert", "blah",
 					"--router-ssl-key", "blahblah",
-					"--router-ssl-cert-file", "fixtures/sample.cert",
-					"--router-ssl-key-file", "fixtures/sample.key",
 				})
 				gr := NewGoRouterPartition(c)
 				deploymentManifest = new(enaml.DeploymentManifest)
 				deploymentManifest.AddInstanceGroup(gr.ToInstanceGroup())
 			})
 
-			It("then it should overwrite the given string values with the contents of the cert/key files", func() {
-				certBytes, _ := ioutil.ReadFile("fixtures/sample.cert")
-				keyBytes, _ := ioutil.ReadFile("fixtures/sample.key")
+			It("then it should use the provided string values directly", func() {
 				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 				job := ig.GetJobByName("gorouter")
 				properties := job.Properties.(*grtrlib.Gorouter)
-				Ω(properties.Router.SslCert).Should(Equal(string(certBytes)))
-				Ω(properties.Router.SslKey).Should(Equal(string(keyBytes)))
+				Ω(properties.Router.SslCert).Should(Equal("blah"))
+				Ω(properties.Router.SslKey).Should(Equal("blahblah"))
 			})
 		})
 

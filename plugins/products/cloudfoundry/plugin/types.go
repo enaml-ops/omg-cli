@@ -39,7 +39,6 @@ type gorouter struct {
 
 type diegoBrain struct {
 	AZs                  []string
-	Lifecycle            string
 	StemcellName         string
 	VMTypeName           string
 	PersistentDiskType   string

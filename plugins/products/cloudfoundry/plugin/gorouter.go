@@ -1,10 +1,9 @@
 package cloudfoundry
 
 import (
-	"io/ioutil"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 	"github.com/xchapter7x/lo"
@@ -12,20 +11,17 @@ import (
 
 const natsPort = 4222
 
-func loadSSLFromContext(c *cli.Context, strFlag, fileFlag string) string {
-	flag := c.String(strFlag)
-	if file := c.String(fileFlag); file != "" {
-		b, err := ioutil.ReadFile(file)
-		if err != nil {
-			lo.G.Panicf("error reading SSL cert/key file (%s): %s", fileFlag, err.Error())
-		}
-		flag = string(b)
-	}
-	return flag
-}
-
 //NewGoRouterPartition -
 func NewGoRouterPartition(c *cli.Context) InstanceGrouper {
+	cert, err := pluginutil.LoadResourceFromContext(c, "router-ssl-cert")
+	if err != nil {
+		lo.G.Panicf("router cert: %s\n", err.Error())
+	}
+	key, err := pluginutil.LoadResourceFromContext(c, "router-ssl-key")
+	if err != nil {
+		lo.G.Panicf("router key: %s\n", err.Error())
+	}
+
 	return &gorouter{
 		Instances:    len(c.StringSlice("router-ip")),
 		AZs:          c.StringSlice("az"),
@@ -34,8 +30,8 @@ func NewGoRouterPartition(c *cli.Context) InstanceGrouper {
 		NetworkIPs:   c.StringSlice("router-ip"),
 		NetworkName:  c.String("network"),
 		VMTypeName:   c.String("router-vm-type"),
-		SSLCert:      loadSSLFromContext(c, "router-ssl-cert", "router-ssl-cert-file"),
-		SSLKey:       loadSSLFromContext(c, "router-ssl-key", "router-ssl-key-file"),
+		SSLCert:      cert,
+		SSLKey:       key,
 		RouterUser:   c.String("router-user"),
 		RouterPass:   c.String("router-pass"),
 		MetronZone:   c.String("metron-zone"),
