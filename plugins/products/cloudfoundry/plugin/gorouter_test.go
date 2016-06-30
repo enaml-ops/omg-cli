@@ -192,8 +192,6 @@ var _ = Describe("Go-Router Partition", func() {
 				Ω(properties.Router.SslCert).Should(Equal("blah"))
 				Ω(properties.Router.SslKey).Should(Equal("blahblah"))
 			})
-
 		})
-
 	})
 })

@@ -37,6 +37,21 @@ type gorouter struct {
 	MetronSecret string
 }
 
+type diegoBrain struct {
+	AZs                  []string
+	Lifecycle            string
+	StemcellName         string
+	VMTypeName           string
+	PersistentDiskType   string
+	NetworkName          string
+	NetworkIPs           []string
+	AuctioneerCACert     string
+	AuctioneerServerCert string
+	AuctioneerServerKey  string
+	AuctioneerClientCert string
+	AuctioneerClientKey  string
+}
+
 // Consul -
 type Consul struct {
 	AZs            []string

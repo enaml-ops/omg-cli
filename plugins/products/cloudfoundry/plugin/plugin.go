@@ -23,11 +23,10 @@ func init() {
 	//clock_global-partition
 	RegisterInstanceGrouperFactory(NewCloudControllerWorkerPartition)
 	//uaa-partition
-	//diego_brain-partition
+	RegisterInstanceGrouperFactory(NewDiegoBrainPartition)
 	//diego_cell-partition
 	//doppler-partition
 	//loggregator_trafficcontroller-partition
-
 }
 
 //GetFlags -
@@ -113,6 +112,9 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "db-ccdb-password", Usage: "ccdb db password"},
 		cli.StringFlag{Name: "db-console-username", Usage: "console db username"},
 		cli.StringFlag{Name: "db-console-password", Usage: "console db password"},
+
+		// Diego Brain
+		cli.StringSliceFlag{Name: "diego-brain-ip", Usage: "a list of static IPs for the diego brain"},
 	}
 }
 
