@@ -7,7 +7,11 @@ import (
 )
 
 //NewConsulAgent -
-func NewConsulAgent(c *cli.Context) *ConsulAgent {
+func NewConsulAgent(c *cli.Context, server bool) *ConsulAgent {
+	var mode string
+	if server {
+		mode = "server"
+	}
 	return &ConsulAgent{
 		EncryptKeys: c.StringSlice("consul-encryption-key"),
 		CaCert:      c.String("consul-ca-cert"),
@@ -16,6 +20,7 @@ func NewConsulAgent(c *cli.Context) *ConsulAgent {
 		ServerCert:  c.String("consul-server-cert"),
 		ServerKey:   c.String("consul-server-key"),
 		NetworkIPs:  c.StringSlice("consul-ip"),
+		Mode:        mode,
 	}
 }
 
@@ -33,7 +38,7 @@ func (s *ConsulAgent) CreateJob() enaml.InstanceJob {
 			ServerKey:   s.ServerKey,
 			Agent: &consullib.Agent{
 				Domain: "cf.internal",
-				Mode:   "server",
+				Mode:   s.Mode,
 				Servers: &consullib.Servers{
 					Lan: s.NetworkIPs,
 				},
