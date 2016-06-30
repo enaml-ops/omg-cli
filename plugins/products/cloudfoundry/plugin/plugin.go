@@ -110,6 +110,8 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 
 		// Diego Brain
 		cli.StringSliceFlag{Name: "diego-brain-ip", Usage: "a list of static IPs for the diego brain"},
+		cli.StringFlag{Name: "diego-brain-vm-type", Usage: "the name of the desired vm type for the diego brain"},
+		cli.StringFlag{Name: "diego-brain-disk-type", Usage: "the name of your desired persistent disk type for the diego brain"},
 	}
 }
 

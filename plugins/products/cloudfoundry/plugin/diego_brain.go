@@ -19,20 +19,23 @@ import (
 
 func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 	return &diegoBrain{
-		AZs:          c.StringSlice("az"),
-		StemcellName: c.String("stemcell-name"),
-		NetworkName:  c.String("network"),
-		NetworkIPs:   c.StringSlice("diego-brain-ip"),
+		AZs:                c.StringSlice("az"),
+		StemcellName:       c.String("stemcell-name"),
+		NetworkName:        c.String("network"),
+		NetworkIPs:         c.StringSlice("diego-brain-ip"),
+		VMTypeName:         c.String("diego-brain-vm-type"),
+		PersistentDiskType: c.String("diego-brain-disk-type"),
 	}
 }
 
 func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 	ig := &enaml.InstanceGroup{
-		Name:      "diego_brain-partition",
-		Instances: len(d.NetworkIPs),
-		VMType:    d.VMTypeName,
-		AZs:       d.AZs,
-		Stemcell:  d.StemcellName,
+		Name:               "diego_brain-partition",
+		Instances:          len(d.NetworkIPs),
+		VMType:             d.VMTypeName,
+		AZs:                d.AZs,
+		PersistentDiskType: d.PersistentDiskType,
+		Stemcell:           d.StemcellName,
 		Networks: []enaml.Network{
 			{Name: d.NetworkName, StaticIPs: d.NetworkIPs},
 		},
@@ -58,7 +61,9 @@ func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 func (d *diegoBrain) HasValidValues() bool {
 	return len(d.AZs) > 0 &&
 		d.StemcellName != "" &&
-		len(d.NetworkIPs) > 0
+		len(d.NetworkIPs) > 0 &&
+		d.VMTypeName != "" &&
+		d.NetworkName != ""
 }
 
 func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {

@@ -47,9 +47,11 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"cloudfoundry",
 				"--az", "eastprod-1",
 				"--stemcell-name", "cool-ubuntu-animal",
+				"--network", "foundry-net",
 				"--diego-brain-ip", "10.0.0.39",
 				"--diego-brain-ip", "10.0.0.40",
-				"--network", "foundry-net",
+				"--diego-brain-vm-type", "brainvmtype",
+				"--diego-brain-disk-type", "braindisktype",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -78,6 +80,16 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(len(network.StaticIPs)).Should(Equal(2))
 			Ω(network.StaticIPs[0]).Should(Equal("10.0.0.39"))
 			Ω(network.StaticIPs[1]).Should(Equal("10.0.0.40"))
+		})
+
+		It("then it should allow the user to configure the VM type", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			Ω(ig.VMType).Should(Equal("brainvmtype"))
+		})
+
+		It("then it should allow the user to configure the disk type", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			Ω(ig.PersistentDiskType).Should(Equal("braindisktype"))
 		})
 
 		It("then it should configure the correct number of instances automatically from the count of IPs", func() {
