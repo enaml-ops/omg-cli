@@ -14,12 +14,12 @@ var _ = Describe("MySQL Proxy Partition", func() {
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
 			})
-			_, err := NewMySQLProxyPartition(c)
-			Ω(err).ShouldNot(BeNil())
+			mySQLProxy := NewMySQLProxyPartition(c)
+			Ω(mySQLProxy).ShouldNot(BeNil())
+			Ω(mySQLProxy.HasValidValues()).Should(BeFalse())
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
-		var err error
 		var mysqlProxyPartition InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
@@ -44,10 +44,10 @@ var _ = Describe("MySQL Proxy Partition", func() {
 				"--nats-machine-ip", "1.0.0.5",
 				"--nats-machine-ip", "1.0.0.6",
 			})
-			mysqlProxyPartition, err = NewMySQLProxyPartition(c)
+			mysqlProxyPartition = NewMySQLProxyPartition(c)
 		})
-		It("then it should not return an error", func() {
-			Ω(err).Should(BeNil())
+		It("then it should have all valid values", func() {
+			Ω(mysqlProxyPartition.HasValidValues()).Should(BeTrue())
 		})
 		It("then it should allow the user to configure the mysql proxy IPs", func() {
 			ig := mysqlProxyPartition.ToInstanceGroup()

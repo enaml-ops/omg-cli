@@ -1,17 +1,15 @@
 package cloudfoundry
 
 import (
-	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/cf-mysql/enaml-gen/proxy"
-	"github.com/pivotal-golang/yaml"
 )
 
 //NewMySQLProxyPartition -
-func NewMySQLProxyPartition(c *cli.Context) (igf InstanceGrouper, err error) {
+func NewMySQLProxyPartition(c *cli.Context) InstanceGrouper {
 
-	igf = &MySQLProxy{
+	return &MySQLProxy{
 		AZs:          c.StringSlice("az"),
 		StemcellName: c.String("stemcell-name"),
 		NetworkIPs:   c.StringSlice("mysql-proxy-ip"),
@@ -33,12 +31,6 @@ func NewMySQLProxyPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 			Port:     4222,
 		},
 	}
-	if !igf.HasValidValues() {
-		b, _ := yaml.Marshal(igf)
-		err = fmt.Errorf("invalid values in MySQLProxy: %v", string(b))
-		igf = nil
-	}
-	return
 }
 
 //ToInstanceGroup -

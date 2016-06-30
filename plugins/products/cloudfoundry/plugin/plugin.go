@@ -12,6 +12,7 @@ import (
 func init() {
 	RegisterInstanceGrouperFactory(NewGoRouterPartition)
 	RegisterInstanceGrouperFactory(NewConsulPartition)
+	RegisterInstanceGrouperFactory(NewMySQLProxyPartition)
 }
 
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
@@ -72,7 +73,6 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "mysql-proxy-external-host", Usage: "Host name of MySQL proxy"},
 		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "MySQL proxy API user name"},
 		cli.StringFlag{Name: "mysql-proxy-api-password", Usage: "MySQL proxy API password"},
-
 	}
 }
 
