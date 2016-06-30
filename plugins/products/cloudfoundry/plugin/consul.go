@@ -57,6 +57,7 @@ func (s *Consul) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	return
 }
 
+//HasValidValues - Check if the datastructure has valid fields
 func (s *Consul) HasValidValues() bool {
 	return (len(s.AZs) > 0 &&
 		s.StemcellName != "" &&
@@ -64,9 +65,5 @@ func (s *Consul) HasValidValues() bool {
 		s.NetworkName != "" &&
 		len(s.NetworkIPs) > 0 &&
 		len(s.ConsulAgent.EncryptKeys) > 0 &&
-		s.ConsulAgent.CaCert != "" &&
-		s.ConsulAgent.AgentCert != "" &&
-		s.ConsulAgent.AgentKey != "" &&
-		s.ConsulAgent.ServerCert != "" &&
-		s.ConsulAgent.ServerKey != "")
+		s.ConsulAgent.hasValidValues())
 }

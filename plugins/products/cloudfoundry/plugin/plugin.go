@@ -67,12 +67,36 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "mysql-bootstrap-username", Usage: "bootstrap username for mysql"},
 		cli.StringFlag{Name: "mysql-bootstrap-password", Usage: "bootstrap password for mysql"},
 
-		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of the mysql proxy ips you wish to use"},
+        //MySQL proxy flags
+		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of mysql proxy ips you wish to use"},
 		cli.StringFlag{Name: "mysql-proxy-network", Usage: "the name of the network you wish to place your mysql proxy in"},
 		cli.StringFlag{Name: "mysql-proxy-vm-type", Usage: "the name of your desired vm size for mysql proxy"},
 		cli.StringFlag{Name: "mysql-proxy-external-host", Usage: "Host name of MySQL proxy"},
-		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "MySQL proxy API user name"},
-		cli.StringFlag{Name: "mysql-proxy-api-password", Usage: "MySQL proxy API password"},
+		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "Proxy API user name"},
+		cli.StringFlag{Name: "mysql-proxy-api-password", Usage: "Proxy API password"},
+
+		//CC Worker Partition Flags
+		cli.StringFlag{Name: "cc-worker-vm-type", Usage: "the name of the desired vm type for cc worker"},
+		cli.StringFlag{Name: "cc-worker-network", Usage: "the name of the network for cc worker"},
+		cli.StringFlag{Name: "cc-staging-upload-user", Usage: "user name for staging upload"},
+		cli.StringFlag{Name: "cc-staging-upload-password", Usage: "password for staging upload"},
+		cli.StringFlag{Name: "cc-bulk-api-user", Usage: "user name for bulk api calls"},
+		cli.StringFlag{Name: "cc-bulk-api-password", Usage: "password for bulk api calls"},
+		cli.StringFlag{Name: "cc-db-encryption-key", Usage: "Cloud Controller DB encryption key"},
+		cli.StringFlag{Name: "cc-internal-api-user", Usage: "user name for Internal API calls"},
+		cli.StringFlag{Name: "cc-internal-api-password", Usage: "password for Internal API calls"},
+		cli.StringFlag{Name: "system-domain", Usage: "System Domain"},
+		cli.StringSliceFlag{Name: "app-domain", Usage: "Applications Domain"},
+		cli.StringFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH Access?"},
+		cli.StringFlag{Name: "nfs-server-address", Usage: "NFS Server address"},
+		cli.StringFlag{Name: "nfs-share-path", Usage: "NFS Share Path"},
+
+		cli.StringFlag{Name: "db-uaa-username", Usage: "uaa db username"},
+		cli.StringFlag{Name: "db-uaa-password", Usage: "uaa db password"},
+		cli.StringFlag{Name: "db-ccdb-username", Usage: "ccdb db username"},
+		cli.StringFlag{Name: "db-ccdb-password", Usage: "ccdb db password"},
+		cli.StringFlag{Name: "db-console-username", Usage: "console db username"},
+		cli.StringFlag{Name: "db-console-password", Usage: "console db password"},
 	}
 }
 
