@@ -16,6 +16,8 @@ var _ = Describe("Nats Partition", func() {
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
 				"--az", "eastprod-1",
+				"--metron-secret", "metronsecret",
+				"--metron-zone", "metronzoneguid",
 			})
 			_, err := NewNatsPartition(c)
 			Ω(err).ShouldNot(BeNil())
@@ -24,7 +26,7 @@ var _ = Describe("Nats Partition", func() {
 
 	Context("when initialized WITH a complete set of arguments", func() {
 		var err error
-		 var natsPartition InstanceGrouper
+		var natsPartition InstanceGrouper
 
 		BeforeEach(func() {
 			plugin := new(Plugin)

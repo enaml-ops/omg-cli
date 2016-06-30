@@ -10,12 +10,14 @@ import (
 var _ = Describe("Metron", func() {
 	Context("when initialized WITHOUT a complete set of arguments", func() {
 		It("then it should return the error and exit", func() {
+
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
 			})
-			_, err := NewMetron(c)
-			Ω(err).ShouldNot(BeNil())
+			Ω(func() {
+				NewMetron(c)
+			}).Should(Panic())
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
@@ -33,7 +35,7 @@ var _ = Describe("Metron", func() {
 				"--etcd-machine-ip", "1.0.0.7",
 				"--etcd-machine-ip", "1.0.0.8",
 			})
-			metron, err = NewMetron(c)
+			metron = NewMetron(c)
 		})
 		It("then it should not return an error", func() {
 			Ω(err).Should(BeNil())

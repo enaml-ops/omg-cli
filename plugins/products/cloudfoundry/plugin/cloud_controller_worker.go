@@ -4,24 +4,14 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	ccworkerlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cloud_controller_worker"
-	"github.com/xchapter7x/lo"
 )
 
 //NewCloudControllerWorkerPartition - Creating a New Cloud Controller Partition
 func NewCloudControllerWorkerPartition(c *cli.Context) InstanceGrouper {
-	var metron *Metron
-	var statsdInjector *StatsdInjector
-	var consulAgent *ConsulAgent
-	var err error
-	if metron, err = NewMetron(c); err != nil {
-		lo.G.Error("metron init error:", err)
-	}
-	if statsdInjector, err = NewStatsdInjector(c); err != nil {
-		lo.G.Error("statsd init error:", err)
-	}
 
-	consulAgent = NewConsulAgent(c)
-
+	statsdInjector := NewStatsdInjector(c)
+	metron := NewMetron(c)
+	consulAgent := NewConsulAgent(c)
 	nfsMounter := NewNFSMounter(c)
 
 	return &CloudControllerWorkerPartition{
@@ -31,17 +21,17 @@ func NewCloudControllerWorkerPartition(c *cli.Context) InstanceGrouper {
 		NetworkName:           c.String("cc-worker-network"),
 		SystemDomain:          c.String("system-domain"),
 		AppDomains:            c.StringSlice("app-domain"),
-		AllowAppSshAccess:     c.Bool("allow-app-ssh-access"),
+		AllowAppSSHAccess:     c.Bool("allow-app-ssh-access"),
 		Metron:                metron,
 		ConsulAgent:           consulAgent,
 		NFSMounter:            nfsMounter,
 		StatsdInjector:        statsdInjector,
 		StagingUploadUser:     c.String("cc-staging-upload-user"),
 		StagingUploadPassword: c.String("cc-staging-upload-password"),
-		BulkApiUser:           c.String("cc-bulk-api-user"),
-		BulkApiPassword:       c.String("cc-bulk-api-password"),
-		InternalApiUser:       c.String("cc-internal-api-user"),
-		InternalApiPassword:   c.String("cc-internal-api-password"),
+		BulkAPIUser:           c.String("cc-bulk-api-user"),
+		BulkAPIPassword:       c.String("cc-bulk-api-password"),
+		InternalAPIUser:       c.String("cc-internal-api-user"),
+		InternalAPIPassword:   c.String("cc-internal-api-password"),
 		DbEncryptionKey:       c.String("cc-db-encryption-key"),
 	}
 }
@@ -82,7 +72,7 @@ func newCloudControllerWorkerJob(c *CloudControllerWorkerPartition) enaml.Instan
 			AppDomains:               c.AppDomains,
 			SystemDomainOrganization: "system",
 			Cc: &ccworkerlib.Cc{
-				AllowAppSshAccess: c.AllowAppSshAccess,
+				AllowAppSshAccess: c.AllowAppSSHAccess,
 				Buildpacks: &ccworkerlib.Buildpacks{
 					BlobstoreType: "fog",
 					FogConnection: &ccworkerlib.DefaultFogConnection{
@@ -115,10 +105,10 @@ func newCloudControllerWorkerJob(c *CloudControllerWorkerPartition) enaml.Instan
 				MaximumHealthCheckTimeout: "600",
 				StagingUploadUser:         c.StagingUploadUser,
 				StagingUploadPassword:     c.StagingUploadPassword,
-				BulkApiUser:               c.BulkApiUser,
-				BulkApiPassword:           c.BulkApiPassword,
-				InternalApiUser:           c.InternalApiUser,
-				InternalApiPassword:       c.InternalApiPassword,
+				BulkApiUser:               c.BulkAPIUser,
+				BulkApiPassword:           c.BulkAPIPassword,
+				InternalApiUser:           c.InternalAPIUser,
+				InternalApiPassword:       c.InternalAPIPassword,
 				DbEncryptionKey:           c.DbEncryptionKey,
 			},
 		},

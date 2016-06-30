@@ -21,8 +21,7 @@ var _ = Describe("NFS Partition", func() {
 				"--etcd-machine-ip", "1.0.0.7",
 				"--etcd-machine-ip", "1.0.0.8",
 			})
-			_, err := NewNFSPartition(c)
-			Ω(err).ShouldNot(BeNil())
+			Ω(NewNFSPartition(c).HasValidValues()).Should(Equal(false))
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
@@ -47,7 +46,7 @@ var _ = Describe("NFS Partition", func() {
 				"--etcd-machine-ip", "1.0.0.7",
 				"--etcd-machine-ip", "1.0.0.8",
 			})
-			nfsPartition, err = NewNFSPartition(c)
+			nfsPartition = NewNFSPartition(c)
 		})
 		It("then it should not return an error", func() {
 			Ω(err).Should(BeNil())

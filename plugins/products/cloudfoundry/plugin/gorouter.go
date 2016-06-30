@@ -24,6 +24,7 @@ func loadSSLFromContext(c *cli.Context, strFlag, fileFlag string) string {
 	return flag
 }
 
+//NewGoRouterPartition -
 func NewGoRouterPartition(c *cli.Context) InstanceGrouper {
 	return &gorouter{
 		Instances:    len(c.StringSlice("router-ip")),

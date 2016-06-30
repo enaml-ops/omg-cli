@@ -12,14 +12,6 @@ import (
 
 //NewEtcdPartition -
 func NewEtcdPartition(c *cli.Context) (igf InstanceGrouper, err error) {
-	var metron *Metron
-	var statsdInjector *StatsdInjector
-	if metron, err = NewMetron(c); err != nil {
-		return
-	}
-	if statsdInjector, err = NewStatsdInjector(c); err != nil {
-		return
-	}
 	igf = &Etcd{
 		AZs:                c.StringSlice("az"),
 		StemcellName:       c.String("stemcell-name"),
@@ -27,8 +19,8 @@ func NewEtcdPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 		NetworkName:        c.String("etcd-network"),
 		VMTypeName:         c.String("etcd-vm-type"),
 		PersistentDiskType: c.String("etcd-disk-type"),
-		Metron:             metron,
-		StatsdInjector:     statsdInjector,
+		Metron:             NewMetron(c),
+		StatsdInjector:     NewStatsdInjector(c),
 		Nats: &etcdmetricslib.Nats{
 			Username: c.String("nats-user"),
 			Password: c.String("nats-pass"),

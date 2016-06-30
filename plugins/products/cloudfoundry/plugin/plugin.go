@@ -15,6 +15,7 @@ func init() {
 	RegisterInstanceGrouperFactory(NewMySQLProxyPartition)
 }
 
+//GetFlags -
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{
 		cli.StringFlag{Name: "stemcell-name", Usage: "the name of your desired stemcell"},
@@ -67,7 +68,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "mysql-bootstrap-username", Usage: "bootstrap username for mysql"},
 		cli.StringFlag{Name: "mysql-bootstrap-password", Usage: "bootstrap password for mysql"},
 
-        //MySQL proxy flags
+		//MySQL proxy flags
 		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of mysql proxy ips you wish to use"},
 		cli.StringFlag{Name: "mysql-proxy-network", Usage: "the name of the network you wish to place your mysql proxy in"},
 		cli.StringFlag{Name: "mysql-proxy-vm-type", Usage: "the name of your desired vm size for mysql proxy"},
@@ -100,12 +101,14 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	}
 }
 
+//GetMeta -
 func (s *Plugin) GetMeta() product.Meta {
 	return product.Meta{
 		Name: "cloudfoundry",
 	}
 }
 
+//GetProduct -
 func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	c := pluginutil.NewContext(args, s.GetFlags())
 	dm := enaml.NewDeploymentManifest([]byte(``))

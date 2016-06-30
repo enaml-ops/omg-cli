@@ -15,8 +15,8 @@ func NewMySQLProxyPartition(c *cli.Context) InstanceGrouper {
 		NetworkIPs:   c.StringSlice("mysql-proxy-ip"),
 		NetworkName:  c.String("mysql-proxy-network"),
 		VMTypeName:   c.String("mysql-proxy-vm-type"),
-		ApiUsername:  c.String("mysql-proxy-api-username"),
-		ApiPassword:  c.String("mysql-proxy-api-password"),
+		APIUsername:  c.String("mysql-proxy-api-username"),
+		APIPassword:  c.String("mysql-proxy-api-password"),
 		ExternalHost: c.String("mysql-proxy-external-host"),
 		ClusterIPs:   c.StringSlice("mysql-ip"),
 		SyslogAggregator: &proxy.SyslogAggregator{
@@ -59,8 +59,8 @@ func (s *MySQLProxy) newMySQLProxyJob() enaml.InstanceJob {
 		Name:    "proxy",
 		Release: "cf-mysql",
 		Properties: &proxy.Proxy{
-			ApiUsername:      s.ApiUsername,
-			ApiPassword:      s.ApiPassword,
+			ApiUsername:      s.APIUsername,
+			ApiPassword:      s.APIPassword,
 			ExternalHost:     s.ExternalHost,
 			ClusterIps:       s.ClusterIPs,
 			SyslogAggregator: s.SyslogAggregator,
@@ -77,7 +77,7 @@ func (s *MySQLProxy) HasValidValues() bool {
 		s.NetworkName != "" &&
 		len(s.NetworkIPs) > 0 &&
 		s.ExternalHost != "" &&
-		s.ApiPassword != "" &&
-		s.ApiUsername != "" &&
+		s.APIPassword != "" &&
+		s.APIUsername != "" &&
 		len(s.ClusterIPs) > 0)
 }

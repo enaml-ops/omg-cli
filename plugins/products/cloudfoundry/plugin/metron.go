@@ -10,7 +10,7 @@ import (
 )
 
 //NewMetron -
-func NewMetron(c *cli.Context) (metron *Metron, err error) {
+func NewMetron(c *cli.Context) (metron *Metron) {
 	metron = &Metron{
 		Zone:            c.String("metron-zone"),
 		Secret:          c.String("metron-secret"),
@@ -29,8 +29,7 @@ func NewMetron(c *cli.Context) (metron *Metron, err error) {
 
 	if metron.Zone == "" || metron.Secret == "" {
 		b, _ := yaml.Marshal(metron)
-		err = fmt.Errorf("invalid values in Metron: %v", string(b))
-		metron = nil
+		panic(fmt.Sprintf("invalid values in Metron: %v", string(b)))
 	}
 	return
 }

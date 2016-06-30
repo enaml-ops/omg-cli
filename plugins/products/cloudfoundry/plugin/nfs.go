@@ -1,25 +1,13 @@
 package cloudfoundry
 
 import (
-	"fmt"
-
-	"gopkg.in/yaml.v2"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	nfslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/debian_nfs_server"
 )
 
 //NewNFSPartition -
-func NewNFSPartition(c *cli.Context) (igf InstanceGrouper, err error) {
-	var metron *Metron
-	var statsdInjector *StatsdInjector
-	if metron, err = NewMetron(c); err != nil {
-		return
-	}
-	if statsdInjector, err = NewStatsdInjector(c); err != nil {
-		return
-	}
+func NewNFSPartition(c *cli.Context) (igf InstanceGrouper) {
 	igf = &NFS{
 		AZs:                  c.StringSlice("az"),
 		StemcellName:         c.String("stemcell-name"),
@@ -28,14 +16,8 @@ func NewNFSPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 		VMTypeName:           c.String("nfs-vm-type"),
 		PersistentDiskType:   c.String("nfs-disk-type"),
 		AllowFromNetworkCIDR: c.StringSlice("nfs-allow-from-network-cidr"),
-		Metron:               metron,
-		StatsdInjector:       statsdInjector,
-	}
-
-	if !igf.HasValidValues() {
-		b, _ := yaml.Marshal(igf)
-		err = fmt.Errorf("invalid values in Consul: %v", string(b))
-		igf = nil
+		Metron:               NewMetron(c),
+		StatsdInjector:       NewStatsdInjector(c),
 	}
 	return
 }

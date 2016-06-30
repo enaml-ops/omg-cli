@@ -12,28 +12,20 @@ import (
 
 //NewNatsPartition --
 func NewNatsPartition(c *cli.Context) (igf InstanceGrouper, err error) {
-	var metron *Metron
-	var statsdInjector *StatsdInjector
-	if metron, err = NewMetron(c); err != nil {
-		return
-	}
-	if statsdInjector, err = NewStatsdInjector(c); err != nil {
-		return
-	}
 	igf = &NatsPartition{
 		AZs:          c.StringSlice("az"),
 		StemcellName: c.String("stemcell-name"),
 		NetworkIPs:   c.StringSlice("nats-machine-ip"),
 		NetworkName:  c.String("nats-network"),
 		VMTypeName:   c.String("nats-vm-type"),
-		Metron:       metron,
+		Metron:       NewMetron(c),
 		Nats: natslib.Nats{
 			User:     c.String("nats-user"),
 			Password: c.String("nats-pass"),
 			Machines: c.StringSlice("nats-machine-ip"),
 			Port:     natsPort,
 		},
-		StatsdInjector: statsdInjector,
+		StatsdInjector: NewStatsdInjector(c),
 	}
 
 	if !igf.HasValidValues() {

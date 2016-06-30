@@ -1,15 +1,21 @@
 package cloudfoundry
 
 const (
+	//CFReleaseName -
 	CFReleaseName = "cf"
-	StemcellName  = "ubuntu-trusty"
+	//StemcellName -
+	StemcellName = "ubuntu-trusty"
+	//StemcellAlias -
 	StemcellAlias = "trusty"
 )
 
 var (
-	DeploymentName   = "cf"
+	//DeploymentName -
+	DeploymentName = "cf"
+	//CFReleaseVersion -
 	CFReleaseVersion = "235.5"
-	StemcellVersion  = "3232.4"
+	//StemcellVersion -
+	StemcellVersion = "3232.4"
 )
 
 var factories []InstanceGrouperFactory

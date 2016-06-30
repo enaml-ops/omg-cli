@@ -3,33 +3,19 @@ package cloudfoundry
 import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
-	"github.com/xchapter7x/lo"
 )
 
 //NewConsulPartition -
 func NewConsulPartition(c *cli.Context) InstanceGrouper {
-	var metron *Metron
-	var statsdInjector *StatsdInjector
-	var consulAgent *ConsulAgent
-	var err error
-	if metron, err = NewMetron(c); err != nil {
-		lo.G.Error("metron init error:", err)
-	}
-	if statsdInjector, err = NewStatsdInjector(c); err != nil {
-		lo.G.Error("statsd init error:", err)
-	}
-
-	consulAgent = NewConsulAgent(c)
-
 	return &Consul{
 		AZs:            c.StringSlice("az"),
 		StemcellName:   c.String("stemcell-name"),
 		NetworkIPs:     c.StringSlice("consul-ip"),
 		NetworkName:    c.String("consul-network"),
 		VMTypeName:     c.String("consul-vm-type"),
-		ConsulAgent:    consulAgent,
-		Metron:         metron,
-		StatsdInjector: statsdInjector,
+		ConsulAgent:    NewConsulAgent(c),
+		Metron:         NewMetron(c),
+		StatsdInjector: NewStatsdInjector(c),
 	}
 }
 

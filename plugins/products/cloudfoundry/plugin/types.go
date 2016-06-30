@@ -49,7 +49,7 @@ type Consul struct {
 	StatsdInjector *StatsdInjector
 }
 
-//ConsulAgent
+//ConsulAgent -
 type ConsulAgent struct {
 	EncryptKeys []string
 	CaCert      string
@@ -89,8 +89,8 @@ type StatsdInjector struct {
 
 //NFSMounter -
 type NFSMounter struct {
-	NFSServerAddress  string
-	SharePath string
+	NFSServerAddress string
+	SharePath        string
 }
 
 //NatsPartition -
@@ -145,7 +145,7 @@ type MySQLSeededDatabase struct {
 	Password string `yaml:"password"`
 }
 
-//MySQL Proxy Partition
+//MySQLProxy -
 type MySQLProxy struct {
 	AZs              []string
 	StemcellName     string
@@ -153,35 +153,35 @@ type MySQLProxy struct {
 	NetworkName      string
 	NetworkIPs       []string
 	ExternalHost     string
-	ApiUsername      string
-	ApiPassword      string
+	APIUsername      string
+	APIPassword      string
 	ClusterIPs       []string
 	Nats             *mysqlproxylib.Nats
 	SyslogAggregator *mysqlproxylib.SyslogAggregator
 }
 
-
 //CloudControllerWorkerPartition - Cloud Controller Worker Partition
 type CloudControllerWorkerPartition struct {
-	AZs                []string
-	VMTypeName         string
-	StemcellName       string
-	NetworkName        string
-	SystemDomain       string
-	AppDomains         []string
-	AllowedCorsDomains []string
-	AllowAppSshAccess  bool
-	Metron             *Metron
-	ConsulAgent        *ConsulAgent
-	StatsdInjector     *StatsdInjector
-	NFSMounter         *NFSMounter
-	StagingUploadUser  string
+	AZs                   []string
+	VMTypeName            string
+	StemcellName          string
+	NetworkName           string
+	SystemDomain          string
+	AppDomains            []string
+	AllowedCorsDomains    []string
+	AllowAppSSHAccess     bool
+	Metron                *Metron
+	ConsulAgent           *ConsulAgent
+	StatsdInjector        *StatsdInjector
+	NFSMounter            *NFSMounter
+	StagingUploadUser     string
 	StagingUploadPassword string
-	BulkApiUser  string
-	BulkApiPassword string
-	DbEncryptionKey string
-	InternalApiUser string
-	InternalApiPassword string
+	BulkAPIUser           string
+	BulkAPIPassword       string
+	DbEncryptionKey       string
+	InternalAPIUser       string
+	InternalAPIPassword   string
 }
 
+//Plugin -
 type Plugin struct{}

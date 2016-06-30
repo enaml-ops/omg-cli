@@ -6,7 +6,7 @@ import (
 )
 
 //NewStatsdInjector -
-func NewStatsdInjector(c *cli.Context) (statsdInjector *StatsdInjector, err error) {
+func NewStatsdInjector(c *cli.Context) (statsdInjector *StatsdInjector) {
 	statsdInjector = &StatsdInjector{}
 	return
 }
