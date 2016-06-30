@@ -10,9 +10,24 @@ import (
 )
 
 func init() {
-	RegisterInstanceGrouperFactory(NewGoRouterPartition)
 	RegisterInstanceGrouperFactory(NewConsulPartition)
+	RegisterInstanceGrouperFactory(NewNatsPartition)
+	RegisterInstanceGrouperFactory(NewEtcdPartition)
+	//diego_database-partition
+	RegisterInstanceGrouperFactory(NewNFSPartition)
+	RegisterInstanceGrouperFactory(NewGoRouterPartition)
 	RegisterInstanceGrouperFactory(NewMySQLProxyPartition)
+	RegisterInstanceGrouperFactory(NewMySQLPartition)
+	//cloud_controller-partition
+	//ha_proxy-partition
+	//clock_global-partition
+	RegisterInstanceGrouperFactory(NewCloudControllerWorkerPartition)
+	//uaa-partition
+	//diego_brain-partition
+	//diego_cell-partition
+	//doppler-partition
+	//loggregator_trafficcontroller-partition
+
 }
 
 //GetFlags -
