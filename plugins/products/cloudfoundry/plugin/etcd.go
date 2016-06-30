@@ -13,7 +13,7 @@ func NewEtcdPartition(c *cli.Context) (igf InstanceGrouper) {
 		AZs:                c.StringSlice("az"),
 		StemcellName:       c.String("stemcell-name"),
 		NetworkIPs:         c.StringSlice("etcd-machine-ip"),
-		NetworkName:        c.String("etcd-network"),
+		NetworkName:        c.String("network"),
 		VMTypeName:         c.String("etcd-vm-type"),
 		PersistentDiskType: c.String("etcd-disk-type"),
 		Metron:             NewMetron(c),

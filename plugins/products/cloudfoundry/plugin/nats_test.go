@@ -34,7 +34,7 @@ var _ = Describe("Nats Partition", func() {
 				"--az", "eastprod-1",
 				"--nats-machine-ip", "10.0.0.2",
 				"--nats-machine-ip", "10.0.0.3",
-				"--nats-network", "foundry-net",
+				"--network", "foundry-net",
 				"--nats-vm-type", "blah",
 				"--metron-secret", "metronsecret",
 				"--metron-zone", "metronzoneguid",

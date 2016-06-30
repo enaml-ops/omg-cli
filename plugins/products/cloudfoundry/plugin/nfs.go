@@ -12,7 +12,7 @@ func NewNFSPartition(c *cli.Context) (igf InstanceGrouper) {
 		AZs:                  c.StringSlice("az"),
 		StemcellName:         c.String("stemcell-name"),
 		NetworkIPs:           c.StringSlice("nfs-ip"),
-		NetworkName:          c.String("nfs-network"),
+		NetworkName:          c.String("network"),
 		VMTypeName:           c.String("nfs-vm-type"),
 		PersistentDiskType:   c.String("nfs-disk-type"),
 		AllowFromNetworkCIDR: c.StringSlice("nfs-allow-from-network-cidr"),

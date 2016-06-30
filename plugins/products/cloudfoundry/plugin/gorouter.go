@@ -32,7 +32,7 @@ func NewGoRouterPartition(c *cli.Context) InstanceGrouper {
 		EnableSSL:    c.Bool("router-enable-ssl"),
 		StemcellName: c.String("stemcell-name"),
 		NetworkIPs:   c.StringSlice("router-ip"),
-		NetworkName:  c.String("router-network"),
+		NetworkName:  c.String("network"),
 		VMTypeName:   c.String("router-vm-type"),
 		SSLCert:      loadSSLFromContext(c, "router-ssl-cert", "router-ssl-cert-file"),
 		SSLKey:       loadSSLFromContext(c, "router-ssl-key", "router-ssl-key-file"),

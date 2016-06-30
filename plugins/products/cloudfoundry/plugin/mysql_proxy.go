@@ -13,7 +13,7 @@ func NewMySQLProxyPartition(c *cli.Context) InstanceGrouper {
 		AZs:          c.StringSlice("az"),
 		StemcellName: c.String("stemcell-name"),
 		NetworkIPs:   c.StringSlice("mysql-proxy-ip"),
-		NetworkName:  c.String("mysql-proxy-network"),
+		NetworkName:  c.String("network"),
 		VMTypeName:   c.String("mysql-proxy-vm-type"),
 		APIUsername:  c.String("mysql-proxy-api-username"),
 		APIPassword:  c.String("mysql-proxy-api-password"),

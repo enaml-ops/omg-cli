@@ -33,7 +33,7 @@ var _ = Describe("NFS Partition", func() {
 				"--stemcell-name", "cool-ubuntu-animal",
 				"--az", "eastprod-1",
 				"--nfs-ip", "1.0.0.1",
-				"--nfs-network", "foundry-net",
+				"--network", "foundry-net",
 				"--nfs-vm-type", "blah",
 				"--nfs-disk-type", "blah-disk",
 				"--nfs-allow-from-network-cidr", "1.0.0.0/22",

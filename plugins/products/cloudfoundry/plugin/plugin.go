@@ -32,10 +32,12 @@ func init() {
 //GetFlags -
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{
+		// shared for all instance groups:
 		cli.StringFlag{Name: "stemcell-name", Usage: "the name of your desired stemcell"},
 		cli.StringSliceFlag{Name: "az", Usage: "list of AZ names to use"},
+		cli.StringFlag{Name: "network", Usage: "the name of the network to use"},
+
 		cli.StringSliceFlag{Name: "router-ip", Usage: "a list of the router ips you wish to use"},
-		cli.StringFlag{Name: "router-network", Usage: "the name of the network you wish to place your routers in"},
 		cli.StringFlag{Name: "router-vm-type", Usage: "the name of your desired vm size"},
 		cli.StringFlag{Name: "router-ssl-cert-file", Usage: "the file location of your go router ssl cert"},
 		cli.StringFlag{Name: "router-ssl-cert", Usage: "the go router ssl cert"},
@@ -51,7 +53,6 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "metron-zone", Usage: "zone guid for the metron agent"},
 		cli.StringFlag{Name: "metron-secret", Usage: "shared secret for the metron agent endpoint"},
 		cli.StringSliceFlag{Name: "consul-ip", Usage: "a list of the consul ips you wish to use"},
-		cli.StringFlag{Name: "consul-network", Usage: "the name of the network you wish to place your consuls in"},
 		cli.StringFlag{Name: "consul-vm-type", Usage: "the name of your desired vm size for consul"},
 		cli.StringSliceFlag{Name: "consul-encryption-key", Usage: "encryption key for consul"},
 		cli.StringFlag{Name: "consul-ca-cert", Usage: "ca cert contents for consul"},
@@ -62,20 +63,16 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "syslog-address", Usage: "address of syslog server"},
 		cli.IntFlag{Name: "syslog-port", Usage: "port of syslog server"},
 		cli.StringFlag{Name: "syslog-transport", Usage: "transport to syslog server"},
-		cli.StringFlag{Name: "etcd-network", Usage: "the name of the network you wish to place your etcd in"},
 		cli.StringFlag{Name: "etcd-vm-type", Usage: "the name of your desired vm size for etcd"},
 		cli.StringFlag{Name: "etcd-disk-type", Usage: "the name of your desired persistent disk type for etcd"},
-		cli.StringFlag{Name: "nats-network", Usage: "the name of the network you wish to place your NATS in"},
 		cli.StringFlag{Name: "nats-vm-type", Usage: "the name of your desired vm size for NATS"},
 		cli.StringSliceFlag{Name: "nfs-ip", Usage: "a list of the nfs ips you wish to use"},
-		cli.StringFlag{Name: "nfs-network", Usage: "the name of the network you wish to place your nfs in"},
 		cli.StringFlag{Name: "nfs-vm-type", Usage: "the name of your desired vm size for nfs"},
 		cli.StringFlag{Name: "nfs-disk-type", Usage: "the name of your desired persistent disk type for nfs"},
 		cli.StringSliceFlag{Name: "nfs-allow-from-network-cidr", Usage: "the network cidr you wish to allow connections to nfs from"},
 
 		//Mysql Flags
 		cli.StringSliceFlag{Name: "mysql-ip", Usage: "a list of the mysql ips you wish to use"},
-		cli.StringFlag{Name: "mysql-network", Usage: "the name of the network you wish to place your mysql in"},
 		cli.StringFlag{Name: "mysql-vm-type", Usage: "the name of your desired vm size for mysql"},
 		cli.StringFlag{Name: "mysql-disk-type", Usage: "the name of your desired persistent disk type for mysql"},
 		cli.StringFlag{Name: "mysql-admin-password", Usage: "admin password for mysql"},
@@ -84,7 +81,6 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 
 		//MySQL proxy flags
 		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of mysql proxy ips you wish to use"},
-		cli.StringFlag{Name: "mysql-proxy-network", Usage: "the name of the network you wish to place your mysql proxy in"},
 		cli.StringFlag{Name: "mysql-proxy-vm-type", Usage: "the name of your desired vm size for mysql proxy"},
 		cli.StringFlag{Name: "mysql-proxy-external-host", Usage: "Host name of MySQL proxy"},
 		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "Proxy API user name"},
@@ -92,7 +88,6 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 
 		//CC Worker Partition Flags
 		cli.StringFlag{Name: "cc-worker-vm-type", Usage: "the name of the desired vm type for cc worker"},
-		cli.StringFlag{Name: "cc-worker-network", Usage: "the name of the network for cc worker"},
 		cli.StringFlag{Name: "cc-staging-upload-user", Usage: "user name for staging upload"},
 		cli.StringFlag{Name: "cc-staging-upload-password", Usage: "password for staging upload"},
 		cli.StringFlag{Name: "cc-bulk-api-user", Usage: "user name for bulk api calls"},

@@ -11,7 +11,7 @@ func NewConsulPartition(c *cli.Context) InstanceGrouper {
 		AZs:            c.StringSlice("az"),
 		StemcellName:   c.String("stemcell-name"),
 		NetworkIPs:     c.StringSlice("consul-ip"),
-		NetworkName:    c.String("consul-network"),
+		NetworkName:    c.String("network"),
 		VMTypeName:     c.String("consul-vm-type"),
 		ConsulAgent:    NewConsulAgent(c),
 		Metron:         NewMetron(c),

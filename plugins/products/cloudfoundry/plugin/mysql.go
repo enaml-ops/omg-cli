@@ -14,7 +14,7 @@ func NewMySQLPartition(c *cli.Context) (igf InstanceGrouper) {
 		AZs:                    c.StringSlice("az"),
 		StemcellName:           c.String("stemcell-name"),
 		NetworkIPs:             c.StringSlice("mysql-ip"),
-		NetworkName:            c.String("mysql-network"),
+		NetworkName:            c.String("network"),
 		VMTypeName:             c.String("mysql-vm-type"),
 		PersistentDiskType:     c.String("mysql-disk-type"),
 		AdminPassword:          c.String("mysql-admin-password"),

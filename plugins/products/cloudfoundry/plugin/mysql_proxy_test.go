@@ -31,7 +31,7 @@ var _ = Describe("MySQL Proxy Partition", func() {
 				"--mysql-ip", "1.0.10.2",
 				"--mysql-proxy-ip", "1.0.10.3",
 				"--mysql-proxy-ip", "1.0.10.4",
-				"--mysql-proxy-network", "foundry-net",
+				"--network", "foundry-net",
 				"--mysql-proxy-vm-type", "blah",
 				"--mysql-proxy-external-host", "mysqlhostname",
 				"--mysql-proxy-api-username", "apiuser",

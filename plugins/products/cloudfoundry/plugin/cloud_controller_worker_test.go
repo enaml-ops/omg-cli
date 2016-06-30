@@ -27,7 +27,7 @@ var _ = Describe("Cloud Controller Worker Partition", func() {
 				"--consul-server-cert", "consulservercert",
 				"--consul-server-key", "consulserverkey",
 				"--cc-worker-vm-type", "ccworkervmtype",
-				"--cc-worker-network", "foundry",
+				"--network", "foundry",
 				"--cc-staging-upload-user", "staginguser",
 				"--cc-staging-upload-password", "stagingpassword",
 				"--cc-bulk-api-user", "bulkapiuser",

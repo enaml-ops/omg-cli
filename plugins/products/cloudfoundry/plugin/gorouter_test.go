@@ -20,7 +20,7 @@ var _ = Describe("Go-Router Partition", func() {
 				"cloudfoundry",
 				"--router-ip", "1.0.0.1",
 				"--router-ip", "1.0.0.2",
-				"--router-network", "foundry-net",
+				"--network", "foundry-net",
 			})
 			gr := NewGoRouterPartition(c)
 			Ω(gr.HasValidValues()).Should(BeFalse())
@@ -36,7 +36,7 @@ var _ = Describe("Go-Router Partition", func() {
 				"--az", "eastprod-1",
 				"--router-ip", "1.0.0.1",
 				"--router-ip", "1.0.0.2",
-				"--router-network", "foundry-net",
+				"--network", "foundry-net",
 				"--router-vm-type", "blah",
 				"--router-ssl-cert-file", "fixtures/sample.cert",
 				"--router-ssl-key-file", "fixtures/sample.key",

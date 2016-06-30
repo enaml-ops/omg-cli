@@ -12,7 +12,7 @@ func NewCloudControllerWorkerPartition(c *cli.Context) InstanceGrouper {
 		AZs:                   c.StringSlice("az"),
 		VMTypeName:            c.String("cc-worker-vm-type"),
 		StemcellName:          c.String("stemcell-name"),
-		NetworkName:           c.String("cc-worker-network"),
+		NetworkName:           c.String("network"),
 		SystemDomain:          c.String("system-domain"),
 		AppDomains:            c.StringSlice("app-domain"),
 		AllowAppSSHAccess:     c.Bool("allow-app-ssh-access"),

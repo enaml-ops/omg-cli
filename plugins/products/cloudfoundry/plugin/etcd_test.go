@@ -37,7 +37,7 @@ var _ = Describe("Etcd Partition", func() {
 				"--az", "eastprod-1",
 				"--etcd-machine-ip", "1.0.0.7",
 				"--etcd-machine-ip", "1.0.0.8",
-				"--etcd-network", "foundry-net",
+				"--network", "foundry-net",
 				"--etcd-vm-type", "blah",
 				"--etcd-disk-type", "blah-disk",
 				"--metron-secret", "metronsecret",

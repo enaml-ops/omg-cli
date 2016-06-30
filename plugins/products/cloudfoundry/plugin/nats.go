@@ -12,7 +12,7 @@ func NewNatsPartition(c *cli.Context) (igf InstanceGrouper) {
 		AZs:          c.StringSlice("az"),
 		StemcellName: c.String("stemcell-name"),
 		NetworkIPs:   c.StringSlice("nats-machine-ip"),
-		NetworkName:  c.String("nats-network"),
+		NetworkName:  c.String("network"),
 		VMTypeName:   c.String("nats-vm-type"),
 		Metron:       NewMetron(c),
 		Nats: natslib.Nats{
