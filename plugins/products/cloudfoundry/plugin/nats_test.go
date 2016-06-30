@@ -11,7 +11,7 @@ import (
 var _ = Describe("Nats Partition", func() {
 
 	Context("when initialized WITHOUT a complete set of arguments", func() {
-		It("should return the error and exit", func() {
+		It("HasValidValues should return false", func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
@@ -19,13 +19,11 @@ var _ = Describe("Nats Partition", func() {
 				"--metron-secret", "metronsecret",
 				"--metron-zone", "metronzoneguid",
 			})
-			_, err := NewNatsPartition(c)
-			Ω(err).ShouldNot(BeNil())
+			Ω(NewNatsPartition(c).HasValidValues()).Should(Equal(false))
 		})
 	})
 
 	Context("when initialized WITH a complete set of arguments", func() {
-		var err error
 		var natsPartition InstanceGrouper
 
 		BeforeEach(func() {
@@ -43,10 +41,10 @@ var _ = Describe("Nats Partition", func() {
 				"--etcd-machine-ip", "10.0.0.7",
 				"--etcd-machine-ip", "10.0.0.8",
 			})
-			natsPartition, err = NewNatsPartition(c)
+			natsPartition = NewNatsPartition(c)
 		})
-		It("then it should not return an error", func() {
-			Ω(err).Should(BeNil())
+		It("HasValidValues should return true", func() {
+			Ω(natsPartition.HasValidValues()).Should(Equal(true))
 		})
 		It("should have 2 instances ", func() {
 			igf := natsPartition.ToInstanceGroup()

@@ -8,12 +8,6 @@ import (
 
 //NewCloudControllerWorkerPartition - Creating a New Cloud Controller Partition
 func NewCloudControllerWorkerPartition(c *cli.Context) InstanceGrouper {
-
-	statsdInjector := NewStatsdInjector(c)
-	metron := NewMetron(c)
-	consulAgent := NewConsulAgent(c)
-	nfsMounter := NewNFSMounter(c)
-
 	return &CloudControllerWorkerPartition{
 		AZs:                   c.StringSlice("az"),
 		VMTypeName:            c.String("cc-worker-vm-type"),
@@ -22,10 +16,10 @@ func NewCloudControllerWorkerPartition(c *cli.Context) InstanceGrouper {
 		SystemDomain:          c.String("system-domain"),
 		AppDomains:            c.StringSlice("app-domain"),
 		AllowAppSSHAccess:     c.Bool("allow-app-ssh-access"),
-		Metron:                metron,
-		ConsulAgent:           consulAgent,
-		NFSMounter:            nfsMounter,
-		StatsdInjector:        statsdInjector,
+		Metron:                NewMetron(c),
+		ConsulAgent:           NewConsulAgent(c),
+		NFSMounter:            NewNFSMounter(c),
+		StatsdInjector:        NewStatsdInjector(c),
 		StagingUploadUser:     c.String("cc-staging-upload-user"),
 		StagingUploadPassword: c.String("cc-staging-upload-password"),
 		BulkAPIUser:           c.String("cc-bulk-api-user"),

@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("Etcd Partition", func() {
 	Context("when initialized WITHOUT a complete set of arguments", func() {
-		It("then it should return the error and exit", func() {
+		It("HasValidValues should return false", func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
@@ -24,12 +24,10 @@ var _ = Describe("Etcd Partition", func() {
 				"--nats-machine-ip", "1.0.0.5",
 				"--nats-machine-ip", "1.0.0.6",
 			})
-			_, err := NewEtcdPartition(c)
-			Ω(err).ShouldNot(BeNil())
+			Ω(NewEtcdPartition(c).HasValidValues()).Should(Equal(false))
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
-		var err error
 		var etcdPartition InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
@@ -52,10 +50,10 @@ var _ = Describe("Etcd Partition", func() {
 				"--nats-machine-ip", "1.0.0.5",
 				"--nats-machine-ip", "1.0.0.6",
 			})
-			etcdPartition, err = NewEtcdPartition(c)
+			etcdPartition = NewEtcdPartition(c)
 		})
-		It("then it should not return an error", func() {
-			Ω(err).Should(BeNil())
+		It("HasValidValues should return true", func() {
+			Ω(etcdPartition.HasValidValues()).Should(Equal(true))
 		})
 		It("then it should allow the user to configure the etcd IPs", func() {
 			ig := etcdPartition.ToInstanceGroup()

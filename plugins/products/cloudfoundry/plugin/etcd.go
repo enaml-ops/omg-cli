@@ -1,17 +1,14 @@
 package cloudfoundry
 
 import (
-	"fmt"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	etcdlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/etcd"
 	etcdmetricslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/etcd_metrics_server"
-	"gopkg.in/yaml.v2"
 )
 
 //NewEtcdPartition -
-func NewEtcdPartition(c *cli.Context) (igf InstanceGrouper, err error) {
+func NewEtcdPartition(c *cli.Context) (igf InstanceGrouper) {
 	igf = &Etcd{
 		AZs:                c.StringSlice("az"),
 		StemcellName:       c.String("stemcell-name"),
@@ -26,12 +23,6 @@ func NewEtcdPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 			Password: c.String("nats-pass"),
 			Machines: c.StringSlice("nats-machine-ip"),
 		},
-	}
-
-	if !igf.HasValidValues() {
-		b, _ := yaml.Marshal(igf)
-		err = fmt.Errorf("invalid values in Etcd: %v", string(b))
-		igf = nil
 	}
 	return
 }

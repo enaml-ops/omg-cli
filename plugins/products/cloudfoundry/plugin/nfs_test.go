@@ -9,7 +9,7 @@ import (
 
 var _ = Describe("NFS Partition", func() {
 	Context("when initialized WITHOUT a complete set of arguments", func() {
-		It("then it should return the error and exit", func() {
+		It("HasValidValues should return false", func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
@@ -25,7 +25,6 @@ var _ = Describe("NFS Partition", func() {
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
-		var err error
 		var nfsPartition InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
@@ -48,8 +47,8 @@ var _ = Describe("NFS Partition", func() {
 			})
 			nfsPartition = NewNFSPartition(c)
 		})
-		It("then it should not return an error", func() {
-			Ω(err).Should(BeNil())
+		It("HasValidValues should return true", func() {
+			Ω(nfsPartition.HasValidValues()).Should(Equal(true))
 		})
 		It("then it should not return an error", func() {
 			Ω(nfsPartition.ToInstanceGroup().Name).Should(Equal("nfs_server-partition"))

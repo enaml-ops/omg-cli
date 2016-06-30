@@ -1,17 +1,13 @@
 package cloudfoundry
 
 import (
-	"fmt"
-
-	"gopkg.in/yaml.v2"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	natslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nats"
 )
 
 //NewNatsPartition --
-func NewNatsPartition(c *cli.Context) (igf InstanceGrouper, err error) {
+func NewNatsPartition(c *cli.Context) (igf InstanceGrouper) {
 	igf = &NatsPartition{
 		AZs:          c.StringSlice("az"),
 		StemcellName: c.String("stemcell-name"),
@@ -26,12 +22,6 @@ func NewNatsPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 			Port:     natsPort,
 		},
 		StatsdInjector: NewStatsdInjector(c),
-	}
-
-	if !igf.HasValidValues() {
-		b, _ := yaml.Marshal(igf)
-		err = fmt.Errorf("invalid values in Nats Partition: %v", string(b))
-		igf = nil
 	}
 	return
 }
