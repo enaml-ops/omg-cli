@@ -209,14 +209,12 @@ type Doppler struct {
 	Metron                 *Metron
 	StatsdInjector         *StatsdInjector
 	Zone                   string
-	StatusUser             string
-	StatusPassword         string
-	StatusPort             int
 	MessageDrainBufferSize int
 	SharedSecret           string
 	SystemDomain           string
 	CCBuilkAPIPassword     string
 	SkipSSLCertify         bool
+	EtcdMachines           []string
 }
 
 //Plugin -

@@ -124,9 +124,6 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringSliceFlag{Name: "doppler-ip", Usage: "a list of the doppler ips you wish to use"},
 		cli.StringFlag{Name: "doppler-vm-type", Usage: "the name of your desired vm size for doppler"},
 		cli.StringFlag{Name: "doppler-zone", Usage: "the name zone for doppler"},
-		cli.StringFlag{Name: "doppler-status-user", Usage: "the username for doppler status"},
-		cli.StringFlag{Name: "doppler-status-password", Usage: "the password for doppler status"},
-		cli.IntFlag{Name: "doppler-status-port", Usage: "the port for doppler status"},
 		cli.IntFlag{Name: "doppler-drain-buffer-size", Usage: "message drain buffer size"},
 		cli.StringFlag{Name: "doppler-shared-secret", Usage: "doppler shared secret"},
 	}
