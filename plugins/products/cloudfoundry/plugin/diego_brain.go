@@ -20,19 +20,19 @@ import (
 )
 
 func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
-	caCert, err := pluginutil.LoadResourceFromContext(c, "auctioneer-ca-cert")
+	caCert, err := pluginutil.LoadResourceFromContext(c, "bbs-ca-cert")
 	if err != nil {
-		lo.G.Panicf("auctioneer ca cert: %s\n", err.Error())
+		lo.G.Panicf("bbs ca cert: %s\n", err.Error())
 	}
 
-	clientCert, err := pluginutil.LoadResourceFromContext(c, "auctioneer-client-cert")
+	clientCert, err := pluginutil.LoadResourceFromContext(c, "bbs-client-cert")
 	if err != nil {
-		lo.G.Panicf("auctioneer client cert: %s\n", err.Error())
+		lo.G.Panicf("bbs client cert: %s\n", err.Error())
 	}
 
-	clientKey, err := pluginutil.LoadResourceFromContext(c, "auctioneer-client-key")
+	clientKey, err := pluginutil.LoadResourceFromContext(c, "bbs-client-key")
 	if err != nil {
-		lo.G.Panicf("auctioneer client key: %s\n", err.Error())
+		lo.G.Panicf("bbs client key: %s\n", err.Error())
 	}
 
 	return &diegoBrain{
@@ -42,9 +42,9 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		PersistentDiskType:        c.String("diego-brain-disk-type"),
 		NetworkName:               c.String("network"),
 		NetworkIPs:                c.StringSlice("diego-brain-ip"),
-		AuctioneerCACert:          caCert,
-		AuctioneerClientCert:      clientCert,
-		AuctioneerClientKey:       clientKey,
+		BBSCACert:                 caCert,
+		BBSClientCert:             clientCert,
+		BBSClientKey:              clientKey,
 		BBSAPILocation:            c.String("bbs-api"),
 		SkipSSLCertVerify:         c.Bool("skip-cert-verify"),
 		CCUploaderJobPollInterval: c.Int("cc-uploader-poll-interval"),
@@ -88,9 +88,9 @@ func (d *diegoBrain) HasValidValues() bool {
 		d.VMTypeName != "" &&
 		d.PersistentDiskType != "" &&
 		d.NetworkName != "" &&
-		d.AuctioneerCACert != "" &&
-		d.AuctioneerClientCert != "" &&
-		d.AuctioneerClientKey != "" &&
+		d.BBSCACert != "" &&
+		d.BBSClientCert != "" &&
+		d.BBSClientKey != "" &&
 		d.BBSAPILocation != "" &&
 		d.CCUploaderJobPollInterval > 0
 }
@@ -102,9 +102,9 @@ func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
 		Properties: &auctioneer.Auctioneer{
 			Bbs: &auctioneer.Bbs{
 				ApiLocation: d.BBSAPILocation,
-				CaCert:      d.AuctioneerCACert,
-				ClientCert:  d.AuctioneerClientCert,
-				ClientKey:   d.AuctioneerClientKey,
+				CaCert:      d.BBSCACert,
+				ClientCert:  d.BBSClientCert,
+				ClientKey:   d.BBSClientKey,
 			},
 		},
 	}
@@ -127,9 +127,16 @@ func (d *diegoBrain) newCCUploader() *enaml.InstanceJob {
 
 func (d *diegoBrain) newConverger() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "converger",
-		Release:    "diego",
-		Properties: &converger.Converger{},
+		Name:    "converger",
+		Release: "diego",
+		Properties: &converger.Converger{
+			Bbs: &converger.Bbs{
+				ApiLocation: d.BBSAPILocation,
+				CaCert:      d.BBSCACert,
+				ClientCert:  d.BBSClientCert,
+				ClientKey:   d.BBSClientKey,
+			},
+		},
 	}
 }
 

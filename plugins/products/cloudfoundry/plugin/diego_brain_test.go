@@ -4,6 +4,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/auctioneer"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cc_uploader"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/converger"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -54,9 +55,9 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--diego-brain-ip", "10.0.0.40",
 				"--diego-brain-vm-type", "brainvmtype",
 				"--diego-brain-disk-type", "braindisktype",
-				"--auctioneer-ca-cert", "cacert",
-				"--auctioneer-client-cert", "clientcert",
-				"--auctioneer-client-key", "clientkey",
+				"--bbs-ca-cert", "cacert",
+				"--bbs-client-cert", "clientcert",
+				"--bbs-client-key", "clientkey",
 				"--bbs-api", "bbs.service.cf.internal:8889",
 				"--skip-cert-verify",
 				"--cc-uploader-poll-interval", "25",
@@ -127,6 +128,16 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			cc := job.Properties.(*cc_uploader.CcUploader)
 			Ω(cc.Diego.Ssl.SkipCertVerify).Should(Equal(true))
 			Ω(cc.Cc.JobPollingIntervalInSeconds).Should(Equal(25))
+		})
+
+		It("then it should allow the user to configure the converger", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("converger")
+			c := job.Properties.(*converger.Converger)
+			Ω(c.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
+			Ω(c.Bbs.CaCert).Should(Equal("cacert"))
+			Ω(c.Bbs.ClientCert).Should(Equal("clientcert"))
+			Ω(c.Bbs.ClientKey).Should(Equal("clientkey"))
 		})
 	})
 })

@@ -44,9 +44,9 @@ type diegoBrain struct {
 	PersistentDiskType        string
 	NetworkName               string
 	NetworkIPs                []string
-	AuctioneerCACert          string
-	AuctioneerClientCert      string
-	AuctioneerClientKey       string
+	BBSCACert                 string
+	BBSClientCert             string
+	BBSClientKey              string
 	BBSAPILocation            string
 	SkipSSLCertVerify         bool
 	CCUploaderJobPollInterval int
