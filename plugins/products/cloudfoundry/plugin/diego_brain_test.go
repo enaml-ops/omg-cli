@@ -47,7 +47,9 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"cloudfoundry",
 				"--az", "eastprod-1",
 				"--stemcell-name", "cool-ubuntu-animal",
-				"--diego-brain-ip", "10.0.0.39,10.0.0.40",
+				"--diego-brain-ip", "10.0.0.39",
+				"--diego-brain-ip", "10.0.0.40",
+				"--network", "foundry-net",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -69,13 +71,13 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(ig.Stemcell).Should(Equal("cool-ubuntu-animal"))
 		})
 
-		XIt("then it should allow the user to configure the network to use", func() {
+		It("then it should allow the user to configure the network to use", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			network := ig.GetNetworkByName("foundry-net")
 			Ω(network).ShouldNot(BeNil())
 			Ω(len(network.StaticIPs)).Should(Equal(2))
 			Ω(network.StaticIPs[0]).Should(Equal("10.0.0.39"))
-			Ω(network.StaticIPs[0]).Should(Equal("10.0.0.40"))
+			Ω(network.StaticIPs[1]).Should(Equal("10.0.0.40"))
 		})
 
 		It("then it should configure the correct number of instances automatically from the count of IPs", func() {

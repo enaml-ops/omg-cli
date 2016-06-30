@@ -21,6 +21,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 	return &diegoBrain{
 		AZs:          c.StringSlice("az"),
 		StemcellName: c.String("stemcell-name"),
+		NetworkName:  c.String("network"),
 		NetworkIPs:   c.StringSlice("diego-brain-ip"),
 	}
 }
