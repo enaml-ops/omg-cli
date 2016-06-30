@@ -38,16 +38,18 @@ type gorouter struct {
 }
 
 type diegoBrain struct {
-	AZs                  []string
-	StemcellName         string
-	VMTypeName           string
-	PersistentDiskType   string
-	NetworkName          string
-	NetworkIPs           []string
-	AuctioneerCACert     string
-	AuctioneerClientCert string
-	AuctioneerClientKey  string
-	BBSAPILocation       string
+	AZs                       []string
+	StemcellName              string
+	VMTypeName                string
+	PersistentDiskType        string
+	NetworkName               string
+	NetworkIPs                []string
+	AuctioneerCACert          string
+	AuctioneerClientCert      string
+	AuctioneerClientKey       string
+	BBSAPILocation            string
+	SkipSSLCertVerify         bool
+	CCUploaderJobPollInterval int
 }
 
 // Consul -

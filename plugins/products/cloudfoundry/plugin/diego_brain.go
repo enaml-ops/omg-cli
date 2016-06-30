@@ -36,16 +36,18 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 	}
 
 	return &diegoBrain{
-		AZs:                  c.StringSlice("az"),
-		StemcellName:         c.String("stemcell-name"),
-		VMTypeName:           c.String("diego-brain-vm-type"),
-		PersistentDiskType:   c.String("diego-brain-disk-type"),
-		NetworkName:          c.String("network"),
-		NetworkIPs:           c.StringSlice("diego-brain-ip"),
-		AuctioneerCACert:     caCert,
-		AuctioneerClientCert: clientCert,
-		AuctioneerClientKey:  clientKey,
-		BBSAPILocation:       c.String("bbs-api"),
+		AZs:                       c.StringSlice("az"),
+		StemcellName:              c.String("stemcell-name"),
+		VMTypeName:                c.String("diego-brain-vm-type"),
+		PersistentDiskType:        c.String("diego-brain-disk-type"),
+		NetworkName:               c.String("network"),
+		NetworkIPs:                c.StringSlice("diego-brain-ip"),
+		AuctioneerCACert:          caCert,
+		AuctioneerClientCert:      clientCert,
+		AuctioneerClientKey:       clientKey,
+		BBSAPILocation:            c.String("bbs-api"),
+		SkipSSLCertVerify:         c.Bool("skip-cert-verify"),
+		CCUploaderJobPollInterval: c.Int("cc-uploader-poll-interval"),
 	}
 }
 
@@ -84,7 +86,13 @@ func (d *diegoBrain) HasValidValues() bool {
 		d.StemcellName != "" &&
 		len(d.NetworkIPs) > 0 &&
 		d.VMTypeName != "" &&
-		d.NetworkName != ""
+		d.PersistentDiskType != "" &&
+		d.NetworkName != "" &&
+		d.AuctioneerCACert != "" &&
+		d.AuctioneerClientCert != "" &&
+		d.AuctioneerClientKey != "" &&
+		d.BBSAPILocation != "" &&
+		d.CCUploaderJobPollInterval > 0
 }
 
 func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
@@ -104,10 +112,15 @@ func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
 
 func (d *diegoBrain) newCCUploader() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "cc_uploader",
-		Release:    "diego",
+		Name:    "cc_uploader",
+		Release: "diego",
 		Properties: &cc_uploader.CcUploader{
-		// TODO
+			Diego: &cc_uploader.Diego{
+				Ssl: &cc_uploader.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+			},
+			Cc: &cc_uploader.Cc{
+				JobPollingIntervalInSeconds: d.CCUploaderJobPollInterval,
+			},
 		},
 	}
 }
@@ -116,9 +129,7 @@ func (d *diegoBrain) newConverger() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:       "converger",
 		Release:    "diego",
-		Properties: &converger.Converger{
-		// TODO
-		},
+		Properties: &converger.Converger{},
 	}
 }
 

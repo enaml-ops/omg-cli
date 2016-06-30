@@ -3,6 +3,7 @@ package cloudfoundry_test
 import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/auctioneer"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cc_uploader"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -57,6 +58,8 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--auctioneer-client-cert", "clientcert",
 				"--auctioneer-client-key", "clientkey",
 				"--bbs-api", "bbs.service.cf.internal:8889",
+				"--skip-cert-verify",
+				"--cc-uploader-poll-interval", "25",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -116,6 +119,14 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(a.Bbs.ClientCert).Should(Equal("clientcert"))
 			Ω(a.Bbs.ClientKey).Should(Equal("clientkey"))
 			Ω(a.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
+		})
+
+		It("then it should allow the user to configure the CC uploader", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("cc_uploader")
+			cc := job.Properties.(*cc_uploader.CcUploader)
+			Ω(cc.Diego.Ssl.SkipCertVerify).Should(Equal(true))
+			Ω(cc.Cc.JobPollingIntervalInSeconds).Should(Equal(25))
 		})
 	})
 })

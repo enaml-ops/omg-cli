@@ -115,6 +115,8 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "auctioneer-client-key", Usage: "auctioneer client SSL key (or a file containing it)"},
 
 		cli.StringFlag{Name: "bbs-api", Usage: "location of the bbs api"},
+		cli.BoolFlag{Name: "skip-cert-verify", Usage: "ignore bad SSL certificates when connecting over HTTPS"},
+		cli.IntFlag{Name: "cc-uploader-poll-interval", Usage: "CC uploader job polling interval, in seconds"},
 	}
 }
 
