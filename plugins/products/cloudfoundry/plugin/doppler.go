@@ -110,5 +110,7 @@ func (s *Doppler) HasValidValues() bool {
 		s.SharedSecret != "" &&
 		s.SystemDomain != "" &&
 		s.CCBuilkAPIPassword != "" &&
-		len(s.EtcdMachines) > 0)
+		len(s.EtcdMachines) > 0 &&
+		s.Metron.HasValidValues() &&
+		s.StatsdInjector.HasValidValues())
 }

@@ -19,3 +19,8 @@ func (s *StatsdInjector) CreateJob() enaml.InstanceJob {
 		Properties: make(map[interface{}]interface{}),
 	}
 }
+
+//HasValidValues -
+func (s *StatsdInjector) HasValidValues() bool {
+	return true
+}
