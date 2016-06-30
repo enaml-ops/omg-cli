@@ -1,10 +1,7 @@
 package cloudfoundry
 
 import (
-	"fmt"
 	"strings"
-
-	"gopkg.in/yaml.v2"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
@@ -12,11 +9,7 @@ import (
 )
 
 //NewMySQLPartition -
-func NewMySQLPartition(c *cli.Context) (igf InstanceGrouper, err error) {
-	var seededDBs []MySQLSeededDatabase
-	if seededDBs, err = MySQLParseSeededDBs(c); err != nil {
-		return
-	}
+func NewMySQLPartition(c *cli.Context) (igf InstanceGrouper) {
 	igf = &MySQL{
 		AZs:                    c.StringSlice("az"),
 		StemcellName:           c.String("stemcell-name"),
@@ -33,19 +26,12 @@ func NewMySQLPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 		SyslogAddress:          c.String("syslog-address"),
 		SyslogPort:             c.Int("syslog-port"),
 		SyslogTransport:        c.String("syslog-transport"),
-		MySQLSeededDatabases:   seededDBs,
-	}
-
-	if !igf.HasValidValues() {
-		b, _ := yaml.Marshal(igf)
-		err = fmt.Errorf("invalid values in MySQL: %v", string(b))
-		igf = nil
+		MySQLSeededDatabases:   parseSeededDBs(c),
 	}
 	return
 }
 
-//MySQLParseSeededDBs -
-func MySQLParseSeededDBs(c *cli.Context) (dbs []MySQLSeededDatabase, err error) {
+func parseSeededDBs(c *cli.Context) (dbs []MySQLSeededDatabase) {
 	//TODO GOT TO BE A BETTER WAY
 	var dbName string
 	dbMap := make(map[string]MySQLSeededDatabase)

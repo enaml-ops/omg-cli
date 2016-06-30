@@ -9,17 +9,15 @@ import (
 
 var _ = Describe("MySQL Partition", func() {
 	Context("when initialized WITHOUT a complete set of arguments", func() {
-		It("then it should return the error and exit", func() {
+		It("then HasValidValues should be false", func() {
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
 			})
-			_, err := NewMySQLPartition(c)
-			Ω(err).ShouldNot(BeNil())
+			Ω(NewMySQLPartition(c).HasValidValues()).Should(Equal(false))
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
-		var err error
 		var mysqlPartition InstanceGrouper
 		BeforeEach(func() {
 			plugin := new(Plugin)
@@ -39,10 +37,10 @@ var _ = Describe("MySQL Partition", func() {
 				"--syslog-port", "10601",
 				"--syslog-transport", "tcp",
 			})
-			mysqlPartition, err = NewMySQLPartition(c)
+			mysqlPartition = NewMySQLPartition(c)
 		})
-		It("then it should not return an error", func() {
-			Ω(err).Should(BeNil())
+		It("then HasValidValues should be true", func() {
+			Ω(mysqlPartition.HasValidValues()).Should(Equal(true))
 		})
 		It("then it should allow the user to configure the mysql IPs", func() {
 			ig := mysqlPartition.ToInstanceGroup()
@@ -137,7 +135,7 @@ var _ = Describe("MySQL Partition", func() {
 					"--db-console-username", "console-username",
 					"--db-console-password", "console-password",
 				})
-				mysqlPartition, err = NewMySQLPartition(c)
+				mysqlPartition = NewMySQLPartition(c)
 			})
 			It("then it should not return an error", func() {
 				Ω(err).Should(BeNil())
