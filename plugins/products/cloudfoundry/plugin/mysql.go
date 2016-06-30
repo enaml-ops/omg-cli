@@ -2,6 +2,7 @@ package cloudfoundry
 
 import (
 	"fmt"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 
@@ -45,6 +46,46 @@ func NewMySQLPartition(c *cli.Context) (igf InstanceGrouper, err error) {
 
 //MySQLParseSeededDBs -
 func MySQLParseSeededDBs(c *cli.Context) (dbs []MySQLSeededDatabase, err error) {
+	//TODO GOT TO BE A BETTER WAY
+	var dbName string
+	dbMap := make(map[string]MySQLSeededDatabase)
+	for _, flag := range c.FlagNames() {
+		if strings.HasPrefix(flag, "db-") {
+			if c.IsSet(flag) {
+				baseName := strings.Replace(flag, "db-", "", 1)
+				if strings.HasSuffix(flag, "-password") {
+					dbName = strings.Replace(baseName, "-password", "", 1)
+					pwd := c.String(flag)
+					if seededDatabase, ok := dbMap[dbName]; ok {
+						seededDatabase.Password = pwd
+						dbMap[dbName] = seededDatabase
+					} else {
+						seededDatabase = MySQLSeededDatabase{
+							Name:     dbName,
+							Password: pwd,
+						}
+						dbMap[dbName] = seededDatabase
+					}
+				} else if strings.HasSuffix(flag, "-username") {
+					dbName = strings.Replace(baseName, "-username", "", 1)
+					userName := c.String(flag)
+					if seededDatabase, ok := dbMap[dbName]; ok {
+						seededDatabase.Username = userName
+						dbMap[dbName] = seededDatabase
+					} else {
+						seededDatabase = MySQLSeededDatabase{
+							Name:     dbName,
+							Username: userName,
+						}
+						dbMap[dbName] = seededDatabase
+					}
+				}
+			}
+		}
+	}
+	for _, value := range dbMap {
+		dbs = append(dbs, value)
+	}
 	return
 }
 
@@ -102,6 +143,6 @@ func (s *MySQL) HasValidValues() bool {
 		len(s.NetworkIPs) > 0 &&
 		s.PersistentDiskType != "" &&
 		s.AdminPassword != "" &&
-	s.BootstrapUsername != "" &&
-	s.BootstrapPassword != "")
+		s.BootstrapUsername != "" &&
+		s.BootstrapPassword != "")
 }

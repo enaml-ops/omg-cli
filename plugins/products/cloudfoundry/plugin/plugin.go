@@ -89,7 +89,12 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "nfs-server-address", Usage: "NFS Server address"},
 		cli.StringFlag{Name: "nfs-share-path", Usage: "NFS Share Path"},
 
-
+		cli.StringFlag{Name: "db-uaa-username", Usage: "uaa db username"},
+		cli.StringFlag{Name: "db-uaa-password", Usage: "uaa db password"},
+		cli.StringFlag{Name: "db-ccdb-username", Usage: "ccdb db username"},
+		cli.StringFlag{Name: "db-ccdb-password", Usage: "ccdb db password"},
+		cli.StringFlag{Name: "db-console-username", Usage: "console db username"},
+		cli.StringFlag{Name: "db-console-password", Usage: "console db password"},
 	}
 }
 
