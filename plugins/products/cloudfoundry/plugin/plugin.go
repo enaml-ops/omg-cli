@@ -113,6 +113,8 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "auctioneer-ca-cert", Usage: "auctioneer CA SSL cert (or a file containing it)"},
 		cli.StringFlag{Name: "auctioneer-client-cert", Usage: "auctioneer client SSL cert (or a file containing it)"},
 		cli.StringFlag{Name: "auctioneer-client-key", Usage: "auctioneer client SSL key (or a file containing it)"},
+
+		cli.StringFlag{Name: "bbs-api", Usage: "location of the bbs api"},
 	}
 }
 

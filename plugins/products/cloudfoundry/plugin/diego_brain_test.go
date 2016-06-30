@@ -56,6 +56,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--auctioneer-ca-cert", "cacert",
 				"--auctioneer-client-cert", "clientcert",
 				"--auctioneer-client-key", "clientkey",
+				"--bbs-api", "bbs.service.cf.internal:8889",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -107,13 +108,14 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(ig.Update.MaxInFlight).Should(Equal(1))
 		})
 
-		It("then it should allow the user to configure the auctioneer SSL", func() {
+		It("then it should allow the user to configure the auctioneer BBS", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("auctioneer")
 			a := job.Properties.(*auctioneer.Auctioneer)
 			Ω(a.Bbs.CaCert).Should(Equal("cacert"))
 			Ω(a.Bbs.ClientCert).Should(Equal("clientcert"))
 			Ω(a.Bbs.ClientKey).Should(Equal("clientkey"))
+			Ω(a.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
 		})
 	})
 })

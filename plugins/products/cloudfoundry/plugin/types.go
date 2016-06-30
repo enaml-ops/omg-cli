@@ -47,6 +47,7 @@ type diegoBrain struct {
 	AuctioneerCACert     string
 	AuctioneerClientCert string
 	AuctioneerClientKey  string
+	BBSAPILocation       string
 }
 
 // Consul -

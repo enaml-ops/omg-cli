@@ -45,6 +45,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		AuctioneerCACert:     caCert,
 		AuctioneerClientCert: clientCert,
 		AuctioneerClientKey:  clientKey,
+		BBSAPILocation:       c.String("bbs-api"),
 	}
 }
 
@@ -92,9 +93,10 @@ func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
 		Release: "diego",
 		Properties: &auctioneer.Auctioneer{
 			Bbs: &auctioneer.Bbs{
-				CaCert:     d.AuctioneerCACert,
-				ClientCert: d.AuctioneerClientCert,
-				ClientKey:  d.AuctioneerClientKey,
+				ApiLocation: d.BBSAPILocation,
+				CaCert:      d.AuctioneerCACert,
+				ClientCert:  d.AuctioneerClientCert,
+				ClientKey:   d.AuctioneerClientKey,
 			},
 		},
 	}
