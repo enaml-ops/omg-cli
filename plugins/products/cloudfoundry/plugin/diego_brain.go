@@ -3,6 +3,7 @@ package cloudfoundry
 import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/auctioneer"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cc_uploader"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/consul_agent"
@@ -15,16 +16,35 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/stager"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/statsd-injector"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/tps"
+	"github.com/xchapter7x/lo"
 )
 
 func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
+	caCert, err := pluginutil.LoadResourceFromContext(c, "auctioneer-ca-cert")
+	if err != nil {
+		lo.G.Panicf("auctioneer ca cert: %s\n", err.Error())
+	}
+
+	clientCert, err := pluginutil.LoadResourceFromContext(c, "auctioneer-client-cert")
+	if err != nil {
+		lo.G.Panicf("auctioneer client cert: %s\n", err.Error())
+	}
+
+	clientKey, err := pluginutil.LoadResourceFromContext(c, "auctioneer-client-key")
+	if err != nil {
+		lo.G.Panicf("auctioneer client key: %s\n", err.Error())
+	}
+
 	return &diegoBrain{
-		AZs:                c.StringSlice("az"),
-		StemcellName:       c.String("stemcell-name"),
-		NetworkName:        c.String("network"),
-		NetworkIPs:         c.StringSlice("diego-brain-ip"),
-		VMTypeName:         c.String("diego-brain-vm-type"),
-		PersistentDiskType: c.String("diego-brain-disk-type"),
+		AZs:                  c.StringSlice("az"),
+		StemcellName:         c.String("stemcell-name"),
+		VMTypeName:           c.String("diego-brain-vm-type"),
+		PersistentDiskType:   c.String("diego-brain-disk-type"),
+		NetworkName:          c.String("network"),
+		NetworkIPs:           c.StringSlice("diego-brain-ip"),
+		AuctioneerCACert:     caCert,
+		AuctioneerClientCert: clientCert,
+		AuctioneerClientKey:  clientKey,
 	}
 }
 
@@ -68,10 +88,14 @@ func (d *diegoBrain) HasValidValues() bool {
 
 func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "auctioneer",
-		Release:    "diego",
+		Name:    "auctioneer",
+		Release: "diego",
 		Properties: &auctioneer.Auctioneer{
-		// TODO
+			Bbs: &auctioneer.Bbs{
+				CaCert:     d.AuctioneerCACert,
+				ClientCert: d.AuctioneerClientCert,
+				ClientKey:  d.AuctioneerClientKey,
+			},
 		},
 	}
 }

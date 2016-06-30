@@ -110,6 +110,9 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringSliceFlag{Name: "diego-brain-ip", Usage: "a list of static IPs for the diego brain"},
 		cli.StringFlag{Name: "diego-brain-vm-type", Usage: "the name of the desired vm type for the diego brain"},
 		cli.StringFlag{Name: "diego-brain-disk-type", Usage: "the name of your desired persistent disk type for the diego brain"},
+		cli.StringFlag{Name: "auctioneer-ca-cert", Usage: "auctioneer CA SSL cert (or a file containing it)"},
+		cli.StringFlag{Name: "auctioneer-client-cert", Usage: "auctioneer client SSL cert (or a file containing it)"},
+		cli.StringFlag{Name: "auctioneer-client-key", Usage: "auctioneer client SSL key (or a file containing it)"},
 	}
 }
 

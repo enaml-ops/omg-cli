@@ -45,8 +45,6 @@ type diegoBrain struct {
 	NetworkName          string
 	NetworkIPs           []string
 	AuctioneerCACert     string
-	AuctioneerServerCert string
-	AuctioneerServerKey  string
 	AuctioneerClientCert string
 	AuctioneerClientKey  string
 }

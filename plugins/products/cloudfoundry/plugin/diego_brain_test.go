@@ -2,6 +2,7 @@ package cloudfoundry_test
 
 import (
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/auctioneer"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -52,6 +53,9 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--diego-brain-ip", "10.0.0.40",
 				"--diego-brain-vm-type", "brainvmtype",
 				"--diego-brain-disk-type", "braindisktype",
+				"--auctioneer-ca-cert", "cacert",
+				"--auctioneer-client-cert", "clientcert",
+				"--auctioneer-client-key", "clientkey",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -98,16 +102,18 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(len(ig.Networks[0].StaticIPs)).Should(Equal(ig.Instances))
 		})
 
-		// It("then it should allow the user to configure the auctioneer cert/key (from a file)", func() {
-		// 	ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
-		// 	job := ig.GetJobByName("auctioneer")
-		// 	a := job.Properties.(*auctioneer.Auctioneer)
-		// 	Ω(a.Bbs.CaCert).Should(Equal(string(certBytes)))
-		// })
-
 		It("then it should have update max-in-flight 1", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			Ω(ig.Update.MaxInFlight).Should(Equal(1))
+		})
+
+		It("then it should allow the user to configure the auctioneer SSL", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("auctioneer")
+			a := job.Properties.(*auctioneer.Auctioneer)
+			Ω(a.Bbs.CaCert).Should(Equal("cacert"))
+			Ω(a.Bbs.ClientCert).Should(Equal("clientcert"))
+			Ω(a.Bbs.ClientKey).Should(Equal("clientkey"))
 		})
 	})
 })
