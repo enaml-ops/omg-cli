@@ -37,6 +37,15 @@ type gorouter struct {
 	MetronSecret string
 }
 
+type diegoCell struct {
+	AZs                []string
+	StemcellName       string
+	VMTypeName         string
+	PersistentDiskType string
+	NetworkName        string
+	NetworkIPs         []string
+}
+
 type diegoBrain struct {
 	AZs                       []string
 	StemcellName              string

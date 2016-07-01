@@ -121,6 +121,11 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "db-console-username", Usage: "console db username"},
 		cli.StringFlag{Name: "db-console-password", Usage: "console db password"},
 
+		// Diego Cell
+		cli.StringSliceFlag{Name: "diego-cell-ip", Usage: "a list of static IPs for the diego brain"},
+		cli.StringFlag{Name: "diego-cell-vm-type", Usage: "the name of the desired vm type for the diego cell"},
+		cli.StringFlag{Name: "diego-cell-disk-type", Usage: "the name of your desired persistent disk type for the diego cell"},
+
 		// Diego Brain
 		cli.StringSliceFlag{Name: "diego-brain-ip", Usage: "a list of static IPs for the diego brain"},
 		cli.StringFlag{Name: "diego-brain-vm-type", Usage: "the name of the desired vm type for the diego brain"},
