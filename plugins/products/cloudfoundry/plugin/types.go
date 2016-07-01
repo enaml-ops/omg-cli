@@ -44,6 +44,10 @@ type diegoCell struct {
 	PersistentDiskType string
 	NetworkName        string
 	NetworkIPs         []string
+	ConsulAgent        *ConsulAgent
+	StatsdInjector     *StatsdInjector
+	Metron             *Metron
+	DiegoBrain         InstanceGrouper
 }
 
 type diegoBrain struct {

@@ -26,6 +26,22 @@ var _ = Describe("given a Diego Cell Partition", func() {
 					"--diego-cell-ip", "10.0.0.40",
 					"--diego-cell-vm-type", "cellvmtype",
 					"--diego-cell-disk-type", "celldisktype",
+					"--consul-ip", "1.0.0.1",
+					"--consul-ip", "1.0.0.2",
+					"--consul-vm-type", "blah",
+					"--consul-encryption-key", "encyption-key",
+					"--consul-ca-cert", "ca-cert",
+					"--consul-agent-cert", "agent-cert",
+					"--consul-agent-key", "agent-key",
+					"--consul-server-cert", "server-cert",
+					"--consul-server-key", "server-key",
+					"--metron-secret", "metronsecret",
+					"--metron-zone", "metronzoneguid",
+					"--syslog-address", "syslog-server",
+					"--syslog-port", "10601",
+					"--syslog-transport", "tcp",
+					"--etcd-machine-ip", "1.0.0.7",
+					"--etcd-machine-ip", "1.0.0.8",
 				})
 				grouper = NewDiegoCellPartition(c)
 				instanceGroup = grouper.ToInstanceGroup()
@@ -53,8 +69,11 @@ var _ = Describe("given a Diego Cell Partition", func() {
 
 			Describe("given a rep job", func() {
 				Context("when defined", func() {
+					var job *enaml.InstanceJob
+					BeforeEach(func() {
+						job = instanceGroup.GetJobByName("rep")
+					})
 					It("then it should use the correct release", func() {
-						job := instanceGroup.GetJobByName("rep")
 						Ω(job.Release).Should(Equal(DiegoReleaseName))
 					})
 				})
@@ -62,17 +81,27 @@ var _ = Describe("given a Diego Cell Partition", func() {
 
 			Describe("given a consul_agent job", func() {
 				Context("when defined", func() {
+					var job *enaml.InstanceJob
+					BeforeEach(func() {
+						job = instanceGroup.GetJobByName("consul_agent")
+					})
 					It("then it should use the correct release", func() {
-						job := instanceGroup.GetJobByName("consul_agent")
 						Ω(job.Release).Should(Equal(CFReleaseName))
+					})
+
+					It("then it should populate my properties", func() {
+						Ω(job.Properties).ShouldNot(BeNil())
 					})
 				})
 			})
 
 			Describe("given a cflinuxfs2-rootfs-setup job", func() {
 				Context("when defined", func() {
+					var job *enaml.InstanceJob
+					BeforeEach(func() {
+						job = instanceGroup.GetJobByName("cflinuxfs2-rootfs-setup")
+					})
 					It("then it should use the correct release", func() {
-						job := instanceGroup.GetJobByName("cflinuxfs2-rootfs-setup")
 						Ω(job.Release).Should(Equal(CFLinuxFSReleaseName))
 					})
 				})
@@ -80,8 +109,11 @@ var _ = Describe("given a Diego Cell Partition", func() {
 
 			Describe("given a garden job", func() {
 				Context("when defined", func() {
+					var job *enaml.InstanceJob
+					BeforeEach(func() {
+						job = instanceGroup.GetJobByName("garden")
+					})
 					It("then it should use the correct release", func() {
-						job := instanceGroup.GetJobByName("garden")
 						Ω(job.Release).Should(Equal(GardenReleaseName))
 					})
 				})
@@ -89,18 +121,31 @@ var _ = Describe("given a Diego Cell Partition", func() {
 
 			Describe("given a statsd-injector job", func() {
 				Context("when defined", func() {
+					var job *enaml.InstanceJob
+					BeforeEach(func() {
+						job = instanceGroup.GetJobByName("statsd-injector")
+					})
 					It("then it should use the correct release", func() {
-						job := instanceGroup.GetJobByName("statsd-injector")
 						Ω(job.Release).Should(Equal(CFReleaseName))
+					})
+
+					It("then it should populate my properties", func() {
+						Ω(job.Properties).ShouldNot(BeNil())
 					})
 				})
 			})
 
 			Describe("given a metron_agent job", func() {
 				Context("when defined", func() {
+					var job *enaml.InstanceJob
+					BeforeEach(func() {
+						job = instanceGroup.GetJobByName("metron_agent")
+					})
 					It("then it should use the correct release", func() {
-						job := instanceGroup.GetJobByName("metron_agent")
 						Ω(job.Release).Should(Equal(CFReleaseName))
+					})
+					It("then it should populate my properties", func() {
+						Ω(job.Properties).ShouldNot(BeNil())
 					})
 				})
 			})
