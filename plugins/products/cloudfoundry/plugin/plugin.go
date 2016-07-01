@@ -126,6 +126,10 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "doppler-zone", Usage: "the name zone for doppler"},
 		cli.IntFlag{Name: "doppler-drain-buffer-size", Usage: "message drain buffer size"},
 		cli.StringFlag{Name: "doppler-shared-secret", Usage: "doppler shared secret"},
+
+		//UAA
+		cli.StringFlag{Name: "uaa-vm-type", Usage: "the name of your desired vm size for uaa"},
+		cli.IntFlag{Name: "uaa-instances", Usage: "the number of your desired vms for uaa"},
 	}
 }
 
