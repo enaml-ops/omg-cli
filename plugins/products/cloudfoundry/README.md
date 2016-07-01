@@ -1,11 +1,13 @@
-# CF Shortcut Product Plugin 
+# CF Product Plugin 
 ```
-this product is a shortcut to a cf product plugin. Its intent is to demonstrate
-a organic migration approach from existing yaml based implementations. 
-This is to be used as an example of how to enamlize an existing deployment 
-without a wholesale re-write.
+This is a product plugin for Elastic Runtime (CF)
 
-We use an existing deployment manifest to initialize an
-enaml.DeploymentManifest. From there we can leverage all of the power of enaml,
-without coding up the boilerplate stuff upfront. Hence shortcut :)
+The compiled version of this will
+be runnable (like a tile) from the omg-cli
+as a plugin.
+
+Once executed it will spin up a cloud foundry
+on whatever iaas your target bosh is
+configured for.
+
 ```
