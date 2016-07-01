@@ -5,6 +5,8 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/auctioneer"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cc_uploader"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/converger"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/file_server"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nsync"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -61,6 +63,16 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--bbs-api", "bbs.service.cf.internal:8889",
 				"--skip-cert-verify",
 				"--cc-uploader-poll-interval", "25",
+				"--system-domain", "sys.test.com",
+				"--cc-internal-api-user", "internaluser",
+				"--cc-internal-api-password", "internalpassword",
+				"--cc-bulk-batch-size", "5",
+				"--cc-fetch-timeout", "30",
+				"--fs-listen-addr", "0.0.0.0:12345",
+				"--fs-static-dir", "/foo/bar/baz",
+				"--fs-debug-addr", "10.0.1.2:22222",
+				"--fs-log-level", "debug",
+				"--metron-port", "3458",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -138,6 +150,37 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(c.Bbs.CaCert).Should(Equal("cacert"))
 			Ω(c.Bbs.ClientCert).Should(Equal("clientcert"))
 			Ω(c.Bbs.ClientKey).Should(Equal("clientkey"))
+		})
+
+		It("then it should allow the user to configure the file server", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("file_server")
+			fs := job.Properties.(*file_server.FileServer)
+
+			Ω(fs.Diego.Ssl.SkipCertVerify).Should(BeTrue())
+
+			Ω(fs.ListenAddr).Should(Equal("0.0.0.0:12345"))
+			Ω(fs.StaticDirectory).Should(Equal("/foo/bar/baz"))
+			Ω(fs.DebugAddr).Should(Equal("10.0.1.2:22222"))
+			Ω(fs.LogLevel).Should(Equal("debug"))
+			Ω(fs.DropsondePort).Should(Equal(3458))
+		})
+
+		It("then it should allow the user to configure nsync", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("nsync")
+			n := job.Properties.(*nsync.Nsync)
+			Ω(n.Diego.Ssl.SkipCertVerify).Should(BeTrue())
+			Ω(n.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
+			Ω(n.Bbs.CaCert).Should(Equal("cacert"))
+			Ω(n.Bbs.ClientCert).Should(Equal("clientcert"))
+			Ω(n.Bbs.ClientKey).Should(Equal("clientkey"))
+			Ω(n.Cc.BaseUrl).Should(Equal("https://api.sys.test.com"))
+			Ω(n.Cc.BasicAuthUsername).Should(Equal("internaluser"))
+			Ω(n.Cc.BasicAuthPassword).Should(Equal("internalpassword"))
+			Ω(n.Cc.BulkBatchSize).Should(Equal(5))
+			Ω(n.Cc.FetchTimeoutInSeconds).Should(Equal(30))
+			Ω(n.Cc.PollingIntervalInSeconds).Should(Equal(25))
 		})
 	})
 })

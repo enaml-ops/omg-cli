@@ -50,6 +50,16 @@ type diegoBrain struct {
 	BBSAPILocation            string
 	SkipSSLCertVerify         bool
 	CCUploaderJobPollInterval int
+	CCInternalAPIUser         string
+	CCInternalAPIPassword     string
+	CCBulkBatchSize           int
+	CCFetchTimeout            int
+	SystemDomain              string
+	FSListenAddr              string
+	FSStaticDirectory         string
+	FSDebugAddr               string
+	FSLogLevel                string
+	MetronPort                int
 }
 
 // Consul -

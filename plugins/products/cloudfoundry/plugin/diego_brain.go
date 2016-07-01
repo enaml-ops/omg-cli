@@ -1,6 +1,8 @@
 package cloudfoundry
 
 import (
+	"strings"
+
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/pluginlib/util"
@@ -48,6 +50,16 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		BBSAPILocation:            c.String("bbs-api"),
 		SkipSSLCertVerify:         c.Bool("skip-cert-verify"),
 		CCUploaderJobPollInterval: c.Int("cc-uploader-poll-interval"),
+		SystemDomain:              c.String("system-domain"),
+		CCInternalAPIUser:         c.String("cc-internal-api-user"),
+		CCInternalAPIPassword:     c.String("cc-internal-api-password"),
+		CCFetchTimeout:            c.Int("cc-fetch-timeout"),
+		CCBulkBatchSize:           c.Int("cc-bulk-batch-size"),
+		FSListenAddr:              c.String("fs-listen-addr"),
+		FSStaticDirectory:         c.String("fs-static-dir"),
+		FSDebugAddr:               c.String("fs-debug-addr"),
+		FSLogLevel:                c.String("fs-log-level"),
+		MetronPort:                c.Int("metron-port"),
 	}
 }
 
@@ -92,7 +104,9 @@ func (d *diegoBrain) HasValidValues() bool {
 		d.BBSClientCert != "" &&
 		d.BBSClientKey != "" &&
 		d.BBSAPILocation != "" &&
-		d.CCUploaderJobPollInterval > 0
+		d.CCInternalAPIUser != "" &&
+		d.CCInternalAPIPassword != "" &&
+		d.SystemDomain != ""
 }
 
 func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
@@ -142,20 +156,51 @@ func (d *diegoBrain) newConverger() *enaml.InstanceJob {
 
 func (d *diegoBrain) newFileServer() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "file_server",
-		Release:    "diego",
+		Name:    "file_server",
+		Release: "diego",
 		Properties: &file_server.FileServer{
-		// TODO
+			Diego: &file_server.Diego{
+				Ssl: &file_server.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+			},
+			ListenAddr:      d.FSListenAddr,
+			DebugAddr:       d.FSDebugAddr,
+			LogLevel:        d.FSLogLevel,
+			StaticDirectory: d.FSStaticDirectory,
+			DropsondePort:   d.MetronPort,
 		},
 	}
 }
 
 func (d *diegoBrain) newNsync() *enaml.InstanceJob {
+	// construct API URL from system domain,
+	// stripping leading "https://" if necessary
+	sys := d.SystemDomain
+	if strings.HasPrefix(sys, "https://") {
+		sys = sys[len("https://"):]
+	}
+	api := "https://api." + sys
+
 	return &enaml.InstanceJob{
-		Name:       "nsync",
-		Release:    "diego",
+		Name:    "nsync",
+		Release: "diego",
 		Properties: &nsync.Nsync{
-		// TODO
+			Bbs: &nsync.Bbs{
+				ApiLocation: d.BBSAPILocation,
+				CaCert:      d.BBSCACert,
+				ClientCert:  d.BBSClientCert,
+				ClientKey:   d.BBSClientKey,
+			},
+			Cc: &nsync.Cc{
+				BaseUrl:                  api,
+				BasicAuthUsername:        d.CCInternalAPIUser,
+				BasicAuthPassword:        d.CCInternalAPIPassword,
+				BulkBatchSize:            d.CCBulkBatchSize,
+				FetchTimeoutInSeconds:    d.CCFetchTimeout,
+				PollingIntervalInSeconds: d.CCUploaderJobPollInterval,
+			},
+			Diego: &nsync.Diego{
+				Ssl: &nsync.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+			},
 		},
 	}
 }
