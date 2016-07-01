@@ -210,6 +210,32 @@ type CloudControllerWorkerPartition struct {
 	InternalAPIPassword   string
 }
 
+//CloudControllerPartition - Cloud Controller Partition
+type CloudControllerPartition struct {
+	AZs                   []string
+	VMTypeName            string
+	StemcellName          string
+	NetworkName           string
+	SystemDomain          string
+	AppDomains            []string
+	AllowedCorsDomains    []string
+	AllowAppSSHAccess     bool
+	Metron                *Metron
+	ConsulAgent           *ConsulAgent
+	StatsdInjector        *StatsdInjector
+	NFSMounter            *NFSMounter
+	StagingUploadUser     string
+	StagingUploadPassword string
+	BulkAPIUser           string
+	BulkAPIPassword       string
+	DbEncryptionKey       string
+	InternalAPIUser       string
+	InternalAPIPassword   string
+	HostKeyFingerprint    string
+	SupportAddress        string
+	MinCliVersion         string
+}
+
 //Doppler -
 type Doppler struct {
 	AZs                    []string
