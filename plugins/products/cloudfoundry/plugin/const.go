@@ -7,6 +7,15 @@ const (
 	StemcellName = "ubuntu-trusty"
 	//StemcellAlias -
 	StemcellAlias = "trusty"
+
+	//CFLinuxFSReleaseName -
+	CFLinuxFSReleaseName = "cflinuxfs2-rootfs"
+
+	//GardenReleaseName
+	GardenReleaseName = "garden-linux"
+
+	//DiegoReleaseName
+	DiegoReleaseName = "diego"
 )
 
 var (

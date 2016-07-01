@@ -32,12 +32,12 @@ func (s *diegoCell) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 			MaxInFlight: 1,
 		},
 	}
-	ig.AddJob(&enaml.InstanceJob{Name: "rep"})
-	ig.AddJob(&enaml.InstanceJob{Name: "consul_agent"})
-	ig.AddJob(&enaml.InstanceJob{Name: "cflinuxfs2-rootfs-setup"})
-	ig.AddJob(&enaml.InstanceJob{Name: "garden"})
-	ig.AddJob(&enaml.InstanceJob{Name: "statsd-injector"})
-	ig.AddJob(&enaml.InstanceJob{Name: "metron_agent"})
+	ig.AddJob(&enaml.InstanceJob{Name: "rep", Release: DiegoReleaseName})
+	ig.AddJob(&enaml.InstanceJob{Name: "consul_agent", Release: CFReleaseName})
+	ig.AddJob(&enaml.InstanceJob{Name: "cflinuxfs2-rootfs-setup", Release: CFLinuxFSReleaseName})
+	ig.AddJob(&enaml.InstanceJob{Name: "garden", Release: GardenReleaseName})
+	ig.AddJob(&enaml.InstanceJob{Name: "statsd-injector", Release: CFReleaseName})
+	ig.AddJob(&enaml.InstanceJob{Name: "metron_agent", Release: CFReleaseName})
 	return
 }
 

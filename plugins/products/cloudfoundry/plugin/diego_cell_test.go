@@ -50,6 +50,60 @@ var _ = Describe("given a Diego Cell Partition", func() {
 				Ω(instanceGroup.GetJobByName("statsd-injector")).ShouldNot(BeNil())
 				Ω(instanceGroup.GetJobByName("metron_agent")).ShouldNot(BeNil())
 			})
+
+			Describe("given a rep job", func() {
+				Context("when defined", func() {
+					It("then it should use the correct release", func() {
+						job := instanceGroup.GetJobByName("rep")
+						Ω(job.Release).Should(Equal(DiegoReleaseName))
+					})
+				})
+			})
+
+			Describe("given a consul_agent job", func() {
+				Context("when defined", func() {
+					It("then it should use the correct release", func() {
+						job := instanceGroup.GetJobByName("consul_agent")
+						Ω(job.Release).Should(Equal(CFReleaseName))
+					})
+				})
+			})
+
+			Describe("given a cflinuxfs2-rootfs-setup job", func() {
+				Context("when defined", func() {
+					It("then it should use the correct release", func() {
+						job := instanceGroup.GetJobByName("cflinuxfs2-rootfs-setup")
+						Ω(job.Release).Should(Equal(CFLinuxFSReleaseName))
+					})
+				})
+			})
+
+			Describe("given a garden job", func() {
+				Context("when defined", func() {
+					It("then it should use the correct release", func() {
+						job := instanceGroup.GetJobByName("garden")
+						Ω(job.Release).Should(Equal(GardenReleaseName))
+					})
+				})
+			})
+
+			Describe("given a statsd-injector job", func() {
+				Context("when defined", func() {
+					It("then it should use the correct release", func() {
+						job := instanceGroup.GetJobByName("statsd-injector")
+						Ω(job.Release).Should(Equal(CFReleaseName))
+					})
+				})
+			})
+
+			Describe("given a metron_agent job", func() {
+				Context("when defined", func() {
+					It("then it should use the correct release", func() {
+						job := instanceGroup.GetJobByName("metron_agent")
+						Ω(job.Release).Should(Equal(CFReleaseName))
+					})
+				})
+			})
 		})
 	})
 })
