@@ -50,6 +50,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringSliceFlag{Name: "etcd-machine-ip", Usage: "ip of a etcd node vm"},
 		cli.StringFlag{Name: "metron-zone", Usage: "zone guid for the metron agent"},
 		cli.StringFlag{Name: "metron-secret", Usage: "shared secret for the metron agent endpoint"},
+		cli.IntFlag{Name: "metron-port", Usage: "local metron agent's port"},
 		cli.StringSliceFlag{Name: "consul-ip", Usage: "a list of the consul ips you wish to use"},
 		cli.StringFlag{Name: "consul-vm-type", Usage: "the name of your desired vm size for consul"},
 		cli.StringSliceFlag{Name: "consul-encryption-key", Usage: "encryption key for consul"},
@@ -90,9 +91,13 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "cc-staging-upload-password", Usage: "password for staging upload"},
 		cli.StringFlag{Name: "cc-bulk-api-user", Usage: "user name for bulk api calls"},
 		cli.StringFlag{Name: "cc-bulk-api-password", Usage: "password for bulk api calls"},
+		cli.IntFlag{Name: "cc-bulk-batch-size", Usage: "number of apps to fetch at once from bulk API"},
 		cli.StringFlag{Name: "cc-db-encryption-key", Usage: "Cloud Controller DB encryption key"},
 		cli.StringFlag{Name: "cc-internal-api-user", Usage: "user name for Internal API calls"},
 		cli.StringFlag{Name: "cc-internal-api-password", Usage: "password for Internal API calls"},
+		cli.IntFlag{Name: "cc-uploader-poll-interval", Usage: "CC uploader job polling interval, in seconds"},
+		cli.IntFlag{Name: "cc-fetch-timeout", Usage: "how long to wait for completion of requests to CC, in seconds"},
+
 		cli.StringFlag{Name: "system-domain", Usage: "System Domain"},
 		cli.StringSliceFlag{Name: "app-domain", Usage: "Applications Domain"},
 		cli.StringFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH Access?"},
@@ -118,7 +123,10 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 
 		cli.BoolFlag{Name: "skip-cert-verify", Usage: "ignore bad SSL certificates when connecting over HTTPS"},
 
-		cli.IntFlag{Name: "cc-uploader-poll-interval", Usage: "CC uploader job polling interval, in seconds"},
+		cli.StringFlag{Name: "fs-listen-addr", Usage: "address of interface on which to serve files"},
+		cli.StringFlag{Name: "fs-static-dir", Usage: "fully qualified path to the doc root for the file server's static files"},
+		cli.StringFlag{Name: "fs-debug-addr", Usage: "address at which to serve debug info"},
+		cli.StringFlag{Name: "fs-log-level", Usage: "file server log level"},
 	}
 }
 
