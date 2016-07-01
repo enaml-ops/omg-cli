@@ -121,7 +121,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "bbs-client-key", Usage: "BBS client SSL key (or a file containing it)"},
 		cli.StringFlag{Name: "bbs-api", Usage: "location of the bbs api"},
 
-		cli.BoolFlag{Name: "skip-cert-verify", Usage: "ignore bad SSL certificates when connecting over HTTPS"},
+		cli.BoolTFlag{Name: "skip-cert-verify", Usage: "ignore bad SSL certificates when connecting over HTTPS"},
 
 		cli.StringFlag{Name: "fs-listen-addr", Usage: "address of interface on which to serve files"},
 		cli.StringFlag{Name: "fs-static-dir", Usage: "fully qualified path to the doc root for the file server's static files"},

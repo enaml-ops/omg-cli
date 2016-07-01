@@ -11,10 +11,6 @@ import (
 
 //NewDopplerPartition -
 func NewDopplerPartition(c *cli.Context) InstanceGrouper {
-	skipSSL := true
-	if c.IsSet("skip-cert-verify") {
-		skipSSL = c.Bool("skip-cert-verify")
-	}
 	return &Doppler{
 		AZs:            c.StringSlice("az"),
 		StemcellName:   c.String("stemcell-name"),
@@ -28,7 +24,7 @@ func NewDopplerPartition(c *cli.Context) InstanceGrouper {
 		SharedSecret:           c.String("doppler-shared-secret"),
 		SystemDomain:           c.String("system-domain"),
 		CCBuilkAPIPassword:     c.String("cc-bulk-api-password"),
-		SkipSSLCertify:         skipSSL,
+		SkipSSLCertify:         c.BoolT("skip-cert-verify"),
 		EtcdMachines:           c.StringSlice("etcd-machine-ip"),
 	}
 }

@@ -61,7 +61,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--bbs-client-cert", "clientcert",
 				"--bbs-client-key", "clientkey",
 				"--bbs-api", "bbs.service.cf.internal:8889",
-				"--skip-cert-verify",
+				"--skip-cert-verify=false",
 				"--cc-uploader-poll-interval", "25",
 				"--system-domain", "sys.test.com",
 				"--cc-internal-api-user", "internaluser",
@@ -138,7 +138,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("cc_uploader")
 			cc := job.Properties.(*cc_uploader.CcUploader)
-			Ω(cc.Diego.Ssl.SkipCertVerify).Should(Equal(true))
+			Ω(cc.Diego.Ssl.SkipCertVerify).Should(BeFalse())
 			Ω(cc.Cc.JobPollingIntervalInSeconds).Should(Equal(25))
 		})
 
@@ -157,7 +157,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			job := ig.GetJobByName("file_server")
 			fs := job.Properties.(*file_server.FileServer)
 
-			Ω(fs.Diego.Ssl.SkipCertVerify).Should(BeTrue())
+			Ω(fs.Diego.Ssl.SkipCertVerify).Should(BeFalse())
 
 			Ω(fs.ListenAddr).Should(Equal("0.0.0.0:12345"))
 			Ω(fs.StaticDirectory).Should(Equal("/foo/bar/baz"))
@@ -170,7 +170,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("nsync")
 			n := job.Properties.(*nsync.Nsync)
-			Ω(n.Diego.Ssl.SkipCertVerify).Should(BeTrue())
+			Ω(n.Diego.Ssl.SkipCertVerify).Should(BeFalse())
 			Ω(n.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
 			Ω(n.Bbs.CaCert).Should(Equal("cacert"))
 			Ω(n.Bbs.ClientCert).Should(Equal("clientcert"))

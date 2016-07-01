@@ -48,7 +48,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		BBSClientCert:             clientCert,
 		BBSClientKey:              clientKey,
 		BBSAPILocation:            c.String("bbs-api"),
-		SkipSSLCertVerify:         c.Bool("skip-cert-verify"),
+		SkipSSLCertVerify:         c.BoolT("skip-cert-verify"),
 		CCUploaderJobPollInterval: c.Int("cc-uploader-poll-interval"),
 		SystemDomain:              c.String("system-domain"),
 		CCInternalAPIUser:         c.String("cc-internal-api-user"),
