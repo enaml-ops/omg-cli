@@ -18,7 +18,7 @@ func init() {
 	RegisterInstanceGrouperFactory(NewGoRouterPartition)
 	RegisterInstanceGrouperFactory(NewMySQLProxyPartition)
 	RegisterInstanceGrouperFactory(NewMySQLPartition)
-	//cloud_controller-partition
+	RegisterInstanceGrouperFactory(NewCloudControllerPartition)
 	//ha_proxy-partition
 	//clock_global-partition
 	RegisterInstanceGrouperFactory(NewCloudControllerWorkerPartition)
@@ -109,6 +109,11 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "cc-internal-api-password", Usage: "password for Internal API calls"},
 		cli.IntFlag{Name: "cc-uploader-poll-interval", Usage: "CC uploader job polling interval, in seconds"},
 		cli.IntFlag{Name: "cc-fetch-timeout", Usage: "how long to wait for completion of requests to CC, in seconds"},
+		cli.StringFlag{Name: "cc-vm-type", Usage: "Cloud Controller VM Type"},
+		cli.StringFlag{Name: "host-key-fingerprint", Usage: "Host Key Fingerprint"},
+		cli.StringFlag{Name: "support-address", Usage: "Support URL"},
+		cli.StringFlag{Name: "min-cli-version", Usage: "Min CF CLI Version supported"},
+
 
 		cli.StringFlag{Name: "db-uaa-username", Usage: "uaa db username"},
 		cli.StringFlag{Name: "db-uaa-password", Usage: "uaa db password"},
