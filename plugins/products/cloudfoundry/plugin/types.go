@@ -83,6 +83,7 @@ type ConsulAgent struct {
 	ServerCert  string
 	ServerKey   string
 	NetworkIPs  []string
+	Mode        string
 }
 
 //Etcd -
@@ -206,6 +207,24 @@ type CloudControllerWorkerPartition struct {
 	DbEncryptionKey       string
 	InternalAPIUser       string
 	InternalAPIPassword   string
+}
+
+//Doppler -
+type Doppler struct {
+	AZs                    []string
+	StemcellName           string
+	VMTypeName             string
+	NetworkName            string
+	NetworkIPs             []string
+	Metron                 *Metron
+	StatsdInjector         *StatsdInjector
+	Zone                   string
+	MessageDrainBufferSize int
+	SharedSecret           string
+	SystemDomain           string
+	CCBuilkAPIPassword     string
+	SkipSSLCertify         bool
+	EtcdMachines           []string
 }
 
 //Plugin -

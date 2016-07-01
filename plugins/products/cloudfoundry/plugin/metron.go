@@ -56,3 +56,8 @@ func (s *Metron) CreateJob() enaml.InstanceJob {
 		},
 	}
 }
+
+//HasValidValues -
+func (s *Metron) HasValidValues() bool {
+	return (s.Zone != "" && s.Secret != "")
+}

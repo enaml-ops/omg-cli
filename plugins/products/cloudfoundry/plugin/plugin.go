@@ -127,6 +127,14 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "fs-static-dir", Usage: "fully qualified path to the doc root for the file server's static files"},
 		cli.StringFlag{Name: "fs-debug-addr", Usage: "address at which to serve debug info"},
 		cli.StringFlag{Name: "fs-log-level", Usage: "file server log level"},
+		cli.IntFlag{Name: "cc-uploader-poll-interval", Usage: "CC uploader job polling interval, in seconds"},
+
+		//Doppler
+		cli.StringSliceFlag{Name: "doppler-ip", Usage: "a list of the doppler ips you wish to use"},
+		cli.StringFlag{Name: "doppler-vm-type", Usage: "the name of your desired vm size for doppler"},
+		cli.StringFlag{Name: "doppler-zone", Usage: "the name zone for doppler"},
+		cli.IntFlag{Name: "doppler-drain-buffer-size", Usage: "message drain buffer size"},
+		cli.StringFlag{Name: "doppler-shared-secret", Usage: "doppler shared secret"},
 	}
 }
 
