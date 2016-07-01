@@ -38,7 +38,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "network", Usage: "the name of the network to use"},
 		cli.StringFlag{Name: "system-domain", Usage: "System Domain"},
 		cli.StringSliceFlag{Name: "app-domain", Usage: "Applications Domain"},
-		cli.StringFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH Access?"},
+		cli.BoolFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH access for CF applications"},
 
 		cli.StringSliceFlag{Name: "router-ip", Usage: "a list of the router ips you wish to use"},
 		cli.StringFlag{Name: "router-vm-type", Usage: "the name of your desired vm size"},
@@ -114,7 +114,6 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "support-address", Usage: "Support URL"},
 		cli.StringFlag{Name: "min-cli-version", Usage: "Min CF CLI Version supported"},
 
-
 		cli.StringFlag{Name: "db-uaa-username", Usage: "uaa db username"},
 		cli.StringFlag{Name: "db-uaa-password", Usage: "uaa db password"},
 		cli.StringFlag{Name: "db-ccdb-username", Usage: "ccdb db username"},
@@ -139,6 +138,9 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "fs-static-dir", Usage: "fully qualified path to the doc root for the file server's static files"},
 		cli.StringFlag{Name: "fs-debug-addr", Usage: "address at which to serve debug info"},
 		cli.StringFlag{Name: "fs-log-level", Usage: "file server log level"},
+
+		cli.IntFlag{Name: "cc-external-port", Usage: "external port of the Cloud Controller API"},
+		cli.StringFlag{Name: "ssh-proxy-uaa-secret", Usage: "the OAuth client secret used to authenticate the SSH proxy"},
 
 		//Doppler
 		cli.StringSliceFlag{Name: "doppler-ip", Usage: "a list of the doppler ips you wish to use"},

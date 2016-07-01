@@ -1,6 +1,7 @@
 package cloudfoundry
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/codegangsta/cli"
@@ -65,6 +66,9 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		NATSPassword:              c.String("nats-pass"),
 		NATSPort:                  c.Int("nats-port"),
 		NATSMachines:              c.StringSlice("nats-machine-ip"),
+		AllowSSHAccess:            c.Bool("allow-app-ssh-access"),
+		SSHProxyClientSecret:      c.String("ssh-proxy-uaa-secret"),
+		CCExternalPort:            c.Int("cc-external-port"),
 	}
 }
 
@@ -177,14 +181,6 @@ func (d *diegoBrain) newFileServer() *enaml.InstanceJob {
 }
 
 func (d *diegoBrain) newNsync() *enaml.InstanceJob {
-	// construct API URL from system domain,
-	// stripping leading "https://" if necessary
-	sys := d.SystemDomain
-	if strings.HasPrefix(sys, "https://") {
-		sys = sys[len("https://"):]
-	}
-	api := "https://api." + sys
-
 	return &enaml.InstanceJob{
 		Name:    "nsync",
 		Release: "diego",
@@ -196,7 +192,7 @@ func (d *diegoBrain) newNsync() *enaml.InstanceJob {
 				ClientKey:   d.BBSClientKey,
 			},
 			Cc: &nsync.Cc{
-				BaseUrl:                  api,
+				BaseUrl:                  prefixSystemDomain(d.SystemDomain, "api"),
 				BasicAuthUsername:        d.CCInternalAPIUser,
 				BasicAuthPassword:        d.CCInternalAPIPassword,
 				BulkBatchSize:            d.CCBulkBatchSize,
@@ -234,10 +230,26 @@ func (d *diegoBrain) newRouteEmitter() *enaml.InstanceJob {
 
 func (d *diegoBrain) newSSHProxy() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "ssh_proxy",
-		Release:    "diego",
+		Name:    "ssh_proxy",
+		Release: "diego",
 		Properties: &ssh_proxy.SshProxy{
-		// TODO
+			Bbs: &ssh_proxy.Bbs{
+				ApiLocation: d.BBSAPILocation,
+				CaCert:      d.BBSCACert,
+				ClientCert:  d.BBSClientCert,
+				ClientKey:   d.BBSClientKey,
+				RequireSsl:  d.BBSRequireSSL,
+			},
+			Cc: &ssh_proxy.Cc{
+				ExternalPort: d.CCExternalPort,
+			},
+			Diego: &ssh_proxy.Diego{
+				Ssl: &ssh_proxy.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+			},
+			EnableCfAuth:    d.AllowSSHAccess,
+			EnableDiegoAuth: d.AllowSSHAccess,
+			UaaSecret:       d.SSHProxyClientSecret,
+			UaaTokenUrl:     prefixSystemDomain(d.SystemDomain, "uaa") + "/oauth/token",
 		},
 	}
 }
@@ -291,4 +303,17 @@ func (d *diegoBrain) newStatsdInjector() *enaml.InstanceJob {
 		// TODO
 		},
 	}
+}
+
+// prefixSystemDomain adds a prefix to the system domain.
+// For example:
+//     prefixSystemDomain("https://sys.yourdomain.com", "uaa")
+// would return 'https://uaa.sys.yourdomain.com'.
+func prefixSystemDomain(domain, prefix string) string {
+	d := domain
+	// strip leading https:// if necessary
+	if strings.HasPrefix(d, "https://") {
+		d = d[len("https://"):]
+	}
+	return fmt.Sprintf("https://%s.%s", prefix, d)
 }

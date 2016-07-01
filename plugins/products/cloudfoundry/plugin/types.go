@@ -65,6 +65,9 @@ type diegoBrain struct {
 	NATSPassword              string
 	NATSPort                  int
 	NATSMachines              []string
+	AllowSSHAccess            bool
+	SSHProxyClientSecret      string
+	CCExternalPort            int
 }
 
 // Consul -

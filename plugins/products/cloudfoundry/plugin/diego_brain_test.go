@@ -8,6 +8,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/file_server"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nsync"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_emitter"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/ssh_proxy"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -54,6 +55,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--az", "eastprod-1",
 				"--stemcell-name", "cool-ubuntu-animal",
 				"--network", "foundry-net",
+				"--allow-app-ssh-access",
 				"--diego-brain-ip", "10.0.0.39",
 				"--diego-brain-ip", "10.0.0.40",
 				"--diego-brain-vm-type", "brainvmtype",
@@ -65,6 +67,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--bbs-require-ssl=false",
 				"--skip-cert-verify=false",
 				"--cc-uploader-poll-interval", "25",
+				"--cc-external-port", "9023",
 				"--system-domain", "sys.test.com",
 				"--cc-internal-api-user", "internaluser",
 				"--cc-internal-api-password", "internalpassword",
@@ -80,6 +83,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--nats-pass", "natspass",
 				"--nats-machine-ip", "10.0.0.11",
 				"--nats-machine-ip", "10.0.0.12",
+				"--ssh-proxy-uaa-secret", "secret",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -204,6 +208,23 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(r.Nats.Port).Should(Equal(1234))
 			Ω(r.Nats.Machines).Should(ContainElement("10.0.0.11"))
 			Ω(r.Nats.Machines).Should(ContainElement("10.0.0.12"))
+		})
+
+		It("then it should allow the user to configure the SSH proxy", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("ssh_proxy")
+			s := job.Properties.(*ssh_proxy.SshProxy)
+			Ω(s.Diego.Ssl.SkipCertVerify).Should(BeFalse())
+			Ω(s.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
+			Ω(s.Bbs.CaCert).Should(Equal("cacert"))
+			Ω(s.Bbs.ClientCert).Should(Equal("clientcert"))
+			Ω(s.Bbs.ClientKey).Should(Equal("clientkey"))
+			Ω(s.Bbs.RequireSsl).Should(BeFalse())
+			Ω(s.EnableCfAuth).Should(BeTrue())    // tied to allow-app-ssh-access
+			Ω(s.EnableDiegoAuth).Should(BeTrue()) // tied to allow-app-ssh-access
+			Ω(s.Cc.ExternalPort).Should(Equal(9023))
+			Ω(s.UaaTokenUrl).Should(Equal("https://uaa.sys.test.com/oauth/token"))
+			Ω(s.UaaSecret).Should(Equal("secret"))
 		})
 	})
 })

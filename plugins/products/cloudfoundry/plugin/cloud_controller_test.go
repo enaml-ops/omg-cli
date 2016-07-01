@@ -11,7 +11,7 @@ import (
 	ccnglib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cloud_controller_ng"
 )
 
-var _ = Describe("Cloud Controller Partition", func(){
+var _ = Describe("Cloud Controller Partition", func() {
 	Context("When initialized with a complete set of arguments", func() {
 		var cloudController InstanceGrouper
 
@@ -40,7 +40,7 @@ var _ = Describe("Cloud Controller Partition", func(){
 				"--cc-internal-api-password", "internalapipassword",
 				"--system-domain", "sys.yourdomain.com",
 				"--app-domain", "apps.yourdomain.com",
-				"--allow-app-ssh-access", "true",
+				"--allow-app-ssh-access",
 				"--nfs-server-address", "10.0.0.19",
 				"--nfs-share-path", "/var/vcap/nfs",
 				"--metron-secret", "metronsecret",

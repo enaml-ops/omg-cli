@@ -37,7 +37,7 @@ var _ = Describe("Cloud Controller Worker Partition", func() {
 				"--cc-internal-api-password", "internalapipassword",
 				"--system-domain", "sys.yourdomain.com",
 				"--app-domain", "apps.yourdomain.com",
-				"--allow-app-ssh-access", "true",
+				"--allow-app-ssh-access",
 				"--nfs-server-address", "10.0.0.19",
 				"--nfs-share-path", "/var/vcap/nfs",
 				"--metron-secret", "metronsecret",
