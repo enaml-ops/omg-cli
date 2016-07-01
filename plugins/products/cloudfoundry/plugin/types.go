@@ -74,6 +74,7 @@ type ConsulAgent struct {
 	ServerKey   string
 	NetworkIPs  []string
 	Mode        string
+	Services    []string
 }
 
 //Etcd -
@@ -215,6 +216,17 @@ type Doppler struct {
 	CCBuilkAPIPassword     string
 	SkipSSLCertify         bool
 	EtcdMachines           []string
+}
+
+//UAA -
+type UAA struct {
+	AZs            []string
+	StemcellName   string
+	VMTypeName     string
+	NetworkName    string
+	Instances      int
+	SystemDomain   string
+	RouterMachines []string
 }
 
 //Plugin -

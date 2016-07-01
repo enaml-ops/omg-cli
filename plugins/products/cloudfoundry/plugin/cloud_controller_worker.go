@@ -17,7 +17,7 @@ func NewCloudControllerWorkerPartition(c *cli.Context) InstanceGrouper {
 		AppDomains:            c.StringSlice("app-domain"),
 		AllowAppSSHAccess:     c.Bool("allow-app-ssh-access"),
 		Metron:                NewMetron(c),
-		ConsulAgent:           NewConsulAgent(c, false),
+		ConsulAgent:           NewConsulAgent(c, []string{}),
 		NFSMounter:            NewNFSMounter(c),
 		StatsdInjector:        NewStatsdInjector(c),
 		StagingUploadUser:     c.String("cc-staging-upload-user"),
@@ -118,6 +118,6 @@ func (s *CloudControllerWorkerPartition) HasValidValues() bool {
 		s.Metron.Secret != "" &&
 		s.NetworkName != "" &&
 		s.NFSMounter.hasValidValues() &&
-		s.ConsulAgent.hasValidValues())
+		s.ConsulAgent.HasValidValues())
 
 }

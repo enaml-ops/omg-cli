@@ -7,11 +7,7 @@ import (
 )
 
 //NewConsulAgent -
-func NewConsulAgent(c *cli.Context, server bool) *ConsulAgent {
-	var mode string
-	if server {
-		mode = "server"
-	}
+func NewConsulAgent(c *cli.Context, services []string) *ConsulAgent {
 	return &ConsulAgent{
 		EncryptKeys: c.StringSlice("consul-encryption-key"),
 		CaCert:      c.String("consul-ca-cert"),
@@ -20,12 +16,32 @@ func NewConsulAgent(c *cli.Context, server bool) *ConsulAgent {
 		ServerCert:  c.String("consul-server-cert"),
 		ServerKey:   c.String("consul-server-key"),
 		NetworkIPs:  c.StringSlice("consul-ip"),
-		Mode:        mode,
+		Services:    services,
+	}
+}
+
+//NewConsulAgentServer -
+func NewConsulAgentServer(c *cli.Context) *ConsulAgent {
+	return &ConsulAgent{
+		EncryptKeys: c.StringSlice("consul-encryption-key"),
+		CaCert:      c.String("consul-ca-cert"),
+		AgentCert:   c.String("consul-agent-cert"),
+		AgentKey:    c.String("consul-agent-key"),
+		ServerCert:  c.String("consul-server-cert"),
+		ServerKey:   c.String("consul-server-key"),
+		NetworkIPs:  c.StringSlice("consul-ip"),
+		Mode:        "server",
 	}
 }
 
 //CreateJob - Create the yaml job structure
 func (s *ConsulAgent) CreateJob() enaml.InstanceJob {
+
+	serviceMap := make(map[string]map[string]string)
+	for _, serviceName := range s.Services {
+		serviceMap[serviceName] = make(map[string]string)
+	}
+
 	return enaml.InstanceJob{
 		Name:    "consul_agent",
 		Release: "cf",
@@ -38,16 +54,25 @@ func (s *ConsulAgent) CreateJob() enaml.InstanceJob {
 			ServerKey:   s.ServerKey,
 			Agent: &consullib.Agent{
 				Domain: "cf.internal",
-				Mode:   s.Mode,
+				Mode:   s.getMode(),
 				Servers: &consullib.Servers{
 					Lan: s.NetworkIPs,
 				},
+				Services: serviceMap,
 			},
 		},
 	}
 }
 
-func (s *ConsulAgent) hasValidValues() bool {
+func (s *ConsulAgent) getMode() interface{} {
+	if s.Mode != "" {
+		return s.Mode
+	}
+	return nil
+}
+
+//HasValidValues -
+func (s *ConsulAgent) HasValidValues() bool {
 	return len(s.NetworkIPs) > 0 &&
 		len(s.EncryptKeys) > 0 &&
 		s.CaCert != "" &&

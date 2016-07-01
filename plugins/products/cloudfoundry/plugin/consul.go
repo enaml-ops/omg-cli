@@ -13,7 +13,7 @@ func NewConsulPartition(c *cli.Context) InstanceGrouper {
 		NetworkIPs:     c.StringSlice("consul-ip"),
 		NetworkName:    c.String("network"),
 		VMTypeName:     c.String("consul-vm-type"),
-		ConsulAgent:    NewConsulAgent(c, true),
+		ConsulAgent:    NewConsulAgentServer(c),
 		Metron:         NewMetron(c),
 		StatsdInjector: NewStatsdInjector(c),
 	}
@@ -51,5 +51,5 @@ func (s *Consul) HasValidValues() bool {
 		s.NetworkName != "" &&
 		len(s.NetworkIPs) > 0 &&
 		len(s.ConsulAgent.EncryptKeys) > 0 &&
-		s.ConsulAgent.hasValidValues())
+		s.ConsulAgent.HasValidValues())
 }
