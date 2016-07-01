@@ -7,6 +7,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/converger"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/file_server"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nsync"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_emitter"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -61,6 +62,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--bbs-client-cert", "clientcert",
 				"--bbs-client-key", "clientkey",
 				"--bbs-api", "bbs.service.cf.internal:8889",
+				"--bbs-require-ssl=false",
 				"--skip-cert-verify=false",
 				"--cc-uploader-poll-interval", "25",
 				"--system-domain", "sys.test.com",
@@ -73,6 +75,11 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--fs-debug-addr", "10.0.1.2:22222",
 				"--fs-log-level", "debug",
 				"--metron-port", "3458",
+				"--nats-user", "nats",
+				"--nats-port", "1234",
+				"--nats-pass", "natspass",
+				"--nats-machine-ip", "10.0.0.11",
+				"--nats-machine-ip", "10.0.0.12",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -181,6 +188,22 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(n.Cc.BulkBatchSize).Should(Equal(5))
 			Ω(n.Cc.FetchTimeoutInSeconds).Should(Equal(30))
 			Ω(n.Cc.PollingIntervalInSeconds).Should(Equal(25))
+		})
+
+		It("then it should allows the user to configure the route emitter", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("route_emitter")
+			r := job.Properties.(*route_emitter.RouteEmitter)
+			Ω(r.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
+			Ω(r.Bbs.CaCert).Should(Equal("cacert"))
+			Ω(r.Bbs.ClientCert).Should(Equal("clientcert"))
+			Ω(r.Bbs.ClientKey).Should(Equal("clientkey"))
+			Ω(r.Bbs.RequireSsl).Should(BeFalse())
+			Ω(r.Nats.User).Should(Equal("nats"))
+			Ω(r.Nats.Password).Should(Equal("natspass"))
+			Ω(r.Nats.Port).Should(Equal(1234))
+			Ω(r.Nats.Machines).Should(ContainElement("10.0.0.11"))
+			Ω(r.Nats.Machines).Should(ContainElement("10.0.0.12"))
 		})
 	})
 })

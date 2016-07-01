@@ -48,6 +48,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		BBSClientCert:             clientCert,
 		BBSClientKey:              clientKey,
 		BBSAPILocation:            c.String("bbs-api"),
+		BBSRequireSSL:             c.BoolT("bbs-require-ssl"),
 		SkipSSLCertVerify:         c.BoolT("skip-cert-verify"),
 		CCUploaderJobPollInterval: c.Int("cc-uploader-poll-interval"),
 		SystemDomain:              c.String("system-domain"),
@@ -60,6 +61,10 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		FSDebugAddr:               c.String("fs-debug-addr"),
 		FSLogLevel:                c.String("fs-log-level"),
 		MetronPort:                c.Int("metron-port"),
+		NATSUser:                  c.String("nats-user"),
+		NATSPassword:              c.String("nats-pass"),
+		NATSPort:                  c.Int("nats-port"),
+		NATSMachines:              c.StringSlice("nats-machine-ip"),
 	}
 }
 
@@ -207,10 +212,22 @@ func (d *diegoBrain) newNsync() *enaml.InstanceJob {
 
 func (d *diegoBrain) newRouteEmitter() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "route_emitter",
-		Release:    "diego",
+		Name:    "route_emitter",
+		Release: "diego",
 		Properties: &route_emitter.RouteEmitter{
-		// TODO
+			Bbs: &route_emitter.Bbs{
+				ApiLocation: d.BBSAPILocation,
+				CaCert:      d.BBSCACert,
+				ClientCert:  d.BBSClientCert,
+				ClientKey:   d.BBSClientKey,
+				RequireSsl:  d.BBSRequireSSL,
+			},
+			Nats: &route_emitter.Nats{
+				User:     d.NATSUser,
+				Password: d.NATSPassword,
+				Port:     d.NATSPort,
+				Machines: d.NATSMachines,
+			},
 		},
 	}
 }

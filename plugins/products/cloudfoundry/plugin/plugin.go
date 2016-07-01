@@ -36,6 +36,9 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "stemcell-name", Usage: "the name of your desired stemcell"},
 		cli.StringSliceFlag{Name: "az", Usage: "list of AZ names to use"},
 		cli.StringFlag{Name: "network", Usage: "the name of the network to use"},
+		cli.StringFlag{Name: "system-domain", Usage: "System Domain"},
+		cli.StringSliceFlag{Name: "app-domain", Usage: "Applications Domain"},
+		cli.StringFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH Access?"},
 
 		cli.StringSliceFlag{Name: "router-ip", Usage: "a list of the router ips you wish to use"},
 		cli.StringFlag{Name: "router-vm-type", Usage: "the name of your desired vm size"},
@@ -44,13 +47,17 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "router-user", Value: "router_status", Usage: "the username of the go-routers"},
 		cli.StringFlag{Name: "router-pass", Usage: "the password of the go-routers"},
 		cli.BoolFlag{Name: "router-enable-ssl", Usage: "enable or disable ssl on your routers"},
+
+		cli.StringFlag{Name: "nats-vm-type", Usage: "the name of your desired vm size for NATS"},
 		cli.StringFlag{Name: "nats-user", Value: "nats", Usage: "username for your nats pool"},
 		cli.StringFlag{Name: "nats-pass", Value: "nats-password", Usage: "password for your nats pool"},
+		cli.IntFlag{Name: "nats-port", Usage: "the port for the NATS server to listen on"},
 		cli.StringSliceFlag{Name: "nats-machine-ip", Usage: "ip of a nats node vm"},
-		cli.StringSliceFlag{Name: "etcd-machine-ip", Usage: "ip of a etcd node vm"},
+
 		cli.StringFlag{Name: "metron-zone", Usage: "zone guid for the metron agent"},
 		cli.StringFlag{Name: "metron-secret", Usage: "shared secret for the metron agent endpoint"},
 		cli.IntFlag{Name: "metron-port", Usage: "local metron agent's port"},
+
 		cli.StringSliceFlag{Name: "consul-ip", Usage: "a list of the consul ips you wish to use"},
 		cli.StringFlag{Name: "consul-vm-type", Usage: "the name of your desired vm size for consul"},
 		cli.StringSliceFlag{Name: "consul-encryption-key", Usage: "encryption key for consul"},
@@ -59,15 +66,20 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "consul-agent-key", Usage: "agent key contents for consul"},
 		cli.StringFlag{Name: "consul-server-cert", Usage: "server cert contents for consul"},
 		cli.StringFlag{Name: "consul-server-key", Usage: "server key contents for consul"},
+
 		cli.StringFlag{Name: "syslog-address", Usage: "address of syslog server"},
 		cli.IntFlag{Name: "syslog-port", Usage: "port of syslog server"},
 		cli.StringFlag{Name: "syslog-transport", Usage: "transport to syslog server"},
+
+		cli.StringSliceFlag{Name: "etcd-machine-ip", Usage: "ip of a etcd node vm"},
 		cli.StringFlag{Name: "etcd-vm-type", Usage: "the name of your desired vm size for etcd"},
 		cli.StringFlag{Name: "etcd-disk-type", Usage: "the name of your desired persistent disk type for etcd"},
-		cli.StringFlag{Name: "nats-vm-type", Usage: "the name of your desired vm size for NATS"},
+
 		cli.StringSliceFlag{Name: "nfs-ip", Usage: "a list of the nfs ips you wish to use"},
 		cli.StringFlag{Name: "nfs-vm-type", Usage: "the name of your desired vm size for nfs"},
 		cli.StringFlag{Name: "nfs-disk-type", Usage: "the name of your desired persistent disk type for nfs"},
+		cli.StringFlag{Name: "nfs-server-address", Usage: "NFS Server address"},
+		cli.StringFlag{Name: "nfs-share-path", Usage: "NFS Share Path"},
 		cli.StringSliceFlag{Name: "nfs-allow-from-network-cidr", Usage: "the network cidr you wish to allow connections to nfs from"},
 
 		//Mysql Flags
@@ -79,7 +91,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "mysql-bootstrap-password", Usage: "bootstrap password for mysql"},
 
 		//MySQL proxy flags
-		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of mysql proxy ips you wish to use"},
+		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of -mysql proxy ips you wish to use"},
 		cli.StringFlag{Name: "mysql-proxy-vm-type", Usage: "the name of your desired vm size for mysql proxy"},
 		cli.StringFlag{Name: "mysql-proxy-external-host", Usage: "Host name of MySQL proxy"},
 		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "Proxy API user name"},
@@ -98,12 +110,6 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.IntFlag{Name: "cc-uploader-poll-interval", Usage: "CC uploader job polling interval, in seconds"},
 		cli.IntFlag{Name: "cc-fetch-timeout", Usage: "how long to wait for completion of requests to CC, in seconds"},
 
-		cli.StringFlag{Name: "system-domain", Usage: "System Domain"},
-		cli.StringSliceFlag{Name: "app-domain", Usage: "Applications Domain"},
-		cli.StringFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH Access?"},
-		cli.StringFlag{Name: "nfs-server-address", Usage: "NFS Server address"},
-		cli.StringFlag{Name: "nfs-share-path", Usage: "NFS Share Path"},
-
 		cli.StringFlag{Name: "db-uaa-username", Usage: "uaa db username"},
 		cli.StringFlag{Name: "db-uaa-password", Usage: "uaa db password"},
 		cli.StringFlag{Name: "db-ccdb-username", Usage: "ccdb db username"},
@@ -120,6 +126,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "bbs-client-cert", Usage: "BBS client SSL cert (or a file containing it)"},
 		cli.StringFlag{Name: "bbs-client-key", Usage: "BBS client SSL key (or a file containing it)"},
 		cli.StringFlag{Name: "bbs-api", Usage: "location of the bbs api"},
+		cli.BoolTFlag{Name: "bbs-require-ssl", Usage: "enable SSL for all communications with the BBS"},
 
 		cli.BoolTFlag{Name: "skip-cert-verify", Usage: "ignore bad SSL certificates when connecting over HTTPS"},
 

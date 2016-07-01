@@ -48,6 +48,7 @@ type diegoBrain struct {
 	BBSClientCert             string
 	BBSClientKey              string
 	BBSAPILocation            string
+	BBSRequireSSL             bool
 	SkipSSLCertVerify         bool
 	CCUploaderJobPollInterval int
 	CCInternalAPIUser         string
@@ -60,6 +61,10 @@ type diegoBrain struct {
 	FSDebugAddr               string
 	FSLogLevel                string
 	MetronPort                int
+	NATSUser                  string
+	NATSPassword              string
+	NATSPort                  int
+	NATSMachines              []string
 }
 
 // Consul -
