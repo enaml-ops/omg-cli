@@ -82,6 +82,7 @@ type diegoBrain struct {
 	SSHProxyClientSecret      string
 	CCExternalPort            int
 	TrafficControllerURL      string
+	ConsulAgent               *ConsulAgent
 }
 
 // Consul -

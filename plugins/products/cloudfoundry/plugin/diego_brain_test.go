@@ -4,6 +4,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/auctioneer"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cc_uploader"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/consul_agent"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/converger"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/file_server"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nsync"
@@ -87,6 +88,15 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--nats-machine-ip", "10.0.0.12",
 				"--ssh-proxy-uaa-secret", "secret",
 				"--traffic-controller-url", "wss://doppler.sys.yourdomain.com:443",
+				"--consul-vm-type", "blah",
+				"--consul-encryption-key", "encyption-key",
+				"--consul-ca-cert", "ca-cert",
+				"--consul-agent-cert", "agent-cert",
+				"--consul-agent-key", "agent-key",
+				"--consul-server-cert", "server-cert",
+				"--consul-server-key", "server-key",
+				"--consul-ip", "1.0.0.1",
+				"--consul-ip", "1.0.0.2",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -259,6 +269,19 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(t.Cc.ExternalPort).Should(Equal(9023))
 			Ω(t.Cc.BasicAuthUsername).Should(Equal("internaluser"))
 			Ω(t.Cc.BasicAuthPassword).Should(Equal("internalpassword"))
+		})
+
+		It("then it should allow the user to configure the consul agent", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("consul_agent")
+			c := job.Properties.(*consul_agent.Consul)
+			Ω(c.ServerKey).Should(Equal("server-key"))
+			Ω(c.ServerCert).Should(Equal("server-cert"))
+			Ω(c.AgentCert).Should(Equal("agent-cert"))
+			Ω(c.AgentKey).Should(Equal("agent-key"))
+			Ω(c.CaCert).Should(Equal("ca-cert"))
+			Ω(c.EncryptKeys).Should(Equal([]string{"encyption-key"}))
+			Ω(c.Agent.Servers.Lan).Should(Equal([]string{"1.0.0.1", "1.0.0.2"}))
 		})
 	})
 })

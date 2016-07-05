@@ -9,7 +9,6 @@ import (
 	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/auctioneer"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cc_uploader"
-	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/consul_agent"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/converger"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/file_server"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
@@ -70,6 +69,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		SSHProxyClientSecret:      c.String("ssh-proxy-uaa-secret"),
 		CCExternalPort:            c.Int("cc-external-port"),
 		TrafficControllerURL:      c.String("traffic-controller-url"),
+		ConsulAgent:               NewConsulAgent(c, []string{}),
 	}
 }
 
@@ -88,6 +88,8 @@ func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 			MaxInFlight: 1,
 		},
 	}
+	consulJob := d.ConsulAgent.CreateJob()
+
 	ig.AddJob(d.newAuctioneer())
 	ig.AddJob(d.newCCUploader())
 	ig.AddJob(d.newConverger())
@@ -97,7 +99,7 @@ func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 	ig.AddJob(d.newSSHProxy())
 	ig.AddJob(d.newStager())
 	ig.AddJob(d.newTPS())
-	ig.AddJob(d.newConsulAgent())
+	ig.AddJob(&consulJob)
 	ig.AddJob(d.newMetronAgent())
 	ig.AddJob(d.newStatsdInjector())
 	return ig
@@ -116,7 +118,8 @@ func (d *diegoBrain) HasValidValues() bool {
 		d.BBSAPILocation != "" &&
 		d.CCInternalAPIUser != "" &&
 		d.CCInternalAPIPassword != "" &&
-		d.SystemDomain != ""
+		d.SystemDomain != "" &&
+		d.ConsulAgent.HasValidValues()
 }
 
 func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
@@ -300,17 +303,6 @@ func (d *diegoBrain) newTPS() *enaml.InstanceJob {
 				Ssl: &tps.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
 			},
 			TrafficControllerUrl: d.TrafficControllerURL,
-		},
-	}
-}
-
-// TODO(zbergquist) reuse cloudfoundry.NewConsulAgent() ??
-func (d *diegoBrain) newConsulAgent() *enaml.InstanceJob {
-	return &enaml.InstanceJob{
-		Name:       "consul_agent",
-		Release:    "diego",
-		Properties: &consul_agent.ConsulAgent{
-		// TODO
 		},
 	}
 }
