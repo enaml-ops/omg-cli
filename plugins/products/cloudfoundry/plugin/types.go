@@ -288,6 +288,9 @@ type UAA struct {
 	Instances      int
 	SystemDomain   string
 	RouterMachines []string
+	Metron         *Metron
+	StatsdInjector *StatsdInjector
+	ConsulAgent    *ConsulAgent
 }
 
 //Plugin -
