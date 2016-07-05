@@ -303,5 +303,11 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(m.MetronEndpoint.SharedSecret).Should(Equal("metronsecret"))
 			Ω(m.Loggregator.Etcd.Machines).Should(Equal([]string{"1.0.0.7", "1.0.0.8"}))
 		})
+
+		It("then it should allow the user to configure the statsd injector", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("statsd-injector")
+			Ω(job.Properties).Should(BeEmpty())
+		})
 	})
 })

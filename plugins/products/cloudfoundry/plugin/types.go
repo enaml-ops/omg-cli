@@ -84,6 +84,7 @@ type diegoBrain struct {
 	TrafficControllerURL      string
 	ConsulAgent               *ConsulAgent
 	Metron                    *Metron
+	Statsd                    *StatsdInjector
 }
 
 // Consul -

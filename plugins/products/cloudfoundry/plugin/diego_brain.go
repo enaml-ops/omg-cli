@@ -15,7 +15,6 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_emitter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/ssh_proxy"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/stager"
-	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/statsd-injector"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/tps"
 	"github.com/xchapter7x/lo"
 )
@@ -35,7 +34,6 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 	if err != nil {
 		lo.G.Panicf("bbs client key: %s\n", err.Error())
 	}
-
 	return &diegoBrain{
 		AZs:                       c.StringSlice("az"),
 		StemcellName:              c.String("stemcell-name"),
@@ -70,6 +68,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		TrafficControllerURL:      c.String("traffic-controller-url"),
 		ConsulAgent:               NewConsulAgent(c, []string{}),
 		Metron:                    NewMetron(c),
+		Statsd:                    NewStatsdInjector(c),
 	}
 }
 
@@ -90,6 +89,7 @@ func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 	}
 	consulJob := d.ConsulAgent.CreateJob()
 	metronJob := d.Metron.CreateJob()
+	statsdJob := d.Statsd.CreateJob()
 
 	ig.AddJob(d.newAuctioneer())
 	ig.AddJob(d.newCCUploader())
@@ -102,7 +102,7 @@ func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 	ig.AddJob(d.newTPS())
 	ig.AddJob(&consulJob)
 	ig.AddJob(&metronJob)
-	ig.AddJob(d.newStatsdInjector())
+	ig.AddJob(&statsdJob)
 	return ig
 }
 
@@ -305,16 +305,6 @@ func (d *diegoBrain) newTPS() *enaml.InstanceJob {
 				Ssl: &tps.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
 			},
 			TrafficControllerUrl: d.TrafficControllerURL,
-		},
-	}
-}
-
-func (d *diegoBrain) newStatsdInjector() *enaml.InstanceJob {
-	return &enaml.InstanceJob{
-		Name:       "statsd-injector",
-		Release:    "diego",
-		Properties: &statsd_injector.StatsdInjector{
-		// TODO
 		},
 	}
 }
