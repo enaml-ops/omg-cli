@@ -123,6 +123,10 @@ var _ = Describe("given a Diego Cell Partition", func() {
 					It("then it should use the correct release", func() {
 						Ω(job.Release).Should(Equal(GardenReleaseName))
 					})
+
+					It("then it should populate my properties", func() {
+						Ω(job.Properties).ShouldNot(BeNil())
+					})
 				})
 			})
 

@@ -4,6 +4,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/rep"
+	"github.com/enaml-ops/omg-cli/plugins/products/concourse/enaml-gen/garden"
 )
 
 func NewDiegoCellPartition(c *cli.Context) InstanceGrouper {
@@ -56,7 +57,7 @@ func (s *diegoCell) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	ig.AddJob(&enaml.InstanceJob{
 		Name:       "garden",
 		Release:    GardenReleaseName,
-		Properties: nil,
+		Properties: s.newGarden(),
 	})
 	ig.AddJob(&enaml.InstanceJob{
 		Name:       "statsd-injector",
@@ -68,6 +69,17 @@ func (s *diegoCell) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 		Release:    CFReleaseName,
 		Properties: s.Metron.CreateJob().Properties,
 	})
+	return
+}
+
+func (s *diegoCell) newGarden() (gardenLinux *garden.Garden) {
+	gardenLinux = &garden.Garden{
+		AllowHostAccess:     false,
+		PersistentImageList: []string{"/var/vcap/packages/rootfs_cflinuxfs2/rootfs"},
+		NetworkPool:         "10.254.0.0/22",
+		DenyNetworks:        []string{"0.0.0.0/0"},
+		NetworkMtu:          1454,
+	}
 	return
 }
 
