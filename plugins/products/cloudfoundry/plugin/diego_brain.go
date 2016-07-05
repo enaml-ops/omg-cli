@@ -69,6 +69,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		AllowSSHAccess:            c.Bool("allow-app-ssh-access"),
 		SSHProxyClientSecret:      c.String("ssh-proxy-uaa-secret"),
 		CCExternalPort:            c.Int("cc-external-port"),
+		TrafficControllerURL:      c.String("traffic-controller-url"),
 	}
 }
 
@@ -256,20 +257,49 @@ func (d *diegoBrain) newSSHProxy() *enaml.InstanceJob {
 
 func (d *diegoBrain) newStager() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "stager",
-		Release:    "diego",
+		Name:    "stager",
+		Release: "diego",
 		Properties: &stager.Stager{
-		// TODO
+			Bbs: &stager.Bbs{
+				ApiLocation: d.BBSAPILocation,
+				CaCert:      d.BBSCACert,
+				ClientCert:  d.BBSClientCert,
+				ClientKey:   d.BBSClientKey,
+				RequireSsl:  d.BBSRequireSSL,
+			},
+			Cc: &stager.Cc{
+				BasicAuthUsername: d.CCInternalAPIUser,
+				BasicAuthPassword: d.CCInternalAPIPassword,
+				ExternalPort:      d.CCExternalPort,
+			},
+			Diego: &stager.Diego{
+				Ssl: &stager.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+			},
 		},
 	}
 }
 
 func (d *diegoBrain) newTPS() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
-		Name:       "tps",
-		Release:    "diego",
+		Name:    "tps",
+		Release: "diego",
 		Properties: &tps.Tps{
-		// TODO
+			Bbs: &tps.Bbs{
+				ApiLocation: d.BBSAPILocation,
+				CaCert:      d.BBSCACert,
+				ClientCert:  d.BBSClientCert,
+				ClientKey:   d.BBSClientKey,
+				RequireSsl:  d.BBSRequireSSL,
+			},
+			Cc: &tps.Cc{
+				BasicAuthUsername: d.CCInternalAPIUser,
+				BasicAuthPassword: d.CCInternalAPIPassword,
+				ExternalPort:      d.CCExternalPort,
+			},
+			Diego: &tps.Diego{
+				Ssl: &tps.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+			},
+			TrafficControllerUrl: d.TrafficControllerURL,
 		},
 	}
 }

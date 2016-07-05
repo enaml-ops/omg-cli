@@ -81,6 +81,7 @@ type diegoBrain struct {
 	AllowSSHAccess            bool
 	SSHProxyClientSecret      string
 	CCExternalPort            int
+	TrafficControllerURL      string
 }
 
 // Consul -

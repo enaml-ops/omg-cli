@@ -9,6 +9,8 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nsync"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_emitter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/ssh_proxy"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/stager"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/tps"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -84,6 +86,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--nats-machine-ip", "10.0.0.11",
 				"--nats-machine-ip", "10.0.0.12",
 				"--ssh-proxy-uaa-secret", "secret",
+				"--traffic-controller-url", "wss://doppler.sys.yourdomain.com:443",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -225,6 +228,37 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(s.Cc.ExternalPort).Should(Equal(9023))
 			Ω(s.UaaTokenUrl).Should(Equal("https://uaa.sys.test.com/oauth/token"))
 			Ω(s.UaaSecret).Should(Equal("secret"))
+		})
+
+		It("then it should allow the user to configure the stager", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("stager")
+			s := job.Properties.(*stager.Stager)
+			Ω(s.Diego.Ssl.SkipCertVerify).Should(BeFalse())
+			Ω(s.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
+			Ω(s.Bbs.CaCert).Should(Equal("cacert"))
+			Ω(s.Bbs.ClientCert).Should(Equal("clientcert"))
+			Ω(s.Bbs.ClientKey).Should(Equal("clientkey"))
+			Ω(s.Bbs.RequireSsl).Should(BeFalse())
+			Ω(s.Cc.ExternalPort).Should(Equal(9023))
+			Ω(s.Cc.BasicAuthUsername).Should(Equal("internaluser"))
+			Ω(s.Cc.BasicAuthPassword).Should(Equal("internalpassword"))
+		})
+
+		It("then it should allow the user to configure the tps", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("tps")
+			t := job.Properties.(*tps.Tps)
+			Ω(t.Diego.Ssl.SkipCertVerify).Should(BeFalse())
+			Ω(t.TrafficControllerUrl).Should(Equal("wss://doppler.sys.yourdomain.com:443"))
+			Ω(t.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
+			Ω(t.Bbs.CaCert).Should(Equal("cacert"))
+			Ω(t.Bbs.ClientCert).Should(Equal("clientcert"))
+			Ω(t.Bbs.ClientKey).Should(Equal("clientkey"))
+			Ω(t.Bbs.RequireSsl).Should(BeFalse())
+			Ω(t.Cc.ExternalPort).Should(Equal(9023))
+			Ω(t.Cc.BasicAuthUsername).Should(Equal("internaluser"))
+			Ω(t.Cc.BasicAuthPassword).Should(Equal("internalpassword"))
 		})
 	})
 })
