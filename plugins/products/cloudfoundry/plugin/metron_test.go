@@ -9,19 +9,18 @@ import (
 
 var _ = Describe("Metron", func() {
 	Context("when initialized WITHOUT a complete set of arguments", func() {
-		It("then it should return the error and exit", func() {
+		It("then HasValidValues should return false", func() {
 
 			plugin := new(Plugin)
 			c := plugin.GetContext([]string{
 				"cloudfoundry",
 			})
-			Ω(func() {
-				NewMetron(c)
-			}).Should(Panic())
+
+			Ω(NewMetron(c).HasValidValues()).Should(BeFalse())
+
 		})
 	})
 	Context("when initialized WITH a complete set of arguments", func() {
-		var err error
 		var metron *Metron
 		BeforeEach(func() {
 			plugin := new(Plugin)
@@ -37,8 +36,8 @@ var _ = Describe("Metron", func() {
 			})
 			metron = NewMetron(c)
 		})
-		It("then it should not return an error", func() {
-			Ω(err).Should(BeNil())
+		It("then HasValidValues should return true", func() {
+			Ω(metron.HasValidValues()).Should(BeTrue())
 		})
 		It("then it should allow the user to configure the metron agent", func() {
 			job := metron.CreateJob()

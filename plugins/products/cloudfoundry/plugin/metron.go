@@ -1,12 +1,9 @@
 package cloudfoundry
 
 import (
-	"fmt"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
-	"gopkg.in/yaml.v2"
 )
 
 //NewMetron -
@@ -25,11 +22,6 @@ func NewMetron(c *cli.Context) (metron *Metron) {
 	}
 	if metron.SyslogTransport == "" {
 		metron.SyslogTransport = "tcp"
-	}
-
-	if metron.Zone == "" || metron.Secret == "" {
-		b, _ := yaml.Marshal(metron)
-		panic(fmt.Sprintf("invalid values in Metron: %v", string(b)))
 	}
 	return
 }
