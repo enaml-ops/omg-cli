@@ -83,6 +83,7 @@ type diegoBrain struct {
 	CCExternalPort            int
 	TrafficControllerURL      string
 	ConsulAgent               *ConsulAgent
+	Metron                    *Metron
 }
 
 // Consul -

@@ -7,6 +7,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/consul_agent"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/converger"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/file_server"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nsync"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_emitter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/ssh_proxy"
@@ -22,7 +23,11 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		var ig InstanceGrouper
 		BeforeEach(func() {
 			cf := new(Plugin)
-			c := cf.GetContext([]string{""})
+			c := cf.GetContext([]string{
+				"cloudfoundry",
+				"--metron-secret", "metronsecret",
+				"--metron-zone", "metronzoneguid",
+			})
 			ig = NewDiegoBrainPartition(c)
 		})
 
@@ -97,6 +102,10 @@ var _ = Describe("given a Diego Brain Partition", func() {
 				"--consul-server-key", "server-key",
 				"--consul-ip", "1.0.0.1",
 				"--consul-ip", "1.0.0.2",
+				"--metron-secret", "metronsecret",
+				"--metron-zone", "metronzoneguid",
+				"--etcd-machine-ip", "1.0.0.7",
+				"--etcd-machine-ip", "1.0.0.8",
 			})
 			grouper = NewDiegoBrainPartition(c)
 			deploymentManifest = new(enaml.DeploymentManifest)
@@ -282,6 +291,17 @@ var _ = Describe("given a Diego Brain Partition", func() {
 			Ω(c.CaCert).Should(Equal("ca-cert"))
 			Ω(c.EncryptKeys).Should(Equal([]string{"encyption-key"}))
 			Ω(c.Agent.Servers.Lan).Should(Equal([]string{"1.0.0.1", "1.0.0.2"}))
+		})
+
+		It("then it should allow the user to configure the metron agent", func() {
+			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
+			job := ig.GetJobByName("metron_agent")
+			m := job.Properties.(*metron_agent.MetronAgent)
+
+			Ω(m.MetronAgent.Zone).Should(Equal("metronzoneguid"))
+			Ω(m.MetronAgent.Deployment).Should(Equal("cf"))
+			Ω(m.MetronEndpoint.SharedSecret).Should(Equal("metronsecret"))
+			Ω(m.Loggregator.Etcd.Machines).Should(Equal([]string{"1.0.0.7", "1.0.0.8"}))
 		})
 	})
 })

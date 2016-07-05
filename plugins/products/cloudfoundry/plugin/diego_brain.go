@@ -11,7 +11,6 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cc_uploader"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/converger"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/file_server"
-	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nsync"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_emitter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/ssh_proxy"
@@ -70,6 +69,7 @@ func NewDiegoBrainPartition(c *cli.Context) InstanceGrouper {
 		CCExternalPort:            c.Int("cc-external-port"),
 		TrafficControllerURL:      c.String("traffic-controller-url"),
 		ConsulAgent:               NewConsulAgent(c, []string{}),
+		Metron:                    NewMetron(c),
 	}
 }
 
@@ -89,6 +89,7 @@ func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 		},
 	}
 	consulJob := d.ConsulAgent.CreateJob()
+	metronJob := d.Metron.CreateJob()
 
 	ig.AddJob(d.newAuctioneer())
 	ig.AddJob(d.newCCUploader())
@@ -100,7 +101,7 @@ func (d *diegoBrain) ToInstanceGroup() *enaml.InstanceGroup {
 	ig.AddJob(d.newStager())
 	ig.AddJob(d.newTPS())
 	ig.AddJob(&consulJob)
-	ig.AddJob(d.newMetronAgent())
+	ig.AddJob(&metronJob)
 	ig.AddJob(d.newStatsdInjector())
 	return ig
 }
@@ -119,7 +120,8 @@ func (d *diegoBrain) HasValidValues() bool {
 		d.CCInternalAPIUser != "" &&
 		d.CCInternalAPIPassword != "" &&
 		d.SystemDomain != "" &&
-		d.ConsulAgent.HasValidValues()
+		d.ConsulAgent.HasValidValues() &&
+		d.Metron.HasValidValues()
 }
 
 func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
@@ -303,16 +305,6 @@ func (d *diegoBrain) newTPS() *enaml.InstanceJob {
 				Ssl: &tps.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
 			},
 			TrafficControllerUrl: d.TrafficControllerURL,
-		},
-	}
-}
-
-func (d *diegoBrain) newMetronAgent() *enaml.InstanceJob {
-	return &enaml.InstanceJob{
-		Name:       "metron_agent",
-		Release:    "diego",
-		Properties: &metron_agent.MetronAgent{
-		// TODO
 		},
 	}
 }
