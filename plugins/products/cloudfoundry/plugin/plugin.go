@@ -192,7 +192,18 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	c := pluginutil.NewContext(args, s.GetFlags())
 	dm := enaml.NewDeploymentManifest([]byte(``))
 	dm.SetName(DeploymentName)
+
 	dm.AddRelease(enaml.Release{Name: CFReleaseName, Version: CFReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: CFMysqlReleaseName, Version: CFMysqlReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: DiegoReleaseName, Version: DiegoReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: GardenReleaseName, Version: GardenReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: CFLinuxReleaseName, Version: CFLinuxReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: EtcdReleaseName, Version: EtcdReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: PushAppsReleaseName, Version: PushAppsReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: NotificationsReleaseName, Version: NotificationsReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: NotificationsUIReleaseName, Version: NotificationsUIReleaseVersion})
+	dm.AddRelease(enaml.Release{Name: CFAutoscalingReleaseName, Version: CFAutoscalingReleaseVersion})
+
 	dm.AddStemcell(enaml.Stemcell{OS: StemcellName, Version: StemcellVersion, Alias: StemcellAlias})
 
 	for _, factory := range factories {

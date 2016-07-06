@@ -49,7 +49,7 @@ type diegoCell struct {
 	ConsulAgent        *ConsulAgent
 	StatsdInjector     *StatsdInjector
 	Metron             *Metron
-	DiegoBrain         InstanceGrouper
+	DiegoBrain         *diegoBrain
 }
 
 type diegoBrain struct {

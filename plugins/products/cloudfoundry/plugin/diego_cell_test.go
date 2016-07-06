@@ -1,6 +1,9 @@
 package cloudfoundry_test
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
@@ -26,6 +29,10 @@ var _ = Describe("given a Diego Cell Partition", func() {
 					"--diego-cell-ip", "10.0.0.40",
 					"--diego-cell-vm-type", "cellvmtype",
 					"--diego-cell-disk-type", "celldisktype",
+					"--bbs-ca-cert", "cacert",
+					"--bbs-client-cert", "clientcert",
+					"--bbs-client-key", "clientkey",
+					"--bbs-api", "bbs.service.cf.internal:8889",
 					"--consul-ip", "1.0.0.1",
 					"--consul-ip", "1.0.0.2",
 					"--consul-vm-type", "blah",
@@ -116,6 +123,10 @@ var _ = Describe("given a Diego Cell Partition", func() {
 					It("then it should use the correct release", func() {
 						Ω(job.Release).Should(Equal(GardenReleaseName))
 					})
+
+					It("then it should populate my properties", func() {
+						Ω(job.Properties).ShouldNot(BeNil())
+					})
 				})
 			})
 
@@ -145,6 +156,23 @@ var _ = Describe("given a Diego Cell Partition", func() {
 						Ω(job.Release).Should(Equal(CFReleaseName))
 					})
 					It("then it should populate my properties", func() {
+						Ω(job.Properties).ShouldNot(BeNil())
+					})
+				})
+			})
+
+			Describe("given a rep job", func() {
+				Context("when defined", func() {
+					var job *enaml.InstanceJob
+					BeforeEach(func() {
+						job = instanceGroup.GetJobByName("rep")
+					})
+					It("then it should use the correct release", func() {
+						Ω(job.Release).Should(Equal(DiegoReleaseName))
+					})
+					It("then it should populate my properties", func() {
+						b, _ := json.Marshal(job.Properties)
+						fmt.Println("job", string(b))
 						Ω(job.Properties).ShouldNot(BeNil())
 					})
 				})
