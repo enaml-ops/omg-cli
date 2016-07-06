@@ -8,6 +8,8 @@ import (
 	grtrlib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/gorouter"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/metron_agent"
 	natslib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/nats"
+	routereglib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_registrar"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/uaa"
 )
 
 // InstanceGrouper creates and validates InstanceGroups.
@@ -281,16 +283,24 @@ type Doppler struct {
 
 //UAA -
 type UAA struct {
-	AZs            []string
-	StemcellName   string
-	VMTypeName     string
-	NetworkName    string
-	Instances      int
-	SystemDomain   string
-	RouterMachines []string
-	Metron         *Metron
-	StatsdInjector *StatsdInjector
-	ConsulAgent    *ConsulAgent
+	AZs                            []string
+	StemcellName                   string
+	VMTypeName                     string
+	NetworkName                    string
+	Instances                      int
+	SystemDomain                   string
+	RouterMachines                 []string
+	Metron                         *Metron
+	StatsdInjector                 *StatsdInjector
+	ConsulAgent                    *ConsulAgent
+	Nats                           *routereglib.Nats
+	Login                          *uaa.Login
+	UAA                            *uaa.Uaa
+	SAMLServiceProviderKey         string
+	SAMLServiceProviderCertificate string
+	JWTSigningKey                  string
+	JWTVerificationKey             string
+	Protocol                       string
 }
 
 //Plugin -

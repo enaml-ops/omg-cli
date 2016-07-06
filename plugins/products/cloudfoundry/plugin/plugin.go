@@ -158,6 +158,25 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		//UAA
 		cli.StringFlag{Name: "uaa-vm-type", Usage: "the name of your desired vm size for uaa"},
 		cli.IntFlag{Name: "uaa-instances", Usage: "the number of your desired vms for uaa"},
+
+		cli.StringFlag{Name: "uaa-company-name", Usage: "name of company for UAA branding"},
+		cli.StringFlag{Name: "uaa-product-logo", Usage: "product logo for UAA branding"},
+		cli.StringFlag{Name: "uaa-square-logo", Usage: "square logo for UAA branding"},
+		cli.StringFlag{Name: "uaa-footer-legal-txt", Usage: "legal text for UAA branding"},
+		cli.BoolTFlag{Name: "uaa-enable-selfservice-links", Usage: "enable self service links"},
+		cli.BoolTFlag{Name: "uaa-signups-enabled", Usage: "enable signups"},
+		cli.StringFlag{Name: "uaa-login-protocol", Usage: "uaa login protocol, default https"},
+		cli.StringFlag{Name: "uaa-saml-service-provider-key", Usage: "saml service provider key for uaa"},
+		cli.StringFlag{Name: "uaa-saml-service-provider-certificate", Usage: "saml service provider certificate for uaa"},
+		cli.StringFlag{Name: "uaa-jwt-signing-key", Usage: "signing key for jwt used by UAA"},
+		cli.StringFlag{Name: "uaa-jwt-verification-key", Usage: "verification key for jwt used by UAA"},
+		cli.StringFlag{Name: "uaa-ldap-url", Usage: "url for ldap server"},
+		cli.StringFlag{Name: "uaa-ldap-user-dn", Usage: "userDN to bind to ldap with"},
+		cli.StringFlag{Name: "uaa-ldap-user-password", Usage: "bind password for ldap user"},
+		cli.StringFlag{Name: "uaa-ldap-search-filter", Usage: "search filter for users"},
+		cli.StringFlag{Name: "uaa-ldap-search-base", Usage: "search base for users"},
+		cli.StringFlag{Name: "uaa-ldap-mail-attributename", Usage: "attribute name for mail"},
+		cli.BoolFlag{Name: "uaa-ldap", Usage: "is ldap enabled for UAA"},
 	}
 }
 

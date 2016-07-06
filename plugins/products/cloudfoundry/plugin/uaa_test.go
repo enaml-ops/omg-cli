@@ -1,6 +1,7 @@
 package cloudfoundry_test
 
 import (
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/route_registrar"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/uaa"
 	. "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/plugin"
 	. "github.com/onsi/ginkgo"
@@ -46,6 +47,21 @@ var _ = Describe("UAA Partition", func() {
 				"--syslog-transport", "tcp",
 				"--etcd-machine-ip", "1.0.0.7",
 				"--etcd-machine-ip", "1.0.0.8",
+				"--nats-user", "nats",
+				"--nats-pass", "pass",
+				"--nats-machine-ip", "1.0.0.5",
+				"--nats-machine-ip", "1.0.0.6",
+				"--uaa-saml-service-provider-key", "saml-key",
+				"--uaa-saml-service-provider-certificate", "saml-cert",
+				"--uaa-jwt-verification-key", "jwt-verificationkey",
+				"--uaa-jwt-signing-key", "jwt-signingkey",
+				"--uaa-ldap-url", "ldap://ldap.test.com",
+				"--uaa-ldap-user-dn", "userdn",
+				"--uaa-ldap-user-password", "userpwd",
+				"--uaa-ldap-search-filter", "filter",
+				"--uaa-ldap-search-base", "base",
+				"--uaa-ldap-mail-attributename", "mail",
+				"--uaa-ldap", "true",
 			})
 			uaaPartition = NewUAAPartition(c)
 		})
@@ -94,13 +110,134 @@ var _ = Describe("UAA Partition", func() {
 			ig := uaaPartition.ToInstanceGroup()
 			Ω(len(ig.Jobs)).Should(Equal(5))
 		})
-		It("then it should then have uaa job", func() {
+		It("then it should then have uaa job with valid login information", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("uaa")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*uaa.Uaa)
+			Ω(props.Domain).Should(Equal("sys.test.com"))
+		})
+		It("then it should then have uaa job with valid uaa information", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("uaa")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*uaa.Uaa)
+
+			/*fmt.Println("-----")
+			b, _ := yaml.Marshal(props.Uaa)
+			fmt.Println(string(b))*/
+			Ω(props.Uaa).ShouldNot(BeNil())
+			Ω(props.Uaa.CatalinaOpts).Should(Equal("-Xmx768m -XX:MaxPermSize=256m"))
+			Ω(props.Uaa.RequireHttps).Should(BeTrue())
+			Ω(props.Uaa.Url).Should(Equal("https://uaa.sys.test.com"))
+			Ω(props.Uaa.Ssl).ShouldNot(BeNil())
+			Ω(props.Uaa.Ssl.Port).Should(Equal(-1))
+
+			Ω(props.Uaa.Authentication).ShouldNot(BeNil())
+			Ω(props.Uaa.Authentication.Policy).ShouldNot(BeNil())
+			Ω(props.Uaa.Authentication.Policy.LockoutAfterFailures).Should(Equal(5))
+
+			Ω(props.Uaa.Password).ShouldNot(BeNil())
+			Ω(props.Uaa.Password.Policy).ShouldNot(BeNil())
+			Ω(props.Uaa.Password.Policy.MinLength).Should(Equal(0))
+			Ω(props.Uaa.Password.Policy.RequireLowerCaseCharacter).Should(Equal(0))
+			Ω(props.Uaa.Password.Policy.RequireUpperCaseCharacter).Should(Equal(0))
+			Ω(props.Uaa.Password.Policy.RequireDigit).Should(Equal(0))
+			Ω(props.Uaa.Password.Policy.RequireSpecialCharacter).Should(Equal(0))
+			Ω(props.Uaa.Password.Policy.ExpirePasswordInMonths).Should(Equal(0))
+
+			Ω(props.Uaa.Jwt).ShouldNot(BeNil())
+			Ω(props.Uaa.Jwt.SigningKey).Should(Equal("jwt-signingkey"))
+			Ω(props.Uaa.Jwt.VerificationKey).Should(Equal("jwt-verificationkey"))
+
+			Ω(props.Uaa.Ldap).ShouldNot(BeNil())
+			Ω(props.Uaa.Ldap.Enabled).Should(BeTrue())
+			Ω(props.Uaa.Ldap.Url).Should(Equal("ldap://ldap.test.com"))
+			Ω(props.Uaa.Ldap.UserDN).Should(Equal("userdn"))
+			Ω(props.Uaa.Ldap.UserPassword).Should(Equal("userpwd"))
+			Ω(props.Uaa.Ldap.SearchBase).Should(Equal("base"))
+			Ω(props.Uaa.Ldap.SearchFilter).Should(Equal("filter"))
+			Ω(props.Uaa.Ldap.MailAttributeName).Should(Equal("mail"))
+			Ω(props.Uaa.Ldap.ProfileType).Should(Equal("search-and-bind"))
+			Ω(props.Uaa.Ldap.SslCertificate).Should(Equal(""))
+			Ω(props.Uaa.Ldap.SslCertificateAlias).Should(Equal(""))
+			Ω(props.Uaa.Ldap.Groups).ShouldNot(BeNil())
+			Ω(props.Uaa.Ldap.Groups.ProfileType).Should(Equal("no-groups"))
+			Ω(props.Uaa.Ldap.Groups.SearchBase).Should(Equal(""))
+			Ω(props.Uaa.Ldap.Groups.GroupSearchFilter).Should(Equal(""))
+		})
+		It("then it should then have uaa job with valid login information", func() {
 			ig := uaaPartition.ToInstanceGroup()
 			job := ig.GetJobByName("uaa")
 			Ω(job).ShouldNot(BeNil())
 			props, _ := job.Properties.(*uaa.Uaa)
 			Ω(props.Login).ShouldNot(BeNil())
+			Ω(props.Login.SelfServiceLinksEnabled).Should(BeTrue())
+			Ω(props.Login.SignupsEnabled).Should(BeTrue())
+			Ω(props.Login.Protocol).Should(Equal("https"))
+			Ω(props.Login.UaaBase).Should(Equal("https://uaa.sys.test.com"))
+			Ω(props.Login.Branding).ShouldNot(BeNil())
 
+			Ω(props.Login.Links).ShouldNot(BeNil())
+			links := props.Login.Links.(*uaa.Links)
+			Ω(links.Passwd).Should(Equal("https://login.sys.test.com/forgot_password"))
+			Ω(links.Signup).Should(Equal("https://login.sys.test.com/create_account"))
+
+			Ω(props.Login.Notifications).ShouldNot(BeNil())
+			Ω(props.Login.Notifications.Url).Should(Equal("https://notifications.sys.test.com"))
+
+			Ω(props.Login.Saml).ShouldNot(BeNil())
+			Ω(props.Login.Saml.Entityid).Should(Equal("https://login.sys.test.com"))
+			Ω(props.Login.Saml.SignRequest).Should(BeTrue())
+			Ω(props.Login.Saml.WantAssertionSigned).Should(BeFalse())
+			Ω(props.Login.Saml.ServiceProviderKey).Should(Equal("saml-key"))
+			Ω(props.Login.Saml.ServiceProviderCertificate).Should(Equal("saml-cert"))
+
+			Ω(props.Login.Logout).ShouldNot(BeNil())
+			Ω(props.Login.Logout.Redirect).ShouldNot(BeNil())
+			Ω(props.Login.Logout.Redirect.Url).Should(Equal("/login"))
+			Ω(props.Login.Logout.Redirect.Parameter).ShouldNot(BeNil())
+			Ω(props.Login.Logout.Redirect.Parameter.Disable).Should(BeFalse())
+			Ω(props.Login.Logout.Redirect.Parameter.Whitelist).Should(ConsistOf("https://console.sys.test.com", "https://apps.sys.test.com"))
+		})
+		It("then it should then have route_registrar job", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("route_registrar")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*route_registrar.RouteRegistrar)
+			Ω(props.Nats).ShouldNot(BeNil())
+			Ω(props.Nats.User).Should(Equal("nats"))
+			Ω(props.Nats.Password).Should(Equal("pass"))
+			Ω(props.Nats.Port).Should(Equal(4222))
+			Ω(props.Nats.Machines).Should(ConsistOf("1.0.0.5", "1.0.0.6"))
+			Ω(props.Routes).ShouldNot(BeNil())
+			routes := props.Routes.(map[string]interface{})
+			Ω(routes["name"]).Should(Equal("uaa"))
+			Ω(routes["port"]).Should(Equal(8080))
+			Ω(routes["registration_interval"]).Should(Equal("40s"))
+			Ω(routes["uris"]).Should(ConsistOf("uaa.sys.test.com", "*.uaa.sys.test.com", "login.sys.test.com", "*.login.sys.test.com"))
+		})
+	})
+	Context("when Creating Branding with flags", func() {
+		var branding *uaa.Branding
+		BeforeEach(func() {
+			plugin := new(Plugin)
+			c := plugin.GetContext([]string{
+				"cloudfoundry",
+				"--uaa-company-name", "company",
+				"--uaa-product-logo", "product-logo",
+				"--uaa-square-logo", "square-logo",
+				"--uaa-footer-legal-txt", "legal",
+			})
+			branding = CreateBranding(c)
+		})
+		It("branding should be initialized", func() {
+			Ω(branding).ShouldNot(BeNil())
+			Ω(branding.CompanyName).Should(Equal("company"))
+			Ω(branding.ProductLogo).Should(Equal("product-logo"))
+			Ω(branding.SquareLogo).Should(Equal("square-logo"))
+			Ω(branding.FooterLegalText).Should(Equal("legal"))
+			Ω(branding.FooterLinks).Should(BeNil())
 		})
 	})
 })
