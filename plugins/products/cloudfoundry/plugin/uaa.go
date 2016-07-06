@@ -36,6 +36,16 @@ func NewUAAPartition(c *cli.Context) InstanceGrouper {
 		SAMLServiceProviderCertificate: c.String("uaa-saml-service-provider-certificate"),
 		JWTSigningKey:                  c.String("uaa-jwt-signing-key"),
 		JWTVerificationKey:             c.String("uaa-jwt-verification-key"),
+		AdminSecret:                    c.String("uaa-admin-secret"),
+		RouterMachines:                 c.StringSlice("router-ip"),
+		MySQLProxyHost:                 c.String("mysql-proxy-external-host"),
+		DBUserName:                     c.String("db-uaa-username"),
+		DBPassword:                     c.String("db-uaa-password"),
+		AdminPassword:                  c.String("admin-password"),
+		PushAppsManagerPassword:        c.String("push-apps-manager-password"),
+		SmokeTestsPassword:             c.String("smoke-tests-password"),
+		SystemServicesPassword:         c.String("system-services-password"),
+		SystemVerificationPassword:     c.String("system-verification-password"),
 	}
 	UAA.Login = UAA.CreateLogin(c)
 	UAA.UAA = UAA.CreateUAA(c)
@@ -75,7 +85,7 @@ func (s *UAA) CreateUAA(c *cli.Context) (login *uaa.Uaa) {
 			SslCertificate:      "",
 			SslCertificateAlias: "",
 			MailAttributeName:   c.String("uaa-ldap-mail-attributename"),
-			Enabled:             c.Bool("uaa-ldap"),
+			Enabled:             c.BoolT("uaa-ldap-enabled"),
 			Groups: &uaa.Groups{
 				ProfileType:       "no-groups",
 				SearchBase:        "",
@@ -185,12 +195,11 @@ func (s *UAA) createUAAJob() enaml.InstanceJob {
 			Login: s.Login,
 			Uaa:   s.UAA,
 			Admin: &uaa.Admin{
-				ClientSecret: "",
+				ClientSecret: s.AdminSecret,
 			},
 			Proxy: &uaa.Proxy{
 				Servers: s.RouterMachines,
 			},
-			//TODO create map of clients
 			Clients: "",
 			Scim: &uaa.Scim{
 				User: &uaa.User{
@@ -203,24 +212,36 @@ func (s *UAA) createUAAJob() enaml.InstanceJob {
 				//- smoke_tests|b9781aeee53b0f933591|cloud_controller.admin
 				//- system_services|efee313efd2ad0134548|cloud_controller.admin
 				//- system_verification|bfbeed4cc362c1ae6ec4|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support
-				Users: "",
+				Users: []string{
+					fmt.Sprintf("admin|%s|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support,doppler.firehose,notification_preferences.read,notification_preferences.write,notifications.manage,notification_templates.read,notification_templates.write,emails.write,notifications.write,zones.read,zones.write", s.AdminPassword),
+					fmt.Sprintf("push_apps_manager|%s|cloud_controller.admin", s.PushAppsManagerPassword),
+					fmt.Sprintf("smoke_tests|%s|cloud_controller.admin", s.SmokeTestsPassword),
+					fmt.Sprintf("system_services|%s|cloud_controller.admin", s.SystemServicesPassword),
+					fmt.Sprintf("system_verification|%s|scim.write,scim.read,openid,cloud_controller.admin,dashboard.user,console.admin,console.support", s.SystemVerificationPassword),
+				},
 			},
 			Domain: s.SystemDomain,
-			Uaadb: &uaa.Uaadb{
-				Address:  "",
-				Port:     3306,
-				DbScheme: "mysql",
-				//TODO define stuct for
-				//- tag: admin
-				//  name: c040224fe68cf6e00b52
-				//  password: fcfccfef6d0c542bacbd
-				Roles: nil,
-				//TODO define stuct for
-				//- tag: uaa
-				//  name: uaa
-				Databases: nil,
-			},
+			Uaadb:  s.createUAADB(),
 		},
+	}
+}
+
+func (s *UAA) createUAADB() (uaadb *uaa.Uaadb) {
+	const uaaVal = "uaa"
+	roles := make(map[string]string)
+	roles["tag"] = "admin"
+	roles["name"] = s.DBUserName
+	roles["password"] = s.DBPassword
+
+	dbs := make(map[string]string)
+	dbs["tag"] = uaaVal
+	dbs["name"] = uaaVal
+	return &uaa.Uaadb{
+		Address:   s.MySQLProxyHost,
+		Port:      3306,
+		DbScheme:  "mysql",
+		Roles:     roles,
+		Databases: dbs,
 	}
 }
 
@@ -241,5 +262,14 @@ func (s *UAA) HasValidValues() bool {
 		s.SAMLServiceProviderKey != "" &&
 		s.SAMLServiceProviderCertificate != "" &&
 		s.JWTSigningKey != "" &&
-		s.JWTVerificationKey != "")
+		s.JWTVerificationKey != "" &&
+		s.AdminSecret != "" &&
+		len(s.RouterMachines) > 0 &&
+		s.MySQLProxyHost != "" &&
+		s.DBUserName != "" &&
+		s.DBPassword != "" && s.AdminPassword != "" &&
+		s.PushAppsManagerPassword != "" &&
+		s.SmokeTestsPassword != "" &&
+		s.SystemServicesPassword != "" &&
+		s.SystemVerificationPassword != "")
 }

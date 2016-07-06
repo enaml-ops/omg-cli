@@ -301,6 +301,15 @@ type UAA struct {
 	JWTSigningKey                  string
 	JWTVerificationKey             string
 	Protocol                       string
+	AdminSecret                    string
+	MySQLProxyHost                 string
+	DBUserName                     string
+	DBPassword                     string
+	AdminPassword                  string
+	PushAppsManagerPassword        string
+	SmokeTestsPassword             string
+	SystemServicesPassword         string
+	SystemVerificationPassword     string
 }
 
 //Plugin -

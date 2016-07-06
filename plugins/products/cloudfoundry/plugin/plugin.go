@@ -170,13 +170,21 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "uaa-saml-service-provider-certificate", Usage: "saml service provider certificate for uaa"},
 		cli.StringFlag{Name: "uaa-jwt-signing-key", Usage: "signing key for jwt used by UAA"},
 		cli.StringFlag{Name: "uaa-jwt-verification-key", Usage: "verification key for jwt used by UAA"},
+		cli.BoolFlag{Name: "uaa-ldap-enabled", Usage: "is ldap enabled for UAA"},
 		cli.StringFlag{Name: "uaa-ldap-url", Usage: "url for ldap server"},
 		cli.StringFlag{Name: "uaa-ldap-user-dn", Usage: "userDN to bind to ldap with"},
 		cli.StringFlag{Name: "uaa-ldap-user-password", Usage: "bind password for ldap user"},
 		cli.StringFlag{Name: "uaa-ldap-search-filter", Usage: "search filter for users"},
 		cli.StringFlag{Name: "uaa-ldap-search-base", Usage: "search base for users"},
 		cli.StringFlag{Name: "uaa-ldap-mail-attributename", Usage: "attribute name for mail"},
-		cli.BoolFlag{Name: "uaa-ldap", Usage: "is ldap enabled for UAA"},
+		cli.StringFlag{Name: "uaa-admin-secret", Usage: "admin account client secret"},
+
+		//User accounts
+		cli.StringFlag{Name: "admin-password", Usage: "password for admin account"},
+		cli.StringFlag{Name: "push-apps-manager-password", Usage: "password for push_apps_manager account"},
+		cli.StringFlag{Name: "smoke-tests-password", Usage: "password for smoke_tests account"},
+		cli.StringFlag{Name: "system-services-password", Usage: "password for system_services account"},
+		cli.StringFlag{Name: "system-verification-password", Usage: "password for system_verification account"},
 	}
 }
 

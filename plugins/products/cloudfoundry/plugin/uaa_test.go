@@ -55,13 +55,24 @@ var _ = Describe("UAA Partition", func() {
 				"--uaa-saml-service-provider-certificate", "saml-cert",
 				"--uaa-jwt-verification-key", "jwt-verificationkey",
 				"--uaa-jwt-signing-key", "jwt-signingkey",
+				"--uaa-ldap-enabled",
 				"--uaa-ldap-url", "ldap://ldap.test.com",
 				"--uaa-ldap-user-dn", "userdn",
 				"--uaa-ldap-user-password", "userpwd",
 				"--uaa-ldap-search-filter", "filter",
 				"--uaa-ldap-search-base", "base",
 				"--uaa-ldap-mail-attributename", "mail",
-				"--uaa-ldap", "true",
+				"--uaa-admin-secret", "adminclientsecret",
+				"--router-ip", "1.0.0.1",
+				"--router-ip", "1.0.0.2",
+				"--mysql-proxy-external-host", "mysql-proxy.test.com",
+				"--db-uaa-username", "uaa-db-user",
+				"--db-uaa-password", "uaa-db-pwd",
+				"--admin-password", "admin",
+				"--push-apps-manager-password", "appsman",
+				"--smoke-tests-password", "smoke",
+				"--system-services-password", "sysservices",
+				"--system-verification-password", "sysverification",
 			})
 			uaaPartition = NewUAAPartition(c)
 		})
@@ -109,6 +120,62 @@ var _ = Describe("UAA Partition", func() {
 		It("then it should then have 5 jobs", func() {
 			ig := uaaPartition.ToInstanceGroup()
 			Ω(len(ig.Jobs)).Should(Equal(5))
+		})
+		It("then it should then have uaa job with client secret", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("uaa")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*uaa.Uaa)
+			Ω(props.Admin).ShouldNot(BeNil())
+			Ω(props.Admin.ClientSecret).Should(Equal("adminclientsecret"))
+		})
+		It("then it should then have uaa job with proxy configured", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("uaa")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*uaa.Uaa)
+			Ω(props.Proxy).ShouldNot(BeNil())
+			Ω(props.Proxy.Servers).Should(ConsistOf("1.0.0.1", "1.0.0.2"))
+		})
+		It("then it should then have uaa job with UAADB", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("uaa")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*uaa.Uaa)
+			Ω(props.Uaadb).ShouldNot(BeNil())
+			Ω(props.Uaadb.DbScheme).Should(Equal("mysql"))
+			Ω(props.Uaadb.Port).Should(Equal(3306))
+			Ω(props.Uaadb.Address).Should(Equal("mysql-proxy.test.com"))
+			Ω(props.Uaadb.Roles).ShouldNot(BeNil())
+			roles := props.Uaadb.Roles.(map[string]string)
+			Ω(roles["tag"]).Should(Equal("admin"))
+			Ω(roles["name"]).Should(Equal("uaa-db-user"))
+			Ω(roles["password"]).Should(Equal("uaa-db-pwd"))
+			Ω(props.Uaadb.Databases).ShouldNot(BeNil())
+			dbs := props.Uaadb.Databases.(map[string]string)
+			Ω(dbs["tag"]).Should(Equal("uaa"))
+			Ω(dbs["name"]).Should(Equal("uaa"))
+		})
+		It("then it should then have uaa job with Clients", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("uaa")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*uaa.Uaa)
+			Ω(props.Clients).ShouldNot(BeNil())
+
+		})
+		It("then it should then have uaa job with SCIM", func() {
+			ig := uaaPartition.ToInstanceGroup()
+			job := ig.GetJobByName("uaa")
+			Ω(job).ShouldNot(BeNil())
+			props, _ := job.Properties.(*uaa.Uaa)
+			Ω(props.Scim).ShouldNot(BeNil())
+			Ω(props.Scim.User).ShouldNot(BeNil())
+			Ω(props.Scim.User.Override).Should(BeTrue())
+			Ω(props.Scim.UseridsEnabled).Should(BeTrue())
+			Ω(props.Scim.Users).ShouldNot(BeNil())
+			users := props.Scim.Users.([]string)
+			Ω(len(users)).Should(Equal(5))
 		})
 		It("then it should then have uaa job with valid login information", func() {
 			ig := uaaPartition.ToInstanceGroup()
