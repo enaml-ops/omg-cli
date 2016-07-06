@@ -160,6 +160,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allow the user to configure the auctioneer BBS", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("auctioneer")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			a := job.Properties.(*auctioneer.Auctioneer)
 			Ω(a.Bbs.CaCert).Should(Equal("cacert"))
 			Ω(a.Bbs.ClientCert).Should(Equal("clientcert"))
@@ -170,6 +171,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allow the user to configure the CC uploader", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("cc_uploader")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			cc := job.Properties.(*cc_uploader.CcUploader)
 			Ω(cc.Diego.Ssl.SkipCertVerify).Should(BeFalse())
 			Ω(cc.Cc.JobPollingIntervalInSeconds).Should(Equal(25))
@@ -178,6 +180,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allow the user to configure the converger", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("converger")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			c := job.Properties.(*converger.Converger)
 			Ω(c.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
 			Ω(c.Bbs.CaCert).Should(Equal("cacert"))
@@ -188,6 +191,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allow the user to configure the file server", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("file_server")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			fs := job.Properties.(*file_server.FileServer)
 
 			Ω(fs.Diego.Ssl.SkipCertVerify).Should(BeFalse())
@@ -202,6 +206,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allow the user to configure nsync", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("nsync")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			n := job.Properties.(*nsync.Nsync)
 			Ω(n.Diego.Ssl.SkipCertVerify).Should(BeFalse())
 			Ω(n.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
@@ -219,6 +224,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allows the user to configure the route emitter", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("route_emitter")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			r := job.Properties.(*route_emitter.RouteEmitter)
 			Ω(r.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
 			Ω(r.Bbs.CaCert).Should(Equal("cacert"))
@@ -252,6 +258,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allow the user to configure the stager", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("stager")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			s := job.Properties.(*stager.Stager)
 			Ω(s.Diego.Ssl.SkipCertVerify).Should(BeFalse())
 			Ω(s.Bbs.ApiLocation).Should(Equal("bbs.service.cf.internal:8889"))
@@ -267,6 +274,7 @@ var _ = Describe("given a Diego Brain Partition", func() {
 		It("then it should allow the user to configure the tps", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("diego_brain-partition")
 			job := ig.GetJobByName("tps")
+			Ω(job.Release).Should(Equal(DiegoReleaseName))
 			t := job.Properties.(*tps.Tps)
 			Ω(t.Diego.Ssl.SkipCertVerify).Should(BeFalse())
 			Ω(t.TrafficControllerUrl).Should(Equal("wss://doppler.sys.yourdomain.com:443"))

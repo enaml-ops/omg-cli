@@ -127,7 +127,7 @@ func (d *diegoBrain) HasValidValues() bool {
 func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "auctioneer",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &auctioneer.Auctioneer{
 			Bbs: &auctioneer.Bbs{
 				ApiLocation: d.BBSAPILocation,
@@ -142,7 +142,7 @@ func (d *diegoBrain) newAuctioneer() *enaml.InstanceJob {
 func (d *diegoBrain) newCCUploader() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "cc_uploader",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &cc_uploader.CcUploader{
 			Diego: &cc_uploader.Diego{
 				Ssl: &cc_uploader.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
@@ -157,7 +157,7 @@ func (d *diegoBrain) newCCUploader() *enaml.InstanceJob {
 func (d *diegoBrain) newConverger() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "converger",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &converger.Converger{
 			Bbs: &converger.Bbs{
 				ApiLocation: d.BBSAPILocation,
@@ -172,7 +172,7 @@ func (d *diegoBrain) newConverger() *enaml.InstanceJob {
 func (d *diegoBrain) newFileServer() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "file_server",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &file_server.FileServer{
 			Diego: &file_server.Diego{
 				Ssl: &file_server.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
@@ -189,7 +189,7 @@ func (d *diegoBrain) newFileServer() *enaml.InstanceJob {
 func (d *diegoBrain) newNsync() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "nsync",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &nsync.Nsync{
 			Bbs: &nsync.Bbs{
 				ApiLocation: d.BBSAPILocation,
@@ -215,7 +215,7 @@ func (d *diegoBrain) newNsync() *enaml.InstanceJob {
 func (d *diegoBrain) newRouteEmitter() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "route_emitter",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &route_emitter.RouteEmitter{
 			Bbs: &route_emitter.Bbs{
 				ApiLocation: d.BBSAPILocation,
@@ -237,7 +237,7 @@ func (d *diegoBrain) newRouteEmitter() *enaml.InstanceJob {
 func (d *diegoBrain) newSSHProxy() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "ssh_proxy",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &ssh_proxy.SshProxy{
 			Bbs: &ssh_proxy.Bbs{
 				ApiLocation: d.BBSAPILocation,
@@ -263,7 +263,7 @@ func (d *diegoBrain) newSSHProxy() *enaml.InstanceJob {
 func (d *diegoBrain) newStager() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "stager",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &stager.Stager{
 			Bbs: &stager.Bbs{
 				ApiLocation: d.BBSAPILocation,
@@ -287,7 +287,7 @@ func (d *diegoBrain) newStager() *enaml.InstanceJob {
 func (d *diegoBrain) newTPS() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "tps",
-		Release: "diego",
+		Release: DiegoReleaseName,
 		Properties: &tps.Tps{
 			Bbs: &tps.Bbs{
 				ApiLocation: d.BBSAPILocation,
