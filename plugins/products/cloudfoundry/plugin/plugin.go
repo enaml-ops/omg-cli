@@ -185,6 +185,24 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "smoke-tests-password", Usage: "password for smoke_tests account"},
 		cli.StringFlag{Name: "system-services-password", Usage: "password for system_services account"},
 		cli.StringFlag{Name: "system-verification-password", Usage: "password for system_verification account"},
+
+		//Client secrets
+		cli.StringFlag{Name: "opentsdb-firehose-nozzle-client-secret", Usage: "client-secret for opentsdb firehose nozzle"},
+		cli.StringFlag{Name: "identity-client-secret", Usage: "client-secret for identity"},
+		cli.StringFlag{Name: "login-client-secret", Usage: "client-secret for login"},
+		cli.StringFlag{Name: "portal-client-secret", Usage: "client-secret for portal"},
+		cli.StringFlag{Name: "autoscaling-service-client-secret", Usage: "client-secret for autoscaling service"},
+		cli.StringFlag{Name: "system-passwords-client-secret", Usage: "client-secret for system-passwords"},
+		cli.StringFlag{Name: "cc-service-dashboards-client-secret", Usage: "client-secret for cc-service-dashboards"},
+		cli.StringFlag{Name: "doppler-client-secret", Usage: "client-secret for doppler"},
+		cli.StringFlag{Name: "gorouter-client-secret", Usage: "client-secret for gorouter"},
+		cli.StringFlag{Name: "notifications-client-secret", Usage: "client-secret for notifications"},
+		cli.StringFlag{Name: "notifications-ui-client-secret", Usage: "client-secret for notification-ui"},
+		cli.StringFlag{Name: "cloud-controller-username-lookup-client-secret", Usage: "client-secret for cloud controller username lookup"},
+		cli.StringFlag{Name: "cc-routing-client-secret", Usage: "client-secret for cc routing"},
+		cli.StringFlag{Name: "ssh-proxy-client-secret", Usage: "client-secret for ssh proxy"},
+		cli.StringFlag{Name: "apps-metrics-client-secret", Usage: "client-secret for apps metrics "},
+		cli.StringFlag{Name: "apps-metrics-processing-client-secret", Usage: "client-secret for apps metrics processing"},
 	}
 }
 

@@ -73,6 +73,22 @@ var _ = Describe("UAA Partition", func() {
 				"--smoke-tests-password", "smoke",
 				"--system-services-password", "sysservices",
 				"--system-verification-password", "sysverification",
+				"--opentsdb-firehose-nozzle-client-secret", "opentsdb-firehose-nozzle-client-secret",
+				"--identity-client-secret", "identity-client-secret",
+				"--login-client-secret", "login-client-secret",
+				"--portal-client-secret", "portal-client-secret",
+				"--autoscaling-service-client-secret", "autoscaling-service-client-secret",
+				"--system-passwords-client-secret", "system-passwords-client-secret",
+				"--cc-service-dashboards-client-secret", "cc-service-dashboards-client-secret",
+				"--doppler-client-secret", "doppler-client-secret",
+				"--gorouter-client-secret", "gorouter-client-secret",
+				"--notifications-client-secret", "notifications-client-secret",
+				"--notifications-ui-client-secret", "notifications-ui-client-secret",
+				"--cloud-controller-username-lookup-client-secret", "cloud-controller-username-lookup-client-secret",
+				"--cc-routing-client-secret", "cc-routing-client-secret",
+				"--ssh-proxy-client-secret", "ssh-proxy-client-secret",
+				"--apps-metrics-client-secret", "apps-metrics-client-secret",
+				"--apps-metrics-processing-client-secret", "apps-metrics-processing-client-secret",
 			})
 			uaaPartition = NewUAAPartition(c)
 		})
@@ -162,6 +178,8 @@ var _ = Describe("UAA Partition", func() {
 			Ω(job).ShouldNot(BeNil())
 			props, _ := job.Properties.(*uaa.Uaa)
 			Ω(props.Clients).ShouldNot(BeNil())
+			clientMap := props.Clients.(map[string]UAAClient)
+			Ω(len(clientMap)).Should(Equal(19))
 
 		})
 		It("then it should then have uaa job with SCIM", func() {
@@ -189,10 +207,6 @@ var _ = Describe("UAA Partition", func() {
 			job := ig.GetJobByName("uaa")
 			Ω(job).ShouldNot(BeNil())
 			props, _ := job.Properties.(*uaa.Uaa)
-
-			/*fmt.Println("-----")
-			b, _ := yaml.Marshal(props.Uaa)
-			fmt.Println(string(b))*/
 			Ω(props.Uaa).ShouldNot(BeNil())
 			Ω(props.Uaa.CatalinaOpts).Should(Equal("-Xmx768m -XX:MaxPermSize=256m"))
 			Ω(props.Uaa.RequireHttps).Should(BeTrue())
