@@ -347,5 +347,17 @@ type UAAClient struct {
 	AppIcon              string      `yaml:"app-icon,omitempty"`
 }
 
+type SmokeErrand struct {
+	AZs          []string
+	StemcellName string
+	VMTypeName   string
+	NetworkName  string
+	Instances    int
+	Protocol     string
+	SystemDomain string
+	AppsDomain   string
+	Password     string
+}
+
 //Plugin -
 type Plugin struct{}
