@@ -124,8 +124,22 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "db-console-username", Usage: "console db username"},
 		cli.StringFlag{Name: "db-console-password", Usage: "console db password"},
 
+		//Diego Database
+		cli.StringSliceFlag{Name: "diego-db-ip", Usage: "a list of static IPs for the diego database partitions"},
+		cli.StringFlag{Name: "diego-db-vm-type", Usage: "the name of the desired vm type for the diego db"},
+		cli.StringFlag{Name: "diego-db-disk-type", Usage: "the name of your desired persistent disk type for the diego db"},
+		cli.StringFlag{Name: "diego-db-passphrase", Usage: "the passphrase for your database"},
+		cli.StringFlag{Name: "bbs-server-cert", Usage: "BBS server SSL cert (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "bbs-server-key", Usage: "BBS server SSL key (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "etcd-server-key", Usage: "etcd server SSL key (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "etcd-server-cert", Usage: "etcd server cert  (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "etcd-client-key", Usage: "etcd client SSL key (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "etcd-client-cert", Usage: "etcd client SSL cert (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "etcd-peer-key", Usage: "etcd peer SSL key (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "etcd-peer-cert", Usage: "etcd peer SSL cert (or a file containing it: file format `@filepath`)"},
+
 		// Diego Cell
-		cli.StringSliceFlag{Name: "diego-cell-ip", Usage: "a list of static IPs for the diego brain"},
+		cli.StringSliceFlag{Name: "diego-cell-ip", Usage: "a list of static IPs for the diego cell"},
 		cli.StringFlag{Name: "diego-cell-vm-type", Usage: "the name of the desired vm type for the diego cell"},
 		cli.StringFlag{Name: "diego-cell-disk-type", Usage: "the name of your desired persistent disk type for the diego cell"},
 
@@ -134,9 +148,9 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "diego-brain-vm-type", Usage: "the name of the desired vm type for the diego brain"},
 		cli.StringFlag{Name: "diego-brain-disk-type", Usage: "the name of your desired persistent disk type for the diego brain"},
 
-		cli.StringFlag{Name: "bbs-ca-cert", Usage: "BBS CA SSL cert (or a file containing it)"},
-		cli.StringFlag{Name: "bbs-client-cert", Usage: "BBS client SSL cert (or a file containing it)"},
-		cli.StringFlag{Name: "bbs-client-key", Usage: "BBS client SSL key (or a file containing it)"},
+		cli.StringFlag{Name: "bbs-ca-cert", Usage: "BBS CA SSL cert (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "bbs-client-cert", Usage: "BBS client SSL cert (or a file containing it: file format `@filepath`)"},
+		cli.StringFlag{Name: "bbs-client-key", Usage: "BBS client SSL key (or a file containing it: file format `@filepath`)"},
 		cli.StringFlag{Name: "bbs-api", Usage: "location of the bbs api"},
 		cli.BoolTFlag{Name: "bbs-require-ssl", Usage: "enable SSL for all communications with the BBS"},
 
