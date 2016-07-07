@@ -2,6 +2,7 @@ package cloudfoundry
 
 import (
 	"fmt"
+
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	ccnglib "github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/cloud_controller_ng"
@@ -76,7 +77,7 @@ func newCloudControllerNgWorkerJob(c *CloudControllerPartition) enaml.InstanceJo
 				Url: fmt.Sprintf("https://login.%s", c.SystemDomain),
 			},
 			Cc: &ccnglib.Cc{
-				AllowAppSshAccess: c.AllowAppSSHAccess,
+				AllowAppSshAccess:     c.AllowAppSSHAccess,
 				DefaultToDiegoBackend: true,
 				Buildpacks: &ccnglib.Buildpacks{
 					BlobstoreType: "fog",
@@ -108,7 +109,7 @@ func newCloudControllerNgWorkerJob(c *CloudControllerPartition) enaml.InstanceJo
 				},
 				ExternalProtocol:          "https",
 				LoggingLevel:              "debug",
-				MaximumHealthCheckTimeout: "600",
+				MaximumHealthCheckTimeout: 600,
 				StagingUploadUser:         c.StagingUploadUser,
 				StagingUploadPassword:     c.StagingUploadPassword,
 				BulkApiUser:               c.BulkAPIUser,
@@ -123,16 +124,16 @@ func newCloudControllerNgWorkerJob(c *CloudControllerPartition) enaml.InstanceJo
 					"all_open",
 				},
 				DisableCustomBuildpacks: false,
-				ExternalHost: "api",
-				InstallBuildpacks: []string{},
+				ExternalHost:            "api",
+				InstallBuildpacks:       []string{},
 
 				QuotaDefinitions: []string{},
 
-				SecurityGroupDefinitions:[]string{},
+				SecurityGroupDefinitions: []string{},
 
 				Stacks: []string{},
 
-				MinCliVersion: c.MinCliVersion,
+				MinCliVersion:            c.MinCliVersion,
 				MinRecommendedCliVersion: c.MinCliVersion,
 			},
 		},
@@ -142,14 +143,13 @@ func newCloudControllerNgWorkerJob(c *CloudControllerPartition) enaml.InstanceJo
 //HasValidValues - Check if valid values has been populated
 func (s *CloudControllerPartition) HasValidValues() bool {
 	return (len(s.AZs) > 0 &&
-	s.StemcellName != "" &&
-	s.VMTypeName != "" &&
-	s.Metron.Zone != "" &&
-	s.Metron.Secret != "" &&
-	s.NetworkName != "" &&
-	s.SystemDomain != "" &&
-	len(s.AppDomains) > 0 &&
-	s.NFSMounter.hasValidValues() &&
-	s.ConsulAgent.HasValidValues())
-
+		s.StemcellName != "" &&
+		s.VMTypeName != "" &&
+		s.Metron.Zone != "" &&
+		s.Metron.Secret != "" &&
+		s.NetworkName != "" &&
+		s.SystemDomain != "" &&
+		len(s.AppDomains) > 0 &&
+		s.NFSMounter.hasValidValues() &&
+		s.ConsulAgent.HasValidValues())
 }
