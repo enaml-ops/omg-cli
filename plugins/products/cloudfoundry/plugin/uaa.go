@@ -15,6 +15,11 @@ func NewUAAPartition(c *cli.Context) InstanceGrouper {
 	if c.IsSet("uaa-login-protocol") {
 		protocol = c.String("uaa-login-protocol")
 	}
+	var mysqlProxyIP string
+	mysqlProxys := c.StringSlice("mysql-proxy-ip")
+	if len(mysqlProxys) > 0 {
+		mysqlProxyIP = mysqlProxys[0]
+	}
 	UAA := &UAA{
 		AZs:            c.StringSlice("az"),
 		StemcellName:   c.String("stemcell-name"),
@@ -38,7 +43,7 @@ func NewUAAPartition(c *cli.Context) InstanceGrouper {
 		JWTVerificationKey:                        c.String("uaa-jwt-verification-key"),
 		AdminSecret:                               c.String("uaa-admin-secret"),
 		RouterMachines:                            c.StringSlice("router-ip"),
-		MySQLProxyHost:                            c.String("mysql-proxy-external-host"),
+		MySQLProxyHost:                            mysqlProxyIP,
 		DBUserName:                                c.String("db-uaa-username"),
 		DBPassword:                                c.String("db-uaa-password"),
 		AdminPassword:                             c.String("admin-password"),

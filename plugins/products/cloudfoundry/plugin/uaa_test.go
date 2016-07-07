@@ -65,7 +65,8 @@ var _ = Describe("UAA Partition", func() {
 				"--uaa-admin-secret", "adminclientsecret",
 				"--router-ip", "1.0.0.1",
 				"--router-ip", "1.0.0.2",
-				"--mysql-proxy-external-host", "mysql-proxy.test.com",
+				"--mysql-proxy-ip", "1.0.10.3",
+				"--mysql-proxy-ip", "1.0.10.4",
 				"--db-uaa-username", "uaa-db-user",
 				"--db-uaa-password", "uaa-db-pwd",
 				"--admin-password", "admin",
@@ -161,7 +162,7 @@ var _ = Describe("UAA Partition", func() {
 			Ω(props.Uaadb).ShouldNot(BeNil())
 			Ω(props.Uaadb.DbScheme).Should(Equal("mysql"))
 			Ω(props.Uaadb.Port).Should(Equal(3306))
-			Ω(props.Uaadb.Address).Should(Equal("mysql-proxy.test.com"))
+			Ω(props.Uaadb.Address).Should(Equal("1.0.10.3"))
 			Ω(props.Uaadb.Roles).ShouldNot(BeNil())
 			roles := props.Uaadb.Roles.(map[string]string)
 			Ω(roles["tag"]).Should(Equal("admin"))

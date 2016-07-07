@@ -48,6 +48,9 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "router-pass", Usage: "the password of the go-routers"},
 		cli.BoolFlag{Name: "router-enable-ssl", Usage: "enable or disable ssl on your routers"},
 
+		cli.StringSliceFlag{Name: "haproxy-ip", Usage: "a list of the haproxy ips you wish to use"},
+		cli.StringFlag{Name: "haproxy-vm-type", Usage: "the name of your desired vm size"},
+
 		cli.StringFlag{Name: "nats-vm-type", Usage: "the name of your desired vm size for NATS"},
 		cli.StringFlag{Name: "nats-user", Value: "nats", Usage: "username for your nats pool"},
 		cli.StringFlag{Name: "nats-pass", Value: "nats-password", Usage: "password for your nats pool"},
@@ -203,6 +206,8 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "ssh-proxy-client-secret", Usage: "client-secret for ssh proxy"},
 		cli.StringFlag{Name: "apps-metrics-client-secret", Usage: "client-secret for apps metrics "},
 		cli.StringFlag{Name: "apps-metrics-processing-client-secret", Usage: "client-secret for apps metrics processing"},
+
+		cli.StringFlag{Name: "errand-vm-type", Usage: "vm type to be used for running errands"},
 	}
 }
 
