@@ -21,6 +21,15 @@ type InstanceGrouper interface {
 // InstanceGrouperFactory is a function that creates InstanceGroupers from CLI args.
 type InstanceGrouperFactory func(*cli.Context) InstanceGrouper
 
+type bootstrap struct {
+	AZs           []string
+	StemcellName  string
+	NetworkName   string
+	MySQLIPs      []string
+	MySQLUser     string
+	MySQLPassword string
+}
+
 type clockGlobal struct {
 	Instances                int
 	AZs                      []string
