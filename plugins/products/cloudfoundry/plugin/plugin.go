@@ -24,6 +24,7 @@ func init() {
 	RegisterInstanceGrouperFactory(NewCloudControllerWorkerPartition)
 	//uaa-partition
 	RegisterInstanceGrouperFactory(NewDiegoBrainPartition)
+	RegisterInstanceGrouperFactory(NewDiegoDatabasePartition)
 	//diego_cell-partition
 	//doppler-partition
 	//loggregator_trafficcontroller-partition
