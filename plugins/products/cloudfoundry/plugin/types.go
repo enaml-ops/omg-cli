@@ -73,6 +73,30 @@ type gorouter struct {
 	MetronSecret string
 }
 
+type diegoDatabase struct {
+	AZs                []string
+	Passphrase         string
+	SystemDomain       string
+	StemcellName       string
+	VMTypeName         string
+	PersistentDiskType string
+	NetworkName        string
+	NetworkIPs         []string
+	CACert             string
+	BBSServerCert      string
+	BBSServerKey       string
+	EtcdServerCert     string
+	EtcdServerKey      string
+	EtcdClientCert     string
+	EtcdClientKey      string
+	EtcdPeerCert       string
+	EtcdPeerKey        string
+	ConsulAgent        *ConsulAgent
+	StatsdInjector     *StatsdInjector
+	Metron             *Metron
+	DiegoBrain         *diegoBrain
+}
+
 type diegoCell struct {
 	AZs                []string
 	StemcellName       string
