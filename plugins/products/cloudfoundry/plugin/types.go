@@ -21,6 +21,31 @@ type InstanceGrouper interface {
 // InstanceGrouperFactory is a function that creates InstanceGroupers from CLI args.
 type InstanceGrouperFactory func(*cli.Context) InstanceGrouper
 
+type clockGlobal struct {
+	Instances                int
+	AZs                      []string
+	StemcellName             string
+	VMTypeName               string
+	NetworkName              string
+	SystemDomain             string
+	AppDomains               []string
+	Metron                   *Metron
+	Statsd                   *StatsdInjector
+	NFS                      *NFSMounter
+	AllowSSHAccess           bool
+	SkipSSLCertVerify        bool
+	NATSUser                 string
+	NATSPassword             string
+	NATSPort                 int
+	NATSMachines             []string
+	CloudController          *CloudControllerPartition
+	CCDBAddress              string
+	CCDBUser                 string
+	CCDBPassword             string
+	JWTVerificationKey       string
+	CCServiceDashboardSecret string
+}
+
 type gorouter struct {
 	Instances    int
 	AZs          []string

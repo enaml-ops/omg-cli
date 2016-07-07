@@ -75,6 +75,17 @@ func parseSeededDBs(c *cli.Context) (dbs []MySQLSeededDatabase) {
 	return
 }
 
+// GetSeededDBByName returns a pointer to the seeded database with a particular
+// name.  It returns null if no matching database is found.
+func (s *MySQL) GetSeededDBByName(name string) *MySQLSeededDatabase {
+	for i := range s.MySQLSeededDatabases {
+		if s.MySQLSeededDatabases[i].Name == name {
+			return &s.MySQLSeededDatabases[i]
+		}
+	}
+	return nil
+}
+
 //ToInstanceGroup -
 func (s *MySQL) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	ig = &enaml.InstanceGroup{

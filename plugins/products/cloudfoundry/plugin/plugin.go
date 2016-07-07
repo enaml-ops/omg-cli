@@ -20,7 +20,7 @@ func init() {
 	RegisterInstanceGrouperFactory(NewMySQLPartition)
 	RegisterInstanceGrouperFactory(NewCloudControllerPartition)
 	//ha_proxy-partition
-	//clock_global-partition
+	RegisterInstanceGrouperFactory(NewClockGlobalPartition)
 	RegisterInstanceGrouperFactory(NewCloudControllerWorkerPartition)
 	//uaa-partition
 	RegisterInstanceGrouperFactory(NewDiegoBrainPartition)
@@ -150,6 +150,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.IntFlag{Name: "cc-external-port", Usage: "external port of the Cloud Controller API"},
 		cli.StringFlag{Name: "ssh-proxy-uaa-secret", Usage: "the OAuth client secret used to authenticate the SSH proxy"},
 		cli.StringFlag{Name: "traffic-controller-url", Usage: "the URL of the traffic controller"},
+		cli.StringFlag{Name: "clock-global-vm-type", Usage: "the name of the desired vm type for the clock global partition"},
 
 		//Doppler
 		cli.StringSliceFlag{Name: "doppler-ip", Usage: "a list of the doppler ips you wish to use"},
