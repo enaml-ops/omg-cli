@@ -22,13 +22,14 @@ type InstanceGrouper interface {
 type InstanceGrouperFactory func(*cli.Context) InstanceGrouper
 
 type acceptanceTests struct {
-	AZs            []string
-	StemcellName   string
-	NetworkName    string
-	AppsDomain     []string
-	SystemDomain   string
-	AdminPassword  string
-	SkipCertVerify bool
+	AZs                      []string
+	StemcellName             string
+	NetworkName              string
+	AppsDomain               []string
+	SystemDomain             string
+	AdminPassword            string
+	SkipCertVerify           bool
+	IncludeInternetDependent bool
 }
 
 type bootstrap struct {

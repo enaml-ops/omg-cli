@@ -25,10 +25,18 @@ func init() {
 	RegisterInstanceGrouperFactory(NewDiegoBrainPartition)
 	RegisterInstanceGrouperFactory(NewBootstrapPartition)
 	RegisterInstanceGrouperFactory(NewDiegoDatabasePartition)
-	RegisterInstanceGrouperFactory(NewAcceptanceTestsPartition)
 	//diego_cell-partition
 	//doppler-partition
 	//loggregator_trafficcontroller-partition
+
+	acceptanceTests := func(c *cli.Context) InstanceGrouper {
+		return NewAcceptanceTestsPartition(c, true)
+	}
+	internetLessAcceptanceTests := func(c *cli.Context) InstanceGrouper {
+		return NewAcceptanceTestsPartition(c, false)
+	}
+	RegisterInstanceGrouperFactory(acceptanceTests)
+	RegisterInstanceGrouperFactory(internetLessAcceptanceTests)
 }
 
 //GetFlags -

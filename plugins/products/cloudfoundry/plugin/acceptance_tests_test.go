@@ -14,7 +14,7 @@ var _ = Describe("given the acceptance-tests partition", func() {
 		BeforeEach(func() {
 			p := new(Plugin)
 			c := p.GetContext([]string{"cloudfoundry"})
-			ig = NewAcceptanceTestsPartition(c)
+			ig = NewAcceptanceTestsPartition(c, true)
 		})
 
 		It("should not be nil", func() {
@@ -45,7 +45,7 @@ var _ = Describe("given the acceptance-tests partition", func() {
 				"--network", "foundry-net",
 				"--admin-password", "adminpass",
 			})
-			ig = NewAcceptanceTestsPartition(c)
+			ig = NewAcceptanceTestsPartition(c, true)
 			dm = new(enaml.DeploymentManifest)
 			dm.AddInstanceGroup(ig.ToInstanceGroup())
 		})
@@ -98,13 +98,54 @@ var _ = Describe("given the acceptance-tests partition", func() {
 			Ω(props.AdminUser).Should(Equal("admin"))
 			Ω(props.AdminPassword).Should(Equal("adminpass"))
 			Ω(props.IncludeLogging).Should(BeTrue())
-			Ω(props.IncludeInternetDependent).Should(BeTrue())
 			Ω(props.IncludeOperator).Should(BeTrue())
 			Ω(props.IncludeServices).Should(BeTrue())
 			Ω(props.IncludeSecurityGroups).Should(BeTrue())
 			Ω(props.SkipSslValidation).Should(BeTrue())
 			Ω(props.SkipRegex).Should(Equal("lucid64"))
 			Ω(props.JavaBuildpackName).Should(Equal("java_buildpack_offline"))
+
+			Ω(props.IncludeInternetDependent).Should(BeTrue())
+		})
+	})
+
+	Context("when initialized with a complete set of arguments in internetless mode", func() {
+		var ig InstanceGrouper
+		var dm *enaml.DeploymentManifest
+		BeforeEach(func() {
+			p := new(Plugin)
+			c := p.GetContext([]string{
+				"cloudfoundry",
+				"--system-domain", "sys.yourdomain.com",
+				"--app-domain", "apps.yourdomain.com",
+				"--az", "z1",
+				"--stemcell-name", "cool-ubuntu-animal",
+				"--network", "foundry-net",
+				"--admin-password", "adminpass",
+			})
+			ig = NewAcceptanceTestsPartition(c, false)
+			dm = new(enaml.DeploymentManifest)
+			dm.AddInstanceGroup(ig.ToInstanceGroup())
+		})
+
+		It("should not be configured to include internet-dependent tests", func() {
+			group := ig.ToInstanceGroup()
+			job := group.GetJobByName("acceptance-tests")
+			Ω(job.Release).Should(Equal(CFReleaseName))
+			props := job.Properties.(*acceptance_tests.AcceptanceTests)
+			Ω(props.Api).Should(Equal("https://api.sys.yourdomain.com"))
+			Ω(props.AppsDomain).Should(Equal("apps.yourdomain.com"))
+			Ω(props.AdminUser).Should(Equal("admin"))
+			Ω(props.AdminPassword).Should(Equal("adminpass"))
+			Ω(props.IncludeLogging).Should(BeTrue())
+			Ω(props.IncludeOperator).Should(BeTrue())
+			Ω(props.IncludeServices).Should(BeTrue())
+			Ω(props.IncludeSecurityGroups).Should(BeTrue())
+			Ω(props.SkipSslValidation).Should(BeTrue())
+			Ω(props.SkipRegex).Should(Equal("lucid64"))
+			Ω(props.JavaBuildpackName).Should(Equal("java_buildpack_offline"))
+
+			Ω(props.IncludeInternetDependent).Should(BeFalse())
 		})
 	})
 })

@@ -6,15 +6,16 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/acceptance-tests"
 )
 
-func NewAcceptanceTestsPartition(c *cli.Context) InstanceGrouper {
+func NewAcceptanceTestsPartition(c *cli.Context, internet bool) InstanceGrouper {
 	return &acceptanceTests{
-		AZs:            c.StringSlice("az"),
-		StemcellName:   c.String("stemcell-name"),
-		NetworkName:    c.String("network"),
-		AppsDomain:     c.StringSlice("app-domain"),
-		SystemDomain:   c.String("system-domain"),
-		AdminPassword:  c.String("admin-password"),
-		SkipCertVerify: c.BoolT("skip-cert-verify"),
+		AZs:                      c.StringSlice("az"),
+		StemcellName:             c.String("stemcell-name"),
+		NetworkName:              c.String("network"),
+		AppsDomain:               c.StringSlice("app-domain"),
+		SystemDomain:             c.String("system-domain"),
+		AdminPassword:            c.String("admin-password"),
+		SkipCertVerify:           c.BoolT("skip-cert-verify"),
+		IncludeInternetDependent: internet,
 	}
 }
 
@@ -36,13 +37,13 @@ func (a *acceptanceTests) ToInstanceGroup() *enaml.InstanceGroup {
 			{
 				Name:       "acceptance-tests",
 				Release:    CFReleaseName,
-				Properties: a.newAcceptanceTestsProperties(),
+				Properties: a.newAcceptanceTestsProperties(a.IncludeInternetDependent),
 			},
 		},
 	}
 }
 
-func (a *acceptanceTests) newAcceptanceTestsProperties() *acceptance_tests.AcceptanceTests {
+func (a *acceptanceTests) newAcceptanceTestsProperties(internet bool) *acceptance_tests.AcceptanceTests {
 	var ad string
 	if len(a.AppsDomain) > 0 {
 		ad = a.AppsDomain[0]
@@ -53,7 +54,7 @@ func (a *acceptanceTests) newAcceptanceTestsProperties() *acceptance_tests.Accep
 		AdminUser:                "admin",
 		AdminPassword:            a.AdminPassword,
 		IncludeLogging:           true,
-		IncludeInternetDependent: true,
+		IncludeInternetDependent: internet,
 		IncludeOperator:          true,
 		IncludeServices:          true,
 		IncludeSecurityGroups:    true,
