@@ -167,9 +167,9 @@ func (s *diegoDatabase) newEtcd() (dbetcd *etcd.Etcd) {
 		PeerCaCert:             s.CACert,
 		PeerCert:               s.EtcdPeerCert,
 		PeerKey:                s.EtcdPeerKey,
-		AdvertiseUrlsDnsSuffix: fmt.Sprintf("etcd.", s.SystemDomain),
+		AdvertiseUrlsDnsSuffix: fmt.Sprintf("etcd.%s", s.SystemDomain),
 		Machines: []string{
-			fmt.Sprintf("etcd.", s.SystemDomain),
+			fmt.Sprintf("etcd.%s", s.SystemDomain),
 		},
 		Cluster: map[string]interface{}{
 			"name":      diegoDatabaseIGName,

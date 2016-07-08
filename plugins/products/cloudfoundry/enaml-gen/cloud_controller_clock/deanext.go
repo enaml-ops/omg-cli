@@ -5,12 +5,12 @@ package cloud_controller_clock
 */
 type DeaNext struct {
 
-	/*StagingMemoryLimitMb - Descr: Memory limit in mb for staging tasks Default: 1024
-*/
-	StagingMemoryLimitMb interface{} `yaml:"staging_memory_limit_mb,omitempty"`
-
 	/*StagingDiskLimitMb - Descr: Disk limit in mb for staging tasks Default: 6144
 */
 	StagingDiskLimitMb interface{} `yaml:"staging_disk_limit_mb,omitempty"`
+
+	/*StagingMemoryLimitMb - Descr: Memory limit in mb for staging tasks Default: 1024
+*/
+	StagingMemoryLimitMb interface{} `yaml:"staging_memory_limit_mb,omitempty"`
 
 }

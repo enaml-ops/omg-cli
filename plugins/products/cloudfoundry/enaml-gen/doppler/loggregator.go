@@ -7,7 +7,7 @@ type Loggregator struct {
 
 	/*Tls - Descr: CA root required for key/cert verification Default: 
 */
-	Tls *Tls `yaml:"tls,omitempty"`
+	Tls *LoggregatorTls `yaml:"tls,omitempty"`
 
 	/*Etcd - Descr: IPs pointing to the ETCD cluster Default: <nil>
 */

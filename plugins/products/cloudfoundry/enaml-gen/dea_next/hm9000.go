@@ -5,13 +5,13 @@ package dea_next
 */
 type Hm9000 struct {
 
-	/*CaCert - Descr: PEM-encoded CA certificate Default: <nil>
-*/
-	CaCert interface{} `yaml:"ca_cert,omitempty"`
-
 	/*ClientCert - Descr: PEM-encoded client certificate Default: <nil>
 */
 	ClientCert interface{} `yaml:"client_cert,omitempty"`
+
+	/*CaCert - Descr: PEM-encoded CA certificate Default: <nil>
+*/
+	CaCert interface{} `yaml:"ca_cert,omitempty"`
 
 	/*ClientKey - Descr: PEM-encoded client key Default: <nil>
 */

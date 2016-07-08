@@ -5,37 +5,37 @@ package collector
 */
 type Collector struct {
 
-	/*Intervals - Descr: the interval in seconds that the collector attempts to prune unresponsive components Default: 300
-*/
-	Intervals *Intervals `yaml:"intervals,omitempty"`
-
-	/*Opentsdb - Descr: TCP port of OpenTsdb Default: <nil>
-*/
-	Opentsdb *Opentsdb `yaml:"opentsdb,omitempty"`
-
 	/*UseTsdb - Descr: enable OpenTsdb plugin Default: false
 */
 	UseTsdb interface{} `yaml:"use_tsdb,omitempty"`
-
-	/*DeploymentName - Descr: name for this bosh deployment. All metrics will be tagged with deployment:XXX when sending them to CloudWatch, Datadog and Graphite Default: <nil>
-*/
-	DeploymentName interface{} `yaml:"deployment_name,omitempty"`
-
-	/*Nats - Descr: IP of each NATS cluster member. Default: <nil>
-*/
-	Nats *Nats `yaml:"nats,omitempty"`
-
-	/*Datadog - Descr: Datadog API key Default: <nil>
-*/
-	Datadog *Datadog `yaml:"datadog,omitempty"`
 
 	/*UseAwsCloudwatch - Descr: enable CloudWatch plugin Default: false
 */
 	UseAwsCloudwatch interface{} `yaml:"use_aws_cloudwatch,omitempty"`
 
+	/*UseDatadog - Descr: enable Datadog plugin Default: false
+*/
+	UseDatadog interface{} `yaml:"use_datadog,omitempty"`
+
 	/*Graphite - Descr: TCP port of Graphite Default: <nil>
 */
 	Graphite *Graphite `yaml:"graphite,omitempty"`
+
+	/*Aws - Descr: AWS secret for CloudWatch access Default: <nil>
+*/
+	Aws *Aws `yaml:"aws,omitempty"`
+
+	/*DeploymentName - Descr: name for this bosh deployment. All metrics will be tagged with deployment:XXX when sending them to CloudWatch, Datadog and Graphite Default: <nil>
+*/
+	DeploymentName interface{} `yaml:"deployment_name,omitempty"`
+
+	/*Intervals - Descr: the interval in seconds that varz is checked Default: 30
+*/
+	Intervals *Intervals `yaml:"intervals,omitempty"`
+
+	/*LoggingLevel - Descr: the logging level for the collector Default: info
+*/
+	LoggingLevel interface{} `yaml:"logging_level,omitempty"`
 
 	/*UseGraphite - Descr: enable Graphite plugin Default: false
 */
@@ -45,20 +45,12 @@ type Collector struct {
 */
 	MemoryThreshold interface{} `yaml:"memory_threshold,omitempty"`
 
-	/*LoggingLevel - Descr: the logging level for the collector Default: info
+	/*Datadog - Descr: Datadog application key Default: <nil>
 */
-	LoggingLevel interface{} `yaml:"logging_level,omitempty"`
+	Datadog *Datadog `yaml:"datadog,omitempty"`
 
-	/*UseDatadog - Descr: enable Datadog plugin Default: false
+	/*Opentsdb - Descr: TCP port of OpenTsdb Default: <nil>
 */
-	UseDatadog interface{} `yaml:"use_datadog,omitempty"`
-
-	/*Collector - Descr: the interval in seconds that the collector attempts to prune unresponsive components Default: 300
-*/
-	Collector *Collector `yaml:"collector,omitempty"`
-
-	/*Aws - Descr: AWS secret for CloudWatch access Default: <nil>
-*/
-	Aws *Aws `yaml:"aws,omitempty"`
+	Opentsdb *Opentsdb `yaml:"opentsdb,omitempty"`
 
 }

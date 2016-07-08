@@ -5,7 +5,7 @@ package cloud_controller_clock
 */
 type Thresholds struct {
 
-	/*Api - Descr: The cc will restart if memory remains above this threshold for 15 monit cycles Default: 3500
+	/*Api - Descr: The cc will restart if memory remains above this threshold for 3 monit cycles Default: 3750
 */
 	Api *Api `yaml:"api,omitempty"`
 

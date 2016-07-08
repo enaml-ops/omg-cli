@@ -5,24 +5,24 @@ package cloud_controller_clock
 */
 type Buildpacks struct {
 
-	/*Cdn - Descr: Private key for signing download URIs Default: 
+	/*WebdavConfig - Descr: The ca cert to use when communicating with webdav Default: 
 */
-	Cdn *Cdn `yaml:"cdn,omitempty"`
-
-	/*WebdavConfig - Descr: The location of the webdav server eg: https://blobstore.internal Default: https://blobstore.service.cf.internal
-*/
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
+	WebdavConfig *BuildpacksWebdavConfig `yaml:"webdav_config,omitempty"`
 
 	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
 	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
 
-	/*FogConnection - Descr: Fog connection hash Default: <nil>
-*/
-	FogConnection interface{} `yaml:"fog_connection,omitempty"`
-
 	/*BuildpackDirectoryKey - Descr: Directory (bucket) used store buildpacks.  It does not have be pre-created. Default: cc-buildpacks
 */
 	BuildpackDirectoryKey interface{} `yaml:"buildpack_directory_key,omitempty"`
+
+	/*Cdn - Descr: Private key for signing download URIs Default: 
+*/
+	Cdn *BuildpacksCdn `yaml:"cdn,omitempty"`
+
+	/*FogConnection - Descr: Fog connection hash Default: <nil>
+*/
+	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
 }

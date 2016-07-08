@@ -5,12 +5,12 @@ package uaa
 */
 type Prompt struct {
 
-	/*Password - Descr: The text used to prompt for a password during login Default: Password
-*/
-	Password *Password `yaml:"password,omitempty"`
-
 	/*Username - Descr: The text used to prompt for a username during login Default: Email
 */
 	Username *Username `yaml:"username,omitempty"`
+
+	/*Password - Descr: The text used to prompt for a password during login Default: Password
+*/
+	Password *PromptPassword `yaml:"password,omitempty"`
 
 }

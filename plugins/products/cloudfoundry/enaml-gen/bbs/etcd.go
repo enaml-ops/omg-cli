@@ -5,32 +5,32 @@ package bbs
 */
 type Etcd struct {
 
+	/*MaxIdleConnsPerHost - Descr: maximum number of idle http connections Default: <nil>
+*/
+	MaxIdleConnsPerHost interface{} `yaml:"max_idle_conns_per_host,omitempty"`
+
+	/*Machines - Descr: Addresses pointing to the ETCD cluster Default: [etcd.service.cf.internal]
+*/
+	Machines interface{} `yaml:"machines,omitempty"`
+
 	/*ClientKey - Descr: PEM-encoded client key Default: <nil>
 */
 	ClientKey interface{} `yaml:"client_key,omitempty"`
-
-	/*ClientSessionCacheSize - Descr: capacity of the tls client cache Default: <nil>
-*/
-	ClientSessionCacheSize interface{} `yaml:"client_session_cache_size,omitempty"`
-
-	/*RequireSsl - Descr: enable ssl for all communication with etcd Default: true
-*/
-	RequireSsl interface{} `yaml:"require_ssl,omitempty"`
 
 	/*CaCert - Descr: PEM-encoded CA certificate Default: <nil>
 */
 	CaCert interface{} `yaml:"ca_cert,omitempty"`
 
-	/*MaxIdleConnsPerHost - Descr: maximum number of idle http connections Default: <nil>
-*/
-	MaxIdleConnsPerHost interface{} `yaml:"max_idle_conns_per_host,omitempty"`
-
 	/*ClientCert - Descr: PEM-encoded client certificate Default: <nil>
 */
 	ClientCert interface{} `yaml:"client_cert,omitempty"`
 
-	/*Machines - Descr: Addresses pointing to the ETCD cluster Default: [etcd.service.cf.internal]
+	/*RequireSsl - Descr: enable ssl for all communication with etcd Default: true
 */
-	Machines interface{} `yaml:"machines,omitempty"`
+	RequireSsl interface{} `yaml:"require_ssl,omitempty"`
+
+	/*ClientSessionCacheSize - Descr: capacity of the tls client cache Default: <nil>
+*/
+	ClientSessionCacheSize interface{} `yaml:"client_session_cache_size,omitempty"`
 
 }

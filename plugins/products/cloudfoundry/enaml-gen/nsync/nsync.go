@@ -9,40 +9,36 @@ type Nsync struct {
 */
 	ListenerDebugAddr interface{} `yaml:"listener_debug_addr,omitempty"`
 
-	/*LogLevel - Descr: Log level Default: info
-*/
-	LogLevel interface{} `yaml:"log_level,omitempty"`
-
 	/*FileServerUrl - Descr: URL of file server Default: http://file-server.service.cf.internal:8080
 */
 	FileServerUrl interface{} `yaml:"file_server_url,omitempty"`
-
-	/*Diego - Descr: URL of file server Default: http://file-server.service.cf.internal:8080
-*/
-	Diego *Diego `yaml:"diego,omitempty"`
-
-	/*Bbs - Descr: capacity of the tls client cache Default: <nil>
-*/
-	Bbs *Bbs `yaml:"bbs,omitempty"`
-
-	/*Cc - Descr: number of apps to fetch at once from bulk API Default: 500
-*/
-	Cc *Cc `yaml:"cc,omitempty"`
 
 	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
 	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
 
-	/*ListenAddr - Descr: Address from which NSYNC serves requests Default: 0.0.0.0:8787
-*/
-	ListenAddr interface{} `yaml:"listen_addr,omitempty"`
-
 	/*LifecycleBundles - Descr: List of lifecycle bundles arguments for different stacks in form 'lifecycle-name:path/to/bundle' Default: [buildpack/cflinuxfs2:buildpack_app_lifecycle/buildpack_app_lifecycle.tgz buildpack/windows2012R2:windows_app_lifecycle/windows_app_lifecycle.tgz docker:docker_app_lifecycle/docker_app_lifecycle.tgz]
 */
 	LifecycleBundles interface{} `yaml:"lifecycle_bundles,omitempty"`
 
+	/*Cc - Descr: interval at which to poll bulk API in seconds Default: 30
+*/
+	Cc *Cc `yaml:"cc,omitempty"`
+
 	/*BulkerDebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17007
 */
 	BulkerDebugAddr interface{} `yaml:"bulker_debug_addr,omitempty"`
+
+	/*Bbs - Descr: enable ssl for all communication with the bbs Default: true
+*/
+	Bbs *Bbs `yaml:"bbs,omitempty"`
+
+	/*ListenAddr - Descr: Address from which NSYNC serves requests Default: 0.0.0.0:8787
+*/
+	ListenAddr interface{} `yaml:"listen_addr,omitempty"`
+
+	/*LogLevel - Descr: Log level Default: info
+*/
+	LogLevel interface{} `yaml:"log_level,omitempty"`
 
 }

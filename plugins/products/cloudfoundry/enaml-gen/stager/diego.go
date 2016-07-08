@@ -5,12 +5,12 @@ package stager
 */
 type Diego struct {
 
+	/*Stager - Descr: Log level Default: info
+*/
+	Stager *Stager `yaml:"stager,omitempty"`
+
 	/*Ssl - Descr: when connecting over https, ignore bad ssl certificates Default: false
 */
 	Ssl *Ssl `yaml:"ssl,omitempty"`
-
-	/*Stager - Descr: URL of cc uploader Default: http://cc-uploader.service.cf.internal:9090
-*/
-	Stager *Stager `yaml:"stager,omitempty"`
 
 }

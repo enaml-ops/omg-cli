@@ -5,7 +5,7 @@ package cloud_controller_ng
 */
 type Thresholds struct {
 
-	/*Api - Descr: The cc will alert if memory remains above this threshold for 3 monit cycles Default: 3500
+	/*Api - Descr: The cc will restart if memory remains above this threshold for 3 monit cycles Default: 3750
 */
 	Api *Api `yaml:"api,omitempty"`
 

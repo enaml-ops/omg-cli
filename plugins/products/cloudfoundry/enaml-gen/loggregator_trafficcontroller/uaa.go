@@ -5,12 +5,12 @@ package loggregator_trafficcontroller
 */
 type Uaa struct {
 
-	/*Clients - Descr: Doppler's client secret to connect to UAA Default: <nil>
-*/
-	Clients *Clients `yaml:"clients,omitempty"`
-
 	/*Url - Descr: URL of UAA Default: <nil>
 */
 	Url interface{} `yaml:"url,omitempty"`
+
+	/*Clients - Descr: Doppler's client secret to connect to UAA Default: <nil>
+*/
+	Clients *Clients `yaml:"clients,omitempty"`
 
 }

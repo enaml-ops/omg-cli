@@ -143,12 +143,14 @@ func (d *diegoBrain) newCCUploader() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "cc_uploader",
 		Release: DiegoReleaseName,
-		Properties: &cc_uploader.CcUploader{
+		Properties: &cc_uploader.CcUploaderJob{
 			Diego: &cc_uploader.Diego{
 				Ssl: &cc_uploader.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
-			},
-			Cc: &cc_uploader.Cc{
-				JobPollingIntervalInSeconds: d.CCUploaderJobPollInterval,
+				CcUploader: &cc_uploader.CcUploader{
+					Cc: &cc_uploader.Cc{
+						JobPollingIntervalInSeconds: d.CCUploaderJobPollInterval,
+					},
+				},
 			},
 		},
 	}
@@ -173,15 +175,17 @@ func (d *diegoBrain) newFileServer() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "file_server",
 		Release: DiegoReleaseName,
-		Properties: &file_server.FileServer{
+		Properties: &file_server.FileServerJob{
 			Diego: &file_server.Diego{
 				Ssl: &file_server.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+				FileServer: &file_server.FileServer{
+					ListenAddr:      d.FSListenAddr,
+					DebugAddr:       d.FSDebugAddr,
+					LogLevel:        d.FSLogLevel,
+					StaticDirectory: d.FSStaticDirectory,
+					DropsondePort:   d.MetronPort,
+				},
 			},
-			ListenAddr:      d.FSListenAddr,
-			DebugAddr:       d.FSDebugAddr,
-			LogLevel:        d.FSLogLevel,
-			StaticDirectory: d.FSStaticDirectory,
-			DropsondePort:   d.MetronPort,
 		},
 	}
 }
@@ -190,23 +194,25 @@ func (d *diegoBrain) newNsync() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "nsync",
 		Release: DiegoReleaseName,
-		Properties: &nsync.Nsync{
-			Bbs: &nsync.Bbs{
-				ApiLocation: d.BBSAPILocation,
-				CaCert:      d.BBSCACert,
-				ClientCert:  d.BBSClientCert,
-				ClientKey:   d.BBSClientKey,
-			},
-			Cc: &nsync.Cc{
-				BaseUrl:                  prefixSystemDomain(d.SystemDomain, "api"),
-				BasicAuthUsername:        d.CCInternalAPIUser,
-				BasicAuthPassword:        d.CCInternalAPIPassword,
-				BulkBatchSize:            d.CCBulkBatchSize,
-				FetchTimeoutInSeconds:    d.CCFetchTimeout,
-				PollingIntervalInSeconds: d.CCUploaderJobPollInterval,
-			},
+		Properties: &nsync.NsyncJob{
 			Diego: &nsync.Diego{
 				Ssl: &nsync.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+				Nsync: &nsync.Nsync{
+					Cc: &nsync.Cc{
+						BaseUrl:                  prefixSystemDomain(d.SystemDomain, "api"),
+						BasicAuthUsername:        d.CCInternalAPIUser,
+						BasicAuthPassword:        d.CCInternalAPIPassword,
+						BulkBatchSize:            d.CCBulkBatchSize,
+						FetchTimeoutInSeconds:    d.CCFetchTimeout,
+						PollingIntervalInSeconds: d.CCUploaderJobPollInterval,
+					},
+					Bbs: &nsync.Bbs{
+						ApiLocation: d.BBSAPILocation,
+						CaCert:      d.BBSCACert,
+						ClientCert:  d.BBSClientCert,
+						ClientKey:   d.BBSClientKey,
+					},
+				},
 			},
 		},
 	}
@@ -216,19 +222,23 @@ func (d *diegoBrain) newRouteEmitter() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "route_emitter",
 		Release: DiegoReleaseName,
-		Properties: &route_emitter.RouteEmitter{
-			Bbs: &route_emitter.Bbs{
-				ApiLocation: d.BBSAPILocation,
-				CaCert:      d.BBSCACert,
-				ClientCert:  d.BBSClientCert,
-				ClientKey:   d.BBSClientKey,
-				RequireSsl:  d.BBSRequireSSL,
-			},
-			Nats: &route_emitter.Nats{
-				User:     d.NATSUser,
-				Password: d.NATSPassword,
-				Port:     d.NATSPort,
-				Machines: d.NATSMachines,
+		Properties: &route_emitter.RouteEmitterJob{
+			Diego: &route_emitter.Diego{
+				RouteEmitter: &route_emitter.RouteEmitter{
+					Bbs: &route_emitter.Bbs{
+						ApiLocation: d.BBSAPILocation,
+						CaCert:      d.BBSCACert,
+						ClientCert:  d.BBSClientCert,
+						ClientKey:   d.BBSClientKey,
+						RequireSsl:  d.BBSRequireSSL,
+					},
+					Nats: &route_emitter.Nats{
+						User:     d.NATSUser,
+						Password: d.NATSPassword,
+						Port:     d.NATSPort,
+						Machines: d.NATSMachines,
+					},
+				},
 			},
 		},
 	}
@@ -238,24 +248,27 @@ func (d *diegoBrain) newSSHProxy() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "ssh_proxy",
 		Release: DiegoReleaseName,
-		Properties: &ssh_proxy.SshProxy{
-			Bbs: &ssh_proxy.Bbs{
-				ApiLocation: d.BBSAPILocation,
-				CaCert:      d.BBSCACert,
-				ClientCert:  d.BBSClientCert,
-				ClientKey:   d.BBSClientKey,
-				RequireSsl:  d.BBSRequireSSL,
-			},
-			Cc: &ssh_proxy.Cc{
-				ExternalPort: d.CCExternalPort,
-			},
+		Properties: &ssh_proxy.SshProxyJob{
+
 			Diego: &ssh_proxy.Diego{
 				Ssl: &ssh_proxy.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+				SshProxy: &ssh_proxy.SshProxy{
+					Bbs: &ssh_proxy.Bbs{
+						ApiLocation: d.BBSAPILocation,
+						CaCert:      d.BBSCACert,
+						ClientCert:  d.BBSClientCert,
+						ClientKey:   d.BBSClientKey,
+						RequireSsl:  d.BBSRequireSSL,
+					},
+					Cc: &ssh_proxy.Cc{
+						ExternalPort: d.CCExternalPort,
+					},
+					EnableCfAuth:    d.AllowSSHAccess,
+					EnableDiegoAuth: d.AllowSSHAccess,
+					UaaSecret:       d.SSHProxyClientSecret,
+					UaaTokenUrl:     prefixSystemDomain(d.SystemDomain, "uaa") + "/oauth/token",
+				},
 			},
-			EnableCfAuth:    d.AllowSSHAccess,
-			EnableDiegoAuth: d.AllowSSHAccess,
-			UaaSecret:       d.SSHProxyClientSecret,
-			UaaTokenUrl:     prefixSystemDomain(d.SystemDomain, "uaa") + "/oauth/token",
 		},
 	}
 }
@@ -264,21 +277,23 @@ func (d *diegoBrain) newStager() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "stager",
 		Release: DiegoReleaseName,
-		Properties: &stager.Stager{
-			Bbs: &stager.Bbs{
-				ApiLocation: d.BBSAPILocation,
-				CaCert:      d.BBSCACert,
-				ClientCert:  d.BBSClientCert,
-				ClientKey:   d.BBSClientKey,
-				RequireSsl:  d.BBSRequireSSL,
-			},
-			Cc: &stager.Cc{
-				BasicAuthUsername: d.CCInternalAPIUser,
-				BasicAuthPassword: d.CCInternalAPIPassword,
-				ExternalPort:      d.CCExternalPort,
-			},
+		Properties: &stager.StagerJob{
 			Diego: &stager.Diego{
 				Ssl: &stager.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+				Stager: &stager.Stager{
+					Bbs: &stager.Bbs{
+						ApiLocation: d.BBSAPILocation,
+						CaCert:      d.BBSCACert,
+						ClientCert:  d.BBSClientCert,
+						ClientKey:   d.BBSClientKey,
+						RequireSsl:  d.BBSRequireSSL,
+					},
+					Cc: &stager.Cc{
+						BasicAuthUsername: d.CCInternalAPIUser,
+						BasicAuthPassword: d.CCInternalAPIPassword,
+						ExternalPort:      d.CCExternalPort,
+					},
+				},
 			},
 		},
 	}
@@ -288,23 +303,26 @@ func (d *diegoBrain) newTPS() *enaml.InstanceJob {
 	return &enaml.InstanceJob{
 		Name:    "tps",
 		Release: DiegoReleaseName,
-		Properties: &tps.Tps{
-			Bbs: &tps.Bbs{
-				ApiLocation: d.BBSAPILocation,
-				CaCert:      d.BBSCACert,
-				ClientCert:  d.BBSClientCert,
-				ClientKey:   d.BBSClientKey,
-				RequireSsl:  d.BBSRequireSSL,
-			},
-			Cc: &tps.Cc{
-				BasicAuthUsername: d.CCInternalAPIUser,
-				BasicAuthPassword: d.CCInternalAPIPassword,
-				ExternalPort:      d.CCExternalPort,
-			},
+		Properties: &tps.TpsJob{
+
 			Diego: &tps.Diego{
 				Ssl: &tps.Ssl{SkipCertVerify: d.SkipSSLCertVerify},
+				Tps: &tps.Tps{
+					TrafficControllerUrl: d.TrafficControllerURL,
+					Bbs: &tps.Bbs{
+						ApiLocation: d.BBSAPILocation,
+						CaCert:      d.BBSCACert,
+						ClientCert:  d.BBSClientCert,
+						ClientKey:   d.BBSClientKey,
+						RequireSsl:  d.BBSRequireSSL,
+					},
+					Cc: &tps.Cc{
+						BasicAuthUsername: d.CCInternalAPIUser,
+						BasicAuthPassword: d.CCInternalAPIPassword,
+						ExternalPort:      d.CCExternalPort,
+					},
+				},
 			},
-			TrafficControllerUrl: d.TrafficControllerURL,
 		},
 	}
 }

@@ -5,7 +5,7 @@ package file_server
 */
 type Diego struct {
 
-	/*FileServer - Descr: Address of interface on which to serve files Default: 0.0.0.0:8080
+	/*FileServer - Descr: Log level Default: info
 */
 	FileServer *FileServer `yaml:"file_server,omitempty"`
 

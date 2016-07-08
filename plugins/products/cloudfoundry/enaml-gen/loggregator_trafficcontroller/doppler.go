@@ -9,8 +9,4 @@ type Doppler struct {
 */
 	UaaClientId interface{} `yaml:"uaa_client_id,omitempty"`
 
-	/*Secret - Descr: Doppler's client secret to connect to UAA Default: <nil>
-*/
-	Secret interface{} `yaml:"secret,omitempty"`
-
 }

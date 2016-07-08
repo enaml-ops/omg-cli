@@ -5,10 +5,6 @@ package tps
 */
 type Cc struct {
 
-	/*BasicAuthUsername - Descr: Basic auth username for CC internal API Default: internal_user
-*/
-	BasicAuthUsername interface{} `yaml:"basic_auth_username,omitempty"`
-
 	/*InternalServiceHostname - Descr: Internal CC host name Default: cloud-controller-ng.service.cf.internal
 */
 	InternalServiceHostname interface{} `yaml:"internal_service_hostname,omitempty"`
@@ -20,5 +16,9 @@ type Cc struct {
 	/*BasicAuthPassword - Descr: Basic auth password for CC internal API Default: <nil>
 */
 	BasicAuthPassword interface{} `yaml:"basic_auth_password,omitempty"`
+
+	/*BasicAuthUsername - Descr: Basic auth username for CC internal API Default: internal_user
+*/
+	BasicAuthUsername interface{} `yaml:"basic_auth_username,omitempty"`
 
 }

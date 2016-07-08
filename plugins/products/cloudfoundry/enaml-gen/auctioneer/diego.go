@@ -5,7 +5,7 @@ package auctioneer
 */
 type Diego struct {
 
-	/*Auctioneer - Descr: maximum number of idle http connections Default: <nil>
+	/*Auctioneer - Descr: local metron agent's port Default: 3457
 */
 	Auctioneer *Auctioneer `yaml:"auctioneer,omitempty"`
 

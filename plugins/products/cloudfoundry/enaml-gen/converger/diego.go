@@ -5,7 +5,7 @@ package converger
 */
 type Diego struct {
 
-	/*Converger - Descr: address at which to serve debug info Default: 0.0.0.0:17002
+	/*Converger - Descr: capacity of the tls client cache Default: <nil>
 */
 	Converger *Converger `yaml:"converger,omitempty"`
 

@@ -5,6 +5,10 @@ package route_registrar
 */
 type Nats struct {
 
+	/*User - Descr: User name for NATS authentication Default: <nil>
+*/
+	User interface{} `yaml:"user,omitempty"`
+
 	/*Password - Descr: Password for NATS authentication Default: <nil>
 */
 	Password interface{} `yaml:"password,omitempty"`
@@ -16,9 +20,5 @@ type Nats struct {
 	/*Port - Descr: TCP port of NATS servers Default: <nil>
 */
 	Port interface{} `yaml:"port,omitempty"`
-
-	/*User - Descr: User name for NATS authentication Default: <nil>
-*/
-	User interface{} `yaml:"user,omitempty"`
 
 }

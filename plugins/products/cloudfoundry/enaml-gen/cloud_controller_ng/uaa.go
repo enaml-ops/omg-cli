@@ -5,7 +5,7 @@ package cloud_controller_ng
 */
 type Uaa struct {
 
-	/*Clients - Descr: (DEPRECATED) - Used for generating SSO clients for service brokers. Default: <nil>
+	/*Clients - Descr: Used for fetching routing information from the Routing API Default: <nil>
 */
 	Clients *Clients `yaml:"clients,omitempty"`
 
@@ -13,12 +13,12 @@ type Uaa struct {
 */
 	Jwt *Jwt `yaml:"jwt,omitempty"`
 
+	/*Cc - Descr: Symmetric secret used to decode uaa tokens. Used for testing. Default: <nil>
+*/
+	Cc *UaaCc `yaml:"cc,omitempty"`
+
 	/*Url - Descr: URL of the UAA server Default: <nil>
 */
 	Url interface{} `yaml:"url,omitempty"`
-
-	/*Cc - Descr: Symmetric secret used to decode uaa tokens. Used for testing. Default: <nil>
-*/
-	Cc *Cc `yaml:"cc,omitempty"`
 
 }

@@ -9,13 +9,13 @@ type Consul struct {
 */
 	ServerKey interface{} `yaml:"server_key,omitempty"`
 
-	/*EncryptKeys - Descr: A list of passphrases that will be converted into encryption keys, the first key in the list is the active one Default: <nil>
+	/*AgentCert - Descr: PEM-encoded agent certificate Default: <nil>
 */
-	EncryptKeys interface{} `yaml:"encrypt_keys,omitempty"`
+	AgentCert interface{} `yaml:"agent_cert,omitempty"`
 
-	/*Agent - Descr: Map of consul service definitions. Default: map[]
+	/*CaCert - Descr: PEM-encoded CA certificate Default: <nil>
 */
-	Agent *Agent `yaml:"agent,omitempty"`
+	CaCert interface{} `yaml:"ca_cert,omitempty"`
 
 	/*ServerCert - Descr: PEM-encoded server certificate Default: <nil>
 */
@@ -25,12 +25,12 @@ type Consul struct {
 */
 	AgentKey interface{} `yaml:"agent_key,omitempty"`
 
-	/*AgentCert - Descr: PEM-encoded agent certificate Default: <nil>
+	/*Agent - Descr: Domain suffix for DNS Default: <nil>
 */
-	AgentCert interface{} `yaml:"agent_cert,omitempty"`
+	Agent *Agent `yaml:"agent,omitempty"`
 
-	/*CaCert - Descr: PEM-encoded CA certificate Default: <nil>
+	/*EncryptKeys - Descr: A list of passphrases that will be converted into encryption keys, the first key in the list is the active one Default: <nil>
 */
-	CaCert interface{} `yaml:"ca_cert,omitempty"`
+	EncryptKeys interface{} `yaml:"encrypt_keys,omitempty"`
 
 }

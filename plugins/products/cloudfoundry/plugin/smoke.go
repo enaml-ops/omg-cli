@@ -48,15 +48,17 @@ func (s *SmokeErrand) createSmokeJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "smoke-tests",
 		Release: "cf",
-		Properties: &smoke_tests.SmokeTests{
-			UseExistingOrg:   false,
-			UseExistingSpace: false,
-			Space:            "CF_SMOKE_TEST_SPACE",
-			Org:              "CF_SMOKE_TEST_ORG",
-			Password:         s.Password,
-			User:             "smoke_tests",
-			Api:              fmt.Sprintf("%s://api.%s", s.Protocol, s.SystemDomain),
-			AppsDomain:       s.AppsDomain,
+		Properties: &smoke_tests.SmokeTestsJob{
+			SmokeTests: &smoke_tests.SmokeTests{
+				UseExistingOrg:   false,
+				UseExistingSpace: false,
+				Space:            "CF_SMOKE_TEST_SPACE",
+				Org:              "CF_SMOKE_TEST_ORG",
+				Password:         s.Password,
+				User:             "smoke_tests",
+				Api:              fmt.Sprintf("%s://api.%s", s.Protocol, s.SystemDomain),
+				AppsDomain:       s.AppsDomain,
+			},
 		},
 	}
 }

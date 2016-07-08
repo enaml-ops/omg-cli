@@ -5,13 +5,13 @@ package loggregator_trafficcontroller
 */
 type TrafficController struct {
 
-	/*OutgoingPort - Descr: Port on which the traffic controller listens to for requests Default: 8080
-*/
-	OutgoingPort interface{} `yaml:"outgoing_port,omitempty"`
-
 	/*SecurityEventLogging - Descr: Enable logging of all requests made to the Traffic Controller in CEF format Default: false
 */
 	SecurityEventLogging *SecurityEventLogging `yaml:"security_event_logging,omitempty"`
+
+	/*Zone - Descr: Zone of the loggregator_trafficcontroller Default: <nil>
+*/
+	Zone interface{} `yaml:"zone,omitempty"`
 
 	/*Debug - Descr: boolean value to turn on verbose logging for loggregator system (dea agent & loggregator server) Default: false
 */
@@ -21,8 +21,8 @@ type TrafficController struct {
 */
 	DisableAccessControl interface{} `yaml:"disable_access_control,omitempty"`
 
-	/*Zone - Descr: Zone of the loggregator_trafficcontroller Default: <nil>
+	/*OutgoingPort - Descr: Port on which the traffic controller listens to for requests Default: 8080
 */
-	Zone interface{} `yaml:"zone,omitempty"`
+	OutgoingPort interface{} `yaml:"outgoing_port,omitempty"`
 
 }

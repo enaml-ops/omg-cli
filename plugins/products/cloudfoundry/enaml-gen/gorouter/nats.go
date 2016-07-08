@@ -5,20 +5,20 @@ package gorouter
 */
 type Nats struct {
 
-	/*Password - Descr:  Default: <nil>
+	/*Port - Descr:  Default: <nil>
 */
-	Password interface{} `yaml:"password,omitempty"`
+	Port interface{} `yaml:"port,omitempty"`
 
 	/*Machines - Descr: IP of each NATS cluster member. Default: <nil>
 */
 	Machines interface{} `yaml:"machines,omitempty"`
 
-	/*Port - Descr:  Default: <nil>
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
 	/*User - Descr:  Default: <nil>
 */
 	User interface{} `yaml:"user,omitempty"`
+
+	/*Password - Descr:  Default: <nil>
+*/
+	Password interface{} `yaml:"password,omitempty"`
 
 }

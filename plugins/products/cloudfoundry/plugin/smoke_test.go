@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Consul Partition", func() {
+var _ = Describe("Smoke test errand", func() {
 	Context("when initialized WITHOUT a complete set of arguments", func() {
 		It("then HasValidValues should return false", func() {
 			plugin := new(Plugin)
@@ -85,15 +85,15 @@ var _ = Describe("Consul Partition", func() {
 			ig := smokeErrand.ToInstanceGroup()
 			job := ig.GetJobByName("smoke-tests")
 			Ω(job).ShouldNot(BeNil())
-			props, _ := job.Properties.(*smoke_tests.SmokeTests)
-			Ω(props.AppsDomain).Should(Equal("apps.test.com"))
-			Ω(props.Api).Should(Equal("https://api.sys.test.com"))
-			Ω(props.Org).Should(Equal("CF_SMOKE_TEST_ORG"))
-			Ω(props.Space).Should(Equal("CF_SMOKE_TEST_SPACE"))
-			Ω(props.User).Should(Equal("smoke_tests"))
-			Ω(props.Password).Should(Equal("password"))
-			Ω(props.UseExistingOrg).Should(BeFalse())
-			Ω(props.UseExistingSpace).Should(BeFalse())
+			props, _ := job.Properties.(*smoke_tests.SmokeTestsJob)
+			Ω(props.SmokeTests.AppsDomain).Should(Equal("apps.test.com"))
+			Ω(props.SmokeTests.Api).Should(Equal("https://api.sys.test.com"))
+			Ω(props.SmokeTests.Org).Should(Equal("CF_SMOKE_TEST_ORG"))
+			Ω(props.SmokeTests.Space).Should(Equal("CF_SMOKE_TEST_SPACE"))
+			Ω(props.SmokeTests.User).Should(Equal("smoke_tests"))
+			Ω(props.SmokeTests.Password).Should(Equal("password"))
+			Ω(props.SmokeTests.UseExistingOrg).Should(BeFalse())
+			Ω(props.SmokeTests.UseExistingSpace).Should(BeFalse())
 		})
 	})
 })

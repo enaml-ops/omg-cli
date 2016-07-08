@@ -5,13 +5,17 @@ package cloud_controller_ng
 */
 type Droplets struct {
 
-	/*Cdn - Descr: Private key for signing download URIs Default: 
+	/*Cdn - Descr: URI for a CDN to used for droplet downloads Default: 
 */
-	Cdn *Cdn `yaml:"cdn,omitempty"`
+	Cdn *DropletsCdn `yaml:"cdn,omitempty"`
 
-	/*FogConnection - Descr: Fog connection hash Default: <nil>
+	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
-	FogConnection interface{} `yaml:"fog_connection,omitempty"`
+	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
+
+	/*WebdavConfig - Descr: The ca cert to use when communicating with webdav Default: 
+*/
+	WebdavConfig *DropletsWebdavConfig `yaml:"webdav_config,omitempty"`
 
 	/*MaxStagedDropletsStored - Descr: Number of recent, staged droplets stored per app (not including current droplet) Default: 5
 */
@@ -21,12 +25,8 @@ type Droplets struct {
 */
 	DropletDirectoryKey interface{} `yaml:"droplet_directory_key,omitempty"`
 
-	/*WebdavConfig - Descr: The basic auth password that CC uses to connect to the admin endpoint on webdav Default: 
+	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
-
-	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
-*/
-	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
+	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
 }

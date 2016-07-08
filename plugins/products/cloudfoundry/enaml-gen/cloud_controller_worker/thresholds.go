@@ -5,7 +5,7 @@ package cloud_controller_worker
 */
 type Thresholds struct {
 
-	/*Worker - Descr: The cc will restart if memory remains above this threshold for 3 monit cycles Default: 512
+	/*Worker - Descr: The cc will alert if memory remains above this threshold for 3 monit cycles Default: 384
 */
 	Worker *Worker `yaml:"worker,omitempty"`
 

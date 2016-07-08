@@ -5,6 +5,14 @@ package cloud_controller_ng
 */
 type ResourcePool struct {
 
+	/*WebdavConfig - Descr: The ca cert to use when communicating with webdav Default: 
+*/
+	WebdavConfig *ResourcePoolWebdavConfig `yaml:"webdav_config,omitempty"`
+
+	/*MinimumSize - Descr: Minimum size of a resource to add to the pool Default: 65536
+*/
+	MinimumSize interface{} `yaml:"minimum_size,omitempty"`
+
 	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
 	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
@@ -13,24 +21,16 @@ type ResourcePool struct {
 */
 	ResourceDirectoryKey interface{} `yaml:"resource_directory_key,omitempty"`
 
-	/*MinimumSize - Descr: Minimum size of a resource to add to the pool Default: 65536
+	/*Cdn - Descr: Key pair name for signed download URIs Default: 
 */
-	MinimumSize interface{} `yaml:"minimum_size,omitempty"`
-
-	/*FogConnection - Descr: Fog connection hash Default: <nil>
-*/
-	FogConnection interface{} `yaml:"fog_connection,omitempty"`
+	Cdn *ResourcePoolCdn `yaml:"cdn,omitempty"`
 
 	/*MaximumSize - Descr: Maximum size of a resource to add to the pool Default: 536870912
 */
 	MaximumSize interface{} `yaml:"maximum_size,omitempty"`
 
-	/*Cdn - Descr: Private key for signing download URIs Default: 
+	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
-	Cdn *Cdn `yaml:"cdn,omitempty"`
-
-	/*WebdavConfig - Descr: The basic auth password that CC uses to connect to the admin endpoint on webdav Default: 
-*/
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
+	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
 }

@@ -101,7 +101,7 @@ func (s *gorouter) newRouterJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "gorouter",
 		Release: "cf",
-		Properties: &grtrlib.Gorouter{
+		Properties: &grtrlib.GorouterJob{
 			RequestTimeoutInSeconds: 180,
 			Nats:   s.newNats(),
 			Router: s.newRouter(),
@@ -113,7 +113,7 @@ func (s *gorouter) newMetronJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "metron_agent",
 		Release: "cf",
-		Properties: &metron_agent.MetronAgent{
+		Properties: &metron_agent.MetronAgentJob{
 			SyslogDaemonConfig: &metron_agent.SyslogDaemonConfig{
 				Transport: "tcp",
 			},

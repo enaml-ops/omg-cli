@@ -5,17 +5,9 @@ package smoke_tests
 */
 type SmokeTests struct {
 
-	/*AppsDomain - Descr: The Elastic Runtime Application Domain Default: <nil>
+	/*GinkgoOpts - Descr: Ginkgo options for the smoke tests Default: 
 */
-	AppsDomain interface{} `yaml:"apps_domain,omitempty"`
-
-	/*SkipSslValidation - Descr: Toggles cli verification of the Elastic Runtime API SSL certificate Default: false
-*/
-	SkipSslValidation interface{} `yaml:"skip_ssl_validation,omitempty"`
-
-	/*Org - Descr: The Elastic Runtime organization name to use when running tests Default: <nil>
-*/
-	Org interface{} `yaml:"org,omitempty"`
+	GinkgoOpts interface{} `yaml:"ginkgo_opts,omitempty"`
 
 	/*UseExistingSpace - Descr: Toggles setup and cleanup of the Elastic Runtime space Default: false
 */
@@ -25,48 +17,52 @@ type SmokeTests struct {
 */
 	Backend interface{} `yaml:"backend,omitempty"`
 
-	/*RuntimeApp - Descr: The Elastic Runtime app name to use when running runtime tests Default: 
+	/*AppsDomain - Descr: The Elastic Runtime Application Domain Default: <nil>
 */
-	RuntimeApp interface{} `yaml:"runtime_app,omitempty"`
+	AppsDomain interface{} `yaml:"apps_domain,omitempty"`
 
-	/*EnableWindowsTests - Descr: Toggles a portion of the suite that exercises Windows platform support Default: false
+	/*Org - Descr: The Elastic Runtime organization name to use when running tests Default: <nil>
 */
-	EnableWindowsTests interface{} `yaml:"enable_windows_tests,omitempty"`
-
-	/*GinkgoOpts - Descr: Ginkgo options for the smoke tests Default: 
-*/
-	GinkgoOpts interface{} `yaml:"ginkgo_opts,omitempty"`
-
-	/*Space - Descr: The Elastic Runtime space name to use when running tests Default: <nil>
-*/
-	Space interface{} `yaml:"space,omitempty"`
-
-	/*Api - Descr: The Elastic Runtime API endpoint URL Default: <nil>
-*/
-	Api interface{} `yaml:"api,omitempty"`
+	Org interface{} `yaml:"org,omitempty"`
 
 	/*LoggingApp - Descr: The Elastic Runtime app name to use when running logging tests Default: 
 */
 	LoggingApp interface{} `yaml:"logging_app,omitempty"`
 
+	/*SuiteName - Descr: A token used by the tests when creating Apps / Spaces Default: CF_SMOKE_TESTS
+*/
+	SuiteName interface{} `yaml:"suite_name,omitempty"`
+
+	/*Space - Descr: The Elastic Runtime space name to use when running tests Default: <nil>
+*/
+	Space interface{} `yaml:"space,omitempty"`
+
+	/*Password - Descr: The Elastic Runtime API user's password Default: <nil>
+*/
+	Password interface{} `yaml:"password,omitempty"`
+
+	/*Api - Descr: The Elastic Runtime API endpoint URL Default: <nil>
+*/
+	Api interface{} `yaml:"api,omitempty"`
+
+	/*RuntimeApp - Descr: The Elastic Runtime app name to use when running runtime tests Default: 
+*/
+	RuntimeApp interface{} `yaml:"runtime_app,omitempty"`
+
 	/*User - Descr: The Elastic Runtime API user Default: <nil>
 */
 	User interface{} `yaml:"user,omitempty"`
-
-	/*SmokeTests - Descr: Toggles a portion of the suite that exercises Windows platform support Default: false
-*/
-	SmokeTests *SmokeTests `yaml:"smoke_tests,omitempty"`
 
 	/*UseExistingOrg - Descr: Toggles setup and cleanup of the Elastic Runtime organization Default: false
 */
 	UseExistingOrg interface{} `yaml:"use_existing_org,omitempty"`
 
-	/*SuiteName - Descr: A token used by the tests when creating Apps / Spaces Default: CF_SMOKE_TESTS
+	/*EnableWindowsTests - Descr: Toggles a portion of the suite that exercises Windows platform support Default: false
 */
-	SuiteName interface{} `yaml:"suite_name,omitempty"`
+	EnableWindowsTests interface{} `yaml:"enable_windows_tests,omitempty"`
 
-	/*Password - Descr: The Elastic Runtime API user's password Default: <nil>
+	/*SkipSslValidation - Descr: Toggles cli verification of the Elastic Runtime API SSL certificate Default: false
 */
-	Password interface{} `yaml:"password,omitempty"`
+	SkipSslValidation interface{} `yaml:"skip_ssl_validation,omitempty"`
 
 }

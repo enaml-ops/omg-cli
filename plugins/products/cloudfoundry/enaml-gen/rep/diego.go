@@ -5,11 +5,11 @@ package rep
 */
 type Diego struct {
 
-	/*Executor - Descr: Frequency for healtchecking garden Default: 10m
+	/*Executor - Descr: Environment variables to use when running the garden health check Default: <nil>
 */
 	Executor *Executor `yaml:"executor,omitempty"`
 
-	/*Rep - Descr: Address to the BBS Server Default: bbs.service.cf.internal:8889
+	/*Rep - Descr: The zone associated with the rep Default: <nil>
 */
 	Rep *Rep `yaml:"rep,omitempty"`
 

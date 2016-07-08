@@ -5,12 +5,12 @@ package cloud_controller_ng
 */
 type Directories struct {
 
-	/*Tmpdir - Descr: The directory to use for temporary files Default: /var/vcap/data/cloud_controller_ng/tmp
-*/
-	Tmpdir interface{} `yaml:"tmpdir,omitempty"`
-
 	/*Diagnostics - Descr: The directory where operator requested diagnostic files should be placed Default: /var/vcap/data/cloud_controller_ng/diagnostics
 */
 	Diagnostics interface{} `yaml:"diagnostics,omitempty"`
+
+	/*Tmpdir - Descr: The directory to use for temporary files Default: /var/vcap/data/cloud_controller_ng/tmp
+*/
+	Tmpdir interface{} `yaml:"tmpdir,omitempty"`
 
 }

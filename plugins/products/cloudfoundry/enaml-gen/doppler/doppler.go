@@ -5,37 +5,17 @@ package doppler
 */
 type Doppler struct {
 
-	/*DopplerEndpoint - Descr: Shared secret used to verify cryptographically signed dropsonde messages Default: <nil>
-*/
-	DopplerEndpoint *DopplerEndpoint `yaml:"doppler_endpoint,omitempty"`
-
-	/*Tls - Descr: Enable TLS listener on doppler so that it can receive dropsonde envelopes over TLS transport. If enabled, Cert and Key files must be specified. Default: false
-*/
-	Tls *Tls `yaml:"tls,omitempty"`
-
 	/*SinkInactivityTimeoutSeconds - Descr: Interval before removing a sink due to inactivity Default: 3600
 */
 	SinkInactivityTimeoutSeconds interface{} `yaml:"sink_inactivity_timeout_seconds,omitempty"`
 
-	/*IncomingTcpPort - Descr: Port for incoming tcp messages Default: 3458
+	/*Zone - Descr: Zone of the doppler server Default: <nil>
 */
-	IncomingTcpPort interface{} `yaml:"incoming_tcp_port,omitempty"`
-
-	/*WebsocketWriteTimeoutSeconds - Descr: Interval before a websocket write is aborted if it does not succeed Default: 60
-*/
-	WebsocketWriteTimeoutSeconds interface{} `yaml:"websocket_write_timeout_seconds,omitempty"`
-
-	/*DropsondeIncomingPort - Descr: Port for incoming udp messages Default: 3457
-*/
-	DropsondeIncomingPort interface{} `yaml:"dropsonde_incoming_port,omitempty"`
+	Zone interface{} `yaml:"zone,omitempty"`
 
 	/*Debug - Descr: boolean value to turn on verbose logging for doppler system (dea agent & doppler server) Default: false
 */
 	Debug interface{} `yaml:"debug,omitempty"`
-
-	/*ContainerMetricTtlSeconds - Descr: TTL (in seconds) for container usage metrics Default: 120
-*/
-	ContainerMetricTtlSeconds interface{} `yaml:"container_metric_ttl_seconds,omitempty"`
 
 	/*SinkDialTimeoutSeconds - Descr: Dial timeout for sinks Default: 1
 */
@@ -45,48 +25,52 @@ type Doppler struct {
 */
 	MessageDrainBufferSize interface{} `yaml:"message_drain_buffer_size,omitempty"`
 
-	/*MaxRetainedLogMessages - Descr: number of log messages to retain per application Default: 100
+	/*Tls - Descr: TLS server key Default: 
 */
-	MaxRetainedLogMessages interface{} `yaml:"maxRetainedLogMessages,omitempty"`
+	Tls *DopplerTls `yaml:"tls,omitempty"`
 
-	/*OutgoingPort - Descr: Port for outgoing log messages Default: 8081
+	/*DropsondeIncomingPort - Descr: Port for incoming udp messages Default: 3457
 */
-	OutgoingPort interface{} `yaml:"outgoing_port,omitempty"`
-
-	/*BlacklistedSyslogRanges - Descr: Blacklist for IPs that should not be used as syslog drains, e.g. internal ip addresses. Default: <nil>
-*/
-	BlacklistedSyslogRanges interface{} `yaml:"blacklisted_syslog_ranges,omitempty"`
+	DropsondeIncomingPort interface{} `yaml:"dropsonde_incoming_port,omitempty"`
 
 	/*SinkIoTimeoutSeconds - Descr: I/O Timeout on sinks Default: 0
 */
 	SinkIoTimeoutSeconds interface{} `yaml:"sink_io_timeout_seconds,omitempty"`
 
-	/*Doppler - Descr: I/O Timeout on sinks Default: 0
+	/*BlacklistedSyslogRanges - Descr: Blacklist for IPs that should not be used as syslog drains, e.g. internal ip addresses. Default: <nil>
 */
-	Doppler *Doppler `yaml:"doppler,omitempty"`
+	BlacklistedSyslogRanges interface{} `yaml:"blacklisted_syslog_ranges,omitempty"`
 
-	/*MetronEndpoint - Descr: The port used to emit dropsonde messages to the Metron agent Default: 3457
+	/*MaxRetainedLogMessages - Descr: number of log messages to retain per application Default: 100
 */
-	MetronEndpoint *MetronEndpoint `yaml:"metron_endpoint,omitempty"`
+	MaxRetainedLogMessages interface{} `yaml:"maxRetainedLogMessages,omitempty"`
 
-	/*IncomingPort - Descr: Port for incoming log messages in the legacy format Default: 3456
+	/*IncomingTcpPort - Descr: Port for incoming tcp messages Default: 3458
 */
-	IncomingPort interface{} `yaml:"incoming_port,omitempty"`
+	IncomingTcpPort interface{} `yaml:"incoming_tcp_port,omitempty"`
 
-	/*Loggregator - Descr: IPs pointing to the ETCD cluster Default: <nil>
+	/*WebsocketWriteTimeoutSeconds - Descr: Interval before a websocket write is aborted if it does not succeed Default: 60
 */
-	Loggregator *Loggregator `yaml:"loggregator,omitempty"`
+	WebsocketWriteTimeoutSeconds interface{} `yaml:"websocket_write_timeout_seconds,omitempty"`
 
-	/*Zone - Descr: Zone of the doppler server Default: <nil>
+	/*UnmarshallerCount - Descr: Number of parallel unmarshallers to run within Doppler Default: 5
 */
-	Zone interface{} `yaml:"zone,omitempty"`
+	UnmarshallerCount interface{} `yaml:"unmarshaller_count,omitempty"`
 
 	/*SyslogSkipCertVerify - Descr: When connecting over TLS, don't verify certificates for syslog sink Default: true
 */
 	SyslogSkipCertVerify interface{} `yaml:"syslog_skip_cert_verify,omitempty"`
 
-	/*UnmarshallerCount - Descr: Number of parallel unmarshallers to run within Doppler Default: 5
+	/*IncomingPort - Descr: Port for incoming log messages in the legacy format Default: 3456
 */
-	UnmarshallerCount interface{} `yaml:"unmarshaller_count,omitempty"`
+	IncomingPort interface{} `yaml:"incoming_port,omitempty"`
+
+	/*OutgoingPort - Descr: Port for outgoing log messages Default: 8081
+*/
+	OutgoingPort interface{} `yaml:"outgoing_port,omitempty"`
+
+	/*ContainerMetricTtlSeconds - Descr: TTL (in seconds) for container usage metrics Default: 120
+*/
+	ContainerMetricTtlSeconds interface{} `yaml:"container_metric_ttl_seconds,omitempty"`
 
 }

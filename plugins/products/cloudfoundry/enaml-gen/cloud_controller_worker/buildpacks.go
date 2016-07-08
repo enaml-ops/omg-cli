@@ -5,9 +5,13 @@ package cloud_controller_worker
 */
 type Buildpacks struct {
 
-	/*BuildpackDirectoryKey - Descr: Directory (bucket) used store buildpacks.  It does not have be pre-created. Default: cc-buildpacks
+	/*WebdavConfig - Descr: The basic auth password that CC uses to connect to the admin endpoint on webdav Default: 
 */
-	BuildpackDirectoryKey interface{} `yaml:"buildpack_directory_key,omitempty"`
+	WebdavConfig *BuildpacksWebdavConfig `yaml:"webdav_config,omitempty"`
+
+	/*Cdn - Descr: Private key for signing download URIs Default: 
+*/
+	Cdn *BuildpacksCdn `yaml:"cdn,omitempty"`
 
 	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
@@ -17,12 +21,8 @@ type Buildpacks struct {
 */
 	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
 
-	/*WebdavConfig - Descr: The ca cert to use when communicating with webdav Default: 
+	/*BuildpackDirectoryKey - Descr: Directory (bucket) used store buildpacks.  It does not have be pre-created. Default: cc-buildpacks
 */
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
-
-	/*Cdn - Descr: Key pair name for signed download URIs Default: 
-*/
-	Cdn *Cdn `yaml:"cdn,omitempty"`
+	BuildpackDirectoryKey interface{} `yaml:"buildpack_directory_key,omitempty"`
 
 }

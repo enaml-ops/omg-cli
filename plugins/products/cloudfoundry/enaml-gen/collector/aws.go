@@ -5,12 +5,12 @@ package collector
 */
 type Aws struct {
 
-	/*AccessKeyId - Descr: AWS access key for CloudWatch access Default: <nil>
-*/
-	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
-
 	/*SecretAccessKey - Descr: AWS secret for CloudWatch access Default: <nil>
 */
 	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+
+	/*AccessKeyId - Descr: AWS access key for CloudWatch access Default: <nil>
+*/
+	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
 
 }

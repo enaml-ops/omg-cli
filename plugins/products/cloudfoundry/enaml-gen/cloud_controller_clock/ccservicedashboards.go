@@ -5,12 +5,12 @@ package cloud_controller_clock
 */
 type CcServiceDashboards struct {
 
-	/*Scope - Descr: Used to grant scope for SSO clients for service brokers Default: openid,cloud_controller_service_permissions.read
-*/
-	Scope interface{} `yaml:"scope,omitempty"`
-
 	/*Secret - Descr: Used for generating SSO clients for service brokers. Default: <nil>
 */
 	Secret interface{} `yaml:"secret,omitempty"`
+
+	/*Scope - Descr: Used to grant scope for SSO clients for service brokers Default: openid,cloud_controller_service_permissions.read
+*/
+	Scope interface{} `yaml:"scope,omitempty"`
 
 }

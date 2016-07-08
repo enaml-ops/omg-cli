@@ -5,12 +5,12 @@ package uaa
 */
 type Analytics struct {
 
-	/*Code - Descr: Google analytics code. If Google Analytics is desired set both login.analytics.code and login.analytics.domain Default: <nil>
-*/
-	Code interface{} `yaml:"code,omitempty"`
-
 	/*Domain - Descr: Google analytics domain. If Google Analytics is desired set both login.analytics.code and login.analytics.domain Default: <nil>
 */
 	Domain interface{} `yaml:"domain,omitempty"`
+
+	/*Code - Descr: Google analytics code. If Google Analytics is desired set both login.analytics.code and login.analytics.domain Default: <nil>
+*/
+	Code interface{} `yaml:"code,omitempty"`
 
 }

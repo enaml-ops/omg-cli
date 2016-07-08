@@ -5,12 +5,12 @@ package cloud_controller_worker
 */
 type LoggerEndpoint struct {
 
-	/*UseSsl - Descr: Whether to use ssl for logger endpoint listed at /v2/info Default: true
-*/
-	UseSsl interface{} `yaml:"use_ssl,omitempty"`
-
 	/*Port - Descr: Port for logger endpoint listed at /v2/info Default: 443
 */
 	Port interface{} `yaml:"port,omitempty"`
+
+	/*UseSsl - Descr: Whether to use ssl for logger endpoint listed at /v2/info Default: true
+*/
+	UseSsl interface{} `yaml:"use_ssl,omitempty"`
 
 }

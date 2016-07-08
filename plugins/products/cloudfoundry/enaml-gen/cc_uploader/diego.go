@@ -5,12 +5,12 @@ package cc_uploader
 */
 type Diego struct {
 
-	/*CcUploader - Descr: Log level Default: info
-*/
-	CcUploader *CcUploader `yaml:"cc_uploader,omitempty"`
-
 	/*Ssl - Descr: when connecting over https, ignore bad ssl certificates Default: false
 */
 	Ssl *Ssl `yaml:"ssl,omitempty"`
+
+	/*CcUploader - Descr: the interval between job polling requests Default: <nil>
+*/
+	CcUploader *CcUploader `yaml:"cc_uploader,omitempty"`
 
 }

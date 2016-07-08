@@ -5,25 +5,9 @@ package ssh_proxy
 */
 type SshProxy struct {
 
-	/*DebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17016
+	/*Cc - Descr: Internal service hostname of Cloud Controller Api Default: cloud-controller-ng.service.cf.internal
 */
-	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
-
-	/*HostKey - Descr: PEM encoded RSA private key used to identify host Default: <nil>
-*/
-	HostKey interface{} `yaml:"host_key,omitempty"`
-
-	/*EnableDiegoAuth - Descr: Allow ssh access for diego applications Default: false
-*/
-	EnableDiegoAuth interface{} `yaml:"enable_diego_auth,omitempty"`
-
-	/*UaaSecret - Descr: The oauth client secret used to authenticate the ssh-proxy with the uaa Default: <nil>
-*/
-	UaaSecret interface{} `yaml:"uaa_secret,omitempty"`
-
-	/*AllowedCiphers - Descr: Comma separated list of allowed cipher algorithms Default: <nil>
-*/
-	AllowedCiphers interface{} `yaml:"allowed_ciphers,omitempty"`
+	Cc *Cc `yaml:"cc,omitempty"`
 
 	/*UaaTokenUrl - Descr: URL of the UAA token endpoint Default: <nil>
 */
@@ -33,37 +17,49 @@ type SshProxy struct {
 */
 	ListenAddr interface{} `yaml:"listen_addr,omitempty"`
 
-	/*LogLevel - Descr: Log level Default: info
+	/*HostKey - Descr: PEM encoded RSA private key used to identify host Default: <nil>
 */
-	LogLevel interface{} `yaml:"log_level,omitempty"`
+	HostKey interface{} `yaml:"host_key,omitempty"`
 
-	/*Diego - Descr: address at which to serve debug info Default: 0.0.0.0:17016
+	/*Bbs - Descr: PEM-encoded client key Default: <nil>
 */
-	Diego *Diego `yaml:"diego,omitempty"`
+	Bbs *Bbs `yaml:"bbs,omitempty"`
 
-	/*AllowedMacs - Descr: Comma separated list of allowed MAC algorithms Default: <nil>
+	/*UaaSecret - Descr: The oauth client secret used to authenticate the ssh-proxy with the uaa Default: <nil>
 */
-	AllowedMacs interface{} `yaml:"allowed_macs,omitempty"`
+	UaaSecret interface{} `yaml:"uaa_secret,omitempty"`
 
 	/*AllowedKeyexchanges - Descr: Comma separated list of allowed key exchange algorithms Default: <nil>
 */
 	AllowedKeyexchanges interface{} `yaml:"allowed_keyexchanges,omitempty"`
 
+	/*AllowedMacs - Descr: Comma separated list of allowed MAC algorithms Default: <nil>
+*/
+	AllowedMacs interface{} `yaml:"allowed_macs,omitempty"`
+
 	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
 	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
 
-	/*Cc - Descr: External port of the Cloud Controller API Default: 9022
+	/*AllowedCiphers - Descr: Comma separated list of allowed cipher algorithms Default: <nil>
 */
-	Cc *Cc `yaml:"cc,omitempty"`
-
-	/*Bbs - Descr: Address to the BBS Server Default: bbs.service.cf.internal:8889
-*/
-	Bbs *Bbs `yaml:"bbs,omitempty"`
+	AllowedCiphers interface{} `yaml:"allowed_ciphers,omitempty"`
 
 	/*DiegoCredentials - Descr: Diego Credentials to be used with the Diego authenitcation method Default: <nil>
 */
 	DiegoCredentials interface{} `yaml:"diego_credentials,omitempty"`
+
+	/*LogLevel - Descr: Log level Default: info
+*/
+	LogLevel interface{} `yaml:"log_level,omitempty"`
+
+	/*EnableDiegoAuth - Descr: Allow ssh access for diego applications Default: false
+*/
+	EnableDiegoAuth interface{} `yaml:"enable_diego_auth,omitempty"`
+
+	/*DebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17016
+*/
+	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
 
 	/*EnableCfAuth - Descr: Allow ssh access for cf applications Default: false
 */

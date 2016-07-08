@@ -5,20 +5,20 @@ package rep
 */
 type GardenHealthcheck struct {
 
-	/*Process - Descr: Path of the command to run to perform a container healthcheck Default: /bin/sh
+	/*Interval - Descr: Frequency for healtchecking garden Default: 10m
+*/
+	Interval interface{} `yaml:"interval,omitempty"`
+
+	/*Process - Descr: Environment variables to use when running the garden health check Default: <nil>
 */
 	Process *Process `yaml:"process,omitempty"`
-
-	/*Timeout - Descr: Maximum allowed time for garden healthcheck Default: 10m
-*/
-	Timeout interface{} `yaml:"timeout,omitempty"`
 
 	/*CommandRetryPause - Descr: Time to wait between retrying garden commands Default: 5s
 */
 	CommandRetryPause interface{} `yaml:"command_retry_pause,omitempty"`
 
-	/*Interval - Descr: Frequency for healtchecking garden Default: 10m
+	/*Timeout - Descr: Maximum allowed time for garden healthcheck Default: 10m
 */
-	Interval interface{} `yaml:"interval,omitempty"`
+	Timeout interface{} `yaml:"timeout,omitempty"`
 
 }

@@ -5,7 +5,7 @@ package bbs
 */
 type Diego struct {
 
-	/*Bbs - Descr: Address of the auctioneer API Default: http://auctioneer.service.cf.internal:9016
+	/*Bbs - Descr: PEM-encoded client key Default: <nil>
 */
 	Bbs *Bbs `yaml:"bbs,omitempty"`
 

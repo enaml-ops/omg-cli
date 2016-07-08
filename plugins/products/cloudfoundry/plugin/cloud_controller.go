@@ -64,7 +64,7 @@ func newCloudControllerNgWorkerJob(c *CloudControllerPartition) enaml.InstanceJo
 	return enaml.InstanceJob{
 		Name:    "cloud_controller_worker",
 		Release: "cf",
-		Properties: &ccnglib.CloudControllerNg{
+		Properties: &ccnglib.CloudControllerNgJob{
 			AppSsh: &ccnglib.AppSsh{
 				HostKeyFingerprint: c.HostKeyFingerprint,
 			},

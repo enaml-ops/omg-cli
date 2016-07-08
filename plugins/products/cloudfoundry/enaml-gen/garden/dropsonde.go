@@ -5,12 +5,12 @@ package garden
 */
 type Dropsonde struct {
 
-	/*Origin - Descr: identifier that will be used when reporting metrics to Dropsonde Default: <nil>
-*/
-	Origin interface{} `yaml:"origin,omitempty"`
-
 	/*Destination - Descr: a URL that points at the Metron agent to which metrics are forwarded. By default, it matches with the default of Metron. Default: <nil>
 */
 	Destination interface{} `yaml:"destination,omitempty"`
+
+	/*Origin - Descr: identifier that will be used when reporting metrics to Dropsonde Default: <nil>
+*/
+	Origin interface{} `yaml:"origin,omitempty"`
 
 }

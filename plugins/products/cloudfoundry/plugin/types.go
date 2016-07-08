@@ -223,7 +223,7 @@ type NatsPartition struct {
 	VMTypeName     string
 	NetworkName    string
 	NetworkIPs     []string
-	Nats           natslib.Nats
+	Nats           natslib.NatsJob
 	Metron         *Metron
 	StatsdInjector *StatsdInjector
 }

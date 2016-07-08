@@ -9,12 +9,12 @@ type Diego struct {
 */
 	NsyncUrl interface{} `yaml:"nsync_url,omitempty"`
 
-	/*StagerUrl - Descr: URL of the Diego stager service Default: http://stager.service.cf.internal:8888
-*/
-	StagerUrl interface{} `yaml:"stager_url,omitempty"`
-
 	/*TpsUrl - Descr: URL of the Diego tps service Default: http://tps.service.cf.internal:1518
 */
 	TpsUrl interface{} `yaml:"tps_url,omitempty"`
+
+	/*StagerUrl - Descr: URL of the Diego stager service Default: http://stager.service.cf.internal:8888
+*/
+	StagerUrl interface{} `yaml:"stager_url,omitempty"`
 
 }

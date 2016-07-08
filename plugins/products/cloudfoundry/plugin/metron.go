@@ -31,7 +31,7 @@ func (s *Metron) CreateJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "metron_agent",
 		Release: "cf",
-		Properties: &metron_agent.MetronAgent{
+		Properties: &metron_agent.MetronAgentJob{
 			SyslogDaemonConfig: &metron_agent.SyslogDaemonConfig{
 				Transport: s.SyslogTransport,
 				Address:   s.SyslogAddress,

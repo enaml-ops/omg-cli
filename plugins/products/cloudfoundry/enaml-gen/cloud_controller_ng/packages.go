@@ -5,32 +5,32 @@ package cloud_controller_ng
 */
 type Packages struct {
 
-	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
+	/*MaxValidPackagesStored - Descr: Number of recent, valid packages stored per app (not including package for current droplet) Default: 5
 */
-	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
+	MaxValidPackagesStored interface{} `yaml:"max_valid_packages_stored,omitempty"`
+
+	/*Cdn - Descr: URI for a CDN to used for app package downloads Default: 
+*/
+	Cdn *PackagesCdn `yaml:"cdn,omitempty"`
 
 	/*MaxPackageSize - Descr: Maximum size of application package Default: 1073741824
 */
 	MaxPackageSize interface{} `yaml:"max_package_size,omitempty"`
 
-	/*AppPackageDirectoryKey - Descr: Directory (bucket) used store app packages.  It does not have be pre-created. Default: cc-packages
+	/*WebdavConfig - Descr: The location of the webdav server eg: https://blobstore.internal Default: https://blobstore.service.cf.internal
 */
-	AppPackageDirectoryKey interface{} `yaml:"app_package_directory_key,omitempty"`
+	WebdavConfig *PackagesWebdavConfig `yaml:"webdav_config,omitempty"`
 
-	/*Cdn - Descr: Key pair name for signed download URIs Default: 
+	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
-	Cdn *Cdn `yaml:"cdn,omitempty"`
+	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
 
 	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
 	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
-	/*WebdavConfig - Descr: The ca cert to use when communicating with webdav Default: 
+	/*AppPackageDirectoryKey - Descr: Directory (bucket) used store app packages.  It does not have be pre-created. Default: cc-packages
 */
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
-
-	/*MaxValidPackagesStored - Descr: Number of recent, valid packages stored per app (not including package for current droplet) Default: 5
-*/
-	MaxValidPackagesStored interface{} `yaml:"max_valid_packages_stored,omitempty"`
+	AppPackageDirectoryKey interface{} `yaml:"app_package_directory_key,omitempty"`
 
 }

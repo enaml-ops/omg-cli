@@ -5,24 +5,24 @@ package cloud_controller_clock
 */
 type Droplets struct {
 
+	/*WebdavConfig - Descr: The basic auth password that CC uses to connect to the admin endpoint on webdav Default: 
+*/
+	WebdavConfig *DropletsWebdavConfig `yaml:"webdav_config,omitempty"`
+
+	/*Cdn - Descr: URI for a CDN to used for droplet downloads Default: 
+*/
+	Cdn *DropletsCdn `yaml:"cdn,omitempty"`
+
 	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
 	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
 
-	/*WebdavConfig - Descr: The location of the webdav server eg: https://blobstore.internal Default: https://blobstore.service.cf.internal
+	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
-
-	/*Cdn - Descr: Key pair name for signed download URIs Default: 
-*/
-	Cdn *Cdn `yaml:"cdn,omitempty"`
+	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
 	/*DropletDirectoryKey - Descr: Directory (bucket) used store droplets.  It does not have be pre-created. Default: cc-droplets
 */
 	DropletDirectoryKey interface{} `yaml:"droplet_directory_key,omitempty"`
-
-	/*FogConnection - Descr: Fog connection hash Default: <nil>
-*/
-	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
 }

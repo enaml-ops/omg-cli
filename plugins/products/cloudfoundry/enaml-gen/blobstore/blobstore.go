@@ -5,6 +5,10 @@ package blobstore
 */
 type Blobstore struct {
 
+	/*Tls - Descr: The PEM-encoded private key for signing TLS/SSL traffic Default: <nil>
+*/
+	Tls *Tls `yaml:"tls,omitempty"`
+
 	/*AdminUsers - Descr: List of Username and Password pairs that have admin access to the blobstore. Cloud Controller must use one of these to access the blobstore via HTTP Basic Auth.
 Example:
   users:
@@ -27,17 +31,5 @@ Example:
 	/*Port - Descr: TCP port on which the blobstore server (nginx) listens Default: 80
 */
 	Port interface{} `yaml:"port,omitempty"`
-
-	/*Blobstore - Descr: TCP port on which the blobstore server (nginx) listens Default: 80
-*/
-	Blobstore *Blobstore `yaml:"blobstore,omitempty"`
-
-	/*Domain - Descr: The system domain.  The public server will listen on host 'blobstore.system-domain.tld' Default: <nil>
-*/
-	Domain interface{} `yaml:"domain,omitempty"`
-
-	/*Tls - Descr: The PEM-encoded private key for signing TLS/SSL traffic Default: <nil>
-*/
-	Tls *Tls `yaml:"tls,omitempty"`
 
 }

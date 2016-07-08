@@ -5,14 +5,6 @@ package statsd_injector
 */
 type StatsdInjector struct {
 
-	/*StatsdInjector - Descr: The port on which the injector should listen for statsd messages Default: 8125
-*/
-	StatsdInjector *StatsdInjector `yaml:"statsd_injector,omitempty"`
-
-	/*LogLevel - Descr: The log level for the statsd injector Default: info
-*/
-	LogLevel interface{} `yaml:"log_level,omitempty"`
-
 	/*MetronPort - Descr: The port on which metron is running Default: 3457
 */
 	MetronPort interface{} `yaml:"metron_port,omitempty"`
@@ -20,5 +12,9 @@ type StatsdInjector struct {
 	/*StatsdPort - Descr: The port on which the injector should listen for statsd messages Default: 8125
 */
 	StatsdPort interface{} `yaml:"statsd_port,omitempty"`
+
+	/*LogLevel - Descr: The log level for the statsd injector Default: info
+*/
+	LogLevel interface{} `yaml:"log_level,omitempty"`
 
 }

@@ -43,24 +43,26 @@ func (a *acceptanceTests) ToInstanceGroup() *enaml.InstanceGroup {
 	}
 }
 
-func (a *acceptanceTests) newAcceptanceTestsProperties(internet bool) *acceptance_tests.AcceptanceTests {
+func (a *acceptanceTests) newAcceptanceTestsProperties(internet bool) *acceptance_tests.AcceptanceTestsJob {
 	var ad string
 	if len(a.AppsDomain) > 0 {
 		ad = a.AppsDomain[0]
 	}
-	return &acceptance_tests.AcceptanceTests{
-		Api:                      prefixSystemDomain(a.SystemDomain, "api"),
-		AppsDomain:               ad,
-		AdminUser:                "admin",
-		AdminPassword:            a.AdminPassword,
-		IncludeLogging:           true,
-		IncludeInternetDependent: internet,
-		IncludeOperator:          true,
-		IncludeServices:          true,
-		IncludeSecurityGroups:    true,
-		SkipSslValidation:        a.SkipCertVerify,
-		SkipRegex:                "lucid64",
-		JavaBuildpackName:        "java_buildpack_offline",
+	return &acceptance_tests.AcceptanceTestsJob{
+		AcceptanceTests: &acceptance_tests.AcceptanceTests{
+			Api:                      prefixSystemDomain(a.SystemDomain, "api"),
+			AppsDomain:               ad,
+			AdminUser:                "admin",
+			AdminPassword:            a.AdminPassword,
+			IncludeLogging:           true,
+			IncludeInternetDependent: internet,
+			IncludeOperator:          true,
+			IncludeServices:          true,
+			IncludeSecurityGroups:    true,
+			SkipSslValidation:        a.SkipCertVerify,
+			SkipRegex:                "lucid64",
+			JavaBuildpackName:        "java_buildpack_offline",
+		},
 	}
 }
 

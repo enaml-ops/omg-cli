@@ -5,17 +5,17 @@ package benchmark_bbs
 */
 type Bbs struct {
 
+	/*ClientKey - Descr: PEM-encoded client key Default: <nil>
+*/
+	ClientKey interface{} `yaml:"client_key,omitempty"`
+
 	/*ApiLocation - Descr: the address of the BBS Default: bbs.service.cf.internal:8889
 */
 	ApiLocation interface{} `yaml:"api_location,omitempty"`
 
 	/*Etcd - Descr: maximum number of etcd client idle http connections Default: <nil>
 */
-	Etcd *Etcd `yaml:"etcd,omitempty"`
-
-	/*ClientKey - Descr: PEM-encoded client key Default: <nil>
-*/
-	ClientKey interface{} `yaml:"client_key,omitempty"`
+	Etcd *BbsEtcd `yaml:"etcd,omitempty"`
 
 	/*RequireSsl - Descr: enable ssl for all communication with the bbs (false unsupported) Default: true
 */

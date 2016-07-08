@@ -60,7 +60,7 @@ func newCloudControllerWorkerJob(c *CloudControllerWorkerPartition) enaml.Instan
 	return enaml.InstanceJob{
 		Name:    "cloud_controller_worker",
 		Release: "cf",
-		Properties: &ccworkerlib.CloudControllerWorker{
+		Properties: &ccworkerlib.CloudControllerWorkerJob{
 			Domain:                   c.SystemDomain,
 			SystemDomain:             c.SystemDomain,
 			AppDomains:               c.AppDomains,

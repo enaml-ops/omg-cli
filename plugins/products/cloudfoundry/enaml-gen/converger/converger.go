@@ -5,40 +5,36 @@ package converger
 */
 type Converger struct {
 
-	/*Bbs - Descr: maximum number of idle http connections Default: <nil>
+	/*RepeatIntervalInSeconds - Descr: the interval between runs of the converge process Default: 30
 */
-	Bbs *Bbs `yaml:"bbs,omitempty"`
-
-	/*ExpirePendingTaskDurationInSeconds - Descr: unclaimed tasks are marked as failed, after this duration in seconds Default: 1800
-*/
-	ExpirePendingTaskDurationInSeconds interface{} `yaml:"expire_pending_task_duration_in_seconds,omitempty"`
-
-	/*LogLevel - Descr: Log level Default: info
-*/
-	LogLevel interface{} `yaml:"log_level,omitempty"`
-
-	/*DebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17002
-*/
-	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
-
-	/*Diego - Descr: address at which to serve debug info Default: 0.0.0.0:17002
-*/
-	Diego *Diego `yaml:"diego,omitempty"`
-
-	/*ExpireCompletedTaskDurationInSeconds - Descr: completed, unresolved tasks are deleted after this duration in seconds Default: 120
-*/
-	ExpireCompletedTaskDurationInSeconds interface{} `yaml:"expire_completed_task_duration_in_seconds,omitempty"`
+	RepeatIntervalInSeconds interface{} `yaml:"repeat_interval_in_seconds,omitempty"`
 
 	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
 	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
 
+	/*Bbs - Descr: capacity of the tls client cache Default: <nil>
+*/
+	Bbs *Bbs `yaml:"bbs,omitempty"`
+
+	/*DebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17002
+*/
+	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
+
+	/*ExpireCompletedTaskDurationInSeconds - Descr: completed, unresolved tasks are deleted after this duration in seconds Default: 120
+*/
+	ExpireCompletedTaskDurationInSeconds interface{} `yaml:"expire_completed_task_duration_in_seconds,omitempty"`
+
+	/*ExpirePendingTaskDurationInSeconds - Descr: unclaimed tasks are marked as failed, after this duration in seconds Default: 1800
+*/
+	ExpirePendingTaskDurationInSeconds interface{} `yaml:"expire_pending_task_duration_in_seconds,omitempty"`
+
 	/*KickTaskDurationInSeconds - Descr: the interval, in seconds, between kicks to tasks in seconds Default: 30
 */
 	KickTaskDurationInSeconds interface{} `yaml:"kick_task_duration_in_seconds,omitempty"`
 
-	/*RepeatIntervalInSeconds - Descr: the interval between runs of the converge process Default: 30
+	/*LogLevel - Descr: Log level Default: info
 */
-	RepeatIntervalInSeconds interface{} `yaml:"repeat_interval_in_seconds,omitempty"`
+	LogLevel interface{} `yaml:"log_level,omitempty"`
 
 }

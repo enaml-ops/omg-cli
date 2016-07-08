@@ -9,28 +9,28 @@ type Agent struct {
 */
 	Datacenter interface{} `yaml:"datacenter,omitempty"`
 
-	/*Services - Descr: Map of consul service definitions. Default: map[]
-*/
-	Services interface{} `yaml:"services,omitempty"`
-
-	/*Mode - Descr: Mode to run the agent in. (client or server) Default: client
-*/
-	Mode interface{} `yaml:"mode,omitempty"`
-
 	/*ProtocolVersion - Descr: The Consul protocol to use. Default: 2
 */
 	ProtocolVersion interface{} `yaml:"protocol_version,omitempty"`
 
-	/*Servers - Descr: WAN server addresses to join. Default: []
+	/*Domain - Descr: Domain suffix for DNS Default: <nil>
+*/
+	Domain interface{} `yaml:"domain,omitempty"`
+
+	/*Servers - Descr: LAN server addresses to join on start. Default: []
 */
 	Servers *Servers `yaml:"servers,omitempty"`
+
+	/*Services - Descr: Map of consul service definitions. Default: map[]
+*/
+	Services interface{} `yaml:"services,omitempty"`
 
 	/*LogLevel - Descr: Agent log level. Default: info
 */
 	LogLevel interface{} `yaml:"log_level,omitempty"`
 
-	/*Domain - Descr: Domain suffix for DNS Default: <nil>
+	/*Mode - Descr: Mode to run the agent in. (client or server) Default: client
 */
-	Domain interface{} `yaml:"domain,omitempty"`
+	Mode interface{} `yaml:"mode,omitempty"`
 
 }

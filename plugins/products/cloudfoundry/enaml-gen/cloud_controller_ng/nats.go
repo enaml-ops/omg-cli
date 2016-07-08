@@ -13,12 +13,12 @@ type Nats struct {
 */
 	Port interface{} `yaml:"port,omitempty"`
 
-	/*User - Descr: Username for cc client to connect to NATS Default: <nil>
-*/
-	User interface{} `yaml:"user,omitempty"`
-
 	/*Password - Descr: Password for cc client to connect to NATS Default: <nil>
 */
 	Password interface{} `yaml:"password,omitempty"`
+
+	/*User - Descr: Username for cc client to connect to NATS Default: <nil>
+*/
+	User interface{} `yaml:"user,omitempty"`
 
 }

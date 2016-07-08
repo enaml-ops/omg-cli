@@ -5,13 +5,13 @@ package uaa
 */
 type Uaadb struct {
 
-	/*Port - Descr: The UAA database Port Default: <nil>
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
 	/*Address - Descr: The UAA database IP address Default: <nil>
 */
 	Address interface{} `yaml:"address,omitempty"`
+
+	/*Port - Descr: The UAA database Port Default: <nil>
+*/
+	Port interface{} `yaml:"port,omitempty"`
 
 	/*Databases - Descr: The list of databases used in UAA database including tag/name Default: <nil>
 */

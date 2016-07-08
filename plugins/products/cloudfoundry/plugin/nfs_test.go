@@ -112,8 +112,8 @@ var _ = Describe("NFS Partition", func() {
 			ig := nfsPartition.ToInstanceGroup()
 			job := ig.GetJobByName("debian_nfs_server")
 			Ω(job).ShouldNot(BeNil())
-			props, _ := job.Properties.(*debian_nfs_server.NfsServer)
-			Ω(props.AllowFromEntries).Should(ConsistOf("1.0.0.0/22"))
+			props, _ := job.Properties.(*debian_nfs_server.DebianNfsServerJob)
+			Ω(props.NfsServer.AllowFromEntries).Should(ConsistOf("1.0.0.0/22"))
 		})
 
 	})

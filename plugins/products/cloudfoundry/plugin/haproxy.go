@@ -3,6 +3,7 @@ package cloudfoundry
 import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/haproxy"
 )
 
 //NewHaProxyPartition -
@@ -41,7 +42,7 @@ func (s *HAProxy) createHAProxyJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:       "haproxy",
 		Release:    "cf",
-		Properties: "",
+		Properties: &haproxy.HaproxyJob{},
 	}
 }
 

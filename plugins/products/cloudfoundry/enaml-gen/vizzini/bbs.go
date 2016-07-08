@@ -5,20 +5,20 @@ package vizzini
 */
 type Bbs struct {
 
-	/*RequireSsl - Descr: enable ssl for all communication with the bbs Default: true
-*/
-	RequireSsl interface{} `yaml:"require_ssl,omitempty"`
-
 	/*ClientCert - Descr: PEM-encoded client certificate Default: <nil>
 */
 	ClientCert interface{} `yaml:"client_cert,omitempty"`
+
+	/*ClientKey - Descr: PEM-encoded client key Default: <nil>
+*/
+	ClientKey interface{} `yaml:"client_key,omitempty"`
 
 	/*ApiLocation - Descr: The address of the BBS Default: bbs.service.cf.internal:8889
 */
 	ApiLocation interface{} `yaml:"api_location,omitempty"`
 
-	/*ClientKey - Descr: PEM-encoded client key Default: <nil>
+	/*RequireSsl - Descr: enable ssl for all communication with the bbs Default: true
 */
-	ClientKey interface{} `yaml:"client_key,omitempty"`
+	RequireSsl interface{} `yaml:"require_ssl,omitempty"`
 
 }

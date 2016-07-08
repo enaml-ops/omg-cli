@@ -5,32 +5,32 @@ package cloud_controller_worker
 */
 type Ccdb struct {
 
-	/*DbScheme - Descr: The type of database being used. mysql or postgres Default: postgres
-*/
-	DbScheme interface{} `yaml:"db_scheme,omitempty"`
-
-	/*Address - Descr: The address of the database server Default: <nil>
-*/
-	Address interface{} `yaml:"address,omitempty"`
-
 	/*PoolTimeout - Descr: The timeout for Sequel pooled connections Default: 10
 */
 	PoolTimeout interface{} `yaml:"pool_timeout,omitempty"`
+
+	/*Port - Descr: The port of the database server Default: <nil>
+*/
+	Port interface{} `yaml:"port,omitempty"`
 
 	/*MaxConnections - Descr: Maximum connections for Sequel Default: 25
 */
 	MaxConnections interface{} `yaml:"max_connections,omitempty"`
 
-	/*Databases - Descr: Contains the name of the database on the database server Default: <nil>
+	/*DbScheme - Descr: The type of database being used. mysql or postgres Default: postgres
 */
-	Databases interface{} `yaml:"databases,omitempty"`
+	DbScheme interface{} `yaml:"db_scheme,omitempty"`
 
 	/*Roles - Descr: Users to create on the database when seeding Default: <nil>
 */
 	Roles interface{} `yaml:"roles,omitempty"`
 
-	/*Port - Descr: The port of the database server Default: <nil>
+	/*Address - Descr: The address of the database server Default: <nil>
 */
-	Port interface{} `yaml:"port,omitempty"`
+	Address interface{} `yaml:"address,omitempty"`
+
+	/*Databases - Descr: Contains the name of the database on the database server Default: <nil>
+*/
+	Databases interface{} `yaml:"databases,omitempty"`
 
 }

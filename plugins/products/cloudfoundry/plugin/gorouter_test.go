@@ -96,14 +96,14 @@ var _ = Describe("Go-Router Partition", func() {
 		It("then it should allow the user to configure if we enable ssl", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			job := ig.GetJobByName("gorouter")
-			properties := job.Properties.(*grtrlib.Gorouter)
+			properties := job.Properties.(*grtrlib.GorouterJob)
 			Ω(properties.Router.EnableSsl).Should(BeTrue())
 		})
 
 		It("then it should allow the user to configure the nats pool to use", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			job := ig.GetJobByName("gorouter")
-			properties := job.Properties.(*grtrlib.Gorouter)
+			properties := job.Properties.(*grtrlib.GorouterJob)
 			Ω(properties.Nats.Machines).Should(ConsistOf("1.0.0.5", "1.0.0.6"))
 			Ω(properties.Nats.User).Should(Equal("nats"))
 			Ω(properties.Nats.Password).Should(Equal("pass"))
@@ -113,14 +113,14 @@ var _ = Describe("Go-Router Partition", func() {
 		It("then it should allow the user to configure the loggregator pool to use", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			job := ig.GetJobByName("metron_agent")
-			properties := job.Properties.(*metron_agent.MetronAgent)
+			properties := job.Properties.(*metron_agent.MetronAgentJob)
 			Ω(properties.Loggregator.Etcd.Machines).Should(ConsistOf("1.0.0.7", "1.0.0.8"))
 		})
 
 		It("then it should allow the user to configure the metron agent", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			job := ig.GetJobByName("metron_agent")
-			properties := job.Properties.(*metron_agent.MetronAgent)
+			properties := job.Properties.(*metron_agent.MetronAgentJob)
 			Ω(properties.MetronAgent.Zone).Should(Equal("metronzoneguid"))
 			Ω(properties.MetronAgent.Deployment).Should(Equal(DeploymentName))
 			Ω(properties.MetronEndpoint.SharedSecret).Should(Equal("metronsecret"))
@@ -129,7 +129,7 @@ var _ = Describe("Go-Router Partition", func() {
 		It("then it should allow the user to configure the router user/pass", func() {
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			job := ig.GetJobByName("gorouter")
-			properties := job.Properties.(*grtrlib.Gorouter)
+			properties := job.Properties.(*grtrlib.GorouterJob)
 			Ω(properties.Router.Status.User).Should(Equal("router_status"))
 			Ω(properties.Router.Status.Password).Should(Equal("blabadebleblahblah"))
 		})
@@ -139,7 +139,7 @@ var _ = Describe("Go-Router Partition", func() {
 			keyBytes, _ := ioutil.ReadFile("fixtures/sample.key")
 			ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 			job := ig.GetJobByName("gorouter")
-			properties := job.Properties.(*grtrlib.Gorouter)
+			properties := job.Properties.(*grtrlib.GorouterJob)
 			Ω(properties.Router.SslCert).Should(Equal(string(certBytes)))
 			Ω(properties.Router.SslKey).Should(Equal(string(keyBytes)))
 		})
@@ -161,7 +161,7 @@ var _ = Describe("Go-Router Partition", func() {
 			It("then it should use the provided string values directly", func() {
 				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 				job := ig.GetJobByName("gorouter")
-				properties := job.Properties.(*grtrlib.Gorouter)
+				properties := job.Properties.(*grtrlib.GorouterJob)
 				Ω(properties.Router.SslCert).Should(Equal("blah"))
 				Ω(properties.Router.SslKey).Should(Equal("blahblah"))
 			})
@@ -184,7 +184,7 @@ var _ = Describe("Go-Router Partition", func() {
 			It("then it should allow the user to configure the cert & key used from a string flag", func() {
 				ig := deploymentManifest.GetInstanceGroupByName("router-partition")
 				job := ig.GetJobByName("gorouter")
-				properties := job.Properties.(*grtrlib.Gorouter)
+				properties := job.Properties.(*grtrlib.GorouterJob)
 				Ω(properties.Router.SslCert).Should(Equal("blah"))
 				Ω(properties.Router.SslKey).Should(Equal("blahblah"))
 			})

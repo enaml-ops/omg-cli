@@ -5,12 +5,12 @@ package collector
 */
 type Opentsdb struct {
 
-	/*Port - Descr: TCP port of OpenTsdb Default: <nil>
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
 	/*Address - Descr: IP address of OpenTsdb Default: <nil>
 */
 	Address interface{} `yaml:"address,omitempty"`
+
+	/*Port - Descr: TCP port of OpenTsdb Default: <nil>
+*/
+	Port interface{} `yaml:"port,omitempty"`
 
 }

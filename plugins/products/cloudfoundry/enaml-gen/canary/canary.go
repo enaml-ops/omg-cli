@@ -5,14 +5,6 @@ package canary
 */
 type Canary struct {
 
-	/*AppDomain - Descr: The domain to use for the canary app Default: <nil>
-*/
-	AppDomain interface{} `yaml:"app_domain,omitempty"`
-
-	/*User - Descr: The Elastic Runtime API user Default: <nil>
-*/
-	User interface{} `yaml:"user,omitempty"`
-
 	/*AppName - Descr: App name for the canary app Default: <nil>
 */
 	AppName interface{} `yaml:"app_name,omitempty"`
@@ -25,25 +17,25 @@ type Canary struct {
 */
 	DatadogApiKey interface{} `yaml:"datadog_api_key,omitempty"`
 
-	/*Diego - Descr: Datadog API key for the canary app Default: <nil>
-*/
-	Diego *Diego `yaml:"diego,omitempty"`
-
 	/*Api - Descr: The Elastic Runtime API endpoint URL Default: <nil>
 */
 	Api interface{} `yaml:"api,omitempty"`
+
+	/*AppDomain - Descr: The domain to use for the canary app Default: <nil>
+*/
+	AppDomain interface{} `yaml:"app_domain,omitempty"`
 
 	/*Password - Descr: The Elastic Runtime API user's password Default: <nil>
 */
 	Password interface{} `yaml:"password,omitempty"`
 
+	/*User - Descr: The Elastic Runtime API user Default: <nil>
+*/
+	User interface{} `yaml:"user,omitempty"`
+
 	/*InstanceCount - Descr: Number of instances of the canary app Default: <nil>
 */
 	InstanceCount interface{} `yaml:"instance_count,omitempty"`
-
-	/*Space - Descr: The Elastic Runtime space name to use for the canary app Default: <nil>
-*/
-	Space interface{} `yaml:"space,omitempty"`
 
 	/*CfStack - Descr: Stack for the canary app Default: cflinuxfs2
 */
@@ -52,5 +44,9 @@ type Canary struct {
 	/*Org - Descr: The Elastic Runtime organization name to use for the canary app Default: <nil>
 */
 	Org interface{} `yaml:"org,omitempty"`
+
+	/*Space - Descr: The Elastic Runtime space name to use for the canary app Default: <nil>
+*/
+	Space interface{} `yaml:"space,omitempty"`
 
 }

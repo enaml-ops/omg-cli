@@ -5,6 +5,10 @@ package debian_nfs_server
 */
 type NfsServer struct {
 
+	/*PipefsDirectory - Descr: Pipefs directory for NFS idmapd Default: /var/lib/nfs/rpc_pipef
+*/
+	PipefsDirectory interface{} `yaml:"pipefs_directory,omitempty"`
+
 	/*NoRootSquash - Descr: Exports /var/vcap/store with no_root_squash when set to true Default: false
 */
 	NoRootSquash interface{} `yaml:"no_root_squash,omitempty"`
@@ -16,9 +20,5 @@ type NfsServer struct {
 	/*IdmapdDomain - Descr: Domain name for NFS idmapd Default: localdomain
 */
 	IdmapdDomain interface{} `yaml:"idmapd_domain,omitempty"`
-
-	/*PipefsDirectory - Descr: Pipefs directory for NFS idmapd Default: /var/lib/nfs/rpc_pipef
-*/
-	PipefsDirectory interface{} `yaml:"pipefs_directory,omitempty"`
 
 }

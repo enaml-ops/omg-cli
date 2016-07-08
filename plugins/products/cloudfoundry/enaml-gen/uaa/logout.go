@@ -5,7 +5,7 @@ package uaa
 */
 type Logout struct {
 
-	/*Redirect - Descr: The Location of the redirect header following a logout of the the UAA (/logout.do). Default: /login
+	/*Redirect - Descr: A list of URLs. When this list is non null, including empty, and disable=false, logout redirects are allowed, but limited to the whitelist URLs. If a redirect parameter value is not white listed, redirect will be to the default URL. Default: <nil>
 */
 	Redirect *Redirect `yaml:"redirect,omitempty"`
 

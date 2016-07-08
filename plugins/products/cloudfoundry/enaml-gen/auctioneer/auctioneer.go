@@ -5,10 +5,6 @@ package auctioneer
 */
 type Auctioneer struct {
 
-	/*DebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17001
-*/
-	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
-
 	/*ListenAddr - Descr: address where auctioneer listens for LRP and task start auction requests Default: 0.0.0.0:9016
 */
 	ListenAddr interface{} `yaml:"listen_addr,omitempty"`
@@ -17,9 +13,9 @@ type Auctioneer struct {
 */
 	LogLevel interface{} `yaml:"log_level,omitempty"`
 
-	/*Bbs - Descr: maximum number of idle http connections Default: <nil>
+	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
-	Bbs *Bbs `yaml:"bbs,omitempty"`
+	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
 
 	/*CellStateTimeout - Descr: Timeout applied to HTTP requests to the Cell State endpoint. Default: 1s
 */
@@ -29,12 +25,12 @@ type Auctioneer struct {
 */
 	StartingContainerWeight interface{} `yaml:"starting_container_weight,omitempty"`
 
-	/*DropsondePort - Descr: local metron agent's port Default: 3457
+	/*Bbs - Descr: maximum number of idle http connections Default: <nil>
 */
-	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
+	Bbs *Bbs `yaml:"bbs,omitempty"`
 
-	/*Diego - Descr: maximum number of idle http connections Default: <nil>
+	/*DebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17001
 */
-	Diego *Diego `yaml:"diego,omitempty"`
+	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
 
 }

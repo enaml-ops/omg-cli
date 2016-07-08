@@ -70,20 +70,22 @@ func (s *ConsulAgent) CreateJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "consul_agent",
 		Release: "cf",
-		Properties: &consullib.Consul{
-			EncryptKeys: s.EncryptKeys,
-			CaCert:      s.CaCert,
-			AgentCert:   s.AgentCert,
-			AgentKey:    s.AgentKey,
-			ServerCert:  s.ServerCert,
-			ServerKey:   s.ServerKey,
-			Agent: &consullib.Agent{
-				Domain: "cf.internal",
-				Mode:   s.getMode(),
-				Servers: &consullib.Servers{
-					Lan: s.NetworkIPs,
+		Properties: &consullib.ConsulAgentJob{
+			Consul: &consullib.Consul{
+				EncryptKeys: s.EncryptKeys,
+				CaCert:      s.CaCert,
+				AgentCert:   s.AgentCert,
+				AgentKey:    s.AgentKey,
+				ServerCert:  s.ServerCert,
+				ServerKey:   s.ServerKey,
+				Agent: &consullib.Agent{
+					Domain: "cf.internal",
+					Mode:   s.getMode(),
+					Servers: &consullib.Servers{
+						Lan: s.NetworkIPs,
+					},
+					Services: serviceMap,
 				},
-				Services: serviceMap,
 			},
 		},
 	}

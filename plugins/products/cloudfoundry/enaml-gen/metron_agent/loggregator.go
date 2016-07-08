@@ -7,7 +7,7 @@ type Loggregator struct {
 
 	/*Tls - Descr: CA root required for key/cert verification Default: 
 */
-	Tls *Tls `yaml:"tls,omitempty"`
+	Tls *LoggregatorTls `yaml:"tls,omitempty"`
 
 	/*DropsondeIncomingPort - Descr: Port where loggregator listens for dropsonde log messages Default: 3457
 */

@@ -5,7 +5,7 @@ package canary
 */
 type Diego struct {
 
-	/*Canary - Descr: Datadog API key for the canary app Default: <nil>
+	/*Canary - Descr: The domain to use for the canary app Default: <nil>
 */
 	Canary *Canary `yaml:"canary,omitempty"`
 

@@ -5,6 +5,14 @@ package cloud_controller_worker
 */
 type Newrelic struct {
 
+	/*LogFilePath - Descr: The location for NewRelic to log to Default: /var/vcap/sys/log/cloud_controller_ng/newrelic
+*/
+	LogFilePath interface{} `yaml:"log_file_path,omitempty"`
+
+	/*EnvironmentName - Descr: The environment name used by NewRelic Default: development
+*/
+	EnvironmentName interface{} `yaml:"environment_name,omitempty"`
+
 	/*DeveloperMode - Descr: Activate NewRelic developer mode Default: false
 */
 	DeveloperMode interface{} `yaml:"developer_mode,omitempty"`
@@ -20,14 +28,6 @@ type Newrelic struct {
 	/*LicenseKey - Descr: The api key for NewRelic Default: <nil>
 */
 	LicenseKey interface{} `yaml:"license_key,omitempty"`
-
-	/*LogFilePath - Descr: The location for NewRelic to log to Default: /var/vcap/sys/log/cloud_controller_ng/newrelic
-*/
-	LogFilePath interface{} `yaml:"log_file_path,omitempty"`
-
-	/*EnvironmentName - Descr: The environment name used by NewRelic Default: development
-*/
-	EnvironmentName interface{} `yaml:"environment_name,omitempty"`
 
 	/*TransactionTracer - Descr: NewRelic's SQL statement recording mode: [off | obfuscated | raw] Default: off
 */

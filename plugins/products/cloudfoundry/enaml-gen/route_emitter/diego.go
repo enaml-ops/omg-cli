@@ -5,7 +5,7 @@ package route_emitter
 */
 type Diego struct {
 
-	/*RouteEmitter - Descr: local metron agent's port Default: 3457
+	/*RouteEmitter - Descr: enable ssl for all communication with the bbs Default: true
 */
 	RouteEmitter *RouteEmitter `yaml:"route_emitter,omitempty"`
 

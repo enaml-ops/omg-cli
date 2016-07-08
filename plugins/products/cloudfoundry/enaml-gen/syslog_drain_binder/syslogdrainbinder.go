@@ -5,37 +5,9 @@ package syslog_drain_binder
 */
 type SyslogDrainBinder struct {
 
-	/*Cc - Descr: API URI of cloud controller Default: <nil>
-*/
-	Cc *Cc `yaml:"cc,omitempty"`
-
-	/*SyslogDrainBinder - Descr: Interval on which to poll cloud controller in seconds Default: 15
-*/
-	SyslogDrainBinder *SyslogDrainBinder `yaml:"syslog_drain_binder,omitempty"`
-
-	/*Ssl - Descr: when connecting over https, ignore bad ssl certificates Default: false
-*/
-	Ssl *Ssl `yaml:"ssl,omitempty"`
-
-	/*MetronEndpoint - Descr: The port used to emit dropsonde messages to the Metron agent Default: 3457
-*/
-	MetronEndpoint *MetronEndpoint `yaml:"metron_endpoint,omitempty"`
-
-	/*Loggregator - Descr: Number of concurrent requests to ETCD Default: 10
-*/
-	Loggregator *Loggregator `yaml:"loggregator,omitempty"`
-
-	/*SystemDomain - Descr: Domain reserved for CF operator, base URL where the login, uaa, and other non-user apps listen Default: <nil>
-*/
-	SystemDomain interface{} `yaml:"system_domain,omitempty"`
-
 	/*DrainUrlTtlSeconds - Descr: Time to live for drain urls in seconds Default: 60
 */
 	DrainUrlTtlSeconds interface{} `yaml:"drain_url_ttl_seconds,omitempty"`
-
-	/*Debug - Descr: boolean value to turn on verbose logging for syslog_drain_binder Default: false
-*/
-	Debug interface{} `yaml:"debug,omitempty"`
 
 	/*PollingBatchSize - Descr: Batch size for the poll from cloud controller Default: 1000
 */
@@ -44,5 +16,9 @@ type SyslogDrainBinder struct {
 	/*UpdateIntervalSeconds - Descr: Interval on which to poll cloud controller in seconds Default: 15
 */
 	UpdateIntervalSeconds interface{} `yaml:"update_interval_seconds,omitempty"`
+
+	/*Debug - Descr: boolean value to turn on verbose logging for syslog_drain_binder Default: false
+*/
+	Debug interface{} `yaml:"debug,omitempty"`
 
 }

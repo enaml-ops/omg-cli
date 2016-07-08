@@ -15,11 +15,13 @@ func NewNatsPartition(c *cli.Context) (igf InstanceGrouper) {
 		NetworkName:  c.String("network"),
 		VMTypeName:   c.String("nats-vm-type"),
 		Metron:       NewMetron(c),
-		Nats: natslib.Nats{
-			User:     c.String("nats-user"),
-			Password: c.String("nats-pass"),
-			Machines: c.StringSlice("nats-machine-ip"),
-			Port:     natsPort,
+		Nats: natslib.NatsJob{
+			Nats: &natslib.Nats{
+				User:     c.String("nats-user"),
+				Password: c.String("nats-pass"),
+				Machines: c.StringSlice("nats-machine-ip"),
+				Port:     natsPort,
+			},
 		},
 		StatsdInjector: NewStatsdInjector(c),
 	}
@@ -67,7 +69,7 @@ func (s *NatsPartition) HasValidValues() bool {
 		s.Metron.Secret != "" &&
 		s.NetworkName != "" &&
 		len(s.NetworkIPs) > 0 &&
-		s.Nats.User != "" &&
-		s.Nats.Password != "" &&
-		s.Nats.Machines != nil)
+		s.Nats.Nats.User != "" &&
+		s.Nats.Nats.Password != "" &&
+		s.Nats.Nats.Machines != nil)
 }

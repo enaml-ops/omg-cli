@@ -5,12 +5,12 @@ package collector
 */
 type Datadog struct {
 
-	/*ApplicationKey - Descr: Datadog application key Default: <nil>
-*/
-	ApplicationKey interface{} `yaml:"application_key,omitempty"`
-
 	/*ApiKey - Descr: Datadog API key Default: <nil>
 */
 	ApiKey interface{} `yaml:"api_key,omitempty"`
+
+	/*ApplicationKey - Descr: Datadog application key Default: <nil>
+*/
+	ApplicationKey interface{} `yaml:"application_key,omitempty"`
 
 }

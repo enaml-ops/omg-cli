@@ -5,12 +5,12 @@ package bbs
 */
 type Sql struct {
 
-	/*MaxOpenConnections - Descr: Maximum number of open connections to the SQL database Default: <nil>
-*/
-	MaxOpenConnections interface{} `yaml:"max_open_connections,omitempty"`
-
 	/*DbConnectionString - Descr: EXPERIMENTAL: connection string to use for SQL backend [username:password@tcp(1.1.1.1:1234)/database] Default: <nil>
 */
 	DbConnectionString interface{} `yaml:"db_connection_string,omitempty"`
+
+	/*MaxOpenConnections - Descr: Maximum number of open connections to the SQL database Default: <nil>
+*/
+	MaxOpenConnections interface{} `yaml:"max_open_connections,omitempty"`
 
 }

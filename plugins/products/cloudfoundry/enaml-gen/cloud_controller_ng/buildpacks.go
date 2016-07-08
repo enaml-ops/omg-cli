@@ -5,24 +5,24 @@ package cloud_controller_ng
 */
 type Buildpacks struct {
 
-	/*WebdavConfig - Descr: The ca cert to use when communicating with webdav Default: 
+	/*BuildpackDirectoryKey - Descr: Directory (bucket) used store buildpacks.  It does not have be pre-created. Default: cc-buildpacks
 */
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
+	BuildpackDirectoryKey interface{} `yaml:"buildpack_directory_key,omitempty"`
 
-	/*FogConnection - Descr: Fog connection hash Default: <nil>
+	/*Cdn - Descr: URI for a CDN to used for buildpack downloads Default: 
 */
-	FogConnection interface{} `yaml:"fog_connection,omitempty"`
+	Cdn *BuildpacksCdn `yaml:"cdn,omitempty"`
+
+	/*WebdavConfig - Descr: The basic auth user that CC uses to connect to the admin endpoint on webdav Default: 
+*/
+	WebdavConfig *BuildpacksWebdavConfig `yaml:"webdav_config,omitempty"`
 
 	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
 	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
 
-	/*BuildpackDirectoryKey - Descr: Directory (bucket) used store buildpacks.  It does not have be pre-created. Default: cc-buildpacks
+	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
-	BuildpackDirectoryKey interface{} `yaml:"buildpack_directory_key,omitempty"`
-
-	/*Cdn - Descr: Private key for signing download URIs Default: 
-*/
-	Cdn *Cdn `yaml:"cdn,omitempty"`
+	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
 }

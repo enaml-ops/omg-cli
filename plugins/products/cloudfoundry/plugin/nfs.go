@@ -52,8 +52,10 @@ func (s *NFS) newNFSJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "debian_nfs_server",
 		Release: "cf",
-		Properties: &nfslib.NfsServer{
-			AllowFromEntries: s.AllowFromNetworkCIDR,
+		Properties: &nfslib.DebianNfsServerJob{
+			NfsServer: &nfslib.NfsServer{
+				AllowFromEntries: s.AllowFromNetworkCIDR,
+			},
 		},
 	}
 }

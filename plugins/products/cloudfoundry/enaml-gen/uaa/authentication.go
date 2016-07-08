@@ -7,6 +7,6 @@ type Authentication struct {
 
 	/*Policy - Descr: Number of allowed failures before account is locked Default: 5
 */
-	Policy *Policy `yaml:"policy,omitempty"`
+	Policy *AuthenticationPolicy `yaml:"policy,omitempty"`
 
 }

@@ -5,10 +5,6 @@ package file_server
 */
 type FileServer struct {
 
-	/*StaticDirectory - Descr: Fully-qualified path to the doc root for the file server's static files Default: /var/vcap/jobs/file_server/packages/
-*/
-	StaticDirectory interface{} `yaml:"static_directory,omitempty"`
-
 	/*DebugAddr - Descr: address at which to serve debug info Default: 0.0.0.0:17005
 */
 	DebugAddr interface{} `yaml:"debug_addr,omitempty"`
@@ -25,8 +21,8 @@ type FileServer struct {
 */
 	ListenAddr interface{} `yaml:"listen_addr,omitempty"`
 
-	/*Diego - Descr: Address of interface on which to serve files Default: 0.0.0.0:8080
+	/*StaticDirectory - Descr: Fully-qualified path to the doc root for the file server's static files Default: /var/vcap/jobs/file_server/packages/
 */
-	Diego *Diego `yaml:"diego,omitempty"`
+	StaticDirectory interface{} `yaml:"static_directory,omitempty"`
 
 }

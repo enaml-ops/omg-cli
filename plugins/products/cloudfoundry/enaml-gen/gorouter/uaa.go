@@ -9,12 +9,12 @@ type Uaa struct {
 */
 	Clients *Clients `yaml:"clients,omitempty"`
 
-	/*Ssl - Descr: Secure Port on which UAA is running. Default: <nil>
-*/
-	Ssl *Ssl `yaml:"ssl,omitempty"`
-
 	/*Port - Descr: Port on which UAA is running. Default: 8080
 */
 	Port interface{} `yaml:"port,omitempty"`
+
+	/*Ssl - Descr: Secure Port on which UAA is running. Default: <nil>
+*/
+	Ssl *Ssl `yaml:"ssl,omitempty"`
 
 }

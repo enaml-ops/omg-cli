@@ -57,9 +57,11 @@ func (s *Doppler) createDopplerJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "doppler",
 		Release: "cf",
-		Properties: &doppler.Doppler{
-			Zone: s.Zone,
-			MessageDrainBufferSize: s.MessageDrainBufferSize,
+		Properties: &doppler.DopplerJob{
+			Doppler: &doppler.Doppler{
+				Zone: s.Zone,
+				MessageDrainBufferSize: s.MessageDrainBufferSize,
+			},
 			DopplerEndpoint: &doppler.DopplerEndpoint{
 				SharedSecret: s.SharedSecret,
 			},
@@ -76,7 +78,7 @@ func (s *Doppler) createSyslogDrainBinderJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "syslog_drain_binder",
 		Release: "cf",
-		Properties: &syslog_drain_binder.SyslogDrainBinder{
+		Properties: &syslog_drain_binder.SyslogDrainBinderJob{
 			Ssl: &syslog_drain_binder.Ssl{
 				SkipCertVerify: s.SkipSSLCertify,
 			},

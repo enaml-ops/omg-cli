@@ -3,8 +3,8 @@ package cloudfoundry
 import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/garden"
 	"github.com/enaml-ops/omg-cli/plugins/products/cloudfoundry/enaml-gen/rep"
-	"github.com/enaml-ops/omg-cli/plugins/products/concourse/enaml-gen/garden"
 )
 
 func NewDiegoCellPartition(c *cli.Context) InstanceGrouper {
@@ -72,13 +72,15 @@ func (s *diegoCell) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 	return
 }
 
-func (s *diegoCell) newGarden() (gardenLinux *garden.Garden) {
-	gardenLinux = &garden.Garden{
-		AllowHostAccess:     false,
-		PersistentImageList: []string{"/var/vcap/packages/rootfs_cflinuxfs2/rootfs"},
-		NetworkPool:         "10.254.0.0/22",
-		DenyNetworks:        []string{"0.0.0.0/0"},
-		NetworkMtu:          1454,
+func (s *diegoCell) newGarden() (gardenLinux *garden.GardenJob) {
+	gardenLinux = &garden.GardenJob{
+		Garden: &garden.Garden{
+			AllowHostAccess:     false,
+			PersistentImageList: []string{"/var/vcap/packages/rootfs_cflinuxfs2/rootfs"},
+			NetworkPool:         "10.254.0.0/22",
+			DenyNetworks:        []string{"0.0.0.0/0"},
+			NetworkMtu:          1454,
+		},
 	}
 	return
 }
@@ -87,23 +89,25 @@ func (s *diegoCell) HasValidValues() bool {
 	return false
 }
 
-func (s *diegoCell) newRDiego() (rdiego *rep.Diego) {
-	rdiego = &rep.Diego{
-		Executor: &rep.Executor{
-			PostSetupHook: `sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"`,
-			PostSetupUser: "root",
-		},
-		Rep: &rep.Rep{
-			Bbs: &rep.Bbs{
-				ApiLocation: s.DiegoBrain.BBSAPILocation,
-				CaCert:      s.DiegoBrain.BBSCACert,
-				ClientCert:  s.DiegoBrain.BBSClientCert,
-				ClientKey:   s.DiegoBrain.BBSClientKey,
+func (s *diegoCell) newRDiego() (rdiego *rep.RepJob) {
+	rdiego = &rep.RepJob{
+		Diego: &rep.Diego{
+			Executor: &rep.Executor{
+				PostSetupHook: `sh -c "rm -f /home/vcap/app/.java-buildpack.log /home/vcap/app/**/.java-buildpack.log"`,
+				PostSetupUser: "root",
 			},
-			PreloadedRootfses: map[string]string{
-				"cflinuxfs2": "/var/vcap/packages/cflinuxfs2/rootfs",
+			Rep: &rep.Rep{
+				Bbs: &rep.Bbs{
+					ApiLocation: s.DiegoBrain.BBSAPILocation,
+					CaCert:      s.DiegoBrain.BBSCACert,
+					ClientCert:  s.DiegoBrain.BBSClientCert,
+					ClientKey:   s.DiegoBrain.BBSClientKey,
+				},
+				PreloadedRootfses: map[string]string{
+					"cflinuxfs2": "/var/vcap/packages/cflinuxfs2/rootfs",
+				},
+				Zone: s.Metron.Zone,
 			},
-			Zone: s.Metron.Zone,
 		},
 	}
 	return

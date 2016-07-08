@@ -5,28 +5,28 @@ package cloud_controller_clock
 */
 type Packages struct {
 
-	/*WebdavConfig - Descr: The basic auth password that CC uses to connect to the admin endpoint on webdav Default: 
+	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
+	FogConnection interface{} `yaml:"fog_connection,omitempty"`
+
+	/*Cdn - Descr: Key pair name for signed download URIs Default: 
+*/
+	Cdn *PackagesCdn `yaml:"cdn,omitempty"`
+
+	/*WebdavConfig - Descr: The basic auth user that CC uses to connect to the admin endpoint on webdav Default: 
+*/
+	WebdavConfig *PackagesWebdavConfig `yaml:"webdav_config,omitempty"`
+
+	/*MaxPackageSize - Descr: Maximum size of application package Default: 1073741824
+*/
+	MaxPackageSize interface{} `yaml:"max_package_size,omitempty"`
 
 	/*AppPackageDirectoryKey - Descr: Directory (bucket) used store app packages.  It does not have be pre-created. Default: cc-packages
 */
 	AppPackageDirectoryKey interface{} `yaml:"app_package_directory_key,omitempty"`
 
-	/*Cdn - Descr: URI for a CDN to used for app package downloads Default: 
-*/
-	Cdn *Cdn `yaml:"cdn,omitempty"`
-
-	/*FogConnection - Descr: Fog connection hash Default: <nil>
-*/
-	FogConnection interface{} `yaml:"fog_connection,omitempty"`
-
 	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
 	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
-
-	/*MaxPackageSize - Descr: Maximum size of application package Default: 1073741824
-*/
-	MaxPackageSize interface{} `yaml:"max_package_size,omitempty"`
 
 }

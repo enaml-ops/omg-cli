@@ -19,7 +19,7 @@ func (s *NFSMounter) CreateJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "nfs_mounter",
 		Release: "cf",
-		Properties: &nfsmounterlib.NfsMounter{
+		Properties: &nfsmounterlib.NfsMounterJob{
 			NfsServer: &nfsmounterlib.NfsServer{
 				Address: s.NFSServerAddress,
 				Share:   s.SharePath,

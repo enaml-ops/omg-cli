@@ -7,6 +7,6 @@ type Clients struct {
 
 	/*Doppler - Descr: Doppler's client secret to connect to UAA Default: <nil>
 */
-	Doppler *Doppler `yaml:"doppler,omitempty"`
+	Doppler *ClientsDoppler `yaml:"doppler,omitempty"`
 
 }

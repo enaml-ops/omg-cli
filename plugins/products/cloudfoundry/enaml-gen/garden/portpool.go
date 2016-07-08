@@ -5,12 +5,12 @@ package garden
 */
 type PortPool struct {
 
-	/*Size - Descr: An integer used to denote how many ports are avaliable for Net In calls. Uses the Garden default if not set. Default: <nil>
-*/
-	Size interface{} `yaml:"size,omitempty"`
-
 	/*Start - Descr: An integer port number used to denote where ports should start being allocated for Net In calls. Uses the Garden default if not set. Default: <nil>
 */
 	Start interface{} `yaml:"start,omitempty"`
+
+	/*Size - Descr: An integer used to denote how many ports are avaliable for Net In calls. Uses the Garden default if not set. Default: <nil>
+*/
+	Size interface{} `yaml:"size,omitempty"`
 
 }

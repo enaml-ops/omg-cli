@@ -57,10 +57,12 @@ func (s *Etcd) newEtcdJob() enaml.InstanceJob {
 	return enaml.InstanceJob{
 		Name:    "etcd",
 		Release: "cf",
-		Properties: &etcdlib.Etcd{
-			PeerRequireSsl: false,
-			RequireSsl:     false,
-			Machines:       s.NetworkIPs,
+		Properties: &etcdlib.EtcdJob{
+			Etcd: &etcdlib.Etcd{
+				PeerRequireSsl: false,
+				RequireSsl:     false,
+				Machines:       s.NetworkIPs,
+			},
 		},
 	}
 }

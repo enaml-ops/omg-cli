@@ -5,12 +5,12 @@ package ssh_proxy
 */
 type Cc struct {
 
-	/*InternalServiceHostname - Descr: Internal service hostname of Cloud Controller Api Default: cloud-controller-ng.service.cf.internal
-*/
-	InternalServiceHostname interface{} `yaml:"internal_service_hostname,omitempty"`
-
 	/*ExternalPort - Descr: External port of the Cloud Controller API Default: 9022
 */
 	ExternalPort interface{} `yaml:"external_port,omitempty"`
+
+	/*InternalServiceHostname - Descr: Internal service hostname of Cloud Controller Api Default: cloud-controller-ng.service.cf.internal
+*/
+	InternalServiceHostname interface{} `yaml:"internal_service_hostname,omitempty"`
 
 }

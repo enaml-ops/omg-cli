@@ -5,20 +5,20 @@ package hm9000
 */
 type Nats struct {
 
-	/*Password - Descr:  Default: <nil>
+	/*User - Descr:  Default: <nil>
 */
-	Password interface{} `yaml:"password,omitempty"`
+	User interface{} `yaml:"user,omitempty"`
 
 	/*Port - Descr:  Default: <nil>
 */
 	Port interface{} `yaml:"port,omitempty"`
 
+	/*Password - Descr:  Default: <nil>
+*/
+	Password interface{} `yaml:"password,omitempty"`
+
 	/*Machines - Descr:  Default: <nil>
 */
 	Machines interface{} `yaml:"machines,omitempty"`
-
-	/*User - Descr:  Default: <nil>
-*/
-	User interface{} `yaml:"user,omitempty"`
 
 }

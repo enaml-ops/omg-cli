@@ -68,7 +68,7 @@ func (c *clockGlobal) ToInstanceGroup() *enaml.InstanceGroup {
 	statsdJob := c.Statsd.CreateJob()
 
 	ccw := newCloudControllerNgWorkerJob(c.CloudController)
-	props := ccw.Properties.(*cloud_controller_ng.CloudControllerNg)
+	props := ccw.Properties.(*cloud_controller_ng.CloudControllerNgJob)
 
 	ig.AddJob(c.newCloudControllerClockJob(props))
 	ig.AddJob(&metronJob)
@@ -77,7 +77,7 @@ func (c *clockGlobal) ToInstanceGroup() *enaml.InstanceGroup {
 	return ig
 }
 
-func (c *clockGlobal) newCloudControllerClockJob(ccng *cloud_controller_ng.CloudControllerNg) *enaml.InstanceJob {
+func (c *clockGlobal) newCloudControllerClockJob(ccng *cloud_controller_ng.CloudControllerNgJob) *enaml.InstanceJob {
 	roles := make(map[string]string)
 	roles["tag"] = "admin"
 	roles["name"] = c.CCDBUser
@@ -88,7 +88,7 @@ func (c *clockGlobal) newCloudControllerClockJob(ccng *cloud_controller_ng.Cloud
 	dbs["name"] = "ccdb"
 	dbs["citext"] = "true"
 
-	props := &cloud_controller_clock.CloudControllerClock{
+	props := &cloud_controller_clock.CloudControllerClockJob{
 		Domain:                   c.SystemDomain,
 		SystemDomain:             c.SystemDomain,
 		SystemDomainOrganization: "system",

@@ -5,11 +5,15 @@ package vizzini
 */
 type Vizzini struct {
 
-	/*Vizzini - Descr: Run tests in verbose mode Default: false
+	/*RoutableDomainSuffix - Descr: The deployment's routable domain name Default: <nil>
 */
-	Vizzini *Vizzini `yaml:"vizzini,omitempty"`
+	RoutableDomainSuffix interface{} `yaml:"routable_domain_suffix,omitempty"`
 
-	/*Bbs - Descr: PEM-encoded client certificate Default: <nil>
+	/*Verbose - Descr: Run tests in verbose mode Default: false
+*/
+	Verbose interface{} `yaml:"verbose,omitempty"`
+
+	/*Bbs - Descr: enable ssl for all communication with the bbs Default: true
 */
 	Bbs *Bbs `yaml:"bbs,omitempty"`
 
@@ -21,16 +25,8 @@ type Vizzini struct {
 */
 	EventuallyTimeout interface{} `yaml:"eventually_timeout,omitempty"`
 
-	/*RoutableDomainSuffix - Descr: The deployment's routable domain name Default: <nil>
-*/
-	RoutableDomainSuffix interface{} `yaml:"routable_domain_suffix,omitempty"`
-
 	/*Nodes - Descr: The number of nodes to run the tests with Default: 4
 */
 	Nodes interface{} `yaml:"nodes,omitempty"`
-
-	/*Verbose - Descr: Run tests in verbose mode Default: false
-*/
-	Verbose interface{} `yaml:"verbose,omitempty"`
 
 }

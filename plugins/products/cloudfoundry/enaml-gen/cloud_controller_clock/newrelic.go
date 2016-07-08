@@ -5,6 +5,18 @@ package cloud_controller_clock
 */
 type Newrelic struct {
 
+	/*LicenseKey - Descr: The api key for NewRelic Default: <nil>
+*/
+	LicenseKey interface{} `yaml:"license_key,omitempty"`
+
+	/*EnvironmentName - Descr: The environment name used by NewRelic Default: development
+*/
+	EnvironmentName interface{} `yaml:"environment_name,omitempty"`
+
+	/*TransactionTracer - Descr: NewRelic's SQL statement recording mode: [off | obfuscated | raw] Default: off
+*/
+	TransactionTracer *TransactionTracer `yaml:"transaction_tracer,omitempty"`
+
 	/*LogFilePath - Descr: The location for NewRelic to log to Default: /var/vcap/sys/log/cloud_controller_ng/newrelic
 */
 	LogFilePath interface{} `yaml:"log_file_path,omitempty"`
@@ -13,24 +25,12 @@ type Newrelic struct {
 */
 	DeveloperMode interface{} `yaml:"developer_mode,omitempty"`
 
-	/*EnvironmentName - Descr: The environment name used by NewRelic Default: development
+	/*CaptureParams - Descr: Capture and send query params to NewRelic Default: false
 */
-	EnvironmentName interface{} `yaml:"environment_name,omitempty"`
-
-	/*TransactionTracer - Descr: Enable transaction tracing in NewRelic Default: false
-*/
-	TransactionTracer *TransactionTracer `yaml:"transaction_tracer,omitempty"`
-
-	/*LicenseKey - Descr: The api key for NewRelic Default: <nil>
-*/
-	LicenseKey interface{} `yaml:"license_key,omitempty"`
+	CaptureParams interface{} `yaml:"capture_params,omitempty"`
 
 	/*MonitorMode - Descr: Activate NewRelic monitor mode Default: false
 */
 	MonitorMode interface{} `yaml:"monitor_mode,omitempty"`
-
-	/*CaptureParams - Descr: Capture and send query params to NewRelic Default: false
-*/
-	CaptureParams interface{} `yaml:"capture_params,omitempty"`
 
 }

@@ -42,7 +42,7 @@ var _ = Describe("Metron", func() {
 		It("then it should allow the user to configure the metron agent", func() {
 			job := metron.CreateJob()
 			Ω(job).ShouldNot(BeNil())
-			props, _ := job.Properties.(*metron_agent.MetronAgent)
+			props, _ := job.Properties.(*metron_agent.MetronAgentJob)
 			Ω(props.MetronAgent.Zone).Should(Equal("metronzoneguid"))
 			Ω(props.SyslogDaemonConfig.Address).Should(Equal("syslog-server"))
 			Ω(props.SyslogDaemonConfig.Port).Should(Equal(10601))

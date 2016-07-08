@@ -5,32 +5,32 @@ package cloud_controller_worker
 */
 type ResourcePool struct {
 
-	/*ResourceDirectoryKey - Descr: Directory (bucket) used store app resources.  It does not have be pre-created. Default: cc-resources
+	/*WebdavConfig - Descr: The basic auth password that CC uses to connect to the admin endpoint on webdav Default: 
 */
-	ResourceDirectoryKey interface{} `yaml:"resource_directory_key,omitempty"`
+	WebdavConfig *ResourcePoolWebdavConfig `yaml:"webdav_config,omitempty"`
 
-	/*Cdn - Descr: Key pair name for signed download URIs Default: 
+	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
 */
-	Cdn *Cdn `yaml:"cdn,omitempty"`
-
-	/*MinimumSize - Descr: Minimum size of a resource to add to the pool Default: 65536
-*/
-	MinimumSize interface{} `yaml:"minimum_size,omitempty"`
-
-	/*MaximumSize - Descr: Maximum size of a resource to add to the pool Default: 536870912
-*/
-	MaximumSize interface{} `yaml:"maximum_size,omitempty"`
+	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
 
 	/*FogConnection - Descr: Fog connection hash Default: <nil>
 */
 	FogConnection interface{} `yaml:"fog_connection,omitempty"`
 
-	/*WebdavConfig - Descr: The location of the webdav server eg: https://blobstore.com Default: 
+	/*MinimumSize - Descr: Minimum size of a resource to add to the pool Default: 65536
 */
-	WebdavConfig *WebdavConfig `yaml:"webdav_config,omitempty"`
+	MinimumSize interface{} `yaml:"minimum_size,omitempty"`
 
-	/*BlobstoreType - Descr: The type of blobstore backing to use. Valid values: ['fog', 'webdav'] Default: fog
+	/*ResourceDirectoryKey - Descr: Directory (bucket) used store app resources.  It does not have be pre-created. Default: cc-resources
 */
-	BlobstoreType interface{} `yaml:"blobstore_type,omitempty"`
+	ResourceDirectoryKey interface{} `yaml:"resource_directory_key,omitempty"`
+
+	/*Cdn - Descr: Private key for signing download URIs Default: 
+*/
+	Cdn *ResourcePoolCdn `yaml:"cdn,omitempty"`
+
+	/*MaximumSize - Descr: Maximum size of a resource to add to the pool Default: 536870912
+*/
+	MaximumSize interface{} `yaml:"maximum_size,omitempty"`
 
 }

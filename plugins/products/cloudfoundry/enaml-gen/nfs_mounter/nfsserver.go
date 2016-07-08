@@ -5,6 +5,10 @@ package nfs_mounter
 */
 type NfsServer struct {
 
+	/*IdmapdDomain - Descr: Domain name for NFS idmapd Default: localdomain
+*/
+	IdmapdDomain interface{} `yaml:"idmapd_domain,omitempty"`
+
 	/*PipefsDirectory - Descr: Pipefs directory for NFS idmapd Default: /var/lib/nfs/rpc_pipefs
 */
 	PipefsDirectory interface{} `yaml:"pipefs_directory,omitempty"`
@@ -24,9 +28,5 @@ type NfsServer struct {
 	/*Nfsv4 - Descr: bool to use NFS4 (not used in an AWS deploy, use s3 instead) Default: <nil>
 */
 	Nfsv4 interface{} `yaml:"nfsv4,omitempty"`
-
-	/*IdmapdDomain - Descr: Domain name for NFS idmapd Default: localdomain
-*/
-	IdmapdDomain interface{} `yaml:"idmapd_domain,omitempty"`
 
 }

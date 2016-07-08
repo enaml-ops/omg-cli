@@ -5,6 +5,10 @@ package cc_uploader
 */
 type CcUploader struct {
 
+	/*LogLevel - Descr: Log level Default: info
+*/
+	LogLevel interface{} `yaml:"log_level,omitempty"`
+
 	/*DropsondePort - Descr: local metron agent's port Default: 3457
 */
 	DropsondePort interface{} `yaml:"dropsonde_port,omitempty"`
@@ -20,13 +24,5 @@ type CcUploader struct {
 	/*Cc - Descr: the interval between job polling requests Default: <nil>
 */
 	Cc *Cc `yaml:"cc,omitempty"`
-
-	/*LogLevel - Descr: Log level Default: info
-*/
-	LogLevel interface{} `yaml:"log_level,omitempty"`
-
-	/*Diego - Descr: Log level Default: info
-*/
-	Diego *Diego `yaml:"diego,omitempty"`
 
 }

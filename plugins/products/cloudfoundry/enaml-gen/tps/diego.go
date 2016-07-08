@@ -5,12 +5,12 @@ package tps
 */
 type Diego struct {
 
-	/*Tps - Descr: URL of Traffic controller Default: ws://loggregator-trafficcontroller.service.cf.internal:8081
-*/
-	Tps *Tps `yaml:"tps,omitempty"`
-
 	/*Ssl - Descr: when connecting over https, ignore bad ssl certificates Default: false
 */
 	Ssl *Ssl `yaml:"ssl,omitempty"`
+
+	/*Tps - Descr: URL of Traffic controller Default: ws://loggregator-trafficcontroller.service.cf.internal:8081
+*/
+	Tps *Tps `yaml:"tps,omitempty"`
 
 }

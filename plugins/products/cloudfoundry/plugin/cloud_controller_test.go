@@ -86,7 +86,7 @@ var _ = Describe("Cloud Controller Partition", func() {
 		XIt("should account for QuotaDefinitions structure", func() {
 			igf := cloudController.ToInstanceGroup()
 			Ω(igf.Jobs[0].Name).Should(Equal("cloud_controller_worker"))
-			ccNg, typecasted := igf.Jobs[0].Properties.(*ccnglib.CloudControllerNg)
+			ccNg, typecasted := igf.Jobs[0].Properties.(*ccnglib.CloudControllerNgJob)
 			Ω(typecasted).Should(BeTrue())
 
 			_, quotaTypeCasted := ccNg.Cc.QuotaDefinitions.([]string)
@@ -95,7 +95,7 @@ var _ = Describe("Cloud Controller Partition", func() {
 		XIt("should account for InstallBuildPacks structure", func() {
 			igf := cloudController.ToInstanceGroup()
 			Ω(igf.Jobs[0].Name).Should(Equal("cloud_controller_worker"))
-			ccNg, typecasted := igf.Jobs[0].Properties.(*ccnglib.CloudControllerNg)
+			ccNg, typecasted := igf.Jobs[0].Properties.(*ccnglib.CloudControllerNgJob)
 			Ω(typecasted).Should(BeTrue())
 
 			_, bpTypecasted := ccNg.Cc.InstallBuildpacks.([]string)
@@ -104,7 +104,7 @@ var _ = Describe("Cloud Controller Partition", func() {
 		XIt("should account for SecurityGroupDefinitions structure", func() {
 			igf := cloudController.ToInstanceGroup()
 			Ω(igf.Jobs[0].Name).Should(Equal("cloud_controller_worker"))
-			ccNg, typecasted := igf.Jobs[0].Properties.(*ccnglib.CloudControllerNg)
+			ccNg, typecasted := igf.Jobs[0].Properties.(*ccnglib.CloudControllerNgJob)
 			Ω(typecasted).Should(BeTrue())
 
 			_, securityTypcasted := ccNg.Cc.SecurityGroupDefinitions.([]string)

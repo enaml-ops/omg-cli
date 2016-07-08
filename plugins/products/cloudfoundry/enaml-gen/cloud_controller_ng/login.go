@@ -9,12 +9,12 @@ type Login struct {
 */
 	Url interface{} `yaml:"url,omitempty"`
 
-	/*Protocol - Descr: http or https Default: https
-*/
-	Protocol interface{} `yaml:"protocol,omitempty"`
-
 	/*Enabled - Descr: whether use login as the authorization endpoint or not Default: true
 */
 	Enabled interface{} `yaml:"enabled,omitempty"`
+
+	/*Protocol - Descr: http or https Default: https
+*/
+	Protocol interface{} `yaml:"protocol,omitempty"`
 
 }

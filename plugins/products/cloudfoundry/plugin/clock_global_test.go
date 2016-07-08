@@ -121,7 +121,7 @@ var _ = Describe("given a clock_global partition", func() {
 			group := deploymentManifest.GetInstanceGroupByName("clock_global-partition")
 			job := group.GetJobByName("cloud_controller_clock")
 			Ω(job.Release).Should(Equal(CFReleaseName))
-			props := job.Properties.(*cloud_controller_clock.CloudControllerClock)
+			props := job.Properties.(*cloud_controller_clock.CloudControllerClockJob)
 			Ω(props.Domain).Should(Equal("sys.test.com"))
 			Ω(props.SystemDomain).Should(Equal("sys.test.com"))
 			Ω(props.SystemDomainOrganization).Should(Equal("system"))

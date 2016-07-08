@@ -5,11 +5,7 @@ package cloud_controller_ng
 */
 type Clients struct {
 
-	/*CcRouting - Descr: Used for fetching routing information from the Routing API Default: <nil>
-*/
-	CcRouting *CcRouting `yaml:"cc_routing,omitempty"`
-
-	/*CcServiceBrokerClient - Descr: (DEPRECATED) - Used for generating SSO clients for service brokers. Default: <nil>
+	/*CcServiceBrokerClient - Descr: (DEPRECATED) - Used to grant scope for SSO clients for service brokers Default: openid,cloud_controller_service_permissions.read
 */
 	CcServiceBrokerClient *CcServiceBrokerClient `yaml:"cc_service_broker_client,omitempty"`
 
@@ -20,5 +16,9 @@ type Clients struct {
 	/*CloudControllerUsernameLookup - Descr: Used for fetching usernames from UAA. Default: <nil>
 */
 	CloudControllerUsernameLookup *CloudControllerUsernameLookup `yaml:"cloud_controller_username_lookup,omitempty"`
+
+	/*CcRouting - Descr: Used for fetching routing information from the Routing API Default: <nil>
+*/
+	CcRouting *CcRouting `yaml:"cc_routing,omitempty"`
 
 }
