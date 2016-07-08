@@ -233,6 +233,7 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "apps-metrics-processing-client-secret", Usage: "client-secret for apps metrics processing"},
 
 		cli.StringFlag{Name: "errand-vm-type", Usage: "vm type to be used for running errands"},
+		cli.StringFlag{Name: "haproxy-sslpem", Usage: "SSL pem for HAProxy"},
 	}
 }
 

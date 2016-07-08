@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Consul Partition", func() {
+var _ = Describe("HaProxy Partition", func() {
 	Context("when initialized WITHOUT a complete set of arguments", func() {
 		It("then HasValidValues should return false", func() {
 			plugin := new(Plugin)
@@ -31,6 +31,9 @@ var _ = Describe("Consul Partition", func() {
 				"--haproxy-ip", "1.0.11.3",
 				"--network", "foundry-net",
 				"--haproxy-vm-type", "blah",
+				"--router-ip", "1.0.0.1",
+				"--router-ip", "1.0.0.2",
+				"--haproxy-sslpem", "blah",
 			})
 			haproxyPartition = NewHaProxyPartition(c)
 		})
@@ -82,16 +85,25 @@ var _ = Describe("Consul Partition", func() {
 			Ω(ig.Update.Serial).Should(Equal(false))
 		})
 
-		It("then it should then have 1 job", func() {
+		It("then it should then have 4 job", func() {
 			ig := haproxyPartition.ToInstanceGroup()
-			Ω(len(ig.Jobs)).Should(Equal(1))
+			Ω(len(ig.Jobs)).Should(Equal(4))
 		})
-		XIt("then it should then have haproxy job", func() {
+		It("then it should then have haproxy job", func() {
 			ig := haproxyPartition.ToInstanceGroup()
 			job := ig.GetJobByName("haproxy")
 			Ω(job).ShouldNot(BeNil())
-			props, _ := job.Properties.(*haproxy.HaProxy)
+			props, _ := job.Properties.(*haproxy.HaproxyJob)
 			Ω(props).ShouldNot(BeNil())
+			Ω(props.RequestTimeoutInSeconds).Should(Equal(180))
+			Ω(props.HaProxy).ShouldNot(BeNil())
+			Ω(props.HaProxy.SslPem).Should(Equal("blah"))
+			Ω(props.HaProxy.DisableHttp).Should(BeTrue())
+			Ω(props.Cc).ShouldNot(BeNil())
+			Ω(props.Cc.AllowAppSshAccess).Should(BeTrue())
+			Ω(props.Router).ShouldNot(BeNil())
+			Ω(props.Router.Servers).ShouldNot(BeNil())
+			Ω(props.Router.Servers.Z1).Should(ConsistOf("1.0.0.1", "1.0.0.2"))
 		})
 	})
 })

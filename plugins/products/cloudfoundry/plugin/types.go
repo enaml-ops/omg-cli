@@ -418,11 +418,16 @@ type UAAClient struct {
 
 // HAProxy -
 type HAProxy struct {
-	AZs          []string
-	StemcellName string
-	VMTypeName   string
-	NetworkName  string
-	NetworkIPs   []string
+	AZs            []string
+	StemcellName   string
+	VMTypeName     string
+	NetworkName    string
+	NetworkIPs     []string
+	ConsulAgent    *ConsulAgent
+	Metron         *Metron
+	StatsdInjector *StatsdInjector
+	SSLPem         string
+	RouterMachines []string
 }
 
 type SmokeErrand struct {
