@@ -21,6 +21,16 @@ type InstanceGrouper interface {
 // InstanceGrouperFactory is a function that creates InstanceGroupers from CLI args.
 type InstanceGrouperFactory func(*cli.Context) InstanceGrouper
 
+type acceptanceTests struct {
+	AZs            []string
+	StemcellName   string
+	NetworkName    string
+	AppsDomain     []string
+	SystemDomain   string
+	AdminPassword  string
+	SkipCertVerify bool
+}
+
 type bootstrap struct {
 	AZs           []string
 	StemcellName  string

@@ -13,7 +13,6 @@ func init() {
 	RegisterInstanceGrouperFactory(NewConsulPartition)
 	RegisterInstanceGrouperFactory(NewNatsPartition)
 	RegisterInstanceGrouperFactory(NewEtcdPartition)
-	//diego_database-partition
 	RegisterInstanceGrouperFactory(NewNFSPartition)
 	RegisterInstanceGrouperFactory(NewGoRouterPartition)
 	RegisterInstanceGrouperFactory(NewMySQLProxyPartition)
@@ -26,6 +25,7 @@ func init() {
 	RegisterInstanceGrouperFactory(NewDiegoBrainPartition)
 	RegisterInstanceGrouperFactory(NewBootstrapPartition)
 	RegisterInstanceGrouperFactory(NewDiegoDatabasePartition)
+	RegisterInstanceGrouperFactory(NewAcceptanceTestsPartition)
 	//diego_cell-partition
 	//doppler-partition
 	//loggregator_trafficcontroller-partition
