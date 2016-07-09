@@ -1,4 +1,4 @@
-package vault
+package main
 
 import (
 	"github.com/enaml-ops/omg-cli/pluginlib/product"
