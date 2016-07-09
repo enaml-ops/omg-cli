@@ -7,6 +7,8 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/pluginlib/product"
 	"github.com/enaml-ops/omg-cli/pluginlib/util"
+	"github.com/enaml-ops/omg-cli/plugins/products/vault/enaml-gen/consul"
+	vaultlib "github.com/enaml-ops/omg-cli/plugins/products/vault/enaml-gen/vault"
 	"github.com/xchapter7x/lo"
 )
 
@@ -24,14 +26,25 @@ type jobBucket struct {
 	JobType   int
 	Instances int
 }
-type Plugin struct{}
+type Plugin struct {
+	NetworkName     string
+	IPs             []string
+	VMTypeName      string
+	DiskTypeName    string
+	AZs             []string
+	StemcellName    string
+	StemcellURL     string
+	StemcellVersion string
+	StemcellSHA     string
+}
 
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{
 		cli.StringSliceFlag{Name: "ip", Usage: "multiple static ips for each redis leader vm"},
-		cli.StringFlag{Name: "disk-size", Value: "4096", Usage: "size of disk on VMs"},
-		cli.StringFlag{Name: "network-name", Usage: "name of your target network"},
-		cli.StringFlag{Name: "vm-size", Usage: "name of your desired vm size"},
+		cli.StringSliceFlag{Name: "az", Usage: "list of AZ names to use"},
+		cli.StringFlag{Name: "network", Usage: "the name of the network to use"},
+		cli.StringFlag{Name: "vm-type", Usage: "name of your desired vm type"},
+		cli.StringFlag{Name: "disk-type", Usage: "name of your desired disk type"},
 		cli.StringFlag{Name: "stemcell-url", Usage: "the url of the stemcell you wish to use"},
 		cli.StringFlag{Name: "stemcell-ver", Usage: "the version number of the stemcell you wish to use"},
 		cli.StringFlag{Name: "stemcell-sha", Usage: "the sha of the stemcell you will use"},
@@ -46,52 +59,115 @@ func (s *Plugin) GetMeta() product.Meta {
 }
 
 func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
+	var err error
 	c := pluginutil.NewContext(args, s.GetFlags())
 
-	if err := s.flagValidation(c); err != nil {
+	s.IPs = c.StringSlice("ip")
+	s.AZs = c.StringSlice("az")
+	s.NetworkName = c.String("network")
+	s.StemcellName = c.String("stemcell-name")
+	s.StemcellVersion = c.String("stemcell-ver")
+	s.StemcellSHA = c.String("stemcell-sha")
+	s.StemcellURL = c.String("stemcell-url")
+	s.VMTypeName = c.String("vm-type")
+	s.DiskTypeName = c.String("disk-type")
+
+	if err = s.flagValidation(); err != nil {
 		lo.G.Error("invalid arguments: ", err)
 		lo.G.Panic("exiting due to invalid args")
 	}
 
-	if err := s.cloudconfigValidation(c, enaml.NewCloudConfigManifest(cloudConfig)); err != nil {
+	if err = s.cloudconfigValidation(enaml.NewCloudConfigManifest(cloudConfig)); err != nil {
 		lo.G.Error("invalid settings for cloud config on target bosh: ", err)
 		lo.G.Panic("your deployment is not compatible with your cloud config, exiting")
 	}
 	lo.G.Debug("context", c)
 	var dm = new(enaml.DeploymentManifest)
-	dm.SetName("enaml-vault")
+	dm.SetName("vault")
 	dm.AddRemoteRelease("vault", BoshVaultReleaseVer, BoshVaultReleaseURL, BoshVaultReleaseSHA)
 	dm.AddRemoteRelease("consul", BoshConsulReleaseVer, BoshConsulReleaseURL, BoshConsulReleaseSHA)
-	dm.AddRemoteStemcell(c.String("stemcell-name"), c.String("stemcell-name"), c.String("stemcell-ver"), c.String("stemcell-url"), c.String("stemcell-sha"))
-	dm.AddJob(NewVaultJob("vault", c.String("network-name"), c.String("disk-size"), c.String("vm-size"), c.StringSlice("ip")))
+	dm.AddRemoteStemcell(s.StemcellName, s.StemcellName, s.StemcellVersion, s.StemcellURL, s.StemcellSHA)
+
+	dm.AddInstanceGroup(s.NewVaultInstanceGroup())
+	dm.Update = enaml.Update{
+		MaxInFlight:     1,
+		UpdateWatchTime: "30000-300000",
+		CanaryWatchTime: "30000-300000",
+		Serial:          false,
+		Canaries:        1,
+	}
 	return dm.Bytes()
 }
 
-func (s *Plugin) cloudconfigValidation(c *cli.Context, cloudConfig *enaml.CloudConfigManifest) (err error) {
+func (s *Plugin) NewVaultInstanceGroup() (ig *enaml.InstanceGroup) {
+	ig = &enaml.InstanceGroup{
+		Name:               "vault",
+		Instances:          len(s.IPs),
+		VMType:             s.VMTypeName,
+		AZs:                s.AZs,
+		Stemcell:           s.StemcellName,
+		PersistentDiskType: s.DiskTypeName,
+		Jobs: []enaml.InstanceJob{
+			s.createVaultJob(),
+			s.createConsulJob(),
+		},
+		Networks: []enaml.Network{
+			enaml.Network{Name: s.NetworkName, StaticIPs: s.IPs},
+		},
+		Update: enaml.Update{
+			MaxInFlight: 1,
+		},
+	}
+	return
+}
+
+func (s *Plugin) createVaultJob() enaml.InstanceJob {
+	return enaml.InstanceJob{
+		Name:    "vault",
+		Release: "vault",
+		Properties: &vaultlib.VaultJob{
+			Vault: &vaultlib.Vault{
+				Backend: &vaultlib.Backend{
+					UseConsul: true,
+				},
+			},
+		},
+	}
+}
+func (s *Plugin) createConsulJob() enaml.InstanceJob {
+	return enaml.InstanceJob{
+		Name:    "consul",
+		Release: "consul",
+		Properties: &consul.ConsulJob{
+			Consul: &consul.Consul{
+				JoinHosts: s.IPs,
+			},
+		},
+	}
+}
+
+func (s *Plugin) cloudconfigValidation(cloudConfig *enaml.CloudConfigManifest) (err error) {
 	lo.G.Debug("running cloud config validation")
-	var vmsize = c.String("vm-size")
-	var disksize = c.String("disk-size")
-	var netname = c.String("network-name")
 
 	for _, vmtype := range cloudConfig.VMTypes {
-		err = fmt.Errorf("vm size %s does not exist in cloud config. options are: %v", vmsize, cloudConfig.VMTypes)
-		if vmtype.Name == vmsize {
+		err = fmt.Errorf("vm size %s does not exist in cloud config. options are: %v", s.VMTypeName, cloudConfig.VMTypes)
+		if vmtype.Name == s.VMTypeName {
 			err = nil
 			break
 		}
 	}
 
 	for _, disktype := range cloudConfig.DiskTypes {
-		err = fmt.Errorf("disk size %s does not exist in cloud config. options are: %v", disksize, cloudConfig.DiskTypes)
-		if disktype.Name == disksize {
+		err = fmt.Errorf("disk size %s does not exist in cloud config. options are: %v", s.DiskTypeName, cloudConfig.DiskTypes)
+		if disktype.Name == s.DiskTypeName {
 			err = nil
 			break
 		}
 	}
 
 	for _, net := range cloudConfig.Networks {
-		err = fmt.Errorf("network %s does not exist in cloud config. options are: %v", netname, cloudConfig.Networks)
-		if net.(map[interface{}]interface{})["name"] == netname {
+		err = fmt.Errorf("network %s does not exist in cloud config. options are: %v", s.NetworkName, cloudConfig.Networks)
+		if net.(map[interface{}]interface{})["name"] == s.NetworkName {
 			err = nil
 			break
 		}
@@ -111,65 +187,37 @@ func (s *Plugin) cloudconfigValidation(c *cli.Context, cloudConfig *enaml.CloudC
 	return
 }
 
-func (s *Plugin) flagValidation(c *cli.Context) (err error) {
+func (s *Plugin) flagValidation() (err error) {
 	lo.G.Debug("validating given flags")
 
-	if len(c.StringSlice("ip")) <= 0 {
+	if len(s.IPs) <= 0 {
 		err = fmt.Errorf("no `ip` given")
 	}
+	if len(s.AZs) <= 0 {
+		err = fmt.Errorf("no `az` given")
+	}
 
-	if len(c.String("network-name")) <= 0 {
+	if s.NetworkName == "" {
 		err = fmt.Errorf("no `network-name` given")
 	}
 
-	if len(c.String("vm-size")) <= 0 {
-		err = fmt.Errorf("no `vm-size` given")
+	if s.VMTypeName == "" {
+		err = fmt.Errorf("no `vm-type` given")
+	}
+	if s.DiskTypeName == "" {
+		err = fmt.Errorf("no `disk-type` given")
 	}
 
-	if len(c.String("stemcell-url")) <= 0 {
+	if s.StemcellURL == "" {
 		err = fmt.Errorf("no `stemcell-url` given")
 	}
 
-	if len(c.String("stemcell-ver")) <= 0 {
+	if s.StemcellVersion == "" {
 		err = fmt.Errorf("no `stemcell-ver` given")
 	}
 
-	if len(c.String("stemcell-sha")) <= 0 {
+	if s.StemcellSHA == "" {
 		err = fmt.Errorf("no `stemcell-sha` given")
 	}
-	return
-}
-
-func NewVaultJob(name, networkName, disk, vmSize string, ips []string) (job enaml.Job) {
-	network := enaml.Network{
-		Name:      networkName,
-		StaticIPs: ips,
-	}
-	properties := enaml.Properties{
-		"consul": map[string]interface{}{
-			"join_hosts": ips,
-		},
-		"vault": map[string]interface{}{
-			"backend": map[string]interface{}{
-				"use_consul": true,
-			},
-		},
-	}
-
-	job = enaml.Job{
-		Name:       name,
-		Properties: properties,
-		Instances:  len(ips),
-		Networks: []enaml.Network{
-			network,
-		},
-		Templates: []enaml.Template{
-			enaml.Template{Name: "vault", Release: "vault"},
-			enaml.Template{Name: "consul", Release: "consul"},
-		},
-		PersistentDisk: disk,
-		ResourcePool:   vmSize,
-	}
-	lo.G.Debug("job", job)
 	return
 }
