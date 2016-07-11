@@ -1,6 +1,8 @@
 package cloudfoundry
 
 import (
+	"strings"
+
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/pluginlib/product"
@@ -43,202 +45,236 @@ func init() {
 func (s *Plugin) GetFlags() (flags []cli.Flag) {
 	return []cli.Flag{
 		// shared for all instance groups:
-		cli.StringFlag{Name: "stemcell-name", Usage: "the name of your desired stemcell"},
-		cli.StringSliceFlag{Name: "az", Usage: "list of AZ names to use"},
-		cli.StringFlag{Name: "network", Usage: "the name of the network to use"},
-		cli.StringFlag{Name: "system-domain", Usage: "System Domain"},
-		cli.StringSliceFlag{Name: "app-domain", Usage: "Applications Domain"},
-		cli.BoolFlag{Name: "allow-app-ssh-access", Usage: "Allow SSH access for CF applications"},
+		createStringFlag("stemcell-name", "the name of your desired stemcell"),
+		createStringSliceFlag("az", "list of AZ names to use"),
+		createStringFlag("network", "the name of the network to use"),
+		createStringFlag("system-domain", "System Domain"),
+		createStringSliceFlag("app-domain", "Applications Domain"),
+		createBoolFlag("allow-app-ssh-access", "Allow SSH access for CF applications"),
 
-		cli.StringSliceFlag{Name: "router-ip", Usage: "a list of the router ips you wish to use"},
-		cli.StringFlag{Name: "router-vm-type", Usage: "the name of your desired vm size"},
-		cli.StringFlag{Name: "router-ssl-cert", Usage: "the go router ssl cert, or a filename preceded by '@'"},
-		cli.StringFlag{Name: "router-ssl-key", Usage: "the go router ssl key, or a filename preceded by '@'"},
-		cli.StringFlag{Name: "router-user", Value: "router_status", Usage: "the username of the go-routers"},
-		cli.StringFlag{Name: "router-pass", Usage: "the password of the go-routers"},
-		cli.BoolFlag{Name: "router-enable-ssl", Usage: "enable or disable ssl on your routers"},
+		createStringSliceFlag("router-ip", "a list of the router ips you wish to use"),
+		createStringFlag("router-vm-type", "the name of your desired vm size"),
+		createStringFlag("router-ssl-cert", "the go router ssl cert, or a filename preceded by '@'"),
+		createStringFlag("router-ssl-key", "the go router ssl key, or a filename preceded by '@'"),
+		createStringFlag("router-user", "the username of the go-routers", "router_status"),
+		createStringFlag("router-pass", "the password of the go-routers"),
+		createBoolFlag("router-enable-ssl", "enable or disable ssl on your routers"),
 
-		cli.StringSliceFlag{Name: "haproxy-ip", Usage: "a list of the haproxy ips you wish to use"},
-		cli.StringFlag{Name: "haproxy-vm-type", Usage: "the name of your desired vm size"},
+		createStringSliceFlag("haproxy-ip", "a list of the haproxy ips you wish to use"),
+		createStringFlag("haproxy-vm-type", "the name of your desired vm size"),
 
-		cli.StringFlag{Name: "nats-vm-type", Usage: "the name of your desired vm size for NATS"},
-		cli.StringFlag{Name: "nats-user", Value: "nats", Usage: "username for your nats pool"},
-		cli.StringFlag{Name: "nats-pass", Value: "nats-password", Usage: "password for your nats pool"},
-		cli.IntFlag{Name: "nats-port", Usage: "the port for the NATS server to listen on"},
-		cli.StringSliceFlag{Name: "nats-machine-ip", Usage: "ip of a nats node vm"},
+		createStringFlag("nats-vm-type", "the name of your desired vm size for NATS"),
+		createStringFlag("nats-user", "username for your nats pool", "nats"),
+		createStringFlag("nats-pass", "password for your nats pool", "nats-password"),
+		createIntFlag("nats-port", "the port for the NATS server to listen on"),
+		createStringSliceFlag("nats-machine-ip", "ip of a nats node vm"),
 
-		cli.StringFlag{Name: "metron-zone", Usage: "zone guid for the metron agent"},
-		cli.StringFlag{Name: "metron-secret", Usage: "shared secret for the metron agent endpoint"},
-		cli.IntFlag{Name: "metron-port", Usage: "local metron agent's port"},
+		createStringFlag("metron-zone", "zone guid for the metron agent"),
+		createStringFlag("metron-secret", "shared secret for the metron agent endpoint"),
+		createIntFlag("metron-port", "local metron agent's port"),
 
-		cli.StringSliceFlag{Name: "consul-ip", Usage: "a list of the consul ips you wish to use"},
-		cli.StringFlag{Name: "consul-vm-type", Usage: "the name of your desired vm size for consul"},
-		cli.StringSliceFlag{Name: "consul-encryption-key", Usage: "encryption key for consul"},
-		cli.StringFlag{Name: "consul-ca-cert", Usage: "ca cert for consul, or a filename preceded by '@'"},
-		cli.StringFlag{Name: "consul-agent-cert", Usage: "agent cert for consul, or a filename preceded by '@'"},
-		cli.StringFlag{Name: "consul-agent-key", Usage: "agent key for consul, or a filename preceded by '@'"},
-		cli.StringFlag{Name: "consul-server-cert", Usage: "server cert for consul, or a filename preceded by '@'"},
-		cli.StringFlag{Name: "consul-server-key", Usage: "server key for consul, or a filename preceded by '@'"},
+		createStringSliceFlag("consul-ip", "a list of the consul ips you wish to use"),
+		createStringFlag("consul-vm-type", "the name of your desired vm size for consul"),
+		createStringSliceFlag("consul-encryption-key", "encryption key for consul"),
+		createStringFlag("consul-ca-cert", "ca cert for consul, or a filename preceded by '@'"),
+		createStringFlag("consul-agent-cert", "agent cert for consul, or a filename preceded by '@'"),
+		createStringFlag("consul-agent-key", "agent key for consul, or a filename preceded by '@'"),
+		createStringFlag("consul-server-cert", "server cert for consul, or a filename preceded by '@'"),
+		createStringFlag("consul-server-key", "server key for consul, or a filename preceded by '@'"),
 
-		cli.StringFlag{Name: "syslog-address", Usage: "address of syslog server"},
-		cli.IntFlag{Name: "syslog-port", Usage: "port of syslog server"},
-		cli.StringFlag{Name: "syslog-transport", Usage: "transport to syslog server"},
+		createStringFlag("syslog-address", "address of syslog server"),
+		createIntFlag("syslog-port", "port of syslog server"),
+		createStringFlag("syslog-transport", "transport to syslog server"),
 
-		cli.StringSliceFlag{Name: "etcd-machine-ip", Usage: "ip of a etcd node vm"},
-		cli.StringFlag{Name: "etcd-vm-type", Usage: "the name of your desired vm size for etcd"},
-		cli.StringFlag{Name: "etcd-disk-type", Usage: "the name of your desired persistent disk type for etcd"},
+		createStringSliceFlag("etcd-machine-ip", "ip of a etcd node vm"),
+		createStringFlag("etcd-vm-type", "the name of your desired vm size for etcd"),
+		createStringFlag("etcd-disk-type", "the name of your desired persistent disk type for etcd"),
 
-		cli.StringSliceFlag{Name: "nfs-ip", Usage: "a list of the nfs ips you wish to use"},
-		cli.StringFlag{Name: "nfs-vm-type", Usage: "the name of your desired vm size for nfs"},
-		cli.StringFlag{Name: "nfs-disk-type", Usage: "the name of your desired persistent disk type for nfs"},
-		cli.StringFlag{Name: "nfs-server-address", Usage: "NFS Server address"},
-		cli.StringFlag{Name: "nfs-share-path", Usage: "NFS Share Path"},
-		cli.StringSliceFlag{Name: "nfs-allow-from-network-cidr", Usage: "the network cidr you wish to allow connections to nfs from"},
+		createStringSliceFlag("nfs-ip", "a list of the nfs ips you wish to use"),
+		createStringFlag("nfs-vm-type", "the name of your desired vm size for nfs"),
+		createStringFlag("nfs-disk-type", "the name of your desired persistent disk type for nfs"),
+		createStringFlag("nfs-server-address", "NFS Server address"),
+		createStringFlag("nfs-share-path", "NFS Share Path"),
+		createStringSliceFlag("nfs-allow-from-network-cidr", "the network cidr you wish to allow connections to nfs from"),
 
 		//Mysql Flags
-		cli.StringSliceFlag{Name: "mysql-ip", Usage: "a list of the mysql ips you wish to use"},
-		cli.StringFlag{Name: "mysql-vm-type", Usage: "the name of your desired vm size for mysql"},
-		cli.StringFlag{Name: "mysql-disk-type", Usage: "the name of your desired persistent disk type for mysql"},
-		cli.StringFlag{Name: "mysql-admin-password", Usage: "admin password for mysql"},
-		cli.StringFlag{Name: "mysql-bootstrap-username", Usage: "bootstrap username for mysql"},
-		cli.StringFlag{Name: "mysql-bootstrap-password", Usage: "bootstrap password for mysql"},
+		createStringSliceFlag("mysql-ip", "a list of the mysql ips you wish to use"),
+		createStringFlag("mysql-vm-type", "the name of your desired vm size for mysql"),
+		createStringFlag("mysql-disk-type", "the name of your desired persistent disk type for mysql"),
+		createStringFlag("mysql-admin-password", "admin password for mysql"),
+		createStringFlag("mysql-bootstrap-username", "bootstrap username for mysql"),
+		createStringFlag("mysql-bootstrap-password", "bootstrap password for mysql"),
 
 		//MySQL proxy flags
-		cli.StringSliceFlag{Name: "mysql-proxy-ip", Usage: "a list of -mysql proxy ips you wish to use"},
-		cli.StringFlag{Name: "mysql-proxy-vm-type", Usage: "the name of your desired vm size for mysql proxy"},
-		cli.StringFlag{Name: "mysql-proxy-external-host", Usage: "Host name of MySQL proxy"},
-		cli.StringFlag{Name: "mysql-proxy-api-username", Usage: "Proxy API user name"},
-		cli.StringFlag{Name: "mysql-proxy-api-password", Usage: "Proxy API password"},
+		createStringSliceFlag("mysql-proxy-ip", "a list of -mysql proxy ips you wish to use"),
+		createStringFlag("mysql-proxy-vm-type", "the name of your desired vm size for mysql proxy"),
+		createStringFlag("mysql-proxy-external-host", "Host name of MySQL proxy"),
+		createStringFlag("mysql-proxy-api-username", "Proxy API user name"),
+		createStringFlag("mysql-proxy-api-password", "Proxy API password"),
 
 		//CC Worker Partition Flags
-		cli.StringFlag{Name: "cc-worker-vm-type", Usage: "the name of the desired vm type for cc worker"},
-		cli.StringFlag{Name: "cc-staging-upload-user", Usage: "user name for staging upload"},
-		cli.StringFlag{Name: "cc-staging-upload-password", Usage: "password for staging upload"},
-		cli.StringFlag{Name: "cc-bulk-api-user", Usage: "user name for bulk api calls"},
-		cli.StringFlag{Name: "cc-bulk-api-password", Usage: "password for bulk api calls"},
-		cli.IntFlag{Name: "cc-bulk-batch-size", Usage: "number of apps to fetch at once from bulk API"},
-		cli.StringFlag{Name: "cc-db-encryption-key", Usage: "Cloud Controller DB encryption key"},
-		cli.StringFlag{Name: "cc-internal-api-user", Usage: "user name for Internal API calls"},
-		cli.StringFlag{Name: "cc-internal-api-password", Usage: "password for Internal API calls"},
-		cli.IntFlag{Name: "cc-uploader-poll-interval", Usage: "CC uploader job polling interval, in seconds"},
-		cli.IntFlag{Name: "cc-fetch-timeout", Usage: "how long to wait for completion of requests to CC, in seconds"},
-		cli.StringFlag{Name: "cc-vm-type", Usage: "Cloud Controller VM Type"},
-		cli.StringFlag{Name: "host-key-fingerprint", Usage: "Host Key Fingerprint"},
-		cli.StringFlag{Name: "support-address", Usage: "Support URL"},
-		cli.StringFlag{Name: "min-cli-version", Usage: "Min CF CLI Version supported"},
+		createStringFlag("cc-worker-vm-type", "the name of the desired vm type for cc worker"),
+		createStringFlag("cc-staging-upload-user", "user name for staging upload"),
+		createStringFlag("cc-staging-upload-password", "password for staging upload"),
+		createStringFlag("cc-bulk-api-user", "user name for bulk api calls"),
+		createStringFlag("cc-bulk-api-password", "password for bulk api calls"),
+		createIntFlag("cc-bulk-batch-size", "number of apps to fetch at once from bulk API"),
+		createStringFlag("cc-db-encryption-key", "Cloud Controller DB encryption key"),
+		createStringFlag("cc-internal-api-user", "user name for Internal API calls"),
+		createStringFlag("cc-internal-api-password", "password for Internal API calls"),
+		createIntFlag("cc-uploader-poll-interval", "CC uploader job polling interval, in seconds"),
+		createIntFlag("cc-fetch-timeout", "how long to wait for completion of requests to CC, in seconds"),
+		createStringFlag("cc-vm-type", "Cloud Controller VM Type"),
+		createStringFlag("host-key-fingerprint", "Host Key Fingerprint"),
+		createStringFlag("support-address", "Support URL"),
+		createStringFlag("min-cli-version", "Min CF CLI Version supported"),
 
-		cli.StringFlag{Name: "db-uaa-username", Usage: "uaa db username"},
-		cli.StringFlag{Name: "db-uaa-password", Usage: "uaa db password"},
-		cli.StringFlag{Name: "db-ccdb-username", Usage: "ccdb db username"},
-		cli.StringFlag{Name: "db-ccdb-password", Usage: "ccdb db password"},
-		cli.StringFlag{Name: "db-console-username", Usage: "console db username"},
-		cli.StringFlag{Name: "db-console-password", Usage: "console db password"},
+		createStringFlag("db-uaa-username", "uaa db username"),
+		createStringFlag("db-uaa-password", "uaa db password"),
+		createStringFlag("db-ccdb-username", "ccdb db username"),
+		createStringFlag("db-ccdb-password", "ccdb db password"),
+		createStringFlag("db-console-username", "console db username"),
+		createStringFlag("db-console-password", "console db password"),
 
 		//Diego Database
-		cli.StringSliceFlag{Name: "diego-db-ip", Usage: "a list of static IPs for the diego database partitions"},
-		cli.StringFlag{Name: "diego-db-vm-type", Usage: "the name of the desired vm type for the diego db"},
-		cli.StringFlag{Name: "diego-db-disk-type", Usage: "the name of your desired persistent disk type for the diego db"},
-		cli.StringFlag{Name: "diego-db-passphrase", Usage: "the passphrase for your database"},
-		cli.StringFlag{Name: "bbs-server-cert", Usage: "BBS server SSL cert (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "bbs-server-key", Usage: "BBS server SSL key (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "etcd-server-key", Usage: "etcd server SSL key (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "etcd-server-cert", Usage: "etcd server cert  (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "etcd-client-key", Usage: "etcd client SSL key (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "etcd-client-cert", Usage: "etcd client SSL cert (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "etcd-peer-key", Usage: "etcd peer SSL key (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "etcd-peer-cert", Usage: "etcd peer SSL cert (or a file containing it: file format `@filepath`)"},
+		createStringSliceFlag("diego-db-ip", "a list of static IPs for the diego database partitions"),
+		createStringFlag("diego-db-vm-type", "the name of the desired vm type for the diego db"),
+		createStringFlag("diego-db-disk-type", "the name of your desired persistent disk type for the diego db"),
+		createStringFlag("diego-db-passphrase", "the passphrase for your database"),
+		createStringFlag("bbs-server-cert", "BBS server SSL cert (or a file containing it: file format `@filepath`)"),
+		createStringFlag("bbs-server-key", "BBS server SSL key (or a file containing it: file format `@filepath`)"),
+		createStringFlag("etcd-server-key", "etcd server SSL key (or a file containing it: file format `@filepath`)"),
+		createStringFlag("etcd-server-cert", "etcd server cert  (or a file containing it: file format `@filepath`)"),
+		createStringFlag("etcd-client-key", "etcd client SSL key (or a file containing it: file format `@filepath`)"),
+		createStringFlag("etcd-client-cert", "etcd client SSL cert (or a file containing it: file format `@filepath`)"),
+		createStringFlag("etcd-peer-key", "etcd peer SSL key (or a file containing it: file format `@filepath`)"),
+		createStringFlag("etcd-peer-cert", "etcd peer SSL cert (or a file containing it: file format `@filepath`)"),
 
 		// Diego Cell
-		cli.StringSliceFlag{Name: "diego-cell-ip", Usage: "a list of static IPs for the diego cell"},
-		cli.StringFlag{Name: "diego-cell-vm-type", Usage: "the name of the desired vm type for the diego cell"},
-		cli.StringFlag{Name: "diego-cell-disk-type", Usage: "the name of your desired persistent disk type for the diego cell"},
+		createStringSliceFlag("diego-cell-ip", "a list of static IPs for the diego cell"),
+		createStringFlag("diego-cell-vm-type", "the name of the desired vm type for the diego cell"),
+		createStringFlag("diego-cell-disk-type", "the name of your desired persistent disk type for the diego cell"),
 
 		// Diego Brain
-		cli.StringSliceFlag{Name: "diego-brain-ip", Usage: "a list of static IPs for the diego brain"},
-		cli.StringFlag{Name: "diego-brain-vm-type", Usage: "the name of the desired vm type for the diego brain"},
-		cli.StringFlag{Name: "diego-brain-disk-type", Usage: "the name of your desired persistent disk type for the diego brain"},
+		createStringSliceFlag("diego-brain-ip", "a list of static IPs for the diego brain"),
+		createStringFlag("diego-brain-vm-type", "the name of the desired vm type for the diego brain"),
+		createStringFlag("diego-brain-disk-type", "the name of your desired persistent disk type for the diego brain"),
 
-		cli.StringFlag{Name: "bbs-ca-cert", Usage: "BBS CA SSL cert (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "bbs-client-cert", Usage: "BBS client SSL cert (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "bbs-client-key", Usage: "BBS client SSL key (or a file containing it: file format `@filepath`)"},
-		cli.StringFlag{Name: "bbs-api", Usage: "location of the bbs api"},
-		cli.BoolTFlag{Name: "bbs-require-ssl", Usage: "enable SSL for all communications with the BBS"},
+		createStringFlag("bbs-ca-cert", "BBS CA SSL cert (or a file containing it: file format `@filepath`)"),
+		createStringFlag("bbs-client-cert", "BBS client SSL cert (or a file containing it: file format `@filepath`)"),
+		createStringFlag("bbs-client-key", "BBS client SSL key (or a file containing it: file format `@filepath`)"),
+		createStringFlag("bbs-api", "location of the bbs api"),
+		createBoolTFlag("bbs-require-ssl", "enable SSL for all communications with the BBS"),
 
-		cli.BoolTFlag{Name: "skip-cert-verify", Usage: "ignore bad SSL certificates when connecting over HTTPS"},
+		createBoolTFlag("skip-cert-verify", "ignore bad SSL certificates when connecting over HTTPS"),
 
-		cli.StringFlag{Name: "fs-listen-addr", Usage: "address of interface on which to serve files"},
-		cli.StringFlag{Name: "fs-static-dir", Usage: "fully qualified path to the doc root for the file server's static files"},
-		cli.StringFlag{Name: "fs-debug-addr", Usage: "address at which to serve debug info"},
-		cli.StringFlag{Name: "fs-log-level", Usage: "file server log level"},
+		createStringFlag("fs-listen-addr", "address of interface on which to serve files"),
+		createStringFlag("fs-static-dir", "fully qualified path to the doc root for the file server's static files"),
+		createStringFlag("fs-debug-addr", "address at which to serve debug info"),
+		createStringFlag("fs-log-level", "file server log level"),
 
-		cli.IntFlag{Name: "cc-external-port", Usage: "external port of the Cloud Controller API"},
-		cli.StringFlag{Name: "ssh-proxy-uaa-secret", Usage: "the OAuth client secret used to authenticate the SSH proxy"},
-		cli.StringFlag{Name: "traffic-controller-url", Usage: "the URL of the traffic controller"},
-		cli.StringFlag{Name: "clock-global-vm-type", Usage: "the name of the desired vm type for the clock global partition"},
+		createIntFlag("cc-external-port", "external port of the Cloud Controller API"),
+		createStringFlag("ssh-proxy-uaa-secret", "the OAuth client secret used to authenticate the SSH proxy"),
+		createStringFlag("traffic-controller-url", "the URL of the traffic controller"),
+		createStringFlag("clock-global-vm-type", "the name of the desired vm type for the clock global partition"),
 
 		//Doppler
-		cli.StringSliceFlag{Name: "doppler-ip", Usage: "a list of the doppler ips you wish to use"},
-		cli.StringFlag{Name: "doppler-vm-type", Usage: "the name of your desired vm size for doppler"},
-		cli.StringFlag{Name: "doppler-zone", Usage: "the name zone for doppler"},
-		cli.IntFlag{Name: "doppler-drain-buffer-size", Usage: "message drain buffer size"},
-		cli.StringFlag{Name: "doppler-shared-secret", Usage: "doppler shared secret"},
+		createStringSliceFlag("doppler-ip", "a list of the doppler ips you wish to use"),
+		createStringFlag("doppler-vm-type", "the name of your desired vm size for doppler"),
+		createStringFlag("doppler-zone", "the name zone for doppler"),
+		createIntFlag("doppler-drain-buffer-size", "message drain buffer size"),
+		createStringFlag("doppler-shared-secret", "doppler shared secret"),
 
 		//Loggregator Traffic Controller
 		cli.StringSliceFlag{Name: "loggregator-traffic-controller-ip", Usage: "a list of loggregator traffic controller IPs"},
 		cli.StringFlag{Name: "loggregator-traffic-controller-vmtype", Usage: "the name of your desired vm size for the loggregator traffic controller"},
 
 		//UAA
-		cli.StringFlag{Name: "uaa-vm-type", Usage: "the name of your desired vm size for uaa"},
-		cli.IntFlag{Name: "uaa-instances", Usage: "the number of your desired vms for uaa"},
+		createStringFlag("uaa-vm-type", "the name of your desired vm size for uaa"),
+		createIntFlag("uaa-instances", "the number of your desired vms for uaa"),
 
-		cli.StringFlag{Name: "uaa-company-name", Usage: "name of company for UAA branding"},
-		cli.StringFlag{Name: "uaa-product-logo", Usage: "product logo for UAA branding"},
-		cli.StringFlag{Name: "uaa-square-logo", Usage: "square logo for UAA branding"},
-		cli.StringFlag{Name: "uaa-footer-legal-txt", Usage: "legal text for UAA branding"},
-		cli.BoolTFlag{Name: "uaa-enable-selfservice-links", Usage: "enable self service links"},
-		cli.BoolTFlag{Name: "uaa-signups-enabled", Usage: "enable signups"},
-		cli.StringFlag{Name: "uaa-login-protocol", Usage: "uaa login protocol, default https"},
-		cli.StringFlag{Name: "uaa-saml-service-provider-key", Usage: "saml service provider key for uaa"},
-		cli.StringFlag{Name: "uaa-saml-service-provider-certificate", Usage: "saml service provider certificate for uaa"},
-		cli.StringFlag{Name: "uaa-jwt-signing-key", Usage: "signing key for jwt used by UAA"},
-		cli.StringFlag{Name: "uaa-jwt-verification-key", Usage: "verification key for jwt used by UAA"},
-		cli.BoolFlag{Name: "uaa-ldap-enabled", Usage: "is ldap enabled for UAA"},
-		cli.StringFlag{Name: "uaa-ldap-url", Usage: "url for ldap server"},
-		cli.StringFlag{Name: "uaa-ldap-user-dn", Usage: "userDN to bind to ldap with"},
-		cli.StringFlag{Name: "uaa-ldap-user-password", Usage: "bind password for ldap user"},
-		cli.StringFlag{Name: "uaa-ldap-search-filter", Usage: "search filter for users"},
-		cli.StringFlag{Name: "uaa-ldap-search-base", Usage: "search base for users"},
-		cli.StringFlag{Name: "uaa-ldap-mail-attributename", Usage: "attribute name for mail"},
-		cli.StringFlag{Name: "uaa-admin-secret", Usage: "admin account client secret"},
+		createStringFlag("uaa-company-name", "name of company for UAA branding"),
+		createStringFlag("uaa-product-logo", "product logo for UAA branding"),
+		createStringFlag("uaa-square-logo", "square logo for UAA branding"),
+		createStringFlag("uaa-footer-legal-txt", "legal text for UAA branding"),
+		createBoolTFlag("uaa-enable-selfservice-links", "enable self service links"),
+		createBoolTFlag("uaa-signups-enabled", "enable signups"),
+		createStringFlag("uaa-login-protocol", "uaa login protocol, default https"),
+		createStringFlag("uaa-saml-service-provider-key", "saml service provider key for uaa"),
+		createStringFlag("uaa-saml-service-provider-certificate", "saml service provider certificate for uaa"),
+		createStringFlag("uaa-jwt-signing-key", "signing key for jwt used by UAA"),
+		createStringFlag("uaa-jwt-verification-key", "verification key for jwt used by UAA"),
+		createBoolFlag("uaa-ldap-enabled", "is ldap enabled for UAA"),
+		createStringFlag("uaa-ldap-url", "url for ldap server"),
+		createStringFlag("uaa-ldap-user-dn", "userDN to bind to ldap with"),
+		createStringFlag("uaa-ldap-user-password", "bind password for ldap user"),
+		createStringFlag("uaa-ldap-search-filter", "search filter for users"),
+		createStringFlag("uaa-ldap-search-base", "search base for users"),
+		createStringFlag("uaa-ldap-mail-attributename", "attribute name for mail"),
+		createStringFlag("uaa-admin-secret", "admin account client secret"),
 
 		//User accounts
-		cli.StringFlag{Name: "admin-password", Usage: "password for admin account"},
-		cli.StringFlag{Name: "push-apps-manager-password", Usage: "password for push_apps_manager account"},
-		cli.StringFlag{Name: "smoke-tests-password", Usage: "password for smoke_tests account"},
-		cli.StringFlag{Name: "system-services-password", Usage: "password for system_services account"},
-		cli.StringFlag{Name: "system-verification-password", Usage: "password for system_verification account"},
+		createStringFlag("admin-password", "password for admin account"),
+		createStringFlag("push-apps-manager-password", "password for push_apps_manager account"),
+		createStringFlag("smoke-tests-password", "password for smoke_tests account"),
+		createStringFlag("system-services-password", "password for system_services account"),
+		createStringFlag("system-verification-password", "password for system_verification account"),
 
 		//Client secrets
-		cli.StringFlag{Name: "opentsdb-firehose-nozzle-client-secret", Usage: "client-secret for opentsdb firehose nozzle"},
-		cli.StringFlag{Name: "identity-client-secret", Usage: "client-secret for identity"},
-		cli.StringFlag{Name: "login-client-secret", Usage: "client-secret for login"},
-		cli.StringFlag{Name: "portal-client-secret", Usage: "client-secret for portal"},
-		cli.StringFlag{Name: "autoscaling-service-client-secret", Usage: "client-secret for autoscaling service"},
-		cli.StringFlag{Name: "system-passwords-client-secret", Usage: "client-secret for system-passwords"},
-		cli.StringFlag{Name: "cc-service-dashboards-client-secret", Usage: "client-secret for cc-service-dashboards"},
-		cli.StringFlag{Name: "doppler-client-secret", Usage: "client-secret for doppler"},
-		cli.StringFlag{Name: "gorouter-client-secret", Usage: "client-secret for gorouter"},
-		cli.StringFlag{Name: "notifications-client-secret", Usage: "client-secret for notifications"},
-		cli.StringFlag{Name: "notifications-ui-client-secret", Usage: "client-secret for notification-ui"},
-		cli.StringFlag{Name: "cloud-controller-username-lookup-client-secret", Usage: "client-secret for cloud controller username lookup"},
-		cli.StringFlag{Name: "cc-routing-client-secret", Usage: "client-secret for cc routing"},
-		cli.StringFlag{Name: "ssh-proxy-client-secret", Usage: "client-secret for ssh proxy"},
-		cli.StringFlag{Name: "apps-metrics-client-secret", Usage: "client-secret for apps metrics "},
-		cli.StringFlag{Name: "apps-metrics-processing-client-secret", Usage: "client-secret for apps metrics processing"},
+		createStringFlag("opentsdb-firehose-nozzle-client-secret", "client-secret for opentsdb firehose nozzle"),
+		createStringFlag("identity-client-secret", "client-secret for identity"),
+		createStringFlag("login-client-secret", "client-secret for login"),
+		createStringFlag("portal-client-secret", "client-secret for portal"),
+		createStringFlag("autoscaling-service-client-secret", "client-secret for autoscaling service"),
+		createStringFlag("system-passwords-client-secret", "client-secret for system-passwords"),
+		createStringFlag("cc-service-dashboards-client-secret", "client-secret for cc-service-dashboards"),
+		createStringFlag("doppler-client-secret", "client-secret for doppler"),
+		createStringFlag("gorouter-client-secret", "client-secret for gorouter"),
+		createStringFlag("notifications-client-secret", "client-secret for notifications"),
+		createStringFlag("notifications-ui-client-secret", "client-secret for notification-ui"),
+		createStringFlag("cloud-controller-username-lookup-client-secret", "client-secret for cloud controller username lookup"),
+		createStringFlag("cc-routing-client-secret", "client-secret for cc routing"),
+		createStringFlag("ssh-proxy-client-secret", "client-secret for ssh proxy"),
+		createStringFlag("apps-metrics-client-secret", "client-secret for apps metrics "),
+		createStringFlag("apps-metrics-processing-client-secret", "client-secret for apps metrics processing"),
 
-		cli.StringFlag{Name: "errand-vm-type", Usage: "vm type to be used for running errands"},
-		cli.StringFlag{Name: "haproxy-sslpem", Usage: "SSL pem for HAProxy"},
+		createStringFlag("errand-vm-type", "vm type to be used for running errands"),
+		createStringFlag("haproxy-sslpem", "SSL pem for HAProxy"),
 	}
+}
+
+func createStringFlag(name, usage string, value ...string) cli.StringFlag {
+	res := cli.StringFlag{Name: name, Usage: usage, EnvVar: strings.ToUpper(name)}
+
+	if len(value) > 0 {
+		res.Value = value[0]
+	}
+	return res
+}
+
+func createBoolFlag(name, usage string) cli.BoolFlag {
+	return cli.BoolFlag{Name: name, Usage: usage, EnvVar: strings.ToUpper(name)}
+}
+
+func createIntFlag(name, usage string) cli.IntFlag {
+	return cli.IntFlag{Name: name, Usage: usage, EnvVar: strings.ToUpper(name)}
+}
+
+func createBoolTFlag(name, usage string) cli.BoolTFlag {
+	return cli.BoolTFlag{Name: name, Usage: usage, EnvVar: strings.ToUpper(name)}
+}
+
+func createStringSliceFlag(name, usage string, value ...string) cli.StringSliceFlag {
+	res := cli.StringSliceFlag{Name: name, Usage: usage, EnvVar: strings.ToUpper(name)}
+
+	if len(value) > 0 {
+		res.Value = &cli.StringSlice{}
+
+		for _, v := range value {
+			res.Value.Set(v)
+		}
+	}
+	return res
 }
 
 //GetMeta -
