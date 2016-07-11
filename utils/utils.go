@@ -162,19 +162,23 @@ func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, 
 		var task enamlbosh.BoshTask
 
 		if isRemoteStemcell(stemcell) {
+			var exists bool
+			if exists, err = boshClient.CheckRemoteStemcell(stemcell, httpClient); err == nil && !exists {
+				if task, err = boshClient.PostRemoteStemcell(stemcell, httpClient); err == nil {
+					lo.G.Debug("task: ", task, err)
 
-			if task, err = boshClient.PostRemoteStemcell(stemcell, httpClient); err == nil {
-				lo.G.Debug("task: ", task, err)
+					switch task.State {
+					case enamlbosh.StatusCancelled, enamlbosh.StatusError:
+						err = fmt.Errorf("task is in failed state: ", task)
 
-				switch task.State {
-				case enamlbosh.StatusCancelled, enamlbosh.StatusError:
-					err = fmt.Errorf("task is in failed state: ", task)
-
-				default:
-					if poll {
-						err = PollTaskAndWait(task, boshClient, httpClient, -1)
+					default:
+						if poll {
+							err = PollTaskAndWait(task, boshClient, httpClient, -1)
+						}
 					}
 				}
+			} else {
+				UIPrint(fmt.Sprintf("Remote stemcells...%s [%s] already exists", stemcell.Name, stemcell.Version))
 			}
 		}
 	}

@@ -86,7 +86,7 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	dm.SetName("vault")
 	dm.AddRemoteRelease("vault", BoshVaultReleaseVer, BoshVaultReleaseURL, BoshVaultReleaseSHA)
 	dm.AddRemoteRelease("consul", BoshConsulReleaseVer, BoshConsulReleaseURL, BoshConsulReleaseSHA)
-	dm.AddRemoteStemcell(s.StemcellName, s.StemcellName, s.StemcellVersion, s.StemcellURL, s.StemcellSHA)
+	dm.AddRemoteStemcell("bosh-aws-xen-ubuntu-trusty-go_agent", s.StemcellName, s.StemcellVersion, s.StemcellURL, s.StemcellSHA)
 
 	dm.AddInstanceGroup(s.NewVaultInstanceGroup())
 	dm.Update = enaml.Update{
