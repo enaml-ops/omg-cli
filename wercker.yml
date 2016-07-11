@@ -54,6 +54,8 @@ build:
           GOOS=linux go build -o vault-plugin-linux ./plugins/products/vault/cmd/vault/main.go
           GOOS=darwin go build -o redis-plugin-osx ./plugins/products/redis/cmd/redis/main.go
           GOOS=linux go build -o redis-plugin-linux ./plugins/products/redis/cmd/redis/main.go
+          GOOS=darwin go build -o cloudfoundry-plugin-osx ./plugins/products/cloudfoundry/cmd/cloudfoundry/main.go
+          GOOS=linux go build -o cloudfoundry-plugin-linux ./plugins/products/cloudfoundry/cmd/cloudfoundry/main.go
 
     - script:
         name: add repo to artifact
@@ -160,6 +162,11 @@ publish-release:
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
+    - script:
+        name: add repo to artifact
+        code: |
+          cp -R ./ ${WERCKER_OUTPUT_DIR}
+
   after-steps:
     - slack-notifier:
         url: $SLACK_URL
@@ -259,6 +266,23 @@ deploy-pre-release:
         file: redis-plugin-osx 
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: cloudfoundry-plugin-linux 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: cloudfoundry-plugin-osx 
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - script:
+        name: add repo to artifact
+        code: |
+          cp -R ./ ${WERCKER_OUTPUT_DIR}
 
   after-steps:
     - slack-notifier:
