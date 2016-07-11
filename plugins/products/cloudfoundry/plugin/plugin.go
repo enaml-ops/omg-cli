@@ -20,7 +20,6 @@ func init() {
 	RegisterInstanceGrouperFactory(NewMySQLProxyPartition)
 	RegisterInstanceGrouperFactory(NewMySQLPartition)
 	RegisterInstanceGrouperFactory(NewCloudControllerPartition)
-	//ha_proxy-partition
 	RegisterInstanceGrouperFactory(NewClockGlobalPartition)
 	RegisterInstanceGrouperFactory(NewCloudControllerWorkerPartition)
 	RegisterInstanceGrouperFactory(NewDiegoBrainPartition)
@@ -30,6 +29,8 @@ func init() {
 	RegisterInstanceGrouperFactory(NewDopplerPartition)
 	RegisterInstanceGrouperFactory(NewLoggregatorTrafficController)
 	RegisterInstanceGrouperFactory(NewUAAPartition)
+	RegisterInstanceGrouperFactory(NewSmokeErrand)
+	RegisterInstanceGrouperFactory(NewHaProxyPartition)
 
 	acceptanceTests := func(c *cli.Context) InstanceGrouper {
 		return NewAcceptanceTestsPartition(c, true)
