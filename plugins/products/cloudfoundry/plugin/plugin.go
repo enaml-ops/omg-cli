@@ -23,13 +23,13 @@ func init() {
 	//ha_proxy-partition
 	RegisterInstanceGrouperFactory(NewClockGlobalPartition)
 	RegisterInstanceGrouperFactory(NewCloudControllerWorkerPartition)
-	//uaa-partition
 	RegisterInstanceGrouperFactory(NewDiegoBrainPartition)
 	RegisterInstanceGrouperFactory(NewBootstrapPartition)
 	RegisterInstanceGrouperFactory(NewDiegoDatabasePartition)
-	//diego_cell-partition
-	//doppler-partition
+	RegisterInstanceGrouperFactory(NewDiegoCellPartition)
+	RegisterInstanceGrouperFactory(NewDopplerPartition)
 	RegisterInstanceGrouperFactory(NewLoggregatorTrafficController)
+	RegisterInstanceGrouperFactory(NewUAAPartition)
 
 	acceptanceTests := func(c *cli.Context) InstanceGrouper {
 		return NewAcceptanceTestsPartition(c, true)
