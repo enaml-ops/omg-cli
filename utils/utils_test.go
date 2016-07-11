@@ -31,7 +31,7 @@ var _ = Describe("utils", func() {
 		})
 	})
 
-	XDescribe("given ProcessRemoteStemcells", func() {
+	Describe("given ProcessRemoteStemcells", func() {
 		var doer *enamlboshfakes.FakeHttpClientDoer
 
 		BeforeEach(func() {

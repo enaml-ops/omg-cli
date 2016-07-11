@@ -133,11 +133,14 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 func ProcessRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh.Client, httpClient HttpClientDoer, poll bool) (err error) {
 	var errStemcells error
 	var errReleases error
+	var remoteStemcells []enaml.Stemcell
 	defer UIPrint("remote asset check complete.")
 	UIPrint("Checking product deployment for remote assets...")
 
-	if errStemcells = ProcessRemoteStemcells(dm.Stemcells, boshClient, httpClient, poll); errStemcells != nil {
-		lo.G.Info("issues processing stemcell: ", errStemcells)
+	if remoteStemcells, err = ProcessStemcellsToBeUploaded(dm.Stemcells, boshClient, httpClient); err == nil {
+		if errStemcells = ProcessRemoteStemcells(remoteStemcells, boshClient, httpClient, poll); errStemcells != nil {
+			lo.G.Info("issues processing stemcell: ", errStemcells)
+		}
 	}
 
 	if errReleases = ProcessRemoteReleases(dm.Releases, boshClient, httpClient, poll); errReleases != nil {
@@ -150,35 +153,46 @@ func ProcessRemoteBoshAssets(dm *enaml.DeploymentManifest, boshClient *enamlbosh
 	return
 }
 
+func isRemoteStemcell(stemcell enaml.Stemcell) bool {
+	return stemcell.URL != "" && stemcell.SHA1 != ""
+}
+
 //ProcessRemoteStemcells - upload any remote stemcells given
 func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, httpClient HttpClientDoer, poll bool) (err error) {
 	defer UIPrint("remote stemcells complete")
 	UIPrint("Checking for remote stemcells...")
-	var isRemoteStemcell = func(stemcell enaml.Stemcell) bool {
-		return stemcell.URL != "" && stemcell.SHA1 != ""
-	}
 
 	for _, stemcell := range scl {
 		var task enamlbosh.BoshTask
 
 		if isRemoteStemcell(stemcell) {
-			var exists bool
-			if exists, err = boshClient.CheckRemoteStemcell(stemcell, httpClient); err == nil && !exists {
-				if task, err = boshClient.PostRemoteStemcell(stemcell, httpClient); err == nil {
-					lo.G.Debug("task: ", task, err)
+			if task, err = boshClient.PostRemoteStemcell(stemcell, httpClient); err == nil {
+				lo.G.Debug("task: ", task, err)
 
-					switch task.State {
-					case enamlbosh.StatusCancelled, enamlbosh.StatusError:
-						err = fmt.Errorf("task is in failed state: ", task)
+				switch task.State {
+				case enamlbosh.StatusCancelled, enamlbosh.StatusError:
+					err = fmt.Errorf("task is in failed state: ", task)
 
-					default:
-						if poll {
-							err = PollTaskAndWait(task, boshClient, httpClient, -1)
-						}
+				default:
+					if poll {
+						err = PollTaskAndWait(task, boshClient, httpClient, -1)
 					}
 				}
-			} else {
-				UIPrint(fmt.Sprintf("Remote stemcells...%s [%s] already exists", stemcell.Name, stemcell.Version))
+			}
+		} else {
+			UIPrint(fmt.Sprintf("Remote stemcells...%s [%s] already exists", stemcell.Name, stemcell.Version))
+		}
+	}
+	return
+}
+
+//ProcessStemcellsToBeUploaded - finds list of remote stemcells that have not been uploaded
+func ProcessStemcellsToBeUploaded(stemcells []enaml.Stemcell, boshClient *enamlbosh.Client, httpClient HttpClientDoer) (remoteStemcells []enaml.Stemcell, err error) {
+	var exists bool
+	for _, stemcell := range stemcells {
+		if isRemoteStemcell(stemcell) {
+			if exists, err = boshClient.CheckRemoteStemcell(stemcell, httpClient); err == nil && !exists {
+				remoteStemcells = append(remoteStemcells, stemcell)
 			}
 		}
 	}
