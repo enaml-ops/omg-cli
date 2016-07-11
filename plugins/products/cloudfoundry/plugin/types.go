@@ -158,6 +158,20 @@ type diegoBrain struct {
 	Statsd                    *StatsdInjector
 }
 
+type loggregatorTrafficController struct {
+	AZs               []string
+	StemcellName      string
+	VMTypeName        string
+	NetworkName       string
+	NetworkIPs        []string
+	SystemDomain      string
+	SkipSSLCertVerify bool
+	EtcdMachines      []string
+	DopplerSecret     string
+	Metron            *Metron
+	Nats              *routereglib.Nats
+}
+
 // Consul -
 type Consul struct {
 	AZs            []string

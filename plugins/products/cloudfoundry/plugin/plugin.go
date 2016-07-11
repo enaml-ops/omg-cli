@@ -27,7 +27,7 @@ func init() {
 	RegisterInstanceGrouperFactory(NewDiegoDatabasePartition)
 	//diego_cell-partition
 	//doppler-partition
-	//loggregator_trafficcontroller-partition
+	RegisterInstanceGrouperFactory(NewLoggregatorTrafficController)
 
 	acceptanceTests := func(c *cli.Context) InstanceGrouper {
 		return NewAcceptanceTestsPartition(c, true)
@@ -182,6 +182,10 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 		cli.StringFlag{Name: "doppler-zone", Usage: "the name zone for doppler"},
 		cli.IntFlag{Name: "doppler-drain-buffer-size", Usage: "message drain buffer size"},
 		cli.StringFlag{Name: "doppler-shared-secret", Usage: "doppler shared secret"},
+
+		//Loggregator Traffic Controller
+		cli.StringSliceFlag{Name: "loggregator-traffic-controller-ip", Usage: "a list of loggregator traffic controller IPs"},
+		cli.StringFlag{Name: "loggregator-traffic-controller-vmtype", Usage: "the name of your desired vm size for the loggregator traffic controller"},
 
 		//UAA
 		cli.StringFlag{Name: "uaa-vm-type", Usage: "the name of your desired vm size for uaa"},
