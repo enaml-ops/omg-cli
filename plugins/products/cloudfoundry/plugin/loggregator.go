@@ -70,7 +70,7 @@ func (l *loggregatorTrafficController) createLoggregatorTrafficControllerJob() e
 	return enaml.InstanceJob{
 		Name:    "loggregator_trafficcontroller",
 		Release: CFReleaseName,
-		Properties: &ltc.LoggregatorTrafficcontroller{
+		Properties: &ltc.LoggregatorTrafficcontrollerJob{
 			SystemDomain: l.SystemDomain,
 			Cc: &ltc.Cc{
 				SrvApiUri: prefixSystemDomain(l.SystemDomain, "api"),
@@ -84,16 +84,16 @@ func (l *loggregatorTrafficController) createLoggregatorTrafficControllerJob() e
 			Doppler: &ltc.Doppler{
 				UaaClientId: "doppler",
 			},
-			Uaa: &ltc.Uaa{
-				Clients: &ltc.Clients{
-					Doppler: &ltc.Doppler{
-						Secret: l.DopplerSecret,
-					},
-				},
-			},
 			Loggregator: &ltc.Loggregator{
 				Etcd: &ltc.Etcd{
 					Machines: l.EtcdMachines,
+				},
+			},
+			Uaa: &ltc.Uaa{
+				Clients: &ltc.Clients{
+					Doppler: &ltc.ClientsDoppler{
+						Secret: l.DopplerSecret,
+					},
 				},
 			},
 		},
@@ -120,7 +120,6 @@ func (l *loggregatorTrafficController) createRouteRegistrarJob() enaml.InstanceJ
 		Release: CFReleaseName,
 		Properties: &route_registrar.RouteRegistrar{
 			Routes: routes,
-			Nats:   l.Nats,
 		},
 	}
 }

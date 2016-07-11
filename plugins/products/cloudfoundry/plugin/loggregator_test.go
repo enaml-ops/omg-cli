@@ -57,11 +57,6 @@ var _ = Describe("given the loggregator traffic controller partition", func() {
 				"--syslog-address", "syslog-server",
 				"--syslog-port", "10601",
 				"--syslog-transport", "tcp",
-				"--nats-user", "nats",
-				"--nats-pass", "pass",
-				"--nats-port", "4222",
-				"--nats-machine-ip", "1.0.0.5",
-				"--nats-machine-ip", "1.0.0.6",
 			})
 			grouper = NewLoggregatorTrafficController(c)
 			dm = new(enaml.DeploymentManifest)
@@ -110,7 +105,7 @@ var _ = Describe("given the loggregator traffic controller partition", func() {
 			Ω(job).ShouldNot(BeNil())
 			Ω(job.Release).Should(Equal(CFReleaseName))
 
-			props := job.Properties.(*ltc.LoggregatorTrafficcontroller)
+			props := job.Properties.(*ltc.LoggregatorTrafficcontrollerJob)
 			Ω(props.SystemDomain).Should(Equal("sys.yourdomain.com"))
 			Ω(props.Cc.SrvApiUri).Should(Equal("https://api.sys.yourdomain.com"))
 			Ω(props.Ssl.SkipCertVerify).Should(BeFalse())
@@ -126,7 +121,7 @@ var _ = Describe("given the loggregator traffic controller partition", func() {
 			Ω(job).ShouldNot(BeNil())
 			Ω(job.Release).Should(Equal(CFReleaseName))
 
-			props := job.Properties.(*metron_agent.MetronAgent)
+			props := job.Properties.(*metron_agent.MetronAgentJob)
 			Ω(props.MetronAgent.Zone).Should(Equal("metronzoneguid"))
 			Ω(props.MetronAgent.Deployment).Should(Equal(CFReleaseName))
 			Ω(props.MetronEndpoint.SharedSecret).Should(Equal("metronsecret"))
@@ -139,12 +134,6 @@ var _ = Describe("given the loggregator traffic controller partition", func() {
 			Ω(job).ShouldNot(BeNil())
 
 			props, _ := job.Properties.(*route_registrar.RouteRegistrar)
-			Ω(props.Nats).ShouldNot(BeNil())
-			Ω(props.Nats.User).Should(Equal("nats"))
-			Ω(props.Nats.Password).Should(Equal("pass"))
-			Ω(props.Nats.Port).Should(Equal(4222))
-			Ω(props.Nats.Machines).Should(ConsistOf("1.0.0.5", "1.0.0.6"))
-
 			Ω(props.Routes).ShouldNot(BeNil())
 			routes := props.Routes.([]map[string]interface{})
 			Ω(len(routes)).Should(Equal(2))
