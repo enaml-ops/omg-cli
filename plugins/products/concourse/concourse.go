@@ -12,6 +12,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/concourse/enaml-gen/groundcrew"
 	"github.com/enaml-ops/omg-cli/plugins/products/concourse/enaml-gen/postgresql"
 	"github.com/enaml-ops/omg-cli/plugins/products/concourse/enaml-gen/tsa"
+	"github.com/xchapter7x/lo"
 )
 
 const (
@@ -40,7 +41,6 @@ type Deployment struct {
 	NetworkName         string
 	WebIPs              []string
 	WebInstances        int
-	CloudConfig         bool
 	WebAZs              []string
 	DatabaseAZs         []string
 	WorkerAZs           []string
@@ -67,6 +67,7 @@ func NewDeployment() (d Deployment) {
 }
 
 func (d *Deployment) doCloudConfigValidation(data []byte) (err error) {
+	lo.G.Debug("Cloud Config:", string(data))
 	c := &enaml.CloudConfigManifest{}
 	if err := yaml.Unmarshal(data, &c); err != nil {
 		return err
@@ -123,21 +124,7 @@ func (d *Deployment) Initialize(cloudConfig []byte) (err error) {
 	d.manifest.SetDirectorUUID(d.DirectorUUID)
 	d.manifest.AddRemoteRelease(concourseReleaseName, concourseReleaseVer, concourseReleaseURL, concourseReleaseSHA)
 	d.manifest.AddRemoteRelease(gardenReleaseName, gardenReleaseVer, gardenReleaseURL, gardenReleaseSHA)
-
-	if d.CloudConfig {
-		d.manifest.AddRemoteStemcell(stemcellName, d.StemcellAlias, stemcellVer, d.StemcellURL, d.StemcellSHA)
-
-	} else {
-		resourcePool := d.CreateResourcePool(d.NetworkName)
-		d.manifest.AddResourcePool(resourcePool)
-		d.ResourcePoolName = resourcePool.Name
-
-		compilation := d.CreateCompilation(d.NetworkName)
-		d.manifest.SetCompilation(compilation)
-
-		deploymentNetwork := d.CreateManualDeploymentNetwork(d.NetworkName, d.NetworkRange, d.NetworkGateway, d.WebIPs)
-		d.manifest.AddNetwork(deploymentNetwork)
-	}
+	d.manifest.AddRemoteStemcell(stemcellName, d.StemcellAlias, stemcellVer, d.StemcellURL, d.StemcellSHA)
 
 	update := d.CreateUpdate()
 	d.manifest.SetUpdate(update)

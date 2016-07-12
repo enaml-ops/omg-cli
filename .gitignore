@@ -26,6 +26,7 @@ vendor
 .DS_Store
 .cache
 omg
+.wercker/
 
 # build generated output
 plugin/registry/fixtures/testplugin-darwin

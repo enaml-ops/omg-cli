@@ -31,19 +31,10 @@ func NewDeploymentManifest(c *cli.Context, cloudConfig []byte) enaml.DeploymentM
 	deployment.StemcellAlias = c.String(getFlag(boshStemcellAlias))
 	deployment.NetworkName = c.String(getFlag(concourseNetworkName))
 
-	if c.IsSet(getFlag(boshCloudConfig)) {
-		deployment.CloudConfig = c.Bool(getFlag(boshCloudConfig))
-
-	} else {
-		deployment.CloudConfig = true
-	}
-
 	if c.IsSet(getFlag(concourseWebInstances)) {
 		deployment.WebInstances = c.Int(getFlag(concourseWebInstances))
-
 	} else {
 		deployment.WebInstances = 1
-
 	}
 
 	if c.IsSet(getFlag(concourseWebIPs)) {
@@ -67,7 +58,6 @@ func NewDeploymentManifest(c *cli.Context, cloudConfig []byte) enaml.DeploymentM
 	deployment.WorkerVMType = c.String(getFlag(concourseWorkerVMType))
 	deployment.DatabaseVMType = c.String(getFlag(concourseDatabaseVMType))
 	deployment.DatabaseStorageType = c.String(getFlag(concourseDatabaseStorageType))
-	deployment.CloudConfigYml = c.String(getFlag(cloudConfigYml))
 
 	if err := deployment.Initialize(cloudConfig); err != nil {
 		panic(err.Error())

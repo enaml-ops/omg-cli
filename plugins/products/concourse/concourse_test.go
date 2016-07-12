@@ -1,6 +1,8 @@
 package concourse_test
 
 import (
+	"io/ioutil"
+
 	. "github.com/enaml-ops/omg-cli/plugins/products/concourse"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -241,6 +243,30 @@ var _ = Describe("Concourse Deployment", func() {
 			It("then we should error and prompt the user for a better pass", func() {
 				err := deployment.Initialize([]byte(""))
 				Ω(err).ShouldNot(BeNil())
+			})
+		})
+	})
+
+	Describe("Given a cloud config", func() {
+		Context("when validating", func() {
+			var cc []byte
+			BeforeEach(func() {
+				cc, _ = ioutil.ReadFile("fixtures/cloudconfig.yml")
+				azs := []string{"z1"}
+				deployment.WebVMType = "small"
+				deployment.WorkerVMType = "small"
+				deployment.DatabaseAZs = azs
+				deployment.DatabaseVMType = "small"
+				deployment.DatabaseStorageType = "large"
+				deployment.WebAZs = azs
+				deployment.WorkerAZs = azs
+				deployment.StemcellAlias = "ubuntu"
+			})
+
+			It("should be valid", func() {
+				Ω(len(cc)).ShouldNot(BeZero())
+				err := deployment.Initialize(cc)
+				Ω(err).Should(BeNil())
 			})
 		})
 	})

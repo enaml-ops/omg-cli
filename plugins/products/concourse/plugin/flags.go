@@ -13,8 +13,6 @@ type flagBucket struct {
 }
 
 const (
-	defaultFileName              string = "concourse.yml"
-	outputFileName               string = "OUTPUT_FILENAME"
 	concoursePassword            string = "PASSWORD"
 	concourseUsername            string = "USERNAME"
 	concourseURL                 string = "URL"
@@ -28,14 +26,12 @@ const (
 	concourseWebAZs              string = "WEB_AZS"
 	concourseDatabaseAZs         string = "DATABASE_AZS"
 	concourseWorkerAZs           string = "WORKER_AZS"
-	boshCloudConfig              string = "BOSH_CLOUD_CONFIG"
 	concourseDeploymentName      string = "BOSH_DEPLOYMENT_NAME"
 	concourseWebVMType           string = "WEB_VM_TYPE"
 	concourseDatabaseVMType      string = "DATABASE_VM_TYPE"
 	concourseWorkerVMType        string = "WORKER_VM_TYPE"
 	concourseDatabaseStorageType string = "DATABASE_STORAGE_TYPE"
 	concoursePostgresqlDbPwd     string = "POSTGRESQL_DB_PWD"
-	cloudConfigYml               string = "CLOUD_CONFIG_YML"
 	remoteStemcellURL            string = "REMOTE_STEMCELL_URL"
 	remoteStemcellSHA            string = "REMOTE_STEMCELL_SHA"
 )
@@ -47,14 +43,6 @@ func getFlag(input string) (flag string) {
 
 func generateFlags() (flags []cli.Flag) {
 	var flagList = map[string]flagBucket{
-		outputFileName: flagBucket{
-			Desc:   "destination for output",
-			EnvVar: outputFileName,
-		},
-		boshCloudConfig: flagBucket{
-			Desc:   "true/false for generate cloudConfig compatible (default true)",
-			EnvVar: boshCloudConfig,
-		},
 		boshDirectorUUID: flagBucket{
 			Desc:   "bosh director uuid (bosh status --uuid)",
 			EnvVar: boshDirectorUUID,
@@ -134,10 +122,6 @@ func generateFlags() (flags []cli.Flag) {
 		concourseDatabaseStorageType: flagBucket{
 			Desc:   "database storage type reference from cloudConfig",
 			EnvVar: concourseDatabaseStorageType,
-		},
-		cloudConfigYml: flagBucket{
-			Desc:   "location of cloud config yml",
-			EnvVar: cloudConfigYml,
 		},
 		remoteStemcellURL: flagBucket{
 			Desc:   "url to the remote stemcell you wish to use.",
