@@ -1,4 +1,32 @@
 box: golang
+dev:
+  steps:
+    - setup-go-workspace
+
+    # Gets the dependencies
+    - script:
+        name: go get
+        code: |
+          cd $WERCKER_SOURCE_DIR
+          go version
+          go get github.com/Masterminds/glide
+          export PATH=$WERCKER_SOURCE_DIR/bin:$PATH
+          glide --version
+          glide install
+
+    - script:
+        name: generate fixture test plugins
+        code: |
+          rm pluginlib/registry/fixtures/cloudconfig/.keep
+          rm pluginlib/registry/fixtures/product/.keep
+          GOOS=linux ./createRegistryFixturePlugin
+
+    # Test the project
+    - script:
+        name: go test
+        code: |
+          LOG_LEVEL=debug go test $(glide novendor) -v -cover -race
+
 build:
   steps:
     - setup-go-workspace
@@ -99,18 +127,18 @@ publish-release:
         token: $GITHUB_TOKEN
         tag: $WERCKER_GITHUB_CREATE_RELEASE_ID
         title: omg-cli $WERCKER_GITHUB_CREATE_RELEASE_ID
-        draft: false 
-        prerelease: ${IS_PRE_RELEASE} 
+        draft: false
+        prerelease: ${IS_PRE_RELEASE}
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: omg-osx 
+        file: omg-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: omg-linux 
+        file: omg-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
@@ -122,43 +150,43 @@ publish-release:
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: aws-cloudconfigplugin-linux 
+        file: aws-cloudconfigplugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: concourse-plugin-linux 
+        file: concourse-plugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: concourse-plugin-osx 
+        file: concourse-plugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: vault-plugin-linux 
+        file: vault-plugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: vault-plugin-osx 
+        file: vault-plugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: redis-plugin-linux 
+        file: redis-plugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: redis-plugin-osx 
+        file: redis-plugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
@@ -204,78 +232,78 @@ deploy-pre-release:
         token: $GITHUB_TOKEN
         tag: $WERCKER_GITHUB_CREATE_RELEASE_ID
         title: omg-cli $WERCKER_GITHUB_CREATE_RELEASE_ID
-        draft: true 
-        prerelease: ${IS_PRE_RELEASE} 
+        draft: true
+        prerelease: ${IS_PRE_RELEASE}
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: omg-osx 
+        file: omg-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: omg-linux 
+        file: omg-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: aws-cloudconfigplugin-osx 
+        file: aws-cloudconfigplugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: aws-cloudconfigplugin-linux 
+        file: aws-cloudconfigplugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: concourse-plugin-linux 
+        file: concourse-plugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: concourse-plugin-osx 
+        file: concourse-plugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: vault-plugin-linux 
+        file: vault-plugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: vault-plugin-osx 
+        file: vault-plugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: redis-plugin-linux 
+        file: redis-plugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: redis-plugin-osx 
+        file: redis-plugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: cloudfoundry-plugin-linux 
+        file: cloudfoundry-plugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
     - github-upload-asset:
         token: $GITHUB_TOKEN
-        file: cloudfoundry-plugin-osx 
+        file: cloudfoundry-plugin-osx
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
