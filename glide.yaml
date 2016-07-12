@@ -27,7 +27,7 @@ import:
   version: master
 - package: github.com/pivotal-golang/clock
 - package: github.com/enaml-ops/enaml
-  version: master
+  version: eba8de07fadddcedd7e9f5e397327aa1fbba9195
   subpackages:
   - enamlbosh
   - cloudproperties/aws
