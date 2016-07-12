@@ -208,10 +208,9 @@ func NewRedisJob(name, networkName, pass, disk, vmSize string, masterIPs, slaveI
 	}
 
 	job = enaml.Job{
-		Name:       name,
-		Lifecycle:  lifecycle,
-		Properties: properties,
-		Instances:  instances,
+		Name:      name,
+		Lifecycle: lifecycle,
+		Instances: instances,
 		Networks: []enaml.Network{
 			network,
 		},
@@ -222,6 +221,7 @@ func NewRedisJob(name, networkName, pass, disk, vmSize string, masterIPs, slaveI
 			Canaries: 10,
 		},
 	}
+	job.AddProperty(properties)
 	lo.G.Debug("job", job)
 	return
 }
