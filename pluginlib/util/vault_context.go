@@ -10,23 +10,23 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-type VaultOverlayer interface {
-	UnmarshalFlags(*cli.Context) error
+type VaultUnmarshaler interface {
+	UnmarshalFlags(hash string, c *cli.Context) (err error)
 }
 
 type Doer interface {
 	Do(*http.Request) (*http.Response, error)
 }
 
-func NewVaultOverlay(domain, token string, client Doer) *VaultOverlay {
-	return &VaultOverlay{
+func NewVaultUnmarshal(domain, token string, client Doer) VaultUnmarshaler {
+	return &VaultUnmarshal{
 		Domain: domain,
 		Token:  token,
 		Client: client,
 	}
 }
 
-type VaultOverlay struct {
+type VaultUnmarshal struct {
 	Domain string
 	Token  string
 	Client Doer
@@ -41,7 +41,7 @@ type VaultJsonObject struct {
 	Auth          interface{}       `json:"auth"`
 }
 
-func (s *VaultOverlay) UnmarshalFlags(hash string, c *cli.Context) (err error) {
+func (s *VaultUnmarshal) UnmarshalFlags(hash string, c *cli.Context) (err error) {
 	b := s.getVaultHashValues(hash)
 	vaultObj := new(VaultJsonObject)
 	json.Unmarshal(b, vaultObj)
@@ -52,7 +52,7 @@ func (s *VaultOverlay) UnmarshalFlags(hash string, c *cli.Context) (err error) {
 	return
 }
 
-func (s *VaultOverlay) getVaultHashValues(hash string) []byte {
+func (s *VaultUnmarshal) getVaultHashValues(hash string) []byte {
 	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/v1/%s", s.Domain, hash), nil)
 	s.decorateWithToken(req)
 	res, _ := s.Client.Do(req)
@@ -60,7 +60,7 @@ func (s *VaultOverlay) getVaultHashValues(hash string) []byte {
 	return b
 }
 
-func (s *VaultOverlay) decorateWithToken(req *http.Request) {
+func (s *VaultUnmarshal) decorateWithToken(req *http.Request) {
 	req.Header.Add("X-Vault-Token", s.Token)
 }
 

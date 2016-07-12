@@ -13,7 +13,7 @@ import (
 
 var _ = Describe("given: a VaultOverlay", func() {
 	Describe("given a properly initialized vaultoverlay targeting a vault", func() {
-		var vault *VaultOverlay
+		var vault VaultUnmarshaler
 
 		BeforeEach(func() {
 			doer := new(utilfakes.FakeDoer)
@@ -21,7 +21,7 @@ var _ = Describe("given: a VaultOverlay", func() {
 			doer.DoReturns(&http.Response{
 				Body: b,
 			}, nil)
-			vault = NewVaultOverlay("domain.com", "my-really-long-token", doer)
+			vault = NewVaultUnmarshal("domain.com", "my-really-long-token", doer)
 		})
 
 		Context("when calling unmarshalflags on a context that was not given the flag value from the cli", func() {
