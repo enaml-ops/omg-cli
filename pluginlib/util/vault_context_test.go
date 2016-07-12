@@ -53,5 +53,20 @@ var _ = Describe("given: a VaultOverlay", func() {
 				Ω(ctx.String("knock")).Should(Equal("knocks"))
 			})
 		})
+
+		Context("when calling unmarshalflags on a context which was not defined with the flag contained in vault", func() {
+			var ctx *cli.Context
+
+			BeforeEach(func() {
+				ctx = NewContext([]string{"mycoolapp"}, []cli.Flag{
+					cli.StringFlag{Name: "badda"},
+				})
+				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", ctx)
+			})
+
+			It("then it should not set or create the flag in the context", func() {
+				Ω(ctx.String("knock")).Should(BeEmpty())
+			})
+		})
 	})
 })
