@@ -23,7 +23,7 @@ var _ = Describe("NewPostgres func", func() {
 		})
 
 		Context("when calling GetDirectorDB", func() {
-			var ddb *director.Db
+			var ddb *director.DirectorDb
 			BeforeEach(func() {
 				ddb = pgsql.GetDirectorDB()
 			})

@@ -5,10 +5,6 @@ package director
 */
 type Vcd struct {
 
-	/*Entities - Descr: Text associated with the VMs Default: vcd-cf
-*/
-	Entities *Entities `yaml:"entities,omitempty"`
-
 	/*User - Descr: The user name of the target vCloud Director Default: <nil>
 */
 	User interface{} `yaml:"user,omitempty"`
@@ -20,5 +16,9 @@ type Vcd struct {
 	/*Url - Descr: The endpoint of the target vCloud Director Default: <nil>
 */
 	Url interface{} `yaml:"url,omitempty"`
+
+	/*Entities - Descr: The name of the calalog for media files Default: <nil>
+*/
+	Entities *Entities `yaml:"entities,omitempty"`
 
 }

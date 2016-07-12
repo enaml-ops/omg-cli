@@ -9,12 +9,12 @@ type Env struct {
 */
 	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
 
-	/*NoProxy - Descr: List of comma-separated hosts that should skip connecting to the proxy in the registry Default: <nil>
-*/
-	NoProxy interface{} `yaml:"no_proxy,omitempty"`
-
 	/*HttpsProxy - Descr: HTTPS proxy that the registry should use Default: <nil>
 */
 	HttpsProxy interface{} `yaml:"https_proxy,omitempty"`
+
+	/*NoProxy - Descr: List of comma-separated hosts that should skip connecting to the proxy in the registry Default: <nil>
+*/
+	NoProxy interface{} `yaml:"no_proxy,omitempty"`
 
 }

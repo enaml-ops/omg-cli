@@ -9,16 +9,16 @@ type Registry struct {
 */
 	Port interface{} `yaml:"port,omitempty"`
 
-	/*Host - Descr: Address of the Registry to connect to Default: <nil>
+	/*Username - Descr: User to access the Registry Default: <nil>
 */
-	Host interface{} `yaml:"host,omitempty"`
+	Username interface{} `yaml:"username,omitempty"`
 
 	/*Password - Descr: Password to access the Registry Default: <nil>
 */
 	Password interface{} `yaml:"password,omitempty"`
 
-	/*Username - Descr: User to access the Registry Default: <nil>
+	/*Host - Descr: Address of the Registry to connect to Default: <nil>
 */
-	Username interface{} `yaml:"username,omitempty"`
+	Host interface{} `yaml:"host,omitempty"`
 
 }

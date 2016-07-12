@@ -22,6 +22,8 @@ type BoshInitConfig struct {
 	BoshCIDR                          string
 	BoshGateway                       string
 	BoshDNS                           []string
+	UAAReleaseSHA                     string
+	UAAReleaseVersion                 string
 	AWSSubnet                         string
 	AWSElasticIP                      string
 	AWSPEMFilePath                    string
@@ -91,7 +93,7 @@ type PgSql struct {
 }
 
 type Postgres interface {
-	GetDirectorDB() *director.Db
+	GetDirectorDB() *director.DirectorDb
 	GetRegistryDB() *registry.Db
 	GetPostgresDB() postgres.Postgres
 }

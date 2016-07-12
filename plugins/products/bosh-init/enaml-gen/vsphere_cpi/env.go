@@ -5,16 +5,16 @@ package vsphere_cpi
 */
 type Env struct {
 
-	/*HttpProxy - Descr: Http proxy to connect to cloud API's Default: <nil>
+	/*HttpsProxy - Descr: Https proxy to connect to cloud API's Default: <nil>
 */
-	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
+	HttpsProxy interface{} `yaml:"https_proxy,omitempty"`
 
 	/*NoProxy - Descr: No Proxy environment variable Default: <nil>
 */
 	NoProxy interface{} `yaml:"no_proxy,omitempty"`
 
-	/*HttpsProxy - Descr: Https proxy to connect to cloud API's Default: <nil>
+	/*HttpProxy - Descr: Http proxy to connect to cloud API's Default: <nil>
 */
-	HttpsProxy interface{} `yaml:"https_proxy,omitempty"`
+	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
 
 }

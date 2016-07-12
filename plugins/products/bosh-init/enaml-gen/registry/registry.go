@@ -5,28 +5,12 @@ package registry
 */
 type Registry struct {
 
-	/*Openstack - Descr: OpenStack endpoint type (optional, by default publicURL) Default: publicURL
-*/
-	Openstack *Openstack `yaml:"openstack,omitempty"`
-
-	/*Http - Descr: TCP port Registry daemon listens on Default: 25777
+	/*Http - Descr: Username clients must use to access Registry via HTTP Basic Auth Default: <nil>
 */
 	Http *Http `yaml:"http,omitempty"`
 
-	/*Db - Descr: The type of database used Default: postgres
+	/*Db - Descr: Name of the registry database Default: bosh_registry
 */
 	Db *Db `yaml:"db,omitempty"`
-
-	/*Registry - Descr: The type of database used Default: postgres
-*/
-	Registry *Registry `yaml:"registry,omitempty"`
-
-	/*Env - Descr: List of comma-separated hosts that should skip connecting to the proxy in the registry Default: <nil>
-*/
-	Env *Env `yaml:"env,omitempty"`
-
-	/*Aws - Descr: The path the a CA cert directory Default: <nil>
-*/
-	Aws *Aws `yaml:"aws,omitempty"`
 
 }

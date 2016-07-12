@@ -5,13 +5,13 @@ package director
 */
 type UserManagement struct {
 
+	/*Uaa - Descr: Symmetric key to verify Uaa token Default: <nil>
+*/
+	Uaa *Uaa `yaml:"uaa,omitempty"`
+
 	/*Local - Descr: List of users that can authenticate with director in non-Uaa mode Default: <nil>
 */
 	Local *Local `yaml:"local,omitempty"`
-
-	/*Uaa - Descr: Public key to verify Uaa token when token is encoded with asymmetric encryption Default: <nil>
-*/
-	Uaa *Uaa `yaml:"uaa,omitempty"`
 
 	/*Provider - Descr: User management implementation (local|uaa) Default: local
 */

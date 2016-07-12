@@ -5,72 +5,72 @@ package director
 */
 type Blobstore struct {
 
-	/*Host - Descr: Host of blobstore server used by simple blobstore plugin Default: <nil>
+	/*Provider - Descr: Provider of the blobstore used by director and agent (dav|simple|s3) Default: dav
 */
-	Host interface{} `yaml:"host,omitempty"`
+	Provider interface{} `yaml:"provider,omitempty"`
 
-	/*S3SignatureVersion - Descr: Signature version of the blobstore used by s3 blobstore plugin (optional, if not provided the s3 client decides which version to use) Default: <nil>
-*/
-	S3SignatureVersion interface{} `yaml:"s3_signature_version,omitempty"`
-
-	/*SslVerifyPeer - Descr: Verify the SSL certificate used on the blobstore? Default: true
-*/
-	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
-
-	/*Director - Descr: Password director uses to connect to blobstore used by simple blobstore plugin Default: <nil>
-*/
-	Director *Director `yaml:"director,omitempty"`
-
-	/*Port - Descr: Port for agent to connect to blobstore server used by simple blobstore plugin Default: <nil>
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
-	/*S3Region - Descr: AWS region for agent used by s3 blobstore plugin Default: <nil>
-*/
-	S3Region interface{} `yaml:"s3_region,omitempty"`
-
-	/*Address - Descr: Address for agent to connect to blobstore server used by simple blobstore plugin Default: <nil>
-*/
-	Address interface{} `yaml:"address,omitempty"`
-
-	/*CredentialsSource - Descr: AWS credentials (static / env_or_profile) Default: static
-*/
-	CredentialsSource interface{} `yaml:"credentials_source,omitempty"`
-
-	/*SecretAccessKey - Descr: AWS secret_access_key for agent used by s3 blobstore plugin Default: <nil>
+	/*SecretAccessKey - Descr: AWS secret_access_key used by s3 blobstore plugin Default: <nil>
 */
 	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
 
-	/*Agent - Descr: Username agent uses to connect to blobstore used by simple blobstore plugin Default: <nil>
+	/*S3Region - Descr: Region of the blobstore used by s3 blobstore plugin Default: <nil>
 */
-	Agent *Agent `yaml:"agent,omitempty"`
+	S3Region interface{} `yaml:"s3_region,omitempty"`
 
-	/*S3MultipartThreshold - Descr: Byte threshold at which blob uploads should be broken into multi-part FORM uploads instead of single PUT Default: 16777216
+	/*UseSsl - Descr: Whether the simple blobstore plugin should use SSL to connect to the blobstore server Default: true
 */
-	S3MultipartThreshold interface{} `yaml:"s3_multipart_threshold,omitempty"`
+	UseSsl interface{} `yaml:"use_ssl,omitempty"`
 
-	/*S3ForcePathStyle - Descr: Whether s3 blobstore plugin will always use path style for bucket access Default: false
+	/*Address - Descr: Address of blobstore server used by simple blobstore plugin Default: <nil>
 */
-	S3ForcePathStyle interface{} `yaml:"s3_force_path_style,omitempty"`
+	Address interface{} `yaml:"address,omitempty"`
 
 	/*BucketName - Descr: AWS S3 Bucket used by s3 blobstore plugin Default: <nil>
 */
 	BucketName interface{} `yaml:"bucket_name,omitempty"`
 
-	/*S3Port - Descr: Port of blobstore server used by s3 blobstore plugin Default: 443
+	/*Agent - Descr: Password agent uses to connect to blobstore used by simple blobstore plugin Default: <nil>
 */
-	S3Port interface{} `yaml:"s3_port,omitempty"`
+	Agent *BlobstoreAgent `yaml:"agent,omitempty"`
 
-	/*AccessKeyId - Descr: AWS access_key_id for agent used by s3 blobstore plugin Default: <nil>
+	/*CredentialsSource - Descr: AWS Credential Source (static / env_or_profile) Default: static
+*/
+	CredentialsSource interface{} `yaml:"credentials_source,omitempty"`
+
+	/*SslVerifyPeer - Descr: Verify the SSL certificate used on the blobstore? Default: true
+*/
+	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
+
+	/*SseKmsKeyId - Descr: AWS KMS key ID to use for object encryption. All GET and PUT requests for an object protected by AWS KMS will fail if not made via SSL or using SigV4. Default: <nil>
+*/
+	SseKmsKeyId interface{} `yaml:"sse_kms_key_id,omitempty"`
+
+	/*Director - Descr: Username director uses to connect to blobstore used by simple blobstore plugin Default: <nil>
+*/
+	Director *BlobstoreDirector `yaml:"director,omitempty"`
+
+	/*Port - Descr: Port of blobstore server used by simple blobstore plugin Default: 25250
+*/
+	Port interface{} `yaml:"port,omitempty"`
+
+	/*ServerSideEncryption - Descr: Server-side encryption algorithm used when storing blobs in S3 (Optional - "AES256"|"aws:kms") Default: <nil>
+*/
+	ServerSideEncryption interface{} `yaml:"server_side_encryption,omitempty"`
+
+	/*Host - Descr: Host of blobstore server used by simple blobstore plugin Default: <nil>
+*/
+	Host interface{} `yaml:"host,omitempty"`
+
+	/*AccessKeyId - Descr: AWS access_key_id used by s3 blobstore plugin Default: <nil>
 */
 	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
 
-	/*Provider - Descr: Provider of the blobstore used by director and agent (dav|simple|s3) Default: dav
+	/*S3SignatureVersion - Descr: Signature version of the blobstore used by s3 blobstore plugin (optional, if not provided the s3 client decides which version to use) Default: <nil>
 */
-	Provider interface{} `yaml:"provider,omitempty"`
+	S3SignatureVersion interface{} `yaml:"s3_signature_version,omitempty"`
 
-	/*UseSsl - Descr: Whether the simple blobstore plugin should use SSL to connect to the blobstore server Default: true
+	/*S3Port - Descr: Port of blobstore server used by s3 blobstore plugin Default: 443
 */
-	UseSsl interface{} `yaml:"use_ssl,omitempty"`
+	S3Port interface{} `yaml:"s3_port,omitempty"`
 
 }

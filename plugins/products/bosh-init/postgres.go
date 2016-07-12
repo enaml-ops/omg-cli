@@ -16,8 +16,8 @@ func NewPostgres(user, host, pass, database, adapter string) (psql *PgSql) {
 	}
 }
 
-func (s *PgSql) GetDirectorDB() *director.Db {
-	return &director.Db{
+func (s *PgSql) GetDirectorDB() *director.DirectorDb {
+	return &director.DirectorDb{
 		User:     s.User,
 		Host:     s.Host,
 		Password: s.Password,
@@ -25,6 +25,7 @@ func (s *PgSql) GetDirectorDB() *director.Db {
 		Adapter:  s.Adapter,
 	}
 }
+
 func (s *PgSql) GetRegistryDB() *registry.Db {
 	return &registry.Db{
 		User:     s.User,
@@ -34,6 +35,7 @@ func (s *PgSql) GetRegistryDB() *registry.Db {
 		Adapter:  s.Adapter,
 	}
 }
+
 func (s *PgSql) GetPostgresDB() postgres.Postgres {
 	return postgres.Postgres{
 		User:          s.User,

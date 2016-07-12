@@ -5,18 +5,6 @@ package blobstore
 */
 type Blobstore struct {
 
-	/*MaxUploadSize - Descr: Max allowed file size for upload Default: 5000m
-*/
-	MaxUploadSize interface{} `yaml:"max_upload_size,omitempty"`
-
-	/*Blobstore - Descr: Max allowed file size for upload Default: 5000m
-*/
-	Blobstore *Blobstore `yaml:"blobstore,omitempty"`
-
-	/*Nginx - Descr: Number of nginx workers for blobstore Default: 2
-*/
-	Nginx *Nginx `yaml:"nginx,omitempty"`
-
 	/*Port - Descr: TCP port blobstore server (ngnix) listens on Default: 25250
 */
 	Port interface{} `yaml:"port,omitempty"`
@@ -32,5 +20,13 @@ type Blobstore struct {
 	/*Agent - Descr: Password agents must use to access blobstore via HTTP Basic Default: <nil>
 */
 	Agent *Agent `yaml:"agent,omitempty"`
+
+	/*MaxUploadSize - Descr: Max allowed file size for upload Default: 5000m
+*/
+	MaxUploadSize interface{} `yaml:"max_upload_size,omitempty"`
+
+	/*Nginx - Descr: Number of nginx workers for blobstore Default: 2
+*/
+	Nginx *Nginx `yaml:"nginx,omitempty"`
 
 }

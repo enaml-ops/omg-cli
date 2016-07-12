@@ -5,16 +5,16 @@ package director
 */
 type Dns struct {
 
-	/*Db - Descr: Port that the powerdns database listens on Default: 5432
+	/*Address - Descr: Address of the powerdns server Default: <nil>
 */
-	Db *Db `yaml:"db,omitempty"`
+	Address interface{} `yaml:"address,omitempty"`
 
 	/*DomainName - Descr: TLD of the dns zone used by bosh Default: bosh
 */
 	DomainName interface{} `yaml:"domain_name,omitempty"`
 
-	/*Address - Descr: Address of the powerdns server Default: <nil>
+	/*Db - Descr: DNS Database host Default: 127.0.0.1
 */
-	Address interface{} `yaml:"address,omitempty"`
+	Db *DnsDb `yaml:"db,omitempty"`
 
 }

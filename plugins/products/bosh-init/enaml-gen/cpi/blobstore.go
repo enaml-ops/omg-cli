@@ -5,52 +5,52 @@ package cpi
 */
 type Blobstore struct {
 
-	/*S3ForcePathStyle - Descr: Whether s3 blobstore plugin will always use path style for bucket access Default: false
+	/*UseSsl - Descr: Whether the simple blobstore plugin should use SSL to connect to the blobstore server Default: true
 */
-	S3ForcePathStyle interface{} `yaml:"s3_force_path_style,omitempty"`
-
-	/*Port - Descr: Port of blobstore server used by simple blobstore plugin Default: 25250
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
-	/*Host - Descr: Host of blobstore server used by simple blobstore plugin Default: <nil>
-*/
-	Host interface{} `yaml:"host,omitempty"`
-
-	/*Address - Descr: Address for agent to connect to blobstore server used by simple blobstore plugin Default: <nil>
-*/
-	Address interface{} `yaml:"address,omitempty"`
-
-	/*AccessKeyId - Descr: AWS access_key_id for agent used by s3 blobstore plugin Default: <nil>
-*/
-	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
-
-	/*Agent - Descr: Password agent uses to connect to blobstore used by simple blobstore plugin Default: <nil>
-*/
-	Agent *Agent `yaml:"agent,omitempty"`
-
-	/*SecretAccessKey - Descr: AWS secret_access_key for agent used by s3 blobstore plugin Default: <nil>
-*/
-	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+	UseSsl interface{} `yaml:"use_ssl,omitempty"`
 
 	/*Provider - Descr: Provider of the blobstore used by director and agent (dav|simple|s3) Default: dav
 */
 	Provider interface{} `yaml:"provider,omitempty"`
 
+	/*AccessKeyId - Descr: AWS access_key_id used by s3 blobstore plugin Default: <nil>
+*/
+	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
+
+	/*Path - Descr: local blobstore path Default: <nil>
+*/
+	Path interface{} `yaml:"path,omitempty"`
+
 	/*BucketName - Descr: AWS S3 Bucket used by s3 blobstore plugin Default: <nil>
 */
 	BucketName interface{} `yaml:"bucket_name,omitempty"`
 
-	/*UseSsl - Descr: Whether the simple blobstore plugin should use SSL to connect to the blobstore server Default: true
+	/*S3ForcePathStyle - Descr: Whether s3 blobstore plugin will always use path style for bucket access Default: false
 */
-	UseSsl interface{} `yaml:"use_ssl,omitempty"`
+	S3ForcePathStyle interface{} `yaml:"s3_force_path_style,omitempty"`
+
+	/*Host - Descr: Host of blobstore server used by simple blobstore plugin Default: <nil>
+*/
+	Host interface{} `yaml:"host,omitempty"`
+
+	/*Address - Descr: Address of blobstore server used by simple blobstore plugin Default: <nil>
+*/
+	Address interface{} `yaml:"address,omitempty"`
+
+	/*Port - Descr: Port of blobstore server used by simple blobstore plugin Default: 25250
+*/
+	Port interface{} `yaml:"port,omitempty"`
+
+	/*Agent - Descr: Password agent uses to connect to blobstore used by simple blobstore plugin Default: <nil>
+*/
+	Agent *BlobstoreAgent `yaml:"agent,omitempty"`
 
 	/*S3Port - Descr: Port of blobstore server used by s3 blobstore plugin Default: 443
 */
 	S3Port interface{} `yaml:"s3_port,omitempty"`
 
-	/*Path - Descr: local blobstore path Default: <nil>
+	/*SecretAccessKey - Descr: AWS secret_access_key used by s3 blobstore plugin Default: <nil>
 */
-	Path interface{} `yaml:"path,omitempty"`
+	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
 
 }

@@ -5,13 +5,13 @@ package health_monitor
 */
 type SyslogEventForwarder struct {
 
-	/*Port - Descr: Port of the syslog drain Default: 5514
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
 	/*Address - Descr: IP address of the syslog drain Default: <nil>
 */
 	Address interface{} `yaml:"address,omitempty"`
+
+	/*Port - Descr: Port of the syslog drain Default: 5514
+*/
+	Port interface{} `yaml:"port,omitempty"`
 
 	/*Transport - Descr: One of ["udp", "tcp", "relp"] Default: tcp
 */

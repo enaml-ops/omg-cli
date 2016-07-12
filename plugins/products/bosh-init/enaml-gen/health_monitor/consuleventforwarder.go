@@ -9,21 +9,17 @@ type ConsulEventForwarder struct {
 */
 	HeartbeatsAsAlerts interface{} `yaml:"heartbeats_as_alerts,omitempty"`
 
-	/*Params - Descr: Params for url can be used for passing ACL token Default: <nil>
+	/*Host - Descr: Location of Consul Cluster or agent Default: <nil>
 */
-	Params interface{} `yaml:"params,omitempty"`
+	Host interface{} `yaml:"host,omitempty"`
+
+	/*Namespace - Descr: A namespace for handling multiples of the same release Default: <nil>
+*/
+	Namespace interface{} `yaml:"namespace,omitempty"`
 
 	/*TtlNote - Descr: A note for ttl checks Default: Automatically Registered by Bosh-Monitor
 */
 	TtlNote interface{} `yaml:"ttl_note,omitempty"`
-
-	/*Port - Descr: Consul Port Default: 8500
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
-	/*Host - Descr: Location of Consul Cluster or agent Default: <nil>
-*/
-	Host interface{} `yaml:"host,omitempty"`
 
 	/*Ttl - Descr: A ttl time for ttl checks, if set ttl checks will be used Default: <nil>
 */
@@ -37,8 +33,12 @@ type ConsulEventForwarder struct {
 */
 	Events interface{} `yaml:"events,omitempty"`
 
-	/*Namespace - Descr: A namespace for handling multiples of the same release Default: <nil>
+	/*Params - Descr: Params for url can be used for passing ACL token Default: <nil>
 */
-	Namespace interface{} `yaml:"namespace,omitempty"`
+	Params interface{} `yaml:"params,omitempty"`
+
+	/*Port - Descr: Consul Port Default: 8500
+*/
+	Port interface{} `yaml:"port,omitempty"`
 
 }

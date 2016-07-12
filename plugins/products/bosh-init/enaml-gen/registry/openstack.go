@@ -5,40 +5,40 @@ package registry
 */
 type Openstack struct {
 
-	/*Domain - Descr: OpenStack domain (required for Keystone API version 3) Default: <nil>
-*/
-	Domain interface{} `yaml:"domain,omitempty"`
-
-	/*Project - Descr: OpenStack project name (required for Keystone API version 3) Default: <nil>
-*/
-	Project interface{} `yaml:"project,omitempty"`
-
 	/*ConnectionOptions - Descr: Hash containing optional connection parameters to the OpenStack API Default: <nil>
 */
 	ConnectionOptions interface{} `yaml:"connection_options,omitempty"`
-
-	/*Tenant - Descr: OpenStack tenant name (required for Keystone API version 2) Default: <nil>
-*/
-	Tenant interface{} `yaml:"tenant,omitempty"`
 
 	/*ApiKey - Descr: OpenStack API key Default: <nil>
 */
 	ApiKey interface{} `yaml:"api_key,omitempty"`
 
+	/*Domain - Descr: OpenStack domain (required for Keystone API version 3) Default: <nil>
+*/
+	Domain interface{} `yaml:"domain,omitempty"`
+
+	/*Username - Descr: OpenStack user name Default: <nil>
+*/
+	Username interface{} `yaml:"username,omitempty"`
+
+	/*Tenant - Descr: OpenStack tenant name (required for Keystone API version 2) Default: <nil>
+*/
+	Tenant interface{} `yaml:"tenant,omitempty"`
+
 	/*Region - Descr: OpenStack region (optional) Default: <nil>
 */
 	Region interface{} `yaml:"region,omitempty"`
-
-	/*EndpointType - Descr: OpenStack endpoint type (optional, by default publicURL) Default: publicURL
-*/
-	EndpointType interface{} `yaml:"endpoint_type,omitempty"`
 
 	/*AuthUrl - Descr: URL of the OpenStack Identity endpoint to connect to Default: <nil>
 */
 	AuthUrl interface{} `yaml:"auth_url,omitempty"`
 
-	/*Username - Descr: OpenStack user name Default: <nil>
+	/*EndpointType - Descr: OpenStack endpoint type (optional, by default publicURL) Default: publicURL
 */
-	Username interface{} `yaml:"username,omitempty"`
+	EndpointType interface{} `yaml:"endpoint_type,omitempty"`
+
+	/*Project - Descr: OpenStack project name (required for Keystone API version 3) Default: <nil>
+*/
+	Project interface{} `yaml:"project,omitempty"`
 
 }

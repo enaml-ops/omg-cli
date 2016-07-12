@@ -5,17 +5,13 @@ package health_monitor
 */
 type DirectorAccount struct {
 
-	/*Password - Descr: Password to access Bosh Director Default: 
+	/*ClientSecret - Descr: UAA client secret to access Bosh Director Default: 
 */
-	Password interface{} `yaml:"password,omitempty"`
+	ClientSecret interface{} `yaml:"client_secret,omitempty"`
 
 	/*ClientId - Descr: UAA client id to access Bosh Director Default: 
 */
 	ClientId interface{} `yaml:"client_id,omitempty"`
-
-	/*ClientSecret - Descr: UAA client secret to access Bosh Director Default: 
-*/
-	ClientSecret interface{} `yaml:"client_secret,omitempty"`
 
 	/*CaCert - Descr: Certificate to verify UAA endpoint Default: 
 */
@@ -24,5 +20,9 @@ type DirectorAccount struct {
 	/*User - Descr: User to access Bosh Director Default: 
 */
 	User interface{} `yaml:"user,omitempty"`
+
+	/*Password - Descr: Password to access Bosh Director Default: 
+*/
+	Password interface{} `yaml:"password,omitempty"`
 
 }

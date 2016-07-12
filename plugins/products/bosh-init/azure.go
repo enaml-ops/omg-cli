@@ -13,9 +13,6 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	var ntpProperty = NewNTP("0.pool.ntp.org", "1.pool.ntp.org")
 	var cpiTemplate = enaml.Template{Name: "cpi", Release: "bosh-azure-cpi"}
 	var manifest = NewBoshDeploymentBase(cfg, "cpi", ntpProperty)
-	var agentProperty = aws_cpi.Agent{
-		Mbus: "nats://nats:nats-password@" + cfg.BoshPrivateIP + ":4222",
-	}
 
 	manifest.AddRelease(enaml.Release{
 		Name: "bosh-azure-cpi",
@@ -57,7 +54,10 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Name:      "public",
 		StaticIPs: []string{cfg.AzurePublicIP},
 	})
-	boshJob.AddProperty("agent", agentProperty)
+	var agentProperty = aws_cpi.Agent{
+		Mbus: "nats://nats:nats-password@" + cfg.BoshPrivateIP + ":4222",
+	}
+	boshJob.AddProperty(agentProperty)
 	azureProperty := NewAzureProperty(
 		cfg.AzureEnvironment,
 		cfg.AzureSubscriptionID,
@@ -70,7 +70,7 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		cfg.AzureSSHUser,
 		cfg.AzureSSHPubKey,
 	)
-	boshJob.AddProperty("azure", azureProperty)
+	boshJob.AddProperty(azureProperty)
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(NewAzureCloudProvider(azureProperty, cpiTemplate, cfg.AzurePublicIP, cfg.AzurePrivateKeyPath, ntpProperty))
 	return manifest

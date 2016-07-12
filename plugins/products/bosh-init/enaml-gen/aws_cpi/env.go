@@ -9,12 +9,12 @@ type Env struct {
 */
 	NoProxy interface{} `yaml:"no_proxy,omitempty"`
 
-	/*HttpProxy - Descr: Http proxy to connect to cloud API's Default: <nil>
-*/
-	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
-
 	/*HttpsProxy - Descr: Https proxy to connect to cloud API's Default: <nil>
 */
 	HttpsProxy interface{} `yaml:"https_proxy,omitempty"`
+
+	/*HttpProxy - Descr: Http proxy to connect to cloud API's Default: <nil>
+*/
+	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
 
 }

@@ -9,25 +9,13 @@ type Aws struct {
 */
 	SslCaFile interface{} `yaml:"ssl_ca_file,omitempty"`
 
-	/*Region - Descr: AWS EC2 Region Default: <nil>
-*/
-	Region interface{} `yaml:"region,omitempty"`
-
-	/*MaxRetries - Descr: Max number of retries to connect to AWS Default: 2
-*/
-	MaxRetries interface{} `yaml:"max_retries,omitempty"`
-
-	/*SslCaPath - Descr: The path the a CA cert directory Default: <nil>
-*/
-	SslCaPath interface{} `yaml:"ssl_ca_path,omitempty"`
-
 	/*CredentialsSource - Descr: AWS credentials source Default: static
 */
 	CredentialsSource interface{} `yaml:"credentials_source,omitempty"`
 
-	/*SslVerifyPeer - Descr: When true the HTTP handler validate server certificates for HTTPS requests Default: <nil>
+	/*SecretAccessKey - Descr: AWS IAM Secret Access Key Default: <nil>
 */
-	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
+	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
 
 	/*Ec2Endpoint - Descr: The service endpoint for Amazon EC2 (optional, if not supplied default region endpoint will be used) Default: <nil>
 */
@@ -37,12 +25,24 @@ type Aws struct {
 */
 	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
 
-	/*SecretAccessKey - Descr: AWS IAM Secret Access Key Default: <nil>
+	/*Region - Descr: AWS EC2 Region Default: <nil>
 */
-	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+	Region interface{} `yaml:"region,omitempty"`
 
 	/*ElbEndpoint - Descr: The service endpoint for Amazon Elastic Load Balancing (optional, if not supplied default region endpoint will be used) Default: <nil>
 */
 	ElbEndpoint interface{} `yaml:"elb_endpoint,omitempty"`
+
+	/*SslCaPath - Descr: The path the a CA cert directory Default: <nil>
+*/
+	SslCaPath interface{} `yaml:"ssl_ca_path,omitempty"`
+
+	/*MaxRetries - Descr: Max number of retries to connect to AWS Default: 2
+*/
+	MaxRetries interface{} `yaml:"max_retries,omitempty"`
+
+	/*SslVerifyPeer - Descr: When true the HTTP handler validate server certificates for HTTPS requests Default: <nil>
+*/
+	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
 
 }

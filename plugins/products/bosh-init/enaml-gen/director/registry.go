@@ -5,12 +5,12 @@ package director
 */
 type Registry struct {
 
-	/*Http - Descr: Port of the Registry to connect to Default: 25777
-*/
-	Http *Http `yaml:"http,omitempty"`
-
 	/*Address - Descr: Address of the Registry to connect to Default: <nil>
 */
 	Address interface{} `yaml:"address,omitempty"`
+
+	/*Http - Descr: User to access the Registry Default: <nil>
+*/
+	Http *Http `yaml:"http,omitempty"`
 
 }

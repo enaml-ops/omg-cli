@@ -5,13 +5,13 @@ package health_monitor
 */
 type Graphite struct {
 
-	/*Address - Descr: Graphite address Default: <nil>
-*/
-	Address interface{} `yaml:"address,omitempty"`
-
 	/*Prefix - Descr: Prefix that will be added to all metrics sent to Graphite Default: <nil>
 */
 	Prefix interface{} `yaml:"prefix,omitempty"`
+
+	/*Address - Descr: Graphite address Default: <nil>
+*/
+	Address interface{} `yaml:"address,omitempty"`
 
 	/*Port - Descr: Graphite port Default: <nil>
 */

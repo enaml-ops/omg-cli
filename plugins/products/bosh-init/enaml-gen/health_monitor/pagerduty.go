@@ -5,12 +5,12 @@ package health_monitor
 */
 type Pagerduty struct {
 
-	/*HttpProxy - Descr: HTTP proxy to connect to PagerDuty (optional) Default: <nil>
-*/
-	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
-
 	/*ServiceKey - Descr: PagerDuty service API key Default: <nil>
 */
 	ServiceKey interface{} `yaml:"service_key,omitempty"`
+
+	/*HttpProxy - Descr: HTTP proxy to connect to PagerDuty (optional) Default: <nil>
+*/
+	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
 
 }

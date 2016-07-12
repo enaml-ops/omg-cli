@@ -5,16 +5,16 @@ package director
 */
 type Env struct {
 
-	/*NoProxy - Descr: List of comma-separated hosts that should skip connecting to the proxy in the director, scheduler and workers Default: <nil>
+	/*HttpsProxy - Descr: HTTPS proxy that the director, scheduler and workers should use Default: <nil>
 */
-	NoProxy interface{} `yaml:"no_proxy,omitempty"`
+	HttpsProxy interface{} `yaml:"https_proxy,omitempty"`
 
 	/*HttpProxy - Descr: HTTP proxy that the director, scheduler and workers should use Default: <nil>
 */
 	HttpProxy interface{} `yaml:"http_proxy,omitempty"`
 
-	/*HttpsProxy - Descr: HTTPS proxy that the director, scheduler and workers should use Default: <nil>
+	/*NoProxy - Descr: List of comma-separated hosts that should skip connecting to the proxy in the director, scheduler and workers Default: <nil>
 */
-	HttpsProxy interface{} `yaml:"https_proxy,omitempty"`
+	NoProxy interface{} `yaml:"no_proxy,omitempty"`
 
 }

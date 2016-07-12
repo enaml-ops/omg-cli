@@ -78,7 +78,7 @@ imports:
 - name: github.com/codegangsta/cli
   version: 595ba45e735c1e9c1f9ddc9e2ef21997fca893f2
 - name: github.com/enaml-ops/enaml
-  version: eba8de07fadddcedd7e9f5e397327aa1fbba9195 
+  version: master 
   subpackages:
   - cloudproperties/aws
   - cloudproperties/azure

@@ -5,7 +5,7 @@ package director
 */
 type CompiledPackageCache struct {
 
-	/*Options - Descr: Whether s3 blobstore plugin will always use path style for bucket access Default: false
+	/*Options - Descr: Signature version of the blobstore used by s3 blobstore plugin (optional, if not provided the s3 client decides which version to use) Default: <nil>
 */
 	Options *Options `yaml:"options,omitempty"`
 

@@ -5,153 +5,33 @@ package director
 */
 type Director struct {
 
-	/*Encryption - Descr: Enable/Disable agent-director encryption (true|false) Default: false
+	/*EnableSnapshots - Descr: Enable/Disable snapshots for persistent disks (true|false) Default: false
 */
-	Encryption interface{} `yaml:"encryption,omitempty"`
-
-	/*RemoveDevTools - Descr: When true, remove dev tool packages from non-compilation VMs Default: false
-*/
-	RemoveDevTools interface{} `yaml:"remove_dev_tools,omitempty"`
-
-	/*Debug - Descr: When a bosh deploy fails, the failed VM will be kept instead of destroyed Default: false
-*/
-	Debug *Debug `yaml:"debug,omitempty"`
-
-	/*Vcd - Descr: The endpoint of the target vCloud Director Default: <nil>
-*/
-	Vcd *Vcd `yaml:"vcd,omitempty"`
-
-	/*GenerateVmPasswords - Descr: When true, a random unique password will be used for each vm if user has not specified a password Default: false
-*/
-	GenerateVmPasswords interface{} `yaml:"generate_vm_passwords,omitempty"`
-
-	/*ProxyTimeout - Descr: Timeout for proxy connection from nginx to director Default: 900
-*/
-	ProxyTimeout interface{} `yaml:"proxy_timeout,omitempty"`
-
-	/*SnapshotSchedule - Descr: RufusScheduler cron formatted schedule for snapshots Default: 0 0 7 * * * UTC
-*/
-	SnapshotSchedule interface{} `yaml:"snapshot_schedule,omitempty"`
-
-	/*Disks - Descr: Days to keep orphaned disks and orhaned snapshots before cleanup Default: 5
-*/
-	Disks *Disks `yaml:"disks,omitempty"`
-
-	/*Nginx - Descr: Number of nginx workers for director Default: 2
-*/
-	Nginx *Nginx `yaml:"nginx,omitempty"`
-
-	/*IgnoreMissingGateway - Descr: Allow gateway to be omitted from subnet configuration. Boshlite vms(containers) do not require gateway. Default: false
-*/
-	IgnoreMissingGateway interface{} `yaml:"ignore_missing_gateway,omitempty"`
+	EnableSnapshots interface{} `yaml:"enable_snapshots,omitempty"`
 
 	/*CpiJob - Descr: Name of cpi job (null to use bundled cpi gems) Default: <nil>
 */
 	CpiJob interface{} `yaml:"cpi_job,omitempty"`
 
-	/*Ssl - Descr: SSL Certificate for director (PEM encoded) Default: <nil>
+	/*Nginx - Descr: Prefer server's cipher priority instead of client's (true for On, false for Off) Default: true
 */
-	Ssl *Ssl `yaml:"ssl,omitempty"`
+	Nginx *Nginx `yaml:"nginx,omitempty"`
 
-	/*Password - Descr: Password director uses to connect to blobstore used by simple blobstore plugin Default: <nil>
+	/*ConfigServerUrl - Descr: URL for the config server Default: http://127.0.0.1:8080
 */
-	Password interface{} `yaml:"password,omitempty"`
+	ConfigServerUrl interface{} `yaml:"config_server_url,omitempty"`
 
-	/*Aws - Descr: AWS kernel id used by aws cpi Default: <nil>
+	/*RemoveDevTools - Descr: When true, remove dev tool packages from non-compilation VMs Default: false
 */
-	Aws *Aws `yaml:"aws,omitempty"`
-
-	/*Dns - Descr: Port that the powerdns database listens on Default: 5432
-*/
-	Dns *Dns `yaml:"dns,omitempty"`
-
-	/*EnablePostDeploy - Descr: When true, all templates will run their post_deploy script once deployment is complete Default: false
-*/
-	EnablePostDeploy interface{} `yaml:"enable_post_deploy,omitempty"`
+	RemoveDevTools interface{} `yaml:"remove_dev_tools,omitempty"`
 
 	/*BackendPort - Descr: Port that the director listens on Default: 25556
 */
 	BackendPort interface{} `yaml:"backend_port,omitempty"`
 
-	/*AutoFixStatefulNodes - Descr: Enable/Disable auto resolution for stateful nodes for scan_and_fix (true|false) Default: true
+	/*Name - Descr: Name of the director Default: <nil>
 */
-	AutoFixStatefulNodes interface{} `yaml:"auto_fix_stateful_nodes,omitempty"`
-
-	/*MaxThreads - Descr: Max number of director concurrent threads Default: 32
-*/
-	MaxThreads interface{} `yaml:"max_threads,omitempty"`
-
-	/*Nats - Descr: Port that the nats server listens on Default: 4222
-*/
-	Nats *Nats `yaml:"nats,omitempty"`
-
-	/*EnableSnapshots - Descr: Enable/Disable snapshots for persistent disks (true|false) Default: false
-*/
-	EnableSnapshots interface{} `yaml:"enable_snapshots,omitempty"`
-
-	/*MaxTasks - Descr: Max number of tasks per each type to keep in disk Default: 100
-*/
-	MaxTasks interface{} `yaml:"max_tasks,omitempty"`
-
-	/*Ntp - Descr: List of ntp server IPs. pool.ntp.org attempts to return IPs closest to your location, but you can still specify if needed. Default: [0.pool.ntp.org 1.pool.ntp.org]
-*/
-	Ntp interface{} `yaml:"ntp,omitempty"`
-
-	/*DefaultSshOptions - Descr: Default user to use with bosh ssh command Default: vcap
-*/
-	DefaultSshOptions *DefaultSshOptions `yaml:"default_ssh_options,omitempty"`
-
-	/*Workers - Descr: Number of director workers Default: 3
-*/
-	Workers interface{} `yaml:"workers,omitempty"`
-
-	/*Openstack - Descr: Default OpenStack keypair to use when spinning up new vms Default: <nil>
-*/
-	Openstack *Openstack `yaml:"openstack,omitempty"`
-
-	/*Registry - Descr: Port of the Registry to connect to Default: 25777
-*/
-	Registry *Registry `yaml:"registry,omitempty"`
-
-	/*Port - Descr: Port that the director nginx listens on Default: 25555
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
-	/*UserManagement - Descr: User management implementation (local|uaa) Default: local
-*/
-	UserManagement *UserManagement `yaml:"user_management,omitempty"`
-
-	/*SelfSnapshotSchedule - Descr: RufusScheduler cron formatted schedule for self snapshots Default: 0 0 6 * * * UTC
-*/
-	SelfSnapshotSchedule interface{} `yaml:"self_snapshot_schedule,omitempty"`
-
-	/*Blobstore - Descr: AWS access_key_id used by s3 blobstore plugin Default: <nil>
-*/
-	Blobstore *Blobstore `yaml:"blobstore,omitempty"`
-
-	/*Director - Descr: Max retries when creating VMs Default: 5
-*/
-	Director *Director `yaml:"director,omitempty"`
-
-	/*Agent - Descr: AWS credentials (static / env_or_profile) Default: static
-*/
-	Agent *Agent `yaml:"agent,omitempty"`
-
-	/*MaxUploadSize - Descr: Max allowed file size for upload Default: 10000m
-*/
-	MaxUploadSize interface{} `yaml:"max_upload_size,omitempty"`
-
-	/*BackupDestination - Descr: Configuration of the blobstore used by director for backups (dav|simple|s3) Default: <nil>
-*/
-	BackupDestination interface{} `yaml:"backup_destination,omitempty"`
-
-	/*TrustedCerts - Descr: Cerfiticates that VMs created by this director should trust in addition to those packaged with the stemcell (PEM encoded; zero or more certs allowed) Default: 
-*/
-	TrustedCerts interface{} `yaml:"trusted_certs,omitempty"`
-
-	/*FlushArp - Descr: Clear up arp entries when machines are recreated Default: false
-*/
-	FlushArp interface{} `yaml:"flush_arp,omitempty"`
+	Name interface{} `yaml:"name,omitempty"`
 
 	/*Timeout - Descr: Timeout for connection from bosh CLI to nginx Default: 7200
 */
@@ -161,40 +41,116 @@ type Director struct {
 */
 	MaxVmCreateTries interface{} `yaml:"max_vm_create_tries,omitempty"`
 
-	/*Env - Descr: List of comma-separated hosts that should skip connecting to the proxy in the director, scheduler and workers Default: <nil>
+	/*MaxUploadSize - Descr: Max allowed file size for upload Default: 10000m
 */
-	Env *Env `yaml:"env,omitempty"`
-
-	/*BackupSchedule - Descr: RufusScheduler cron formatted schedule for backups Default: <nil>
-*/
-	BackupSchedule interface{} `yaml:"backup_schedule,omitempty"`
-
-	/*Name - Descr: Name of the director Default: <nil>
-*/
-	Name interface{} `yaml:"name,omitempty"`
-
-	/*User - Descr: Username director uses to connect to blobstore used by simple blobstore plugin Default: <nil>
-*/
-	User interface{} `yaml:"user,omitempty"`
+	MaxUploadSize interface{} `yaml:"max_upload_size,omitempty"`
 
 	/*Events - Descr: Max number of events to keep Default: 10000
 */
 	Events *Events `yaml:"events,omitempty"`
 
+	/*MaxTasks - Descr: Max number of tasks per each type to keep in disk Default: 100
+*/
+	MaxTasks interface{} `yaml:"max_tasks,omitempty"`
+
+	/*Ssl - Descr: SSL private key for director (PEM encoded) Default: <nil>
+*/
+	Ssl *Ssl `yaml:"ssl,omitempty"`
+
+	/*MaxThreads - Descr: Max number of director concurrent threads Default: 32
+*/
+	MaxThreads interface{} `yaml:"max_threads,omitempty"`
+
+	/*Port - Descr: Port that the director nginx listens on Default: 25555
+*/
+	Port interface{} `yaml:"port,omitempty"`
+
+	/*Db - Descr: The type of database used (mysql2|postgres|sqlite) Default: postgres
+*/
+	Db *DirectorDb `yaml:"db,omitempty"`
+
+	/*SelfSnapshotSchedule - Descr: RufusScheduler cron formatted schedule for self snapshots Default: 0 0 6 * * * UTC
+*/
+	SelfSnapshotSchedule interface{} `yaml:"self_snapshot_schedule,omitempty"`
+
+	/*ParseConfigValues - Descr: When true, replace substitution values in manifest with values from config server Default: false
+*/
+	ParseConfigValues interface{} `yaml:"parse_config_values,omitempty"`
+
+	/*Encryption - Descr: Enable/Disable agent-director encryption (true|false) Default: false
+*/
+	Encryption interface{} `yaml:"encryption,omitempty"`
+
+	/*Debug - Descr: When a bosh deploy fails, the failed VM will be kept instead of destroyed Default: false
+*/
+	Debug *Debug `yaml:"debug,omitempty"`
+
+	/*SnapshotSchedule - Descr: RufusScheduler cron formatted schedule for snapshots Default: 0 0 7 * * * UTC
+*/
+	SnapshotSchedule interface{} `yaml:"snapshot_schedule,omitempty"`
+
+	/*Disks - Descr: RufusScheduler cron formatted schedule for cleanup of orphaned disks and orphaned snapshots Default: 0 0,30 * * * * UTC
+*/
+	Disks *Disks `yaml:"disks,omitempty"`
+
+	/*FlushArp - Descr: Clear up arp entries when machines are recreated Default: false
+*/
+	FlushArp interface{} `yaml:"flush_arp,omitempty"`
+
+	/*ProxyTimeout - Descr: Timeout for proxy connection from nginx to director Default: 900
+*/
+	ProxyTimeout interface{} `yaml:"proxy_timeout,omitempty"`
+
+	/*EnableDedicatedStatusWorker - Descr: Separate worker for 'bosh vms' and 'bosh ssh' Default: false
+*/
+	EnableDedicatedStatusWorker interface{} `yaml:"enable_dedicated_status_worker,omitempty"`
+
+	/*BackupSchedule - Descr: RufusScheduler cron formatted schedule for backups Default: <nil>
+*/
+	BackupSchedule interface{} `yaml:"backup_schedule,omitempty"`
+
+	/*AutoFixStatefulNodes - Descr: Enable/Disable auto resolution for stateful nodes for scan_and_fix (true|false) Default: true
+*/
+	AutoFixStatefulNodes interface{} `yaml:"auto_fix_stateful_nodes,omitempty"`
+
+	/*EnableVirtualDeleteVms - Descr: When true, bosh will not delete vm from cloud when instance update, just destroy vm record in db Default: false
+*/
+	EnableVirtualDeleteVms interface{} `yaml:"enable_virtual_delete_vms,omitempty"`
+
+	/*TrustedCerts - Descr: Cerfiticates that VMs created by this director should trust in addition to those packaged with the stemcell (PEM encoded; zero or more certs allowed) Default: 
+*/
+	TrustedCerts interface{} `yaml:"trusted_certs,omitempty"`
+
+	/*Workers - Descr: Number of director workers Default: 3
+*/
+	Workers interface{} `yaml:"workers,omitempty"`
+
+	/*GenerateVmPasswords - Descr: When true, a random unique password will be used for each vm if user has not specified a password Default: false
+*/
+	GenerateVmPasswords interface{} `yaml:"generate_vm_passwords,omitempty"`
+
+	/*EnablePostDeploy - Descr: When true, all templates will run their post_deploy script once deployment is complete Default: false
+*/
+	EnablePostDeploy interface{} `yaml:"enable_post_deploy,omitempty"`
+
+	/*UserManagement - Descr: Symmetric key to verify Uaa token Default: <nil>
+*/
+	UserManagement *UserManagement `yaml:"user_management,omitempty"`
+
+	/*IgnoreMissingGateway - Descr: Allow gateway to be omitted from subnet configuration. Boshlite vms(containers) do not require gateway. Default: false
+*/
+	IgnoreMissingGateway interface{} `yaml:"ignore_missing_gateway,omitempty"`
+
+	/*DefaultSshOptions - Descr: Default user to use with bosh ssh command Default: vcap
+*/
+	DefaultSshOptions *DefaultSshOptions `yaml:"default_ssh_options,omitempty"`
+
+	/*BackupDestination - Descr: Configuration of the blobstore used by director for backups (dav|simple|s3) Default: <nil>
+*/
+	BackupDestination interface{} `yaml:"backup_destination,omitempty"`
+
 	/*LogAccessEventsToSyslog - Descr: Access to api is logged to the syslog Default: false
 */
 	LogAccessEventsToSyslog interface{} `yaml:"log_access_events_to_syslog,omitempty"`
-
-	/*Vcenter - Descr: Address of vCenter server used by vsphere cpi Default: <nil>
-*/
-	Vcenter *Vcenter `yaml:"vcenter,omitempty"`
-
-	/*CompiledPackageCache - Descr: Whether s3 blobstore plugin will always use path style for bucket access Default: false
-*/
-	CompiledPackageCache *CompiledPackageCache `yaml:"compiled_package_cache,omitempty"`
-
-	/*Db - Descr: Password used for the director database Default: <nil>
-*/
-	Db *Db `yaml:"db,omitempty"`
 
 }

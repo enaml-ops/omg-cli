@@ -5,13 +5,13 @@ package health_monitor
 */
 type Resurrector struct {
 
-	/*MinimumDownJobs - Descr: If the total number of down jobs in a deployment is below this threshold, the resurrector will always request a down job be recreated Default: 5
-*/
-	MinimumDownJobs interface{} `yaml:"minimum_down_jobs,omitempty"`
-
 	/*PercentThreshold - Descr: Percentage of total jobs in a deployment that must be down for the resurrector to to stop sending recreate-job requests. Used in 'meltdown' situations so resurrector will not try to recreate the world. Default: 0.2
 */
 	PercentThreshold interface{} `yaml:"percent_threshold,omitempty"`
+
+	/*MinimumDownJobs - Descr: If the total number of down jobs in a deployment is below this threshold, the resurrector will always request a down job be recreated Default: 5
+*/
+	MinimumDownJobs interface{} `yaml:"minimum_down_jobs,omitempty"`
 
 	/*TimeThreshold - Descr: Time (in seconds) for which an alert in the resurrector is considered 'current'; alerts older than this are ignored when deciding to recreate a job. Default: 600
 */

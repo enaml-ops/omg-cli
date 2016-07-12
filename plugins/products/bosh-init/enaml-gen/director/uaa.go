@@ -5,16 +5,20 @@ package director
 */
 type Uaa struct {
 
-	/*SymmetricKey - Descr: Symmetric key to verify Uaa token Default: <nil>
-*/
-	SymmetricKey interface{} `yaml:"symmetric_key,omitempty"`
-
-	/*Url - Descr: Uaa URL Default: <nil>
+	/*Url - Descr: Uaa URL, specify either the url or the urls attribute Default: <nil>
 */
 	Url interface{} `yaml:"url,omitempty"`
 
 	/*PublicKey - Descr: Public key to verify Uaa token when token is encoded with asymmetric encryption Default: <nil>
 */
 	PublicKey interface{} `yaml:"public_key,omitempty"`
+
+	/*Urls - Descr: List of Uaa URLs, specify either the url or the urls attribute Default: <nil>
+*/
+	Urls interface{} `yaml:"urls,omitempty"`
+
+	/*SymmetricKey - Descr: Symmetric key to verify Uaa token Default: <nil>
+*/
+	SymmetricKey interface{} `yaml:"symmetric_key,omitempty"`
 
 }

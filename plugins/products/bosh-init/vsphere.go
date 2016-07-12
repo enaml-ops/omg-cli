@@ -79,8 +79,8 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 
 	boshJob := manifest.Jobs[0]
 	boshJob.AddTemplate(enaml.Template{Name: "vsphere_cpi", Release: "bosh-vsphere-cpi"})
-	boshJob.AddProperty("agent", agentProperty)
-	boshJob.AddProperty("vcenter", vcenterProperty)
+	boshJob.AddProperty(agentProperty)
+	boshJob.AddProperty(vcenterProperty)
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(NewVSphereCloudProvider(cfg.BoshPrivateIP, vcenterProperty, ntpProperty))
 	return manifest

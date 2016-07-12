@@ -5,21 +5,9 @@ package powerdns
 */
 type Db struct {
 
-	/*User - Descr: User for the PowerDNS database connection Default: bosh
-*/
-	User interface{} `yaml:"user,omitempty"`
-
 	/*Port - Descr: Port for the PowerDNS database connection Default: 5432
 */
 	Port interface{} `yaml:"port,omitempty"`
-
-	/*Adapter - Descr: Adapter for the PowerDNS database connection Default: postgres
-*/
-	Adapter interface{} `yaml:"adapter,omitempty"`
-
-	/*Database - Descr: Database for the PowerDNS database connection Default: bosh
-*/
-	Database interface{} `yaml:"database,omitempty"`
 
 	/*Password - Descr: Password for the PowerDNS database connection Default: <nil>
 */
@@ -28,5 +16,17 @@ type Db struct {
 	/*Host - Descr: Address for the PowerDNS database Default: 127.0.0.1
 */
 	Host interface{} `yaml:"host,omitempty"`
+
+	/*User - Descr: User for the PowerDNS database connection Default: bosh
+*/
+	User interface{} `yaml:"user,omitempty"`
+
+	/*Database - Descr: Database for the PowerDNS database connection Default: bosh
+*/
+	Database interface{} `yaml:"database,omitempty"`
+
+	/*Adapter - Descr: Adapter for the PowerDNS database connection Default: postgres
+*/
+	Adapter interface{} `yaml:"adapter,omitempty"`
 
 }

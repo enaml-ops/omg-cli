@@ -5,24 +5,16 @@ package vsphere_cpi
 */
 type Agent struct {
 
-	/*Nats - Descr: Address of the nats server Default: <nil>
+	/*Blobstore - Descr: Whether the agent blobstore plugin will always use path style for bucket access Default: <nil>
 */
-	Nats *Nats `yaml:"nats,omitempty"`
-
-	/*Blobstore - Descr: Agent blobstore threshold for multipart uploads Default: <nil>
-*/
-	Blobstore *Blobstore `yaml:"blobstore,omitempty"`
+	Blobstore *AgentBlobstore `yaml:"blobstore,omitempty"`
 
 	/*Mbus - Descr: Agent mbus Default: <nil>
 */
 	Mbus interface{} `yaml:"mbus,omitempty"`
 
-	/*Password - Descr: Password agent uses to connect to blobstore used by simple blobstore plugin Default: <nil>
+	/*Nats - Descr: Address of the nats server Default: <nil>
 */
-	Password interface{} `yaml:"password,omitempty"`
-
-	/*User - Descr: Username agent uses to connect to blobstore used by simple blobstore plugin Default: <nil>
-*/
-	User interface{} `yaml:"user,omitempty"`
+	Nats *AgentNats `yaml:"nats,omitempty"`
 
 }

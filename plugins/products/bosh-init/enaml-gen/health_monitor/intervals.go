@@ -9,6 +9,18 @@ type Intervals struct {
 */
 	PruneEvents interface{} `yaml:"prune_events,omitempty"`
 
+	/*AgentTimeout - Descr: Interval (in seconds) to consider an agent has timed out Default: 60
+*/
+	AgentTimeout interface{} `yaml:"agent_timeout,omitempty"`
+
+	/*RogueAgentAlert - Descr: Interval (in seconds) to consider an agent as rogue (an agent that is no part of any deployment) Default: 120
+*/
+	RogueAgentAlert interface{} `yaml:"rogue_agent_alert,omitempty"`
+
+	/*LogStats - Descr: Interval (in seconds) to log Health Monitor statistics Default: 60
+*/
+	LogStats interface{} `yaml:"log_stats,omitempty"`
+
 	/*PollDirector - Descr: Interval (in seconds) to get the list of managed VMs from Bosh Director Default: 60
 */
 	PollDirector interface{} `yaml:"poll_director,omitempty"`
@@ -16,18 +28,6 @@ type Intervals struct {
 	/*PollGracePeriod - Descr: Interval (in seconds) between discovering managed VMs and analyzing their status Default: 30
 */
 	PollGracePeriod interface{} `yaml:"poll_grace_period,omitempty"`
-
-	/*LogStats - Descr: Interval (in seconds) to log Health Monitor statistics Default: 60
-*/
-	LogStats interface{} `yaml:"log_stats,omitempty"`
-
-	/*RogueAgentAlert - Descr: Interval (in seconds) to consider an agent as rogue (an agent that is no part of any deployment) Default: 120
-*/
-	RogueAgentAlert interface{} `yaml:"rogue_agent_alert,omitempty"`
-
-	/*AgentTimeout - Descr: Interval (in seconds) to consider an agent has timed out Default: 60
-*/
-	AgentTimeout interface{} `yaml:"agent_timeout,omitempty"`
 
 	/*AnalyzeAgents - Descr: Interval (in seconds) to analyze the status of agents Default: 60
 */

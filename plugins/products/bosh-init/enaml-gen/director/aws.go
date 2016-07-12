@@ -5,49 +5,13 @@ package director
 */
 type Aws struct {
 
-	/*DefaultKeyName - Descr: Default ssh keypair used by aws cpi when creating vms Default: <nil>
-*/
-	DefaultKeyName interface{} `yaml:"default_key_name,omitempty"`
-
-	/*Ec2Endpoint - Descr: The service endpoint for Amazon EC2 (optional, if not supplied default region endpoint will be used) Default: <nil>
-*/
-	Ec2Endpoint interface{} `yaml:"ec2_endpoint,omitempty"`
-
-	/*AccessKeyId - Descr: AWS access_key_id for aws cpi Default: <nil>
-*/
-	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
-
-	/*ElbEndpoint - Descr: The service endpoint for Amazon Elastic Load Balancing (optional, if not supplied default region endpoint will be used) Default: <nil>
-*/
-	ElbEndpoint interface{} `yaml:"elb_endpoint,omitempty"`
-
-	/*DefaultSecurityGroups - Descr: Default security group used by aws cpi Default: <nil>
-*/
-	DefaultSecurityGroups interface{} `yaml:"default_security_groups,omitempty"`
-
-	/*SecretAccessKey - Descr: AWS secret_access_key for aws cpi Default: <nil>
-*/
-	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
-
-	/*DefaultIamInstanceProfile - Descr: Default IAM profile to be used by aws cpi Default: <nil>
-*/
-	DefaultIamInstanceProfile interface{} `yaml:"default_iam_instance_profile,omitempty"`
-
-	/*SslVerifyPeer - Descr: When true the HTTP handler validate server certificates for HTTPS requests Default: <nil>
-*/
-	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
-
-	/*MaxRetries - Descr: Max number of retries to connect to AWS Default: 2
-*/
-	MaxRetries interface{} `yaml:"max_retries,omitempty"`
-
 	/*Region - Descr: AWS Region used by aws cpi Default: <nil>
 */
 	Region interface{} `yaml:"region,omitempty"`
 
-	/*HttpReadTimeout - Descr: The number of seconds before the aws cpi should timeout while waiting for response Default: 60
+	/*Ec2Endpoint - Descr: The service endpoint for Amazon EC2 (optional, if not supplied default region endpoint will be used) Default: <nil>
 */
-	HttpReadTimeout interface{} `yaml:"http_read_timeout,omitempty"`
+	Ec2Endpoint interface{} `yaml:"ec2_endpoint,omitempty"`
 
 	/*CredentialsSource - Descr: AWS credentials (static / env_or_profile) Default: static
 */
@@ -57,9 +21,37 @@ type Aws struct {
 */
 	HttpWireTrace interface{} `yaml:"http_wire_trace,omitempty"`
 
+	/*DefaultSecurityGroups - Descr: Default security group used by aws cpi Default: <nil>
+*/
+	DefaultSecurityGroups interface{} `yaml:"default_security_groups,omitempty"`
+
 	/*Stemcell - Descr: AWS kernel id used by aws cpi Default: <nil>
 */
 	Stemcell *Stemcell `yaml:"stemcell,omitempty"`
+
+	/*DefaultKeyName - Descr: Default ssh keypair used by aws cpi when creating vms Default: <nil>
+*/
+	DefaultKeyName interface{} `yaml:"default_key_name,omitempty"`
+
+	/*SecretAccessKey - Descr: AWS secret_access_key for aws cpi Default: <nil>
+*/
+	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+
+	/*ElbEndpoint - Descr: The service endpoint for Amazon Elastic Load Balancing (optional, if not supplied default region endpoint will be used) Default: <nil>
+*/
+	ElbEndpoint interface{} `yaml:"elb_endpoint,omitempty"`
+
+	/*SslVerifyPeer - Descr: When true the HTTP handler validate server certificates for HTTPS requests Default: <nil>
+*/
+	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
+
+	/*HttpReadTimeout - Descr: The number of seconds before the aws cpi should timeout while waiting for response Default: 60
+*/
+	HttpReadTimeout interface{} `yaml:"http_read_timeout,omitempty"`
+
+	/*MaxRetries - Descr: Max number of retries to connect to AWS Default: 2
+*/
+	MaxRetries interface{} `yaml:"max_retries,omitempty"`
 
 	/*SslCaFile - Descr: The path to a CA cert bundle in PEM format Default: <nil>
 */
@@ -68,5 +60,13 @@ type Aws struct {
 	/*SslCaPath - Descr: The path the a CA cert directory Default: <nil>
 */
 	SslCaPath interface{} `yaml:"ssl_ca_path,omitempty"`
+
+	/*DefaultIamInstanceProfile - Descr: Default IAM profile to be used by aws cpi Default: <nil>
+*/
+	DefaultIamInstanceProfile interface{} `yaml:"default_iam_instance_profile,omitempty"`
+
+	/*AccessKeyId - Descr: AWS access_key_id for aws cpi Default: <nil>
+*/
+	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
 
 }

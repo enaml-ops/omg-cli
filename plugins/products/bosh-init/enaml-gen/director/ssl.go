@@ -5,12 +5,12 @@ package director
 */
 type Ssl struct {
 
-	/*Key - Descr: SSL private key for director (PEM encoded) Default: <nil>
-*/
-	Key interface{} `yaml:"key,omitempty"`
-
 	/*Cert - Descr: SSL Certificate for director (PEM encoded) Default: <nil>
 */
 	Cert interface{} `yaml:"cert,omitempty"`
+
+	/*Key - Descr: SSL private key for director (PEM encoded) Default: <nil>
+*/
+	Key interface{} `yaml:"key,omitempty"`
 
 }

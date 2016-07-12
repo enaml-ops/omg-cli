@@ -5,52 +5,52 @@ package director
 */
 type Options struct {
 
-	/*CredentialsSource - Descr: AWS credentials (static / env_or_profile) Default: static
-*/
-	CredentialsSource interface{} `yaml:"credentials_source,omitempty"`
-
-	/*AccessKeyId - Descr: AWS access_key_id used for the compiled package cache Default: <nil>
-*/
-	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
-
-	/*SslVerifyPeer - Descr: Verify the SSL certificate used on the blobstore? Default: true
-*/
-	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
-
 	/*BucketName - Descr: AWS S3 Bucket used for the compiled package cache Default: <nil>
 */
 	BucketName interface{} `yaml:"bucket_name,omitempty"`
-
-	/*UseSsl - Descr: Whether the simple blobstore plugin should use SSL to connect to the blobstore server Default: true
-*/
-	UseSsl interface{} `yaml:"use_ssl,omitempty"`
-
-	/*SecretAccessKey - Descr: AWS secret_access_key used for the compiled package cache Default: <nil>
-*/
-	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
-
-	/*S3MultipartThreshold - Descr: Byte threshold at which blob uploads should be broken into multi-part FORM uploads instead of single PUT Default: 16777216
-*/
-	S3MultipartThreshold interface{} `yaml:"s3_multipart_threshold,omitempty"`
-
-	/*S3ForcePathStyle - Descr: Whether s3 blobstore plugin will always use path style for bucket access Default: false
-*/
-	S3ForcePathStyle interface{} `yaml:"s3_force_path_style,omitempty"`
-
-	/*S3SignatureVersion - Descr: Signature version of the blobstore used by s3 blobstore plugin (optional, if not provided the s3 client decides which version to use) Default: <nil>
-*/
-	S3SignatureVersion interface{} `yaml:"s3_signature_version,omitempty"`
 
 	/*S3Port - Descr: Port of blobstore server used by s3 blobstore plugin Default: 443
 */
 	S3Port interface{} `yaml:"s3_port,omitempty"`
 
+	/*CredentialsSource - Descr: AWS credentials (static / env_or_profile) Default: static
+*/
+	CredentialsSource interface{} `yaml:"credentials_source,omitempty"`
+
+	/*ServerSideEncryption - Descr: Server-side encryption algorithm used when storing blobs in S3 (Optional - "AES256"|"aws:kms") Default: <nil>
+*/
+	ServerSideEncryption interface{} `yaml:"server_side_encryption,omitempty"`
+
+	/*AccessKeyId - Descr: AWS access_key_id used for the compiled package cache Default: <nil>
+*/
+	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
+
 	/*Host - Descr: Host of blobstore server used for compiled package cache Default: <nil>
 */
 	Host interface{} `yaml:"host,omitempty"`
 
+	/*UseSsl - Descr: Whether the simple blobstore plugin should use SSL to connect to the blobstore server Default: true
+*/
+	UseSsl interface{} `yaml:"use_ssl,omitempty"`
+
+	/*SslVerifyPeer - Descr: Verify the SSL certificate used on the blobstore? Default: true
+*/
+	SslVerifyPeer interface{} `yaml:"ssl_verify_peer,omitempty"`
+
+	/*S3SignatureVersion - Descr: Signature version of the blobstore used by s3 blobstore plugin (optional, if not provided the s3 client decides which version to use) Default: <nil>
+*/
+	S3SignatureVersion interface{} `yaml:"s3_signature_version,omitempty"`
+
 	/*Port - Descr: Port of blobstore server used for compiled package cache Default: 25250
 */
 	Port interface{} `yaml:"port,omitempty"`
+
+	/*SecretAccessKey - Descr: AWS secret_access_key used for the compiled package cache Default: <nil>
+*/
+	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+
+	/*SseKmsKeyId - Descr: AWS KMS key ID to use for object encryption. All GET and PUT requests for an object protected by AWS KMS will fail if not made via SSL or using SigV4. Default: <nil>
+*/
+	SseKmsKeyId interface{} `yaml:"sse_kms_key_id,omitempty"`
 
 }

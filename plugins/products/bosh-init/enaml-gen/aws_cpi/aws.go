@@ -5,52 +5,52 @@ package aws_cpi
 */
 type Aws struct {
 
-	/*Ec2Endpoint - Descr: AWS EC2 service endpoint, without protocol/scheme (Optional: default endpoint will be constructed from region if not specified) Default: <nil>
+	/*DefaultSecurityGroups - Descr: Default security groups for new VMs (required) Default: <nil>
 */
-	Ec2Endpoint interface{} `yaml:"ec2_endpoint,omitempty"`
-
-	/*Stemcell - Descr: AWS kernel id used by aws cpi Default: <nil>
-*/
-	Stemcell *Stemcell `yaml:"stemcell,omitempty"`
+	DefaultSecurityGroups interface{} `yaml:"default_security_groups,omitempty"`
 
 	/*MaxRetries - Descr: The maximum number of times AWS service errors and throttling errors should be retried. There is an exponential backoff in between retries, so the more retries the longer it can take to fail. Default: 8
 */
 	MaxRetries interface{} `yaml:"max_retries,omitempty"`
 
-	/*DefaultIamInstanceProfile - Descr: Default AWS iam_instance_profile for the aws cpi Default: <nil>
+	/*Ec2Endpoint - Descr: AWS EC2 service endpoint, without protocol/scheme (Optional: default endpoint will be constructed from region if not specified) Default: <nil>
 */
-	DefaultIamInstanceProfile interface{} `yaml:"default_iam_instance_profile,omitempty"`
-
-	/*DefaultKeyName - Descr: Default SSH keypair used for new VMs (required) Default: <nil>
-*/
-	DefaultKeyName interface{} `yaml:"default_key_name,omitempty"`
-
-	/*DefaultSecurityGroups - Descr: Default security groups for new VMs (required) Default: <nil>
-*/
-	DefaultSecurityGroups interface{} `yaml:"default_security_groups,omitempty"`
-
-	/*ElbEndpoint - Descr: AWS ELB service endpoint, without protocol/scheme (Optional: default endpoint will be constructed from region if not specified) Default: <nil>
-*/
-	ElbEndpoint interface{} `yaml:"elb_endpoint,omitempty"`
-
-	/*AccessKeyId - Descr: AWS access_key_id for the aws cpi (Required when aws.credentials_source is set to `static`) Default: <nil>
-*/
-	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
-
-	/*CredentialsSource - Descr: Where to get AWS credentials for the aws cpi. This can be set to `static` to use an `access_key_id` and `secret_access_key` or `env_or_profile` to get the credentials from environment variables or an EC2 instance profile. Default: static
-*/
-	CredentialsSource interface{} `yaml:"credentials_source,omitempty"`
-
-	/*SecretAccessKey - Descr: AWS secret_access_key for the aws cpi (Required when aws.credentials_source is set to `static`) Default: <nil>
-*/
-	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+	Ec2Endpoint interface{} `yaml:"ec2_endpoint,omitempty"`
 
 	/*Region - Descr: AWS region name (Required unless both ec2_endpoint and elb_endpoint are specified) Default: <nil>
 */
 	Region interface{} `yaml:"region,omitempty"`
 
+	/*AccessKeyId - Descr: AWS access_key_id for the aws cpi (Required when aws.credentials_source is set to `static`) Default: <nil>
+*/
+	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
+
 	/*ConnectionOptions - Descr: All required custom CA certificates Default: <nil>
 */
 	ConnectionOptions *ConnectionOptions `yaml:"connection_options,omitempty"`
+
+	/*CredentialsSource - Descr: Where to get AWS credentials for the aws cpi. This can be set to `static` to use an `access_key_id` and `secret_access_key` or `env_or_profile` to get the credentials from environment variables or an EC2 instance profile. Default: static
+*/
+	CredentialsSource interface{} `yaml:"credentials_source,omitempty"`
+
+	/*DefaultIamInstanceProfile - Descr: Default AWS iam_instance_profile for the aws cpi Default: <nil>
+*/
+	DefaultIamInstanceProfile interface{} `yaml:"default_iam_instance_profile,omitempty"`
+
+	/*SecretAccessKey - Descr: AWS secret_access_key for the aws cpi (Required when aws.credentials_source is set to `static`) Default: <nil>
+*/
+	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+
+	/*Stemcell - Descr: AWS kernel id used by aws cpi Default: <nil>
+*/
+	Stemcell *Stemcell `yaml:"stemcell,omitempty"`
+
+	/*ElbEndpoint - Descr: AWS ELB service endpoint, without protocol/scheme (Optional: default endpoint will be constructed from region if not specified) Default: <nil>
+*/
+	ElbEndpoint interface{} `yaml:"elb_endpoint,omitempty"`
+
+	/*DefaultKeyName - Descr: Default SSH keypair used for new VMs (required) Default: <nil>
+*/
+	DefaultKeyName interface{} `yaml:"default_key_name,omitempty"`
 
 }

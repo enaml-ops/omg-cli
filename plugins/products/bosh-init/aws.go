@@ -68,8 +68,8 @@ func NewAWSBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Name:      "public",
 		StaticIPs: []string{cfg.AWSElasticIP},
 	})
-	boshJob.AddProperty("agent", agentProperty)
-	boshJob.AddProperty("aws", awsProperty)
+	boshJob.AddProperty(agentProperty)
+	boshJob.AddProperty(awsProperty)
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(NewAWSCloudProvider(cfg.AWSElasticIP, cfg.AWSPEMFilePath, awsProperty, ntpProperty))
 	return manifest

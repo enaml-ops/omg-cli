@@ -5,29 +5,29 @@ package powerdns
 */
 type Dns struct {
 
-	/*Db - Descr: Address for the PowerDNS database Default: 127.0.0.1
+	/*DistributorThreads - Descr: Number of threads to query the backend, for each receiver thread Default: 2
 */
-	Db *Db `yaml:"db,omitempty"`
-
-	/*Address - Descr: Address of the primary PowerDNS instance Default: <nil>
-*/
-	Address interface{} `yaml:"address,omitempty"`
+	DistributorThreads interface{} `yaml:"distributor_threads,omitempty"`
 
 	/*Recursor - Descr: If recursion is desired, IP address of a recursing nameserver (optional) Default: <nil>
 */
 	Recursor interface{} `yaml:"recursor,omitempty"`
 
-	/*Webserver - Descr: IP address PowerDNS webserver listens on (optional) Default: 0.0.0.0
+	/*Db - Descr: Adapter for the PowerDNS database connection Default: postgres
 */
-	Webserver *Webserver `yaml:"webserver,omitempty"`
-
-	/*DistributorThreads - Descr: Number of threads to query the backend, for each receiver thread Default: 2
-*/
-	DistributorThreads interface{} `yaml:"distributor_threads,omitempty"`
+	Db *Db `yaml:"db,omitempty"`
 
 	/*ReceiverThreads - Descr: Number of sockets the powerdns process will open Default: 2
 */
 	ReceiverThreads interface{} `yaml:"receiver_threads,omitempty"`
+
+	/*Address - Descr: Address of the primary PowerDNS instance Default: <nil>
+*/
+	Address interface{} `yaml:"address,omitempty"`
+
+	/*Webserver - Descr: Password clients must use to access PowerDNS webserver (optional) Default: <nil>
+*/
+	Webserver *Webserver `yaml:"webserver,omitempty"`
 
 	/*QueryLocalAddress - Descr: IP address to use as a source address for sending queries (optional; useful with multiple IP addresses) Default: <nil>
 */

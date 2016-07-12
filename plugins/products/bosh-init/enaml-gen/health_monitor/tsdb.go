@@ -5,12 +5,12 @@ package health_monitor
 */
 type Tsdb struct {
 
-	/*Port - Descr: Port of TSDB to connect to Default: <nil>
-*/
-	Port interface{} `yaml:"port,omitempty"`
-
 	/*Address - Descr: Address of TSDB to connect to Default: <nil>
 */
 	Address interface{} `yaml:"address,omitempty"`
+
+	/*Port - Descr: Port of TSDB to connect to Default: <nil>
+*/
+	Port interface{} `yaml:"port,omitempty"`
 
 }
