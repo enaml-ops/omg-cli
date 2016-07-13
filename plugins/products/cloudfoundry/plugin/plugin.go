@@ -244,10 +244,10 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 
 		//Vault stuff
 		createStringFlag("vault-domain", "the location of your vault server (ie. http://10.0.0.1:8200)"),
-		createStringFlag("vault-hash-passwords", "the hashname of your secret (ie. secret/pcf-1-passwords"),
+		createStringFlag("vault-hash-password", "the hashname of your secret (ie. secret/pcf-1-passwords"),
 		createStringFlag("vault-hash-keycert", "the hashname of your secret (ie. secret/pcf-1-keycert"),
-		createStringFlag("vault-hash-ips", "the hashname of your secret (ie. secret/pcf-1-ips"),
-		createStringFlag("vault-hash-hosts", "the hashname of your secret (ie. secret/pcf-1-hosts"),
+		createStringFlag("vault-hash-ip", "the hashname of your secret (ie. secret/pcf-1-ips"),
+		createStringFlag("vault-hash-host", "the hashname of your secret (ie. secret/pcf-1-hosts"),
 		createStringFlag("vault-token", "the token to make connections to your vault"),
 		createBoolTFlag("vault-active", "use the data which is stored in vault for the flag values it contains"),
 	}
@@ -294,6 +294,7 @@ func (s *Plugin) GetMeta() product.Meta {
 //GetProduct -
 func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	c := pluginutil.NewContext(args, s.GetFlags())
+	s.vaultDecorate(c)
 	dm := enaml.NewDeploymentManifest([]byte(``))
 	dm.SetName(DeploymentName)
 
@@ -325,6 +326,42 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	}
 
 	return dm.Bytes()
+}
+
+func (s *Plugin) vaultDecorate(c *cli.Context) {
+
+	if s.hasValidVaultFlags(c) {
+		vault := pluginutil.NewVaultUnmarshal(c.String("vault-domain"), c.String("vault-token"), pluginutil.DefaultClient())
+		vault.UnmarshalFlags(c.String("vault-hash-password"), c)
+		vault.UnmarshalFlags(c.String("vault-hash-keycert"), c)
+		vault.UnmarshalFlags(c.String("vault-hash-ip"), c)
+		vault.UnmarshalFlags(c.String("vault-hash-host"), c)
+
+	} else {
+		lo.G.Debug("complete vault flagset not found:",
+			"active: ", c.BoolT("vault-active"),
+			"domain: ", c.String("vault-domain"),
+			"passhash: ", c.String("vault-hash-password"),
+			"keycerthash: ", c.String("vault-hash-keycert"),
+			"iphash: ", c.String("vault-hash-ip"),
+			"hosthash: ", c.String("vault-hash-host"),
+			"vaulttoken: ", c.String("vault-token"),
+		)
+
+		if c.BoolT("vault-active") {
+			lo.G.Panic("you've activated vault, but have not provided a complete set of values... exiting program now")
+		}
+	}
+}
+
+func (s *Plugin) hasValidVaultFlags(c *cli.Context) bool {
+	return c.BoolT("vault-active") &&
+		c.String("vault-domain") != "" &&
+		c.String("vault-hash-password") != "" &&
+		c.String("vault-hash-keycert") != "" &&
+		c.String("vault-hash-ip") != "" &&
+		c.String("vault-hash-host") != "" &&
+		c.String("vault-token") != ""
 }
 
 //GetContext -
