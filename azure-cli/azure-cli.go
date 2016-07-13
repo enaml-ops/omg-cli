@@ -9,7 +9,6 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
-	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
 )
 
@@ -40,20 +39,22 @@ func checkRequired(name string, c *cli.Context) {
 }
 
 func GetFlags() []cli.Flag {
-	return []cli.Flag{
-		cli.StringFlag{Name: "name", Value: "bosh", Usage: "the vm name to be created in your azure account"},
-		cli.StringFlag{Name: "cidr", Value: "10.0.0.0/24", Usage: "the network cidr range for your bosh deployment"},
-		cli.StringFlag{Name: "gateway", Value: "10.0.0.1", Usage: "the gateway ip"},
-		cli.StringSliceFlag{Name: "dns", Value: &cli.StringSlice{"168.63.129.16"}, Usage: "the dns ip"},
-		cli.StringFlag{Name: "bosh-release-ver", Value: "256.2", Usage: "the version of the bosh release you wish to use (found on bosh.io)"},
-		cli.StringFlag{Name: "bosh-private-ip", Value: "10.0.0.4", Usage: "the private ip for the bosh vm to be created in azure"},
-		cli.StringFlag{Name: "bosh-cpi-release-ver", Value: "11", Usage: "the bosh cpi version you wish to use (found on bosh.io)"},
-		cli.StringFlag{Name: "go-agent-ver", Value: "3169", Usage: "the go agent version you wish to use (found on bosh.io)"},
-		cli.StringFlag{Name: "bosh-release-sha", Value: "ff2f4e16e02f66b31c595196052a809100cfd5a8", Usage: "sha1 of the bosh release being used (found on bosh.io)"},
-		cli.StringFlag{Name: "bosh-cpi-release-sha", Value: "395fc05c11ead59711188ebd0a684842a03dc93d", Usage: "sha1 of the cpi release being used (found on bosh.io)"},
-		cli.StringFlag{Name: "go-agent-sha", Value: "ff13c47ac7ce121dee6153c1564bd8965edf9f59", Usage: "sha1 of the go agent being use (found on bosh.io)"},
-		cli.StringFlag{Name: "director-name", Value: "my-bosh", Usage: "the name of your director"},
-		cli.StringFlag{Name: "azure-public-ip", Value: "", Usage: "the static/public ip of your bosh"},
+	boshdefaults := boshinit.BoshDefaults{
+		CIDR:               "10.0.0.0/24",
+		Gateway:            "10.0.0.1",
+		DNS:                &cli.StringSlice{"168.63.129.16"},
+		BoshReleaseVersion: "256.2",
+		BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		CPIReleaseVersion:  "11",
+		CPIReleaseSHA:      "395fc05c11ead59711188ebd0a684842a03dc93d",
+		GOAgentVersion:     "3169",
+		GOAgentSHA:         "ff13c47ac7ce121dee6153c1564bd8965edf9f59",
+		PrivateIP:          "10.0.0.4",
+		NtpServers:         &cli.StringSlice{"0.pool.ntp.org", "1.pool.ntp.org"},
+	}
+
+	boshFlags := boshinit.BoshFlags(boshdefaults)
+	azureFlags := []cli.Flag{
 		cli.StringFlag{Name: "azure-instance-size", Value: "Standard_D1", Usage: "the instance size of your bosh"},
 		cli.StringFlag{Name: "azure-vnet", Value: "", Usage: "your azure vnet name"},
 		cli.StringFlag{Name: "azure-subnet", Value: "", Usage: "your azure subnet name"},
@@ -68,14 +69,20 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "azure-ssh-user", Value: "", Usage: "azure ssh user"},
 		cli.StringFlag{Name: "azure-environment", Value: "AzureCloud", Usage: "the name of your azure environment"},
 		cli.StringFlag{Name: "azure-private-key-path", Value: "", Usage: "the path to your private bosh key"},
-		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
+	for _, flag := range azureFlags {
+		boshFlags = append(boshFlags, flag)
+	}
+	return boshFlags
 }
 
 func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
+		var boshBase *boshinit.BoshBase
+		if boshBase, e = boshinit.NewBoshBase(c); e != nil {
+			return
+		}
 		var publicKey string
-		checkRequired("azure-public-ip", c)
 		checkRequired("azure-vnet", c)
 		checkRequired("azure-subnet", c)
 		checkRequired("azure-subscription-id", c)
@@ -97,20 +104,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		}
 
 		manifest := boshinit.NewAzureBosh(boshinit.BoshInitConfig{
-			Name:                      c.String("name"),
-			BoshCIDR:                  c.String("cidr"),
-			BoshGateway:               c.String("gateway"),
-			BoshDNS:                   utils.ClearDefaultStringSliceValue(c.StringSlice("dns")...),
-			BoshReleaseVersion:        c.String("bosh-release-ver"),
-			BoshPrivateIP:             c.String("bosh-private-ip"),
-			BoshCPIReleaseVersion:     c.String("bosh-cpi-release-ver"),
-			GoAgentVersion:            c.String("go-agent-ver"),
-			BoshReleaseSHA:            c.String("bosh-release-sha"),
-			BoshCPIReleaseSHA:         c.String("bosh-cpi-release-sha"),
-			GoAgentSHA:                c.String("go-agent-sha"),
-			BoshDirectorName:          c.String("director-name"),
 			BoshInstanceSize:          c.String("azure-instance-size"),
-			AzurePublicIP:             c.String("azure-public-ip"),
 			AzureVnet:                 c.String("azure-vnet"),
 			AzureSubnet:               c.String("azure-subnet"),
 			AzureSubscriptionID:       c.String("azure-subscription-id"),
@@ -124,7 +118,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AzureSSHUser:              c.String("azure-ssh-user"),
 			AzureEnvironment:          c.String("azure-environment"),
 			AzurePrivateKeyPath:       c.String("azure-private-key-path"),
-		})
+		}, boshBase)
 
 		if yamlString, err := enaml.Paint(manifest); err == nil {
 

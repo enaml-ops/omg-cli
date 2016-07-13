@@ -9,15 +9,14 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/cpi"
 )
 
-func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
-	var ntpProperty = NewNTP("0.pool.ntp.org", "1.pool.ntp.org")
+func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
 	var cpiTemplate = enaml.Template{Name: "cpi", Release: "bosh-azure-cpi"}
-	var manifest = NewBoshDeploymentBase(cfg, "cpi", ntpProperty)
+	manifest := boshbase.CreateDeploymentManifest()
 
 	manifest.AddRelease(enaml.Release{
 		Name: "bosh-azure-cpi",
-		URL:  "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-azure-cpi-release?v=" + cfg.BoshCPIReleaseVersion,
-		SHA1: cfg.BoshCPIReleaseSHA,
+		URL:  "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-azure-cpi-release?v=" + boshbase.CPIReleaseVersion,
+		SHA1: boshbase.CPIReleaseSHA,
 	})
 
 	resourcePool := enaml.ResourcePool{
@@ -25,8 +24,8 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Network: "private",
 	}
 	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-trusty-go_agent?v=" + cfg.GoAgentVersion,
-		SHA1: cfg.GoAgentSHA,
+		URL:  "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-trusty-go_agent?v=" + boshbase.GOAgentVersion,
+		SHA1: boshbase.GOAgentSHA,
 	}
 	resourcePool.CloudProperties = azurecloudproperties.ResourcePool{
 		InstanceType: cfg.BoshInstanceSize,
@@ -38,9 +37,9 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	})
 	net := enaml.NewManualNetwork("private")
 	net.AddSubnet(enaml.Subnet{
-		Range:   cfg.BoshCIDR,
-		Gateway: cfg.BoshGateway,
-		DNS:     cfg.BoshDNS,
+		Range:   boshbase.NetworkCIDR,
+		Gateway: boshbase.NetworkGateway,
+		DNS:     boshbase.NetworkDNS,
 		CloudProperties: azurecloudproperties.Network{
 			VnetName:   cfg.AzureVnet,
 			SubnetName: cfg.AzureSubnet,
@@ -52,10 +51,10 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	boshJob.AddTemplate(cpiTemplate)
 	boshJob.AddNetwork(enaml.Network{
 		Name:      "public",
-		StaticIPs: []string{cfg.AzurePublicIP},
+		StaticIPs: []string{boshbase.PublicIP},
 	})
 	var agentProperty = aws_cpi.Agent{
-		Mbus: "nats://nats:nats-password@" + cfg.BoshPrivateIP + ":4222",
+		Mbus: "nats://nats:nats-password@" + boshbase.PrivateIP + ":4222",
 	}
 	boshJob.AddProperty(agentProperty)
 	azureProperty := NewAzureProperty(
@@ -72,7 +71,7 @@ func NewAzureBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	)
 	boshJob.AddProperty(azureProperty)
 	manifest.Jobs[0] = boshJob
-	manifest.SetCloudProvider(NewAzureCloudProvider(azureProperty, cpiTemplate, cfg.AzurePublicIP, cfg.AzurePrivateKeyPath, ntpProperty))
+	manifest.SetCloudProvider(NewAzureCloudProvider(azureProperty, cpiTemplate, boshbase.PublicIP, cfg.AzurePrivateKeyPath, boshbase.NtpServers))
 	return manifest
 }
 

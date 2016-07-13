@@ -8,9 +8,10 @@ import (
 )
 
 // NewVSphereBosh creates a new enaml deployment manifest for vSphere
-func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
-	var ntpProperty = NewNTP("0.pool.ntp.org", "1.pool.ntp.org")
-	var manifest = NewBoshDeploymentBase(cfg, "vsphere_cpi", ntpProperty)
+func NewVSphereBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
+	//var manifest = NewBoshBase(cfg, "vsphere_cpi", ntpProperty).GetDeploymentManifest()
+
+	manifest := boshbase.CreateDeploymentManifest()
 
 	persistentDatastorePattern := cfg.VSpherePersistentDatastorePattern
 	if len(persistentDatastorePattern) == 0 {
@@ -32,13 +33,13 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	}
 
 	var agentProperty = vsphere_cpi.Agent{
-		Mbus: fmt.Sprintf("nats://nats:nats-password@%s:4222", cfg.BoshPrivateIP),
+		Mbus: fmt.Sprintf("nats://nats:nats-password@%s:4222", boshbase.PrivateIP),
 	}
 
 	manifest.AddRelease(enaml.Release{
 		Name: "bosh-vsphere-cpi",
-		URL:  "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-vsphere-cpi-release?v=" + cfg.BoshCPIReleaseVersion,
-		SHA1: cfg.BoshCPIReleaseSHA,
+		URL:  "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-vsphere-cpi-release?v=" + boshbase.CPIReleaseVersion,
+		SHA1: boshbase.CPIReleaseSHA,
 	})
 
 	resourcePool := enaml.ResourcePool{
@@ -46,8 +47,8 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 		Network: "private",
 	}
 	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=" + cfg.GoAgentVersion,
-		SHA1: cfg.GoAgentSHA,
+		URL:  "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=" + boshbase.GOAgentVersion,
+		SHA1: boshbase.GOAgentSHA,
 	}
 	resourcePool.CloudProperties = VSpherecloudpropertiesResourcePool{
 		CPU:  2,
@@ -82,7 +83,7 @@ func NewVSphereBosh(cfg BoshInitConfig) *enaml.DeploymentManifest {
 	boshJob.AddProperty(agentProperty)
 	boshJob.AddProperty(vcenterProperty)
 	manifest.Jobs[0] = boshJob
-	manifest.SetCloudProvider(NewVSphereCloudProvider(cfg.BoshPrivateIP, vcenterProperty, ntpProperty))
+	manifest.SetCloudProvider(NewVSphereCloudProvider(boshbase.PrivateIP, vcenterProperty, boshbase.NtpServers))
 	return manifest
 }
 

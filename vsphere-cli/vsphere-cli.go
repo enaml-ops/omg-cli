@@ -40,17 +40,22 @@ func checkRequired(name string, c *cli.Context) {
 
 // GetFlags returns the available CLI flags
 func GetFlags() []cli.Flag {
-	return []cli.Flag{
-		cli.StringFlag{Name: "name", Value: "bosh", Usage: "the bosh director vm name to be created in vsphere"},
-		cli.StringFlag{Name: "bosh-release-ver", Value: "256.2", Usage: "the version of the bosh release you wish to use (found on bosh.io)"},
-		cli.StringFlag{Name: "bosh-private-ip", Value: "10.0.0.6", Usage: "the private ip for the bosh vm to be created in vsphere"},
-		cli.StringFlag{Name: "bosh-cpi-release-ver", Value: "22", Usage: "the bosh cpi version you wish to use (found on bosh.io)"},
-		cli.StringFlag{Name: "go-agent-ver", Value: "3232.4", Usage: "the go agent version you wish to use (found on bosh.io)"},
-		cli.StringFlag{Name: "bosh-release-sha", Value: "ff2f4e16e02f66b31c595196052a809100cfd5a8", Usage: "sha1 of the bosh release being used (found on bosh.io)"},
-		cli.StringFlag{Name: "bosh-cpi-release-sha", Value: "dd1827e5f4dfc37656017c9f6e48441f51a7ab73", Usage: "sha1 of the cpi release being used (found on bosh.io)"},
-		cli.StringFlag{Name: "go-agent-sha", Value: "27ec32ddbdea13e3025700206388ae5882a23c67", Usage: "sha1 of the go agent being use (found on bosh.io)"},
-		cli.StringFlag{Name: "director-name", Value: "my-bosh", Usage: "the name of your director"},
-		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
+	boshdefaults := boshinit.BoshDefaults{
+		CIDR:               "10.0.0.0/24",
+		Gateway:            "10.0.0.1",
+		DNS:                &cli.StringSlice{"10.0.0.2"},
+		BoshReleaseVersion: "256.2",
+		BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		CPIReleaseVersion:  "22",
+		CPIReleaseSHA:      "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
+		GOAgentVersion:     "3232.4",
+		GOAgentSHA:         "27ec32ddbdea13e3025700206388ae5882a23c67",
+		PrivateIP:          "10.0.0.6",
+		NtpServers:         &cli.StringSlice{"0.pool.ntp.org", "1.pool.ntp.org"},
+	}
+
+	boshFlags := boshinit.BoshFlags(boshdefaults)
+	vsphereFlags := []cli.Flag{
 		// vsphere specific flags
 		cli.StringFlag{Name: "vsphere-address", Value: "", Usage: "IP of the vCenter"},
 		cli.StringFlag{Name: "vsphere-user", Value: "", Usage: "vSphere user"},
@@ -68,11 +73,19 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "vsphere-subnet1-gateway", Value: "10.0.0.1", Usage: "IP of the default gateway for subnet1"},
 		cli.StringSliceFlag{Name: "vsphere-subnet1-dns", Value: &cli.StringSlice{"10.0.0.2"}, Usage: "IP of the DNS server(s) for subnet1"},
 	}
+	for _, flag := range vsphereFlags {
+		boshFlags = append(boshFlags, flag)
+	}
+	return boshFlags
 }
 
 // GetAction returns a function action that can be registered with the CLI
 func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
+		var boshBase *boshinit.BoshBase
+		if boshBase, e = boshinit.NewBoshBase(c); e != nil {
+			return
+		}
 		checkRequired("vsphere-address", c)
 		checkRequired("vsphere-user", c)
 		checkRequired("vsphere-password", c)
@@ -85,15 +98,6 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		checkRequired("vsphere-subnet1-name", c)
 
 		manifest := boshinit.NewVSphereBosh(boshinit.BoshInitConfig{
-			Name:                  c.String("name"),
-			BoshReleaseVersion:    c.String("bosh-release-ver"),
-			BoshPrivateIP:         c.String("bosh-private-ip"),
-			BoshCPIReleaseVersion: c.String("bosh-cpi-release-ver"),
-			GoAgentVersion:        c.String("go-agent-ver"),
-			BoshReleaseSHA:        c.String("bosh-release-sha"),
-			BoshCPIReleaseSHA:     c.String("bosh-cpi-release-sha"),
-			GoAgentSHA:            c.String("go-agent-sha"),
-			BoshDirectorName:      c.String("director-name"),
 			// vsphere specific
 			VSphereAddress:                    c.String("vsphere-address"),
 			VSphereUser:                       c.String("vsphere-user"),
@@ -111,7 +115,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 				Gateway: c.String("vsphere-subnet1-gateway"),
 				DNS:     utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-subnet1-dns")...),
 			}},
-		})
+		}, boshBase)
 
 		if yamlString, err := enaml.Paint(manifest); err == nil {
 

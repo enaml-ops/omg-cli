@@ -7,24 +7,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("NewAWSBosh", func() {
+var _ = Describe("NewAzureBosh", func() {
 	Describe("given the function", func() {
 		Context("when called w/ valid parameters", func() {
 			var boshConfig = BoshInitConfig{
-				Name:                      "bosh",
-				BoshReleaseVersion:        "256.2",
-				BoshPrivateIP:             "10.0.0.4",
-				BoshCPIReleaseVersion:     "11",
-				GoAgentVersion:            "3012",
-				BoshReleaseSHA:            "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-				BoshCPIReleaseSHA:         "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-				GoAgentSHA:                "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
 				BoshInstanceSize:          "Standard_D1",
-				BoshDirectorName:          "my-bosh",
-				BoshCIDR:                  "10.0.0.0/24",
-				BoshGateway:               "10.0.0.1",
-				BoshDNS:                   []string{"168.63.129.16"},
-				AzurePublicIP:             "x.x.x.x",
 				AzureVnet:                 "something",
 				AzureSubnet:               "sub-somthing",
 				AzureSubscriptionID:       "azure-subscription-id",
@@ -39,10 +26,24 @@ var _ = Describe("NewAWSBosh", func() {
 				AzureEnvironment:          "AzureCloud",
 				AzurePrivateKeyPath:       "./bosh",
 			}
+			var boshBase = &BoshBase{
+				BoshReleaseVersion: "256.2",
+				PrivateIP:          "10.0.0.4",
+				PublicIP:           "x.x.x.x",
+				CPIReleaseVersion:  "11",
+				GOAgentVersion:     "3012",
+				BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+				CPIReleaseSHA:      "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
+				GOAgentSHA:         "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
+				NetworkCIDR:        "10.0.0.0/24",
+				NetworkGateway:     "10.0.0.1",
+				NetworkDNS:         []string{"10.0.0.2"},
+				DirectorName:       "my-bosh",
+			}
 			var manifest *enaml.DeploymentManifest
 
 			BeforeEach(func() {
-				manifest = NewAzureBosh(boshConfig)
+				manifest = NewAzureBosh(boshConfig, boshBase)
 			})
 
 			It("then it should be using the azure stemcell", func() {
@@ -70,7 +71,7 @@ var _ = Describe("NewAWSBosh", func() {
 						r = append(r, v.Name)
 					}
 					return
-				}()).Should(ConsistOf("nats", "postgres", "blobstore", "director", "health_monitor", "uaa", "uaa_postgres", "cpi"))
+				}()).Should(ConsistOf("nats", "postgres", "blobstore", "director", "health_monitor", "registry", "uaa", "cpi"))
 			})
 
 			It("then it should properly define job networks", func() {

@@ -7,4 +7,4 @@ if [[ "$isinit" == "init" ]]; then
     local=""
 fi
 wercker --verbose --environment ".testrunner_env_defaults" dev --git-domain github.com --git-owner enaml-ops --git-repository omg-cli ${local}
-rm -fR _builds _steps _projects
+rm -fR _builds _steps _projects .wercker

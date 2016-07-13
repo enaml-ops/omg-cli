@@ -12,15 +12,6 @@ var _ = Describe("NewVSphereBosh", func() {
 	Describe("given the function", func() {
 		Context("when called w/ valid parameters", func() {
 			var boshConfig = BoshInitConfig{
-				Name:                              "bosh",
-				BoshReleaseVersion:                "256.2",
-				BoshPrivateIP:                     "172.16.1.6",
-				BoshCPIReleaseVersion:             "22",
-				GoAgentVersion:                    "3232.4",
-				BoshReleaseSHA:                    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-				BoshCPIReleaseSHA:                 "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
-				GoAgentSHA:                        "27ec32ddbdea13e3025700206388ae5882a23c67",
-				BoshDirectorName:                  "my-bosh",
 				VSphereAddress:                    "172.16.1.2",
 				VSphereUser:                       "vsadmin",
 				VSpherePassword:                   "secret",
@@ -38,10 +29,23 @@ var _ = Describe("NewVSphereBosh", func() {
 					DNS:     []string{"172.16.1.2"},
 				}},
 			}
+			var boshBase = &BoshBase{
+				BoshReleaseVersion: "256.2",
+				PrivateIP:          "172.16.1.6",
+				CPIReleaseVersion:  "22",
+				GOAgentVersion:     "3232.4",
+				BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+				CPIReleaseSHA:      "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
+				GOAgentSHA:         "27ec32ddbdea13e3025700206388ae5882a23c67",
+				NetworkCIDR:        "10.0.0.0/24",
+				NetworkGateway:     "10.0.0.1",
+				NetworkDNS:         []string{"10.0.0.2"},
+				DirectorName:       "my-bosh",
+			}
 			var manifest *enaml.DeploymentManifest
 
 			BeforeEach(func() {
-				manifest = NewVSphereBosh(boshConfig)
+				manifest = NewVSphereBosh(boshConfig, boshBase)
 			})
 
 			It("then it should be using the vsphere esx stemcell", func() {
@@ -71,7 +75,7 @@ var _ = Describe("NewVSphereBosh", func() {
 						r = append(r, v.Name)
 					}
 					return
-				}()).Should(ConsistOf("nats", "postgres", "blobstore", "director", "health_monitor", "vsphere_cpi", "uaa", "uaa_postgres"))
+				}()).Should(ConsistOf("nats", "postgres", "blobstore", "director", "health_monitor", "vsphere_cpi", "uaa", "registry"))
 			})
 
 			It("then it should properly define job networks", func() {
@@ -118,7 +122,7 @@ var _ = Describe("NewVSphereBosh", func() {
 			Context("When PersistentDatastorePattern isn't specified", func() {
 				BeforeEach(func() {
 					boshConfig.VSpherePersistentDatastorePattern = ""
-					manifest = NewVSphereBosh(boshConfig)
+					manifest = NewVSphereBosh(boshConfig, boshBase)
 				})
 				XIt("then it should fallback to DatastorePattern", func() {
 					var vcenter vsphere_cpi.Vcenter
