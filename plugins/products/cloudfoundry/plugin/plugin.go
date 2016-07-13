@@ -241,6 +241,15 @@ func (s *Plugin) GetFlags() (flags []cli.Flag) {
 
 		createStringFlag("errand-vm-type", "vm type to be used for running errands"),
 		createStringFlag("haproxy-sslpem", "SSL pem for HAProxy"),
+
+		//Vault stuff
+		createStringFlag("vault-domain", "the location of your vault server (ie. http://10.0.0.1:8200)"),
+		createStringFlag("vault-hash-passwords", "the hashname of your secret (ie. secret/pcf-1-passwords"),
+		createStringFlag("vault-hash-keycert", "the hashname of your secret (ie. secret/pcf-1-keycert"),
+		createStringFlag("vault-hash-ips", "the hashname of your secret (ie. secret/pcf-1-ips"),
+		createStringFlag("vault-hash-hosts", "the hashname of your secret (ie. secret/pcf-1-hosts"),
+		createStringFlag("vault-token", "the token to make connections to your vault"),
+		createBoolTFlag("vault-active", "use the data which is stored in vault for the flag values it contains"),
 	}
 }
 
@@ -270,10 +279,7 @@ func createStringSliceFlag(name, usage string, value ...string) cli.StringSliceF
 
 	if len(value) > 0 {
 		res.Value = &cli.StringSlice{}
-
-		for _, v := range value {
-			res.Value.Set(v)
-		}
+		res.Value.Set(strings.Join(value, ","))
 	}
 	return res
 }
@@ -305,12 +311,13 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	dm.AddStemcell(enaml.Stemcell{OS: StemcellName, Version: StemcellVersion, Alias: StemcellAlias})
 
 	for _, factory := range factories {
-		// create and validate all registered instance groups
 		grouper := factory(c)
+
 		if grouper.HasValidValues() {
 			ig := grouper.ToInstanceGroup()
 			lo.G.Debug("instance-group: ", ig)
 			dm.AddInstanceGroup(ig)
+
 		} else {
 			b, _ := yaml.Marshal(grouper)
 			lo.G.Panic("invalid values in instance group: ", string(b))
