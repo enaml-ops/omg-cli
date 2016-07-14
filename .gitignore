@@ -42,3 +42,4 @@ _steps/
 .idea/
 .vscode
 bosh-init-wrapper
+plugins/products/cloudfoundry/cmd/cloudfoundry/cloudfoundry

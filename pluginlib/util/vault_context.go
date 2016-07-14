@@ -48,30 +48,41 @@ func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []cli.Flag) (err error
 	vaultObj := new(VaultJsonObject)
 	json.Unmarshal(b, vaultObj)
 
-	for h, v := range vaultObj.Data {
+	for hashFromVault, valueFromVault := range vaultObj.Data {
 
-		for i, f := range flgs {
-			if h == f.GetName() {
+		for idx, flg := range flgs {
 
-				switch ft := f.(type) {
-				case cli.StringSliceFlag:
-					ft.EnvVar = v
-					var slice cli.StringSlice = strings.Split(v, ",")
-					ft.Value = &slice
-					flgs[i] = ft
-					fmt.Println("vl: ", ft.Value.Value())
-
-				case cli.StringFlag:
-					ft.EnvVar = v
-					ft.Value = v
-					flgs[i] = ft
-					fmt.Println("vl: ", ft.Value)
-
-				default:
-					lo.G.Panic("i dont know what field this is in VAULT. exiting the app now")
-				}
+			if hashFromVault == flg.GetName() {
+				flgs[idx] = setEnvVarAndValue(flg, valueFromVault)
 			}
 		}
+	}
+	return
+}
+
+func setEnvVarAndValue(f cli.Flag, v string) (rflg cli.Flag) {
+	switch ft := f.(type) {
+
+	case cli.StringSliceFlag:
+		ft.EnvVar = v
+		slice := splitAndTrim(v)
+		ft.Value = &slice
+		rflg = ft
+
+	case cli.StringFlag:
+		ft.EnvVar = v
+		ft.Value = v
+		rflg = ft
+
+	default:
+		lo.G.Panic("i dont know what field this is in VAULT. exiting the app now")
+	}
+	return
+}
+
+func splitAndTrim(v string) (slice cli.StringSlice) {
+	for _, sv := range strings.Split(v, ",") {
+		slice = append(slice, strings.TrimSpace(sv))
 	}
 	return
 }
