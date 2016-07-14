@@ -28,10 +28,11 @@ var _ = Describe("given: a VaultOverlay", func() {
 			var ctx *cli.Context
 
 			BeforeEach(func() {
-				ctx = NewContext([]string{"mycoolapp"}, []cli.Flag{
+				flgs := []cli.Flag{
 					cli.StringFlag{Name: "knock"},
-				})
-				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", ctx)
+				}
+				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
+				ctx = NewContext([]string{"mycoolapp"}, flgs)
 			})
 
 			It("should set the value in the flag using the given vault hash", func() {
@@ -43,14 +44,40 @@ var _ = Describe("given: a VaultOverlay", func() {
 			var ctx *cli.Context
 
 			BeforeEach(func() {
-				ctx = NewContext([]string{"mycoolapp", "--knock", "something-different"}, []cli.Flag{
+				flgs := []cli.Flag{
 					cli.StringFlag{Name: "knock"},
-				})
-				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", ctx)
+				}
+				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
+				ctx = NewContext([]string{"mycoolapp", "--knock", "something-different"}, flgs)
+			})
+
+			It("should overwrite the default vault value with the cli flag value given", func() {
+				Ω(ctx.String("knock")).ShouldNot(Equal("knocks"))
+				Ω(ctx.String("knock")).Should(Equal("something-different"))
+			})
+		})
+
+		Context("when calling unmarshalflags on a context that was given a stringslice value from the cli", func() {
+			var ctx *cli.Context
+
+			BeforeEach(func() {
+				doer := new(utilfakes.FakeDoer)
+				b, _ := os.Open("fixtures/vaultslice.json")
+
+				doer.DoReturns(&http.Response{
+					Body: b,
+				}, nil)
+				vault = NewVaultUnmarshal("domain.com", "my-really-long-token", doer)
+				flgs := []cli.Flag{
+					cli.StringSliceFlag{Name: "knock-slice"},
+					cli.StringFlag{Name: "stuff"},
+				}
+				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
+				ctx = NewContext([]string{"mycoolapp", "--stuff", "with-val"}, flgs)
 			})
 
 			It("should overwrite the value in the flag using the given vault hash", func() {
-				Ω(ctx.String("knock")).Should(Equal("knocks"))
+				Ω(ctx.StringSlice("knock-slice")).Should(ConsistOf("knocks-1", "knocks-2", "knocks-3"))
 			})
 		})
 
@@ -58,10 +85,11 @@ var _ = Describe("given: a VaultOverlay", func() {
 			var ctx *cli.Context
 
 			BeforeEach(func() {
-				ctx = NewContext([]string{"mycoolapp"}, []cli.Flag{
+				flgs := []cli.Flag{
 					cli.StringFlag{Name: "badda"},
-				})
-				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", ctx)
+				}
+				vault.UnmarshalFlags("secret/move-along-nothing-to-see-here", flgs)
+				ctx = NewContext([]string{"mycoolapp"}, flgs)
 			})
 
 			It("then it should not set or create the flag in the context", func() {

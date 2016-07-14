@@ -293,8 +293,9 @@ func (s *Plugin) GetMeta() product.Meta {
 
 //GetProduct -
 func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
-	c := pluginutil.NewContext(args, s.GetFlags())
-	s.vaultDecorate(c)
+	flgs := s.GetFlags()
+	s.vaultDecorate(args, flgs)
+	c := pluginutil.NewContext(args, flgs)
 	dm := enaml.NewDeploymentManifest([]byte(``))
 	dm.SetName(DeploymentName)
 
@@ -328,14 +329,15 @@ func (s *Plugin) GetProduct(args []string, cloudConfig []byte) (b []byte) {
 	return dm.Bytes()
 }
 
-func (s *Plugin) vaultDecorate(c *cli.Context) {
+func (s *Plugin) vaultDecorate(args []string, flgs []cli.Flag) {
+	c := pluginutil.NewContext(args, flgs)
 
 	if s.hasValidVaultFlags(c) {
 		vault := pluginutil.NewVaultUnmarshal(c.String("vault-domain"), c.String("vault-token"), pluginutil.DefaultClient())
-		vault.UnmarshalFlags(c.String("vault-hash-password"), c)
-		vault.UnmarshalFlags(c.String("vault-hash-keycert"), c)
-		vault.UnmarshalFlags(c.String("vault-hash-ip"), c)
-		vault.UnmarshalFlags(c.String("vault-hash-host"), c)
+		vault.UnmarshalFlags(c.String("vault-hash-password"), flgs)
+		vault.UnmarshalFlags(c.String("vault-hash-keycert"), flgs)
+		vault.UnmarshalFlags(c.String("vault-hash-ip"), flgs)
+		vault.UnmarshalFlags(c.String("vault-hash-host"), flgs)
 
 	} else {
 		lo.G.Debug("complete vault flagset not found:",

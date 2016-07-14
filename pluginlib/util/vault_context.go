@@ -6,12 +6,14 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/codegangsta/cli"
+	"github.com/xchapter7x/lo"
 )
 
 type VaultUnmarshaler interface {
-	UnmarshalFlags(hash string, c *cli.Context) (err error)
+	UnmarshalFlags(hash string, flgs []cli.Flag) (err error)
 }
 
 type Doer interface {
@@ -41,13 +43,35 @@ type VaultJsonObject struct {
 	Auth          interface{}       `json:"auth"`
 }
 
-func (s *VaultUnmarshal) UnmarshalFlags(hash string, c *cli.Context) (err error) {
+func (s *VaultUnmarshal) UnmarshalFlags(hash string, flgs []cli.Flag) (err error) {
 	b := s.getVaultHashValues(hash)
 	vaultObj := new(VaultJsonObject)
 	json.Unmarshal(b, vaultObj)
 
 	for h, v := range vaultObj.Data {
-		c.Set(h, v)
+
+		for i, f := range flgs {
+			if h == f.GetName() {
+
+				switch ft := f.(type) {
+				case cli.StringSliceFlag:
+					ft.EnvVar = v
+					var slice cli.StringSlice = strings.Split(v, ",")
+					ft.Value = &slice
+					flgs[i] = ft
+					fmt.Println("vl: ", ft.Value.Value())
+
+				case cli.StringFlag:
+					ft.EnvVar = v
+					ft.Value = v
+					flgs[i] = ft
+					fmt.Println("vl: ", ft.Value)
+
+				default:
+					lo.G.Panic("i dont know what field this is in VAULT. exiting the app now")
+				}
+			}
+		}
 	}
 	return
 }
