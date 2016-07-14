@@ -1,0 +1,21 @@
+# example to demonstrate how we would load up the vault with data
+
+#set where your vault lives
+VAULT_ADDR=http://192.168.0.1:8200
+
+#set which hash your writing to
+VAULT_HASH=secret/pcf-np-1-ips
+
+./vault write ${VAULT_HASH} @vault-ip.json
+./vault read ${VAULT_HASH}
+
+# or
+# mix files and cli
+# ./vault write ${VAULT_HASH} nfs-ip=192.168.0.33 @vault-ip.json
+# ./vault read ${VAULT_HASH}
+
+# or
+# just cli
+# ./vault write ${VAULT_HASH} nfs-ip=192.168.0.33 /
+# mysql-proxy-ip=192.168.0.28
+# ./vault read ${VAULT_HASH}
