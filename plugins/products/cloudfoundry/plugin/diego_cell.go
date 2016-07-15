@@ -10,6 +10,7 @@ import (
 func NewDiegoCellPartition(c *cli.Context) InstanceGrouper {
 
 	return &diegoCell{
+		context:            c,
 		AZs:                c.StringSlice("az"),
 		StemcellName:       c.String("stemcell-name"),
 		VMTypeName:         c.String("diego-cell-vm-type"),
@@ -86,7 +87,14 @@ func (s *diegoCell) newGarden() (gardenLinux *garden.GardenJob) {
 }
 
 func (s *diegoCell) HasValidValues() bool {
-	return false
+	validStrings := hasValidStringFlags(s.context, []string{
+		"stemcell-name",
+		"diego-cell-vm-type",
+		"diego-cell-disk-type",
+		"network",
+	})
+	validSlices := hasValidStringSliceFlags(s.context, []string{"az"})
+	return validStrings && validSlices
 }
 
 func (s *diegoCell) newRDiego() (rdiego *rep.RepJob) {

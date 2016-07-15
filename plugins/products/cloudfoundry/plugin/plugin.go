@@ -334,10 +334,19 @@ func (s *Plugin) vaultDecorate(args []string, flgs []cli.Flag) {
 
 	if s.hasValidVaultFlags(c) {
 		vault := pluginutil.NewVaultUnmarshal(c.String("vault-domain"), c.String("vault-token"), pluginutil.DefaultClient())
-		vault.UnmarshalFlags(c.String("vault-hash-password"), flgs)
-		vault.UnmarshalFlags(c.String("vault-hash-keycert"), flgs)
-		vault.UnmarshalFlags(c.String("vault-hash-ip"), flgs)
-		vault.UnmarshalFlags(c.String("vault-hash-host"), flgs)
+		hashes := []string{
+			c.String("vault-hash-password"),
+			c.String("vault-hash-keycert"),
+			c.String("vault-hash-ip"),
+			c.String("vault-hash-host"),
+		}
+
+		for _, hash := range hashes {
+
+			if hash != "" {
+				vault.UnmarshalFlags(hash, flgs)
+			}
+		}
 
 	} else {
 		lo.G.Debug("complete vault flagset not found:",
@@ -359,10 +368,6 @@ func (s *Plugin) vaultDecorate(args []string, flgs []cli.Flag) {
 func (s *Plugin) hasValidVaultFlags(c *cli.Context) bool {
 	return c.BoolT("vault-active") &&
 		c.String("vault-domain") != "" &&
-		c.String("vault-hash-password") != "" &&
-		c.String("vault-hash-keycert") != "" &&
-		c.String("vault-hash-ip") != "" &&
-		c.String("vault-hash-host") != "" &&
 		c.String("vault-token") != ""
 }
 

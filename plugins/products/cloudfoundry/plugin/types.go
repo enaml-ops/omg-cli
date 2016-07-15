@@ -85,6 +85,7 @@ type gorouter struct {
 }
 
 type diegoDatabase struct {
+	context            *cli.Context
 	AZs                []string
 	Passphrase         string
 	SystemDomain       string
@@ -109,6 +110,7 @@ type diegoDatabase struct {
 }
 
 type diegoCell struct {
+	context            *cli.Context
 	AZs                []string
 	StemcellName       string
 	VMTypeName         string

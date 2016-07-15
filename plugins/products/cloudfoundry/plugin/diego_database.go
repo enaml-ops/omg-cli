@@ -61,6 +61,7 @@ func NewDiegoDatabasePartition(c *cli.Context) InstanceGrouper {
 	}
 
 	return &diegoDatabase{
+		context:            c,
 		AZs:                c.StringSlice("az"),
 		CACert:             caCert,
 		SystemDomain:       c.String("system-domain"),
@@ -132,7 +133,25 @@ func (s *diegoDatabase) ToInstanceGroup() (ig *enaml.InstanceGroup) {
 }
 
 func (s *diegoDatabase) HasValidValues() bool {
-	return true
+	validStrings := hasValidStringFlags(s.context, []string{
+		"bbs-ca-cert",
+		"bbs-server-cert",
+		"bbs-server-key",
+		"etcd-server-cert",
+		"etcd-server-key",
+		"etcd-client-cert",
+		"etcd-client-key",
+		"etcd-peer-cert",
+		"etcd-peer-key",
+		"system-domain",
+		"stemcell-name",
+		"diego-db-vm-type",
+		"diego-db-disk-type",
+		"network",
+		"diego-db-passphrase",
+	})
+	validSlices := hasValidStringSliceFlags(s.context, []string{"az"})
+	return validStrings && validSlices
 }
 
 func (s *diegoDatabase) newBBS() (dbdiego *bbs.Diego) {
