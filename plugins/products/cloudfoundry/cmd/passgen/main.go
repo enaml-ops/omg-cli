@@ -8,7 +8,6 @@ import (
 )
 
 func RandomString(strlen int) string {
-	rand.Seed(time.Now().UTC().UnixNano())
 	const chars = "abcdefghipqrstuvwxyz0123456789"
 	result := make([]byte, strlen)
 	for i := 0; i < strlen; i++ {
@@ -20,6 +19,7 @@ func RandomString(strlen int) string {
 const passLength = 20
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
 	passVault := PasswordVault{
 		Router:             RandomString(passLength),
 		Nats:               RandomString(passLength),
