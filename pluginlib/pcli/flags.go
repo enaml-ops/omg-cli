@@ -57,7 +57,9 @@ func (s StringSliceFlag) ToCli() interface{} {
 		Value:  &cli.StringSlice{},
 		Usage:  s.Usage,
 	}
-	res.Value.Set(strings.Join(s.Value, ","))
+	if len(s.Value) > 0 {
+		res.Value.Set(strings.Join(s.Value, ","))
+	}
 	return res
 }
 
