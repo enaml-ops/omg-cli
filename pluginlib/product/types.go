@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/rpc"
 
-	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/omg-cli/pluginlib/pcli"
 	"github.com/hashicorp/go-plugin"
 )
 
@@ -17,7 +17,7 @@ type Meta struct {
 // plugins
 type ProductDeployer interface {
 	GetMeta() Meta
-	GetFlags() []cli.Flag
+	GetFlags() []pcli.Flag
 	GetProduct(args []string, cloudConfig []byte) []byte
 }
 
@@ -53,8 +53,8 @@ func (s *ProductRPC) GetProduct(args []string, cloudConfig []byte) []byte {
 	return resp
 }
 
-func (s *ProductRPC) GetFlags() []cli.Flag {
-	var resp []cli.Flag
+func (s *ProductRPC) GetFlags() []pcli.Flag {
+	var resp []pcli.Flag
 	err := s.client.Call("Plugin.GetFlags", new(interface{}), &resp)
 	log.Println("call: ", err)
 
@@ -70,7 +70,7 @@ type ProductRPCServer struct {
 	Impl ProductDeployer
 }
 
-func (s *ProductRPCServer) GetFlags(args interface{}, resp *[]cli.Flag) error {
+func (s *ProductRPCServer) GetFlags(args interface{}, resp *[]pcli.Flag) error {
 	*resp = s.Impl.GetFlags()
 	return nil
 }

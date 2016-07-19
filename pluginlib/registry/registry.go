@@ -6,6 +6,7 @@ import (
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
+	"github.com/enaml-ops/omg-cli/pluginlib/pcli"
 	"github.com/enaml-ops/omg-cli/pluginlib/product"
 	"github.com/hashicorp/go-plugin"
 	"github.com/xchapter7x/lo"
@@ -35,7 +36,7 @@ func ListProducts() map[string]registryRecord {
 	return products
 }
 
-func RegisterProduct(pluginpath string) ([]cli.Flag, error) {
+func RegisterProduct(pluginpath string) ([]pcli.Flag, error) {
 	client, productPlugin := GetProductReference(pluginpath)
 	defer client.Kill()
 	meta := productPlugin.GetMeta()

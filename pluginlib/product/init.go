@@ -3,16 +3,13 @@ package product
 import (
 	"encoding/gob"
 
-	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/omg-cli/pluginlib/pcli"
 )
 
 func init() {
-	gob.Register(cli.StringSliceFlag{})
-	gob.Register(cli.StringFlag{})
-	gob.Register(cli.BoolFlag{})
-	gob.Register(cli.BoolTFlag{})
-	gob.Register(cli.DurationFlag{})
-	gob.Register(cli.GenericFlag{})
-	gob.Register(cli.IntFlag{})
-	gob.Register(cli.IntSliceFlag{})
+	gob.Register(pcli.StringSliceFlag{})
+	gob.Register(pcli.StringFlag{})
+	gob.Register(pcli.BoolFlag{})
+	gob.Register(pcli.BoolTFlag{})
+	gob.Register(pcli.IntFlag{})
 }

@@ -13,6 +13,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/omg-cli/pluginlib/registry"
+	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	"github.com/xchapter7x/lo"
 )
 
@@ -73,7 +74,7 @@ func GetProductCommands(target string) (commands []cli.Command) {
 		commands = append(commands, cli.Command{
 			Name:  f.Name(),
 			Usage: "deploy the " + f.Name() + " product",
-			Flags: flags,
+			Flags: pluginutil.ToCliFlagArray(flags),
 			Action: func(c *cli.Context) (err error) {
 				var cloudConfig *enaml.CloudConfigManifest
 				client, productDeployment := registry.GetProductReference(pluginPath)

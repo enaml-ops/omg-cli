@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/omg-cli/pluginlib/pcli"
 	"github.com/enaml-ops/omg-cli/pluginlib/product"
 )
 
@@ -11,7 +11,7 @@ func main() {
 
 type MyProduct struct{}
 
-func (s *MyProduct) GetFlags() (flags []cli.Flag) {
+func (s *MyProduct) GetFlags() (flags []pcli.Flag) {
 	return
 }
 

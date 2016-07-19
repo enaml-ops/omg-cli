@@ -45,3 +45,4 @@ bosh-init-wrapper
 plugins/products/cloudfoundry/cmd/cloudfoundry/cloudfoundry
 plugins/products/cloudfoundry/cmd/passgen/passgen
 plugins/products/cloudfoundry/cmd/certgen/certgen
+pluginlib/product/example/example
