@@ -4,11 +4,22 @@ an iaas independent plugable executable to install bosh, cloud configs and produ
 
 [![wercker status](https://app.wercker.com/status/429f96482fd95fecbc70ecc25aee8c70/s/master "wercker status")](https://app.wercker.com/project/bykey/429f96482fd95fecbc70ecc25aee8c70)
 
+
+### What is OMG
+omg is a cli tool. It natively allows users to:
+- spin up a bosh on a target iaas,
+- load it up with a cloud config
+- deploy 'products' via their new bosh (vault, cloudfoundry, concourse, etc)
+
 ### how we do bosh / cloud config / deployments
 composes bosh-init, enaml and plugins to create a simple cli installer
 
-## download here:
+## download omg-cli here:
 https://github.com/enaml-ops/omg-cli/releases/latest
+
+## download supported products here:
+https://github.com/enaml-ops/omg-product-bundle/releases/latest
+
 
 ## install bosh on aws
 *check the bosh docs to setup your vpc (https://bosh.io/docs/init-aws.html)*
