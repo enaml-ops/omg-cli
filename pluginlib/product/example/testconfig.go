@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/enaml-ops/omg-cli/pluginlib/pcli"
-	"github.com/enaml-ops/omg-cli/pluginlib/product"
+	"github.com/enaml-ops/pluginlib/pcli"
+	"github.com/enaml-ops/pluginlib/product"
 )
 
 func main() {

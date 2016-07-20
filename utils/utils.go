@@ -12,8 +12,8 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
-	"github.com/enaml-ops/omg-cli/pluginlib/registry"
-	"github.com/enaml-ops/omg-cli/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/registry"
+	"github.com/enaml-ops/pluginlib/util"
 	"github.com/xchapter7x/lo"
 )
 

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
 	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/pluginlib/cloudconfig"
 )
 
 func main() {

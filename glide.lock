@@ -1,6 +1,10 @@
-hash: 73f822656d0adbec547b117b3b6289bf8cd2e770352dc5ee29fabfdb8fc09add
-updated: 2016-05-26T22:10:11.332809301-07:00
+hash: 6b9ef3b0494e0e04375d9ae2128945b6bc22c394a0048642f86509b29ea5472e
+updated: 2016-07-20T11:44:45.707986341-04:00
 imports:
+- name: github.com/bmatcuk/doublestar
+  version: ec3b4af762f792cb93bf2518ff9ac408dbdc2b4e
+- name: github.com/charlievieth/fs
+  version: 1c3b3f15b0ca23a98e93ef1d987b14d53cbfb4e6
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
@@ -60,65 +64,76 @@ imports:
 - name: github.com/cloudfoundry/bosh-utils
   version: 99c230d990674e484143e3b1452576912ab55380
   subpackages:
-  - blobstore
   - errors
-  - fileutil
-  - httpclient
   - logger
   - logger/file
-  - property
-  - retrystrategy
   - system
   - uuid
+  - fileutil
+  - httpclient
+  - retrystrategy
+  - property
+  - blobstore
   - http
 - name: github.com/cloudfoundry/gofileutils
   version: 94cb17960d629e2ca9a67d381228ec499966a69b
   subpackages:
   - glob
 - name: github.com/codegangsta/cli
-  version: 595ba45e735c1e9c1f9ddc9e2ef21997fca893f2
+  version: 11c134509d89c2018675f369955218a180dc7428
 - name: github.com/enaml-ops/enaml
-  version: master 
+  version: 9cf03826c6c0a5447d814c389e41683c10698ca2
   subpackages:
+  - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
-  - enamlbosh
+- name: github.com/enaml-ops/omg-cli
+  version: ea33f3255eccc3c763b4c4b1774090acf12e7625
+  subpackages:
+  - pluginlib/util
+- name: github.com/enaml-ops/pluginlib
+  version: db03bf3c249012e2b483410170d123a24092de60
+  subpackages:
+  - cloudconfig
+  - pcli
+  - product
+  - util
 - name: github.com/hashicorp/go-plugin
-  version: cccb4a1328abbb89898f3ecf4311a05bddc4de6d
+  version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux
-  version: 172cde3b6ca5c154ff4e6e2ef96b7451332a9946
+  version: badf81fca035b8ebac61b5ab83330b72541056f4
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
 - name: github.com/onsi/ginkgo
-  version: 5437a97bf824dec14e58d68c56ee36e772670c2e
+  version: 7d3240191d7b2311b60090fcbc96e56bffc45ec0
 - name: github.com/onsi/gomega
-  version: c73e51675ad2455a4515b6213eb7145eaade4824
+  version: 9ed8da19f2156b87a803a8fdf6d126f627a12db1
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
-  version: 3fd3c1944c59d9742e1cd333672181cd1a6f9fa0
+  version: da8295109ceb031ff96dc126bb68d75dd9fddc4b
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
 - name: github.com/pivotalservices/gtils
-  version: 0370901aca28d8df6fe01b40e0baab574d172270
+  version: 2efb2d5d8a2ee2ad307f7343a04b8088f44c4e4b
   subpackages:
   - osutils
   - command
 - name: github.com/pkg/errors
-  version: 431554f80b8ecf5058547f6c65b87fad81d90b03
+  version: cc5fbb72d9b1b5f664ff3c11ed7896ee23ad9276
 - name: github.com/pkg/sftp
-  version: dfb5f84e82365817319e43a24df2caab12ea0d10
+  version: 57fcf4a640a942eb05181f929601f8f4409eda3e
 - name: github.com/xchapter7x/lo
   version: aa2602d0e8e8647f0ce7b53109b37040941915aa
 - name: golang.org/x/crypto
-  version: 5bcd134fee4dd1475da17714aac19c0aa0142e2f
+  version: 911fafb28f4ee7c7bd483539a6c96190bbbccc3f
   subpackages:
   - ssh
   - curve25519
   - ed25519
   - ed25519/internal/edwards25519
 - name: gopkg.in/yaml.v2
-  version: a83829b6f1293c91addabc89d0571c246397bbf4
+  version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
 devImports: []

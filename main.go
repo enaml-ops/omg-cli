@@ -13,9 +13,9 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
-	"github.com/enaml-ops/omg-cli/pluginlib/registry"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/omg-cli/vsphere-cli"
+	"github.com/enaml-ops/pluginlib/registry"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
 )

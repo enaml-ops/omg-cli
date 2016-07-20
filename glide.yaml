@@ -34,3 +34,4 @@ import:
   - cloudproperties/azure
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega
+- package: github.com/enaml-ops/pluginlib

@@ -4,9 +4,9 @@ import (
 	"strconv"
 
 	"github.com/codegangsta/cli"
-	"github.com/enaml-ops/omg-cli/pluginlib/cloudconfig"
-	"github.com/enaml-ops/omg-cli/pluginlib/util"
 	aws "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/cloud-config"
+	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/util"
 	"github.com/xchapter7x/lo"
 )
 
