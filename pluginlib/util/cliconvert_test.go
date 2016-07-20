@@ -1,8 +1,6 @@
 package pluginutil_test
 
 import (
-	"strings"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/pluginlib/pcli"
 	. "github.com/enaml-ops/omg-cli/pluginlib/util"
@@ -45,11 +43,13 @@ var _ = Describe("given ToCliFlagArray", func() {
 	})
 
 	Context("when converting a string slice flag with a non-empty value", func() {
-		const controlString = "blah,blip"
+		const controlString = "blah"
 		f := pcli.NewFlag(pcli.StringSliceFlag, "my-slice", "", controlString)
 		cliFlags := ToCliFlagArray([]pcli.Flag{f})
-		Ω(len(cliFlags)).Should(Equal(1))
-		sf := cliFlags[0].(cli.StringSliceFlag)
-		Ω(sf.Value.Value()).Should(ConsistOf(strings.Split(controlString, ",")))
+		It("should set the default value on the returned type", func() {
+			Ω(len(cliFlags)).Should(Equal(1))
+			sf := cliFlags[0].(cli.StringSliceFlag)
+			Ω(sf.Value.Value()).Should(ConsistOf(controlString))
+		})
 	})
 })

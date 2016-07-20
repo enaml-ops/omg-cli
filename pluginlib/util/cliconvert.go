@@ -31,19 +31,24 @@ func toCLI(f *pcli.Flag) cli.Flag {
 			Value:  &cli.StringSlice{},
 			Usage:  f.Usage,
 		}
-		ss.Value.Set(f.Value)
+		if f.Value != "" {
+			ss.Value.Set(f.Value)
+		}
 		return ss
 	case pcli.IntFlag:
-		i, err := strconv.Atoi(f.Value)
-		if err != nil {
-			panic("Invalid int flag: " + f.Value)
-		}
-		return cli.IntFlag{
+		flag := cli.IntFlag{
 			Name:   f.Name,
 			EnvVar: f.EnvVar,
-			Value:  i,
 			Usage:  f.Usage,
 		}
+		if f.Value != "" {
+			i, err := strconv.Atoi(f.Value)
+			if err != nil {
+				panic("Invalid int flag: " + f.Value)
+			}
+			flag.Value = i
+		}
+		return flag
 	case pcli.BoolFlag:
 		return cli.BoolFlag{
 			Name:   f.Name,
