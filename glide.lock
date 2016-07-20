@@ -92,7 +92,7 @@ imports:
   subpackages:
   - pluginlib/util
 - name: github.com/enaml-ops/pluginlib
-  version: db03bf3c249012e2b483410170d123a24092de60
+  version: 419961981671ea61125c88e6ee569ec6dd9daa0a
   subpackages:
   - cloudconfig
   - pcli
