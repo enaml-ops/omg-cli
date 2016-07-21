@@ -82,7 +82,7 @@ imports:
 - name: github.com/codegangsta/cli
   version: 11c134509d89c2018675f369955218a180dc7428
 - name: github.com/enaml-ops/enaml
-  version: 9cf03826c6c0a5447d814c389e41683c10698ca2
+  version: ^v0.0.9
   subpackages:
   - enamlbosh
   - cloudproperties/aws
