@@ -2,6 +2,7 @@ package boshinit
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
@@ -11,6 +12,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/postgres"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/registry"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/uaa"
+	"github.com/enaml-ops/omg-cli/utils"
 )
 
 const (
@@ -21,6 +23,47 @@ const (
 	dbPort         = 5432
 )
 
+func (s *BoshBase) InitializePasswords() {
+	s.DirectorPassword = utils.NewPassword(20)
+	s.LoginSecret = utils.NewPassword(20)
+	s.RegistryPassword = utils.NewPassword(20)
+	s.HealthMonitorSecret = utils.NewPassword(20)
+	s.DBPassword = utils.NewPassword(20)
+	s.NatsPassword = utils.NewPassword(20)
+	s.MBusPassword = utils.NewPassword(20)
+}
+
+//IsBasic - is this a basic Bosh director
+func (s *BoshBase) IsBasic() bool {
+	return strings.ToUpper(s.Mode) == "BASIC"
+}
+
+//IsUAA - is this a UAA enabled bosh director
+func (s *BoshBase) IsUAA() bool {
+	return strings.ToUpper(s.Mode) == "UAA"
+}
+
+//InitializeCerts - initializes certs needed for UAA and health monitor
+func (s *BoshBase) InitializeCerts() (err error) {
+	var cert, key, caCert string
+	if caCert, cert, key, err = utils.GenerateCert([]string{s.PublicIP}); err == nil {
+		s.SSLCert = cert
+		s.SSLKey = key
+		s.CACert = caCert
+	}
+	return
+}
+
+//InitializeKeys - initializes public/private keys
+func (s *BoshBase) InitializeKeys() (err error) {
+	var publicKey, privateKey string
+	if publicKey, privateKey, err = utils.GenerateKeys(); err == nil {
+		s.PublicKey = publicKey
+		s.PrivateKey = privateKey
+	}
+	return
+}
+
 func (s *BoshBase) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	manifest := &enaml.DeploymentManifest{}
 	manifest.SetName(s.DirectorName)
@@ -29,11 +72,13 @@ func (s *BoshBase) CreateDeploymentManifest() *enaml.DeploymentManifest {
 		URL:  "https://bosh.io/d/github.com/cloudfoundry/bosh?v=" + s.BoshReleaseVersion,
 		SHA1: s.BoshReleaseSHA,
 	})
-	manifest.AddRelease(enaml.Release{
-		Name: "uaa",
-		URL:  "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=" + s.UAAReleaseVersion,
-		SHA1: s.UAAReleaseSHA,
-	})
+	if s.IsUAA() {
+		manifest.AddRelease(enaml.Release{
+			Name: "uaa",
+			URL:  "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=" + s.UAAReleaseVersion,
+			SHA1: s.UAAReleaseSHA,
+		})
+	}
 	manifest.AddJob(s.CreateJob())
 	return manifest
 }
@@ -45,9 +90,10 @@ func (s *BoshBase) CreateJob() enaml.Job {
 		ResourcePool:       "vms",
 		PersistentDiskPool: "disks",
 	}
-	boshJob.AddTemplate(enaml.Template{Name: "uaa", Release: "uaa"})
-	boshJob.AddProperty(s.createUAAProperties())
-
+	if s.IsUAA() {
+		boshJob.AddTemplate(enaml.Template{Name: "uaa", Release: "uaa"})
+		boshJob.AddProperty(s.createUAAProperties())
+	}
 	boshJob.AddTemplate(enaml.Template{Name: "nats", Release: "bosh"})
 	boshJob.AddProperty(s.createNatsJobProperties())
 
@@ -58,13 +104,20 @@ func (s *BoshBase) CreateJob() enaml.Job {
 	boshJob.AddProperty(s.createRegistryJobProperties())
 
 	boshJob.AddTemplate(enaml.Template{Name: "director", Release: "bosh"})
-	boshJob.AddProperty(s.createDirectorProperties())
-
+	if s.IsUAA() {
+		boshJob.AddProperty(s.createDirectorUAAProperties())
+	} else {
+		boshJob.AddProperty(s.createDirectorProperties())
+	}
 	boshJob.AddTemplate(enaml.Template{Name: "blobstore", Release: "bosh"})
 	boshJob.AddProperty(s.createBlobStoreJobProperties())
 
 	boshJob.AddTemplate(enaml.Template{Name: "health_monitor", Release: "bosh"})
-	boshJob.AddProperty(s.createHeathMonitoryJobProperties())
+	if s.IsUAA() {
+		boshJob.AddProperty(s.createHeathMonitorUAAJobProperties())
+	} else {
+		boshJob.AddProperty(s.createHeathMonitorJobProperties())
+	}
 
 	boshJob.AddNetwork(enaml.Network{
 		Name:      "private",
@@ -73,13 +126,25 @@ func (s *BoshBase) CreateJob() enaml.Job {
 	return boshJob
 }
 
-func (s *BoshBase) createHeathMonitoryJobProperties() *health_monitor.HealthMonitorJob {
+func (s *BoshBase) createHeathMonitorUAAJobProperties() *health_monitor.HealthMonitorJob {
 	return &health_monitor.HealthMonitorJob{
 		Hm: &health_monitor.Hm{
 			DirectorAccount: &health_monitor.DirectorAccount{
 				CaCert:       s.CACert,
 				ClientId:     "health_monitor",
 				ClientSecret: s.HealthMonitorSecret,
+			},
+			ResurrectorEnabled: true,
+			Resurrector:        &health_monitor.Resurrector{},
+		},
+	}
+}
+func (s *BoshBase) createHeathMonitorJobProperties() *health_monitor.HealthMonitorJob {
+	return &health_monitor.HealthMonitorJob{
+		Hm: &health_monitor.Hm{
+			DirectorAccount: &health_monitor.DirectorAccount{
+				User:     "hm",
+				Password: s.HealthMonitorSecret,
 			},
 			ResurrectorEnabled: true,
 			Resurrector:        &health_monitor.Resurrector{},
@@ -96,7 +161,7 @@ func (s *BoshBase) createBlobStoreJobProperties() *blobstore.BlobstoreJob {
 			},
 			Agent: &blobstore.Agent{
 				User:     "agent",
-				Password: s.AgentPassword,
+				Password: s.NatsPassword,
 			},
 		},
 	}
@@ -152,8 +217,8 @@ func (s *BoshBase) createUAAProperties() *uaa.UaaJob {
 			RequireHttps:        true,
 			Url:                 fmt.Sprintf("https://%s:8443", s.PublicIP),
 			Jwt: &uaa.Jwt{
-				SigningKey:      s.SigningKey,
-				VerificationKey: s.VerificationKey,
+				SigningKey:      s.PrivateKey,
+				VerificationKey: s.PublicKey,
 			},
 			User: &uaa.UaaUser{
 				Authorities: []string{
@@ -202,7 +267,7 @@ func (s *BoshBase) createUAAProperties() *uaa.UaaJob {
 			},
 			Scim: &uaa.Scim{
 				Users: []string{
-					"director|bosh-director-scim-password|bosh.admin",
+					fmt.Sprintf("director|%s|bosh.admin", s.DirectorPassword),
 					fmt.Sprintf("admin|%s|bosh.admin,scim.write,clients.write,scim.read,clients.read", s.DirectorPassword),
 				},
 			},
@@ -224,7 +289,7 @@ func (s *BoshBase) createUAAProperties() *uaa.UaaJob {
 	}
 }
 
-func (s *BoshBase) createDirectorProperties() *director.DirectorJob {
+func (s *BoshBase) createDirectorUAAProperties() *director.DirectorJob {
 	return &director.DirectorJob{
 		Director: &director.Director{
 			Name:       s.DirectorName,
@@ -244,8 +309,40 @@ func (s *BoshBase) createDirectorProperties() *director.DirectorJob {
 			UserManagement: &director.UserManagement{
 				Provider: "uaa",
 				Uaa: &director.Uaa{
-					PublicKey: s.UAAPublicKey,
+					PublicKey: s.PublicKey,
 					Url:       fmt.Sprintf("https://%s:8443", s.PublicIP),
+				},
+			},
+		},
+		Ntp: s.NtpServers,
+	}
+}
+func (s *BoshBase) createDirectorProperties() *director.DirectorJob {
+	return &director.DirectorJob{
+		Director: &director.Director{
+			Name:       s.DirectorName,
+			CpiJob:     s.CPIName,
+			MaxThreads: 10,
+			Db: &director.DirectorDb{
+				User:     dbUser,
+				Password: s.DBPassword,
+				Adapter:  dbAdapter,
+				Port:     dbPort,
+				Host:     dbHost,
+			},
+			UserManagement: &director.UserManagement{
+				Provider: "local",
+				Local: &director.Local{
+					Users: []user{
+						user{
+							Name:     "director",
+							Password: s.DirectorPassword,
+						},
+						user{
+							Name:     "hm",
+							Password: s.HealthMonitorSecret,
+						},
+					},
 				},
 			},
 		},

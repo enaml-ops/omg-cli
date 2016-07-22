@@ -30,6 +30,7 @@ var _ = Describe("NewVSphereBosh", func() {
 				}},
 			}
 			var boshBase = &BoshBase{
+				Mode:               "uaa",
 				BoshReleaseVersion: "256.2",
 				PrivateIP:          "172.16.1.6",
 				CPIReleaseVersion:  "22",

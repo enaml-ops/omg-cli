@@ -20,6 +20,7 @@ var _ = Describe("NewAWSBosh", func() {
 				AWSRegion:            "us-east-1",
 			}
 			var boshBase = &BoshBase{
+				Mode:               "uaa",
 				CPIName:            "aws_cpi",
 				BoshReleaseVersion: "256.2",
 				PrivateIP:          "10.0.0.6",

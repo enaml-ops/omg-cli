@@ -27,6 +27,7 @@ var _ = Describe("NewAzureBosh", func() {
 				AzurePrivateKeyPath:       "./bosh",
 			}
 			var boshBase = &BoshBase{
+				Mode:               "uaa",
 				BoshReleaseVersion: "256.2",
 				PrivateIP:          "10.0.0.4",
 				PublicIP:           "x.x.x.x",

@@ -98,24 +98,23 @@ type Postgres interface {
 }
 
 type BoshBase struct {
+	Mode                string
 	NetworkCIDR         string
 	NetworkGateway      string
 	NetworkDNS          []string
 	DirectorName        string
 	DirectorPassword    string
-	AgentPassword       string
 	DBPassword          string
 	CPIName             string
 	NtpServers          []string
 	NatsPassword        string
 	MBusPassword        string
-	UAAPublicKey        string
 	PrivateIP           string
 	PublicIP            string
 	SSLCert             string
 	SSLKey              string
-	SigningKey          string
-	VerificationKey     string
+	PrivateKey          string
+	PublicKey           string
 	HealthMonitorSecret string
 	LoginSecret         string
 	RegistryPassword    string
