@@ -168,6 +168,10 @@ func (s *BoshBase) createBlobStoreJobProperties() *director.Blobstore {
 
 func (s *BoshBase) createRegistryJobProperties() *registry.Registry {
 	return &registry.Registry{
+		Username: "admin",
+		Password: s.RegistryPassword,
+		Host:     s.PrivateIP,
+		Address:  s.PrivateIP,
 		Http: &registry.Http{
 			User:     "admin",
 			Password: s.RegistryPassword,
