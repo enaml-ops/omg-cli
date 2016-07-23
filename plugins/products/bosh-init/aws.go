@@ -68,7 +68,7 @@ func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
 
 func (s *AWSBosh) CreateCPIRelease() enaml.Release {
 	return enaml.Release{
-		Name: s.boshbase.CPIName,
+		Name: awsCPIReleaseName,
 		URL:  "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=" + s.boshbase.CPIReleaseVersion,
 		SHA1: s.boshbase.CPIReleaseSHA,
 	}
