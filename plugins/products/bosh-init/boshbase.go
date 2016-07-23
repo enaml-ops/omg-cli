@@ -8,7 +8,6 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/director"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/health_monitor"
-	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/nats"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/postgres"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/registry"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/uaa"
@@ -199,14 +198,18 @@ func (s *BoshBase) createUAADBProperties() *uaa.Uaadb {
 		Address:  dbHost,
 		DbScheme: "postgresql",
 		Port:     dbPort,
-		Databases: map[string]string{
-			"name": "uaa",
-			"tag":  "uaa",
+		Databases: []interface{}{
+			map[string]string{
+				"name": "uaa",
+				"tag":  "uaa",
+			},
 		},
-		Roles: map[string]string{
-			"name":     dbUser,
-			"password": s.DBPassword,
-			"tag":      "admin",
+		Roles: []interface{}{
+			map[string]string{
+				"name":     dbUser,
+				"password": s.DBPassword,
+				"tag":      "admin",
+			},
 		},
 	}
 }
@@ -344,10 +347,10 @@ func (s *BoshBase) createDirectorProperties() *director.Director {
 	}
 }
 
-func (s *BoshBase) createNatsJobProperties() *nats.Nats {
-	return &nats.Nats{
-		User:          "nats",
-		Password:      s.NatsPassword,
-		ListenAddress: "127.0.0.1",
+func (s *BoshBase) createNatsJobProperties() *director.Nats {
+	return &director.Nats{
+		User:     "nats",
+		Password: s.NatsPassword,
+		Address:  "127.0.0.1",
 	}
 }
