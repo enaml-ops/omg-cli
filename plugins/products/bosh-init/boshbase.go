@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/enaml-ops/enaml"
-	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/director"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/health_monitor"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/postgres"
@@ -152,14 +151,15 @@ func (s *BoshBase) createHeathMonitorJobProperties() *health_monitor.Hm {
 		Resurrector:        &health_monitor.Resurrector{},
 	}
 }
-func (s *BoshBase) createBlobStoreJobProperties() *blobstore.Blobstore {
-	return &blobstore.Blobstore{
-		Port: 25250,
-		Director: &blobstore.Director{
+func (s *BoshBase) createBlobStoreJobProperties() *director.Blobstore {
+	return &director.Blobstore{
+		Port:    25250,
+		Address: "127.0.0.1",
+		Director: &director.BlobstoreDirector{
 			User:     "director",
 			Password: s.DirectorPassword,
 		},
-		Agent: &blobstore.Agent{
+		Agent: &director.BlobstoreAgent{
 			User:     "agent",
 			Password: s.NatsPassword,
 		},
