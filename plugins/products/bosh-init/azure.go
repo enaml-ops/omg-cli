@@ -56,7 +56,7 @@ func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManif
 	var agentProperty = aws_cpi.Agent{
 		Mbus: "nats://nats:nats-password@" + boshbase.PrivateIP + ":4222",
 	}
-	boshJob.AddProperty(agentProperty)
+	boshJob.AddProperty("agent", agentProperty)
 	azureProperty := NewAzureProperty(
 		cfg.AzureEnvironment,
 		cfg.AzureSubscriptionID,
@@ -69,7 +69,7 @@ func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManif
 		cfg.AzureSSHUser,
 		cfg.AzureSSHPubKey,
 	)
-	boshJob.AddProperty(azureProperty)
+	boshJob.AddProperty("azure", azureProperty)
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(NewAzureCloudProvider(azureProperty, cpiTemplate, boshbase.PublicIP, cfg.AzurePrivateKeyPath, boshbase.NtpServers))
 	return manifest

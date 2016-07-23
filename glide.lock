@@ -19,6 +19,14 @@ imports:
   subpackages:
   - client
   - config
+- name: golang.org/x/oauth2
+  version: 12e1e986157ec46fb273824565d9937bd4235105
+  subpackages:
+  - internal
+- name: golang.org/x/net
+  version: 4d38db76854b199960801a1734443fd02870d7e1
+  subpackages:
+  - context
 - name: github.com/cloudfoundry/bosh-init
   version: afa267bec2ba83d7572075ca34ac4c000a29023d
   repo: https://github.com/sneal/bosh-init.git
@@ -82,7 +90,7 @@ imports:
 - name: github.com/codegangsta/cli
   version: 11c134509d89c2018675f369955218a180dc7428
 - name: github.com/enaml-ops/enaml
-  version: v0.0.9
+  version: master
   subpackages:
   - enamlbosh
   - cloudproperties/aws

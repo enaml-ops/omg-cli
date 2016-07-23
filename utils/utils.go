@@ -79,10 +79,8 @@ func GetProductCommands(target string) (commands []cli.Command) {
 				var cloudConfig *enaml.CloudConfigManifest
 				client, productDeployment := registry.GetProductReference(pluginPath)
 				defer client.Kill()
-				boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
-				httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"), c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"))
-
-				if cloudConfig, err = boshclient.GetCloudConfig(httpClient); err == nil {
+				boshclient := enamlbosh.NewClientBasic(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
+				if cloudConfig, err = boshclient.GetCloudConfig(); err == nil {
 					var cloudConfigBytes []byte
 					var task enamlbosh.BoshTask
 					cloudConfigBytes, err = cloudConfig.Bytes()
@@ -106,17 +104,17 @@ func ProcessProductBytes(manifest []byte, printManifest bool, user, pass, url st
 
 	} else {
 		dm := enaml.NewDeploymentManifest(manifest)
-		boshclient := enamlbosh.NewClient(user, pass, url, port)
+		boshclient := enamlbosh.NewClientBasic(user, pass, url, port)
 		ProcessRemoteBoshAssets(dm, boshclient, httpClient, true)
 		UIPrint("Uploading product deployment...")
 
-		if task, err = boshclient.PostDeployment(*dm, httpClient); err == nil {
+		if task, err = boshclient.PostDeployment(*dm); err == nil {
 			UIPrint("upload complete.")
 			lo.G.Debug("res: ", task, err)
 
 			switch task.State {
 			case enamlbosh.StatusCancelled, enamlbosh.StatusError:
-				err = fmt.Errorf("task is in failed state: ", task)
+				err = fmt.Errorf("task is in failed state: %x", task)
 
 			default:
 				if poll {
@@ -167,12 +165,12 @@ func ProcessRemoteStemcells(scl []enaml.Stemcell, boshClient *enamlbosh.Client, 
 		var task enamlbosh.BoshTask
 
 		if isRemoteStemcell(stemcell) {
-			if task, err = boshClient.PostRemoteStemcell(stemcell, httpClient); err == nil {
+			if task, err = boshClient.PostRemoteStemcell(stemcell); err == nil {
 				lo.G.Debug("task: ", task, err)
 
 				switch task.State {
 				case enamlbosh.StatusCancelled, enamlbosh.StatusError:
-					err = fmt.Errorf("task is in failed state: ", task)
+					err = fmt.Errorf("task is in failed state: %x", task)
 
 				default:
 					if poll {
@@ -192,7 +190,7 @@ func ProcessStemcellsToBeUploaded(stemcells []enaml.Stemcell, boshClient *enamlb
 	var exists bool
 	for _, stemcell := range stemcells {
 		if isRemoteStemcell(stemcell) {
-			if exists, err = boshClient.CheckRemoteStemcell(stemcell, httpClient); err == nil && !exists {
+			if exists, err = boshClient.CheckRemoteStemcell(stemcell); err == nil && !exists {
 				remoteStemcells = append(remoteStemcells, stemcell)
 			}
 		}
@@ -213,12 +211,12 @@ func ProcessRemoteReleases(rl []enaml.Release, boshClient *enamlbosh.Client, htt
 
 		if isRemoteRelease(release) {
 
-			if task, err = boshClient.PostRemoteRelease(release, httpClient); err == nil {
+			if task, err = boshClient.PostRemoteRelease(release); err == nil {
 				lo.G.Debug("task: ", task, err)
 
 				switch task.State {
 				case enamlbosh.StatusCancelled, enamlbosh.StatusError:
-					err = fmt.Errorf("task is in failed state: ", task)
+					err = fmt.Errorf("task is in failed state: %x", task)
 
 				default:
 					if poll {
@@ -241,7 +239,7 @@ func PollTaskAndWait(task enamlbosh.BoshTask, boshClient *enamlbosh.Client, http
 Loop:
 	for {
 
-		if task, err = boshClient.GetTask(task.ID, httpClient); err != nil {
+		if task, err = boshClient.GetTask(task.ID); err != nil {
 			break
 
 		} else {
@@ -293,7 +291,7 @@ func processCloudConfig(c *cli.Context, manifest []byte) (e error) {
 
 	} else {
 		ccm := enaml.NewCloudConfigManifest(manifest)
-		boshclient := enamlbosh.NewClient(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
+		boshclient := enamlbosh.NewClientBasic(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
 		if req, err := boshclient.NewCloudConfigRequest(*ccm); err == nil {
 			httpClient := defaultHTTPClient(c.Parent().Bool("ssl-ignore"), c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"))
 			var res *http.Response

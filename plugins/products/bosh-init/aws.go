@@ -36,7 +36,7 @@ func NewAWSBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifes
 	boshJob := manifest.Jobs[0]
 	boshJob.AddTemplate(aws.CreateCPITemplate())
 	boshJob.AddNetwork(aws.CreateJobNetwork())
-	boshJob.AddProperty(aws.CreateCPIJobProperty())
+	boshJob.AddProperty("aws", aws.CreateCPIJobProperty())
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(aws.CreateCloudProvider())
 	return manifest
