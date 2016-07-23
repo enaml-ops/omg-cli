@@ -294,6 +294,7 @@ func (s *BoshBase) createUAAProperties() *uaa.Uaa {
 
 func (s *BoshBase) createDirectorUAAProperties() *director.Director {
 	return &director.Director{
+		Address:    s.PublicIP,
 		Name:       s.DirectorName,
 		CpiJob:     s.CPIName,
 		MaxThreads: 10,
@@ -319,6 +320,7 @@ func (s *BoshBase) createDirectorUAAProperties() *director.Director {
 }
 func (s *BoshBase) createDirectorProperties() *director.Director {
 	return &director.Director{
+		Address:    s.PublicIP,
 		Name:       s.DirectorName,
 		CpiJob:     s.CPIName,
 		MaxThreads: 10,
