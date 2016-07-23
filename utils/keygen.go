@@ -10,7 +10,7 @@ import (
 func GenerateKeys() (publicKeyPem, privateKeyPem string, err error) {
 	var privateKey *rsa.PrivateKey
 	var publicKeyDer []byte
-	if privateKey, err = rsa.GenerateKey(rand.Reader, 2014); err != nil {
+	if privateKey, err = rsa.GenerateKey(rand.Reader, 4096); err != nil {
 		return
 	}
 
