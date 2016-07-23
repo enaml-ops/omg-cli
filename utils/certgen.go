@@ -92,7 +92,7 @@ func GenerateCert(hosts []string) (caCert, cert, key string, err error) {
 		}
 	}
 
-	certBytes, err = x509.CreateCertificate(rand.Reader, &template, ca, &caKey.PublicKey, caKey)
+	certBytes, err = x509.CreateCertificate(rand.Reader, &template, ca, &certKey.PublicKey, certKey)
 	if err != nil {
 		log.Fatalf("Failed to create certificate: %s", err)
 		return
