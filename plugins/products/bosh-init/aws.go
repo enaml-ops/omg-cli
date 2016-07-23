@@ -36,7 +36,9 @@ func NewAWSBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifes
 	boshJob := manifest.Jobs[0]
 	boshJob.AddTemplate(aws.CreateCPITemplate())
 	boshJob.AddNetwork(aws.CreateJobNetwork())
-	boshJob.AddProperty("aws", aws.CreateCPIJobProperty())
+	for name, val := range aws.CreateCPIJobProperties() {
+		boshJob.AddProperty(name, val)
+	}
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(aws.CreateCloudProvider())
 	return manifest
@@ -111,9 +113,16 @@ func (s *AWSBosh) CreateVIPNetwork() (net enaml.VIPNetwork) {
 	return enaml.NewVIPNetwork("public")
 }
 
-func (s *AWSBosh) CreateCPIJobProperty() (property interface{}) {
-	return &aws_cpi.AwsCpiJob{
-		Agent: &aws_cpi.Agent{
+func (s *AWSBosh) CreateCPIJobProperties() map[string]interface{} {
+	return map[string]interface{}{
+		"aws": &aws_cpi.Aws{
+			AccessKeyId:           s.cfg.AWSAccessKeyID,
+			SecretAccessKey:       s.cfg.AWSSecretKey,
+			DefaultKeyName:        s.cfg.AWSKeyName,
+			DefaultSecurityGroups: s.cfg.AWSSecurityGroups,
+			Region:                s.cfg.AWSRegion,
+		},
+		"agent": &aws_cpi.Agent{
 			Mbus: fmt.Sprintf("nats://nats:%s@%s:4222", s.boshbase.NatsPassword, s.boshbase.PrivateIP),
 		},
 	}

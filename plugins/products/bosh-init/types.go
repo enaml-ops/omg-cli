@@ -87,7 +87,7 @@ type IAASManifestProvider interface {
 	CreateVIPNetwork() enaml.VIPNetwork
 	CreateJobNetwork() enaml.Network
 	CreateCloudProvider() enaml.CloudProvider
-	CreateCPIJobProperty() interface{}
+	CreateCPIJobProperties() map[string]interface{}
 	CreateDeploymentManifest() *enaml.DeploymentManifest
 }
 
