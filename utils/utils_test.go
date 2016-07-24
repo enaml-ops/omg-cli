@@ -2,7 +2,10 @@ package utils_test
 
 import (
 	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/enaml/enamlbosh"
 	. "github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/omg-cli/utils/utilsfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -19,6 +22,25 @@ var _ = Describe("utils", func() {
 				Ω(len(commands)).Should(Equal(1))
 				Ω(commands[0].Name).Should(ContainSubstring("testplugin-"))
 				Ω(commands[0].Action).ShouldNot(BeNil())
+			})
+		})
+	})
+
+	Describe("given a DecorateDeploymentWithBoshUUID", func() {
+		Context("when called with a deployment []byte and boshclient", func() {
+			var dmResult *enaml.DeploymentManifest
+			var controlUUID = "blah-blah-ble-bui"
+
+			BeforeEach(func() {
+				boshclientfake := new(utilsfakes.FakeBoshClientCaller)
+				boshclientfake.GetInfoReturns(&enamlbosh.BoshInfo{
+					UUID: controlUUID,
+				}, nil)
+				dm, _ := DecorateDeploymentWithBoshUUID([]byte(``), boshclientfake)
+				dmResult = enaml.NewDeploymentManifest(dm)
+			})
+			It("then should overwrite the uuid in the deployment with the result from a info client call to the bosh", func() {
+				Ω(dmResult.DirectorUUID).Should(Equal(controlUUID))
 			})
 		})
 	})
