@@ -80,13 +80,17 @@ func GetProductCommands(target string) (commands []cli.Command) {
 				client, productDeployment := registry.GetProductReference(pluginPath)
 				defer client.Kill()
 				boshclient := enamlbosh.NewClientBasic(c.Parent().String("bosh-user"), c.Parent().String("bosh-pass"), c.Parent().String("bosh-url"), c.Parent().Int("bosh-port"))
+
 				if cloudConfig, err = boshclient.GetCloudConfig(); err == nil {
 					var cloudConfigBytes []byte
 					var task enamlbosh.BoshTask
 					cloudConfigBytes, err = cloudConfig.Bytes()
 					deploymentManifest := productDeployment.GetProduct(c.Parent().Args(), cloudConfigBytes)
-					task, err = processProductDeployment(c, deploymentManifest, true)
-					lo.G.Debug("bosh task: ", task)
+
+					if deploymentManifest, err = DecorateDeploymentWithBoshUUID(deploymentManifest, boshclient); err == nil {
+						task, err = processProductDeployment(c, deploymentManifest, true)
+						lo.G.Debug("bosh task: ", task)
+					}
 				}
 				return
 			},
@@ -94,6 +98,19 @@ func GetProductCommands(target string) (commands []cli.Command) {
 	}
 	lo.G.Debug("registered product plugins: ", registry.ListProducts())
 	return
+}
+
+func DecorateDeploymentWithBoshUUID(deployment []byte, client BoshClientCaller) ([]byte, error) {
+	var boshinfo *enamlbosh.BoshInfo
+	var dm *enaml.DeploymentManifest
+	var err error
+
+	if boshinfo, err = client.GetInfo(); err == nil {
+		dm = enaml.NewDeploymentManifest(deployment)
+		lo.G.Debug("setting uuid on deployment from bosh: ", boshinfo.UUID)
+		dm.SetDirectorUUID(boshinfo.UUID)
+	}
+	return dm.Bytes(), err
 }
 
 //ProcessProductBytes - upload a product deployments bytes to bosh
