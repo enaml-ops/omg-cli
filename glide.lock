@@ -144,4 +144,6 @@ imports:
   - ed25519/internal/edwards25519
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
+- name: github.com/square/certstrap
+  version: b6aef507a0840bf78bac99e7ffa6e6eb5c2c3c9f
 devImports: []
