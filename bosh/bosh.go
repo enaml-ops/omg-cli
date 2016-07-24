@@ -75,7 +75,6 @@ func CloudConfigAction(c *cli.Context, cc cloudconfig.CloudConfigDeployer) error
 // ProductAction is the action that is executed for each product command
 func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) error {
 	bc := getBoshClient(c)
-	fmt.Println("client:", bc)
 	ccm, err := bc.GetCloudConfig()
 	if err != nil {
 		return err
@@ -89,6 +88,10 @@ func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) er
 	if c.Bool("print-manifest") {
 		UIPrint(string(manifest))
 		return nil
+	}
+	manifest, err = decorateDeploymentWithBoshUUID(manifest, bc)
+	if err != nil {
+		return err
 	}
 	task, err := uploadProductDeployment(bc, manifest, true)
 	lo.G.Debug("bosh task: ", task)
@@ -197,6 +200,19 @@ func stemcellsToUpload(stemcells []enaml.Stemcell, client *enamlbosh.Client) ([]
 		}
 	}
 	return result, nil
+}
+
+func decorateDeploymentWithBoshUUID(deployment []byte, client BoshClientCaller) ([]byte, error) {
+	var boshinfo *enamlbosh.BoshInfo
+	var dm *enaml.DeploymentManifest
+	var err error
+
+	if boshinfo, err = client.GetInfo(); err == nil {
+		dm = enaml.NewDeploymentManifest(deployment)
+		lo.G.Debug("setting uuid on deployment from bosh: ", boshinfo.UUID)
+		dm.SetDirectorUUID(boshinfo.UUID)
+	}
+	return dm.Bytes(), err
 }
 
 func checkTaskStatus(task enamlbosh.BoshTask, client *enamlbosh.Client, poll bool) error {

@@ -16,7 +16,9 @@ import (
 	"net/url"
 
 	"github.com/codegangsta/cli"
+	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
+	"github.com/enaml-ops/omg-cli/bosh/boshfakes"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/product"
@@ -79,6 +81,26 @@ func portAndURL(s *ghttp.Server) (port, host string) {
 }
 
 var _ = Describe("bosh", func() {
+
+	Describe("given decorateDeploymentWithBoshUUID", func() {
+		Context("when called with a deployment []byte and boshclient", func() {
+			var dmResult *enaml.DeploymentManifest
+			var controlUUID = "blah-blah-ble-bui"
+
+			BeforeEach(func() {
+				boshclientfake := new(boshfakes.FakeBoshClientCaller)
+				boshclientfake.GetInfoReturns(&enamlbosh.BoshInfo{
+					UUID: controlUUID,
+				}, nil)
+				dm, _ := decorateDeploymentWithBoshUUID([]byte(``), boshclientfake)
+				dmResult = enaml.NewDeploymentManifest(dm)
+			})
+			It("then should overwrite the uuid in the deployment with the result from a info client call to the bosh", func() {
+				Ω(dmResult.DirectorUUID).Should(Equal(controlUUID))
+			})
+		})
+	})
+
 	BeforeEach(func() {
 		// install a no-op print function to keep test output clean
 		UIPrint = func(a ...interface{}) (int, error) { return 0, nil }
@@ -277,6 +299,10 @@ var _ = Describe("bosh", func() {
 							[]enamlbosh.CloudConfigResponseBody{
 								{Properties: "response"},
 							}),
+					),
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/info"),
+						ghttp.RespondWithJSONEncoded(http.StatusOK, enamlbosh.BoshInfo{}),
 					),
 					ghttp.CombineHandlers(
 						ghttp.VerifyRequest("POST", "/deployments"),
