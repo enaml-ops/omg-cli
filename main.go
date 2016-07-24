@@ -13,6 +13,7 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
+	"github.com/enaml-ops/omg-cli/bosh"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/omg-cli/vsphere-cli"
 	"github.com/enaml-ops/pluginlib/registry"
@@ -89,13 +90,13 @@ func main() {
 		{
 			Name:        "deploy-cloudconfig",
 			Usage:       "deploy-cloudconfig <cloudconfig-name> [--flags] - deploy a cloudconfig to bosh",
-			Flags:       getBoshAuthFlags(),
+			Flags:       bosh.GetAuthFlags(),
 			Subcommands: utils.GetCloudConfigCommands(CloudConfigPluginsDir),
 		},
 		{
 			Name:        "deploy-product",
 			Usage:       "deploy-product <prod-name> [--flags] - deploy a product via bosh",
-			Flags:       getBoshAuthFlags(),
+			Flags:       bosh.GetAuthFlags(),
 			Subcommands: utils.GetProductCommands(ProductPluginsDir),
 		},
 	}
@@ -144,15 +145,4 @@ func copyPlugin(src io.Reader, dst string) (err error) {
 		os.Chmod(dst, 755)
 	}
 	return
-}
-
-func getBoshAuthFlags() []cli.Flag {
-	return []cli.Flag{
-		cli.StringFlag{Name: "bosh-url", Value: "https://mybosh.com", Usage: "this is the url or ip of your bosh director"},
-		cli.IntFlag{Name: "bosh-port", Value: 25555, Usage: "this is the port of your bosh director"},
-		cli.StringFlag{Name: "bosh-user", Value: "bosh", Usage: "this is the username for your bosh director"},
-		cli.StringFlag{Name: "bosh-pass", Value: "", Usage: "this is the pasword for your bosh director"},
-		cli.BoolFlag{Name: "ssl-ignore", Usage: "ingore ssl self signed cert warnings"},
-		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
-	}
 }

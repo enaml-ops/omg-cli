@@ -1,10 +1,6 @@
 hash: 6b9ef3b0494e0e04375d9ae2128945b6bc22c394a0048642f86509b29ea5472e
-updated: 2016-07-20T11:44:45.707986341-04:00
+updated: 2016-07-22T13:54:08.895951459-06:00
 imports:
-- name: github.com/bmatcuk/doublestar
-  version: ec3b4af762f792cb93bf2518ff9ac408dbdc2b4e
-- name: github.com/charlievieth/fs
-  version: 1c3b3f15b0ca23a98e93ef1d987b14d53cbfb4e6
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
@@ -72,16 +68,16 @@ imports:
 - name: github.com/cloudfoundry/bosh-utils
   version: 99c230d990674e484143e3b1452576912ab55380
   subpackages:
+  - blobstore
   - errors
-  - logger
-  - logger/file
-  - system
-  - uuid
   - fileutil
   - httpclient
-  - retrystrategy
+  - logger
+  - logger/file
   - property
-  - blobstore
+  - retrystrategy
+  - system
+  - uuid
   - http
 - name: github.com/cloudfoundry/gofileutils
   version: 94cb17960d629e2ca9a67d381228ec499966a69b
@@ -95,17 +91,18 @@ imports:
   - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
-- name: github.com/enaml-ops/omg-cli
-  version: ea33f3255eccc3c763b4c4b1774090acf12e7625
-  subpackages:
-  - pluginlib/util
 - name: github.com/enaml-ops/pluginlib
   version: 419961981671ea61125c88e6ee569ec6dd9daa0a
   subpackages:
+  - registry
   - cloudconfig
   - pcli
   - product
   - util
+- name: github.com/golang/protobuf
+  version: 874264fbbb43f4d91e999fecb4b40143ed611400
+  subpackages:
+  - proto
 - name: github.com/hashicorp/go-plugin
   version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux
@@ -132,7 +129,7 @@ imports:
 - name: github.com/pkg/errors
   version: cc5fbb72d9b1b5f664ff3c11ed7896ee23ad9276
 - name: github.com/pkg/sftp
-  version: 57fcf4a640a942eb05181f929601f8f4409eda3e
+  version: a71e8f580e3b622ebff585309160b1cc549ef4d2
 - name: github.com/xchapter7x/lo
   version: aa2602d0e8e8647f0ce7b53109b37040941915aa
 - name: golang.org/x/crypto
@@ -142,8 +139,30 @@ imports:
   - curve25519
   - ed25519
   - ed25519/internal/edwards25519
+- name: golang.org/x/net
+  version: 4d38db76854b199960801a1734443fd02870d7e1
+  subpackages:
+  - context
+- name: golang.org/x/oauth2
+  version: 1364adb2c63445016c5ed4518fc71f6a3cda6169
+  subpackages:
+  - internal
+- name: google.golang.org/appengine
+  version: 267c27e7492265b84fc6719503b14a1e17975d79
+  subpackages:
+  - urlfetch
+  - internal
+  - internal/urlfetch
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
+<<<<<<< 035691c14e51d29991381fac1e5a7e8ef5897370
 - name: github.com/square/certstrap
   version: b6aef507a0840bf78bac99e7ffa6e6eb5c2c3c9f
 devImports: []
+=======
+testImports: []
+>>>>>>> [#126155341] add support for UAA-enabled bosh to omg-cli

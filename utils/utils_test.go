@@ -344,6 +344,292 @@ var _ = Describe("utils", func() {
 			})
 		})
 	})
+	//
+	// Describe("given ProcessRemoteStemcells", func() {
+	//
+	// 	BeforeEach(func() {
+	// 		body, _ := os.Open("fixtures/deployment_task.json")
+	// 		doer.DoReturns(&http.Response{
+	// 			Body: body, //will only support a single call
+	// 		}, nil)
+	// 	})
+	//
+	// 	Context("when called with a valid list of remote stemcells", func() {
+	// 		var err error
+	// 		var myStemcells = []enaml.Stemcell{
+	// 			enaml.Stemcell{URL: "someurl.com", SHA1: "lkasdgklhasdglakshdgasdg"},
+	// 		}
+	//
+	// 		BeforeEach(func() {
+	// 			err = ProcessRemoteStemcells(
+	// 				myStemcells,
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	//
+	// 		It("then it should upload the given stemcell to bosh", func() {
+	// 			Ω(doer.DoCallCount()).Should(Equal(len(myStemcells)))
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 		})
+	// 	})
+	//
+	// 	Context("when called with a valid list of NON remote stemcells", func() {
+	// 		var err error
+	// 		var myStemcells = []enaml.Stemcell{
+	// 			enaml.Stemcell{Name: "hi", Version: "1.2"},
+	// 			enaml.Stemcell{Name: "hello", Version: "0.333.4"},
+	// 		}
+	//
+	// 		BeforeEach(func() {
+	// 			err = ProcessRemoteStemcells(
+	// 				myStemcells,
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	//
+	// 		It("then it should pass over all and exit successfully", func() {
+	// 			Ω(doer.DoCallCount()).Should(Equal(0))
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 		})
+	// 	})
+	//
+	// 	Context("when called with a mixed list of NON remote stemcells and remote stemcells", func() {
+	// 		var err error
+	// 		var myStemcells = []enaml.Stemcell{
+	// 			enaml.Stemcell{Name: "hi", Version: "1.2"},
+	// 			enaml.Stemcell{Name: "hello", Version: "0.333.4"},
+	// 		}
+	// 		var remoteStemcell = enaml.Stemcell{URL: "boshstuff.com", SHA1: "kljaslhdg9ashdgklahsdgklasdg"}
+	//
+	// 		BeforeEach(func() {
+	// 			err = ProcessRemoteStemcells(
+	// 				append(myStemcells, remoteStemcell),
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	// 		It("then it only upload the remote stemcells and exit successfully", func() {
+	// 			Ω(doer.DoCallCount()).Should(Equal(1))
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 		})
+	// 	})
+	// })
+	//
+	// Describe("given PollTaskAndWait", func() {
+	// 	Context("when task status is succesfully complete", func() {
+	// 		var doer *enamlboshfakes.FakeHttpClientDoer
+	//
+	// 		BeforeEach(func() {
+	// 			doer = new(enamlboshfakes.FakeHttpClientDoer)
+	// 			body, _ := os.Open("fixtures/deployment_task.json")
+	// 			doer.DoReturns(&http.Response{
+	// 				Body: body, //will only support a single call
+	// 			}, nil)
+	// 		})
+	// 		It("Then it should exit without error", func() {
+	// 			err := PollTaskAndWait(
+	// 				enamlbosh.BoshTask{ID: 1180},
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				1,
+	// 			)
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 		})
+	// 	})
+	//
+	// 	Context("when task status completes with a non-successful state", func() {
+	// 		var doer *enamlboshfakes.FakeHttpClientDoer
+	//
+	// 		BeforeEach(func() {
+	// 			doer = new(enamlboshfakes.FakeHttpClientDoer)
+	// 			body, _ := os.Open("fixtures/deployment_task_err.json")
+	// 			doer.DoReturns(&http.Response{
+	// 				Body: body, //will only support a single call
+	// 			}, nil)
+	// 		})
+	// 		It("Then it should exit without error", func() {
+	// 			err := PollTaskAndWait(
+	// 				enamlbosh.BoshTask{ID: 1180},
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				1,
+	// 			)
+	// 			Ω(err).Should(HaveOccurred())
+	// 		})
+	// 	})
+	// })
+	//
+	// Describe("given ProcessRemoteReleases", func() {
+	// 	var doer *enamlboshfakes.FakeHttpClientDoer
+	//
+	// 	BeforeEach(func() {
+	// 		doer = new(enamlboshfakes.FakeHttpClientDoer)
+	// 		body, _ := os.Open("fixtures/deployment_task.json")
+	// 		doer.DoReturns(&http.Response{
+	// 			Body: body, //will only support a single call
+	// 		}, nil)
+	// 	})
+	//
+	// 	Context("when called with a valid list of remote stemcells", func() {
+	// 		var err error
+	// 		var myReleases = []enaml.Release{
+	// 			enaml.Release{URL: "someurl.com", SHA1: "lkasdgklhasdglakshdgasdg"},
+	// 		}
+	//
+	// 		BeforeEach(func() {
+	// 			err = ProcessRemoteReleases(
+	// 				myReleases,
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	//
+	// 		It("then it should upload the given stemcell to bosh", func() {
+	// 			Ω(doer.DoCallCount()).Should(Equal(len(myReleases)))
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 		})
+	// 	})
+	//
+	// 	Context("when called with a valid list of NON remote stemcells", func() {
+	// 		var err error
+	// 		var myReleases = []enaml.Release{
+	// 			enaml.Release{Name: "hi", Version: "1.2"},
+	// 			enaml.Release{Name: "hello", Version: "0.333.4"},
+	// 		}
+	//
+	// 		BeforeEach(func() {
+	// 			err = ProcessRemoteReleases(
+	// 				myReleases,
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	//
+	// 		It("then it should pass over all and exit successfully", func() {
+	// 			Ω(doer.DoCallCount()).Should(Equal(0))
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 		})
+	// 	})
+	//
+	// 	Context("when called with a mixed list of NON remote stemcells and remote stemcells", func() {
+	// 		var err error
+	// 		var myReleases = []enaml.Release{
+	// 			enaml.Release{Name: "hi", Version: "1.2"},
+	// 			enaml.Release{Name: "hello", Version: "0.333.4"},
+	// 		}
+	// 		var remoteRelease = enaml.Release{URL: "boshstuff.com", SHA1: "kljaslhdg9ashdgklahsdgklasdg"}
+	//
+	// 		BeforeEach(func() {
+	// 			err = ProcessRemoteReleases(
+	// 				append(myReleases, remoteRelease),
+	// 				enamlbosh.NewClient("user", "pass", "bosh.com", 25555),
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	// 		It("then it only upload the remote stemcells and exit successfully", func() {
+	// 			Ω(doer.DoCallCount()).Should(Equal(1))
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 		})
+	// 	})
+	// })
+	//
+	// Describe("given ProcessRemoteBoshAssets", func() {
+	// 	Context("when calling yields a task that does not complete successfully", func() {
+	// 		var err error
+	// 		BeforeEach(func() {
+	// 			doer := new(enamlboshfakes.FakeHttpClientDoer)
+	// 			body, _ := os.Open("fixtures/deployment_task_err.json")
+	// 			doer.DoReturns(&http.Response{
+	// 				Body: body,
+	// 			}, nil)
+	// 			err = ProcessRemoteBoshAssets(
+	// 				&enaml.DeploymentManifest{
+	// 					Stemcells: []enaml.Stemcell{
+	// 						enaml.Stemcell{URL: "blah", SHA1: "blahblahbleeblu"},
+	// 					},
+	// 				},
+	// 				enamlbosh.NewClient("user", "pass", "https://192.168.1.1", 25555),
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	//
+	// 		It("then we should return an error", func() {
+	// 			Ω(err).Should(HaveOccurred())
+	// 		})
+	// 	})
+	// })
+	//
+	// Describe("given a ProcessProductBytes function", func() {
+	// 	var (
+	// 		printManifest  = true
+	// 		deployManifest = false
+	// 	)
+	//
+	// 	Context("when called with valid arguments for deploying the manifest", func() {
+	// 		var err error
+	// 		var task enamlbosh.BoshTask
+	// 		BeforeEach(func() {
+	// 			doer := new(enamlboshfakes.FakeHttpClientDoer)
+	//
+	// 			body, _ := os.Open("fixtures/deployment_task.json")
+	// 			doer.DoReturns(&http.Response{
+	// 				Body: body,
+	// 			}, nil)
+	// 			task, err = ProcessProductBytes(
+	// 				new(enaml.DeploymentManifest).Bytes(),
+	// 				deployManifest,
+	// 				"user",
+	// 				"pass",
+	// 				"https://192.168.1.1",
+	// 				25555,
+	// 				doer,
+	// 				false,
+	// 			)
+	// 		})
+	// 		It("Then it should deploy the given manifest bytes", func() {
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 			Ω(task).ShouldNot(BeNil())
+	// 		})
+	// 	})
+	//
+	// 	Context("when called with valid arguments for printing", func() {
+	// 		var callCount *int64
+	// 		var err error
+	// 		BeforeEach(func() {
+	// 			var z int64 = 0
+	// 			callCount = &z
+	// 			UIPrint = func(a ...interface{}) (n int, err error) {
+	// 				atomic.AddInt64(callCount, 1)
+	// 				return
+	// 			}
+	// 			doer := new(enamlboshfakes.FakeHttpClientDoer)
+	// 			body, _ := os.Open("fixtures/deployment_tasks.json")
+	// 			doer.DoReturns(&http.Response{
+	// 				Body: body,
+	// 			}, nil)
+	// 			_, err = ProcessProductBytes(new(enaml.DeploymentManifest).Bytes(), printManifest, "", "", "", 25555, doer, false)
+	// 		})
+	//
+	// 		AfterEach(func() {
+	// 			UIPrint = fmt.Println
+	// 		})
+	//
+	// 		It("Then it should print the yaml of the manifest", func() {
+	// 			Ω(err).ShouldNot(HaveOccurred())
+	// 			Ω(*callCount).Should(BeNumerically(">", 0))
+	// 		})
+	// 	})
+	// })
+	//
 
 	Describe("given ClearDefaultStringSliceValue", func() {
 		Context("when called on a stringslice containing a default & added values", func() {
