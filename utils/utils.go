@@ -71,7 +71,7 @@ func GetProductCommands(target string) (commands []cli.Command) {
 			Usage: "deploy the " + f.Name() + " product",
 			Flags: pluginutil.ToCliFlagArray(flags),
 			Action: func(c *cli.Context) (err error) {
-				client, productDeployment := registry.GetProductReference(target)
+				client, productDeployment := registry.GetProductReference(pluginPath)
 				defer client.Kill()
 				return bosh.ProductAction(c.Parent(), productDeployment)
 			},
