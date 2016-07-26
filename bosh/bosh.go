@@ -26,30 +26,18 @@ func getBoshClient(c *cli.Context) *enamlbosh.Client {
 		boshPort := c.Int("bosh-port")
 		skipSSLVerify := c.Bool("ssl-ignore")
 
-		clientID := c.String("bosh-client-id")
-		clientSecret := c.String("bosh-client-secret")
-		uaaURL := c.String("uaa-url")
+		var err error
+		boshclient, err = enamlbosh.NewClient(boshUser, boshPass, boshURL, boshPort, skipSSLVerify)
 
-		if clientID != "" && clientSecret != "" && uaaURL != "" {
-			var err error
-			boshclient, err = enamlbosh.NewClientUAA(boshUser, boshPass, clientID, clientSecret, boshURL, boshPort, uaaURL, skipSSLVerify)
-			if err != nil {
-				panic(err)
-			}
-		} else {
-			lo.G.Debug("Missing UAA flags, falling back to basic auth")
-			boshclient = enamlbosh.NewClientBasic(boshUser, boshPass, boshURL, boshPort, skipSSLVerify)
+		if err != nil {
+			lo.G.Panic("Couldn't create bosh client:", err)
 		}
 	}
-
 	return boshclient
 }
 
 func GetAuthFlags() []cli.Flag {
 	return []cli.Flag{
-		cli.StringFlag{Name: "bosh-client-id", Usage: "client ID for UAA-enabled bosh (omit for basic auth)"},
-		cli.StringFlag{Name: "bosh-client-secret", Usage: "client secret for UAA-enabled bosh (omit for basic auth)"},
-		cli.StringFlag{Name: "uaa-url", Usage: "URL for UAA server (omit for basic auth)"},
 		cli.StringFlag{Name: "bosh-url", Value: "https://mybosh.com", Usage: "this is the url or ip of your bosh director"},
 		cli.IntFlag{Name: "bosh-port", Value: 25555, Usage: "this is the port of your bosh director"},
 		cli.StringFlag{Name: "bosh-user", Value: "bosh", Usage: "this is the username for your bosh director"},
@@ -202,7 +190,7 @@ func stemcellsToUpload(stemcells []enaml.Stemcell, client *enamlbosh.Client) ([]
 	return result, nil
 }
 
-func decorateDeploymentWithBoshUUID(deployment []byte, client BoshClientCaller) ([]byte, error) {
+func decorateDeploymentWithBoshUUID(deployment []byte, client *enamlbosh.Client) ([]byte, error) {
 	var boshinfo *enamlbosh.BoshInfo
 	var dm *enaml.DeploymentManifest
 	var err error

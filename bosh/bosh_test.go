@@ -11,6 +11,7 @@
 package bosh
 
 import (
+	"io/ioutil"
 	"net"
 	"net/http"
 	"net/url"
@@ -18,7 +19,6 @@ import (
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
-	"github.com/enaml-ops/omg-cli/bosh/boshfakes"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/product"
@@ -45,6 +45,9 @@ const tokenResponse = `{
   "scope":"opsman.user uaa.admin scim.read opsman.admin scim.write",
   "jti":"foo"
 }`
+
+const controlUUID = "31631ff9-ac41-4eba-a944-04c820633e7f"
+const basicAuthBoshInfo = `{"name":"enaml-bosh","uuid":"` + controlUUID + `","version":"1.3232.2.0 (00000000)","user":null,"cpi":"aws_cpi","user_authentication":{"type":"basic","options":{}},"features":{"dns":{"status":false,"extras":{"domain_name":null}},"compiled_package_cache":{"status":false,"extras":{"provider":null}},"snapshots":{"status":false}}}`
 
 type FakeCloudConfigDeployer struct{}
 
@@ -82,25 +85,6 @@ func portAndURL(s *ghttp.Server) (port, host string) {
 
 var _ = Describe("bosh", func() {
 
-	Describe("given decorateDeploymentWithBoshUUID", func() {
-		Context("when called with a deployment []byte and boshclient", func() {
-			var dmResult *enaml.DeploymentManifest
-			var controlUUID = "blah-blah-ble-bui"
-
-			BeforeEach(func() {
-				boshclientfake := new(boshfakes.FakeBoshClientCaller)
-				boshclientfake.GetInfoReturns(&enamlbosh.BoshInfo{
-					UUID: controlUUID,
-				}, nil)
-				dm, _ := decorateDeploymentWithBoshUUID([]byte(``), boshclientfake)
-				dmResult = enaml.NewDeploymentManifest(dm)
-			})
-			It("then should overwrite the uuid in the deployment with the result from a info client call to the bosh", func() {
-				Ω(dmResult.DirectorUUID).Should(Equal(controlUUID))
-			})
-		})
-	})
-
 	BeforeEach(func() {
 		// install a no-op print function to keep test output clean
 		UIPrint = func(a ...interface{}) (int, error) { return 0, nil }
@@ -117,6 +101,13 @@ var _ = Describe("bosh", func() {
 		BeforeEach(func() {
 			ccd = FakeCloudConfigDeployer{}
 			server = ghttp.NewTLSServer()
+			server.AppendHandlers(
+				// have our test server respond to /info acting as a basic-auth bosh
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/info"),
+					ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
+				),
+			)
 		})
 
 		AfterEach(func() {
@@ -150,7 +141,7 @@ var _ = Describe("bosh", func() {
 			})
 		})
 
-		Context("when called without UAA flags", func() {
+		Context("when called without the --print-manifest option", func() {
 			var c *cli.Context
 			var err error
 
@@ -170,53 +161,14 @@ var _ = Describe("bosh", func() {
 					"--bosh-user", basicAuthUser,
 					"--bosh-pass", basicAuthPass,
 				}, GetAuthFlags())
-
 			})
 
 			It("makes a request and returns without error", func() {
 				err = CloudConfigAction(c, ccd)
 				Ω(err).ShouldNot(HaveOccurred())
-				Ω(len(server.ReceivedRequests())).Should(Equal(1))
-			})
-		})
-
-		Context("when called with UAA flags", func() {
-			var c *cli.Context
-			var err error
-
-			BeforeEach(func() {
-				server.AppendHandlers(
-					ghttp.CombineHandlers(
-						ghttp.VerifyRequest("POST", "/oauth/token"),
-						ghttp.RespondWith(http.StatusOK, tokenResponse, http.Header{
-							"Content-Type": []string{"application/json"}}),
-					),
-					ghttp.CombineHandlers(
-						ghttp.RespondWith(http.StatusOK, ""),
-					),
-				)
-
-				port, url := portAndURL(server)
-				c = pluginutil.NewContext([]string{
-					"foo",
-					"--ssl-ignore",
-					"--bosh-url", url,
-					"--bosh-port", port,
-					"--bosh-user", basicAuthUser,
-					"--bosh-pass", basicAuthPass,
-					"--bosh-client-id", clientID,
-					"--bosh-client-secret", clientSecret,
-					"--uaa-url", server.URL(),
-				}, GetAuthFlags())
-			})
-
-			It("makes a request using a UAA token", func() {
-				err = CloudConfigAction(c, ccd)
-				Ω(err).ShouldNot(HaveOccurred())
-
-				Ω(server.ReceivedRequests()).ShouldNot(BeEmpty())
-				lastReq := server.ReceivedRequests()[len(server.ReceivedRequests())-1]
-				Ω(lastReq.Header.Get("Authorization")).Should(ContainSubstring("Bearer"))
+				// one request to the /info endpoint (when creating the client),
+				// and one request to /cloud_configs
+				Ω(len(server.ReceivedRequests())).Should(Equal(2))
 			})
 		})
 	})
@@ -228,6 +180,13 @@ var _ = Describe("bosh", func() {
 		BeforeEach(func() {
 			pd = FakeProductDeployer{}
 			server = ghttp.NewTLSServer()
+			server.AppendHandlers(
+				// have our test server respond to /info acting as a basic-auth bosh
+				ghttp.CombineHandlers(
+					ghttp.VerifyRequest("GET", "/info"),
+					ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
+				),
+			)
 		})
 
 		AfterEach(func() {
@@ -266,14 +225,16 @@ var _ = Describe("bosh", func() {
 				err = ProductAction(c, pd)
 				Ω(err).ShouldNot(HaveOccurred())
 
-				// it should GET the cloud config, but not POST the product
-				Ω(len(server.ReceivedRequests())).Should(Equal(1))
+				// it should GET the /info and /cloud_config, but not POST the product
+				Ω(len(server.ReceivedRequests())).Should(Equal(2))
 			})
 		})
 
-		Context("when called without UAA flags", func() {
+		Context("when called without the --print-manifest option", func() {
 			var c *cli.Context
 			var err error
+
+			var deploymentPostBody []byte
 
 			BeforeEach(func() {
 				port, url := portAndURL(server)
@@ -302,11 +263,17 @@ var _ = Describe("bosh", func() {
 					),
 					ghttp.CombineHandlers(
 						ghttp.VerifyRequest("GET", "/info"),
-						ghttp.RespondWithJSONEncoded(http.StatusOK, enamlbosh.BoshInfo{}),
+						ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
 					),
 					ghttp.CombineHandlers(
 						ghttp.VerifyRequest("POST", "/deployments"),
 						ghttp.RespondWithJSONEncoded(http.StatusOK, task),
+						// capture the POST to /deployments so we can verify it later
+						func(w http.ResponseWriter, req *http.Request) {
+							body, _ := ioutil.ReadAll(req.Body)
+							req.Body.Close()
+							deploymentPostBody = body
+						},
 					),
 					ghttp.CombineHandlers(
 						ghttp.VerifyRequest("GET", "/tasks/42"),
@@ -318,6 +285,14 @@ var _ = Describe("bosh", func() {
 			It("returns without error", func() {
 				err = ProductAction(c, pd)
 				Ω(err).ShouldNot(HaveOccurred())
+			})
+
+			It("decorates the deployment with the bosh UUID", func() {
+				ProductAction(c, pd)
+
+				Ω(deploymentPostBody).ShouldNot(BeNil())
+				dm := enaml.NewDeploymentManifest(deploymentPostBody)
+				Ω(dm.DirectorUUID).Should(Equal(controlUUID))
 			})
 		})
 	})

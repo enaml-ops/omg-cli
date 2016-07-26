@@ -1,5 +1,5 @@
 hash: a3695b6988f9b73d95ce0cd111bd3be41f2e6bd0b98535c13adb2ca4a3c6fcf5
-updated: 2016-07-24T00:51:00.158834297-06:00
+updated: 2016-07-26T11:07:16.850181971-06:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -78,7 +78,7 @@ imports:
 - name: github.com/codegangsta/cli
   version: 492afb91497e22b398e972924eda64bfd706b102
 - name: github.com/enaml-ops/enaml
-  version: 60507ef16c5f0e8f2d404aad7b698859f9b70325
+  version: fd2ad78bf24b468d0226771ca2eebe144d001faf
   subpackages:
   - enamlbosh
   - cloudproperties/aws
