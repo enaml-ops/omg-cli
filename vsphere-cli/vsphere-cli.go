@@ -51,7 +51,6 @@ func GetFlags() []cli.Flag {
 		GOAgentVersion:     "3232.4",
 		GOAgentSHA:         "27ec32ddbdea13e3025700206388ae5882a23c67",
 		PrivateIP:          "10.0.0.6",
-		NtpServers:         &cli.StringSlice{"0.pool.ntp.org", "1.pool.ntp.org"},
 		CPIName:            "vsphere_cpi",
 	}
 
@@ -64,10 +63,10 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "vsphere-datacenter-name", Value: "", Usage: "name of the datacenter the Director will use for VM creation"},
 		cli.StringFlag{Name: "vsphere-vm-folder", Value: "", Usage: "name of the folder created to hold VMs"},
 		cli.StringFlag{Name: "vsphere-template-folder", Value: "", Usage: "the name of the folder created to hold stemcells"},
-		cli.StringFlag{Name: "vsphere-datastore-pattern", Value: "", Usage: "name of the datastore the Director will use for storing VMs"},
-		cli.StringFlag{Name: "vsphere-persistent-datastore-pattern", Value: "", Usage: "name of the datastore the Director will use for storing persistent disks. Defaults to vsphere-datastore-pattern"},
+		cli.StringFlag{Name: "vsphere-datastore", Value: "", Usage: "name of the datastore the Director will use for storing VMs"},
 		cli.StringFlag{Name: "vsphere-disk-path", Value: "", Usage: "name of the VMs folder, disk folder will be automatically created in the chosen datastore."},
 		cli.StringSliceFlag{Name: "vsphere-clusters", Value: &cli.StringSlice{""}, Usage: "one or more vSphere datacenter cluster names"},
+		cli.StringFlag{Name: "vsphere-resource-pool", Value: "", Usage: "Name of resource pool for vsphere cluster"},
 		// vsphere subnet1 flags
 		cli.StringFlag{Name: "vsphere-subnet1-name", Value: "", Usage: "name of the vSphere network for subnet1"},
 		cli.StringFlag{Name: "vsphere-subnet1-range", Value: "10.0.0.0/24", Usage: "CIDR range for subnet1"},
@@ -93,23 +92,24 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		checkRequired("vsphere-datacenter-name", c)
 		checkRequired("vsphere-vm-folder", c)
 		checkRequired("vsphere-template-folder", c)
-		checkRequired("vsphere-datastore-pattern", c)
+		checkRequired("vsphere-datastore", c)
 		checkRequired("vsphere-disk-path", c)
 		checkRequired("vsphere-clusters", c)
+		checkRequired("vsphere-resource-pool", c)
 		checkRequired("vsphere-subnet1-name", c)
 
 		manifest := boshinit.NewVSphereBosh(boshinit.BoshInitConfig{
 			// vsphere specific
-			VSphereAddress:                    c.String("vsphere-address"),
-			VSphereUser:                       c.String("vsphere-user"),
-			VSpherePassword:                   c.String("vsphere-password"),
-			VSphereDatacenterName:             c.String("vsphere-datacenter-name"),
-			VSphereVMFolder:                   c.String("vsphere-vm-folder"),
-			VSphereTemplateFolder:             c.String("vsphere-template-folder"),
-			VSphereDatastorePattern:           c.String("vsphere-datastore-pattern"),
-			VSpherePersistentDatastorePattern: c.String("vsphere-persistent-datastore-pattern"),
-			VSphereDiskPath:                   c.String("vsphere-disk-path"),
-			VSphereClusters:                   utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-clusters")...),
+			VSphereAddress:        c.String("vsphere-address"),
+			VSphereUser:           c.String("vsphere-user"),
+			VSpherePassword:       c.String("vsphere-password"),
+			VSphereDatacenterName: c.String("vsphere-datacenter-name"),
+			VSphereVMFolder:       c.String("vsphere-vm-folder"),
+			VSphereTemplateFolder: c.String("vsphere-template-folder"),
+			VSphereDataStore:      c.String("vsphere-datastore"),
+			VSphereDiskPath:       c.String("vsphere-disk-path"),
+			VSphereClusters:       utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-clusters")...),
+			VSphereResourcePool:   c.String("vsphere-resource-pool"),
 			VSphereNetworks: []boshinit.Network{boshinit.Network{
 				Name:    c.String("vsphere-subnet1-name"),
 				Range:   c.String("vsphere-subnet1-range"),

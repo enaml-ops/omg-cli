@@ -12,16 +12,15 @@ var _ = Describe("NewVSphereBosh", func() {
 	Describe("given the function", func() {
 		Context("when called w/ valid parameters", func() {
 			var boshConfig = BoshInitConfig{
-				VSphereAddress:                    "172.16.1.2",
-				VSphereUser:                       "vsadmin",
-				VSpherePassword:                   "secret",
-				VSphereDatacenterName:             "PCF_DC1",
-				VSphereVMFolder:                   "pcf_vms",
-				VSphereTemplateFolder:             "pcf_templates",
-				VSphereDatastorePattern:           "DS1",
-				VSpherePersistentDatastorePattern: "DS1_Persistent",
-				VSphereDiskPath:                   "pcf_disks",
-				VSphereClusters:                   []string{"PCF1"},
+				VSphereAddress:        "172.16.1.2",
+				VSphereUser:           "vsadmin",
+				VSpherePassword:       "secret",
+				VSphereDatacenterName: "PCF_DC1",
+				VSphereVMFolder:       "pcf_vms",
+				VSphereTemplateFolder: "pcf_templates",
+				VSphereDataStore:      "DS1",
+				VSphereDiskPath:       "pcf_disks",
+				VSphereClusters:       []string{"PCF1"},
 				VSphereNetworks: []Network{Network{
 					Name:    "PCF_Net1",
 					Range:   "172.16.0.0/23",
@@ -118,19 +117,6 @@ var _ = Describe("NewVSphereBosh", func() {
 				Ω(dc.VMFolder).Should(Equal("pcf_vms"))
 				Ω(dc.Clusters).Should(HaveLen(1))
 				Ω(dc.Clusters[0]).Should(Equal("PCF1"))
-			})
-
-			Context("When PersistentDatastorePattern isn't specified", func() {
-				BeforeEach(func() {
-					boshConfig.VSpherePersistentDatastorePattern = ""
-					manifest = NewVSphereBosh(boshConfig, boshBase)
-				})
-				XIt("then it should fallback to DatastorePattern", func() {
-					var vcenter vsphere_cpi.Vcenter
-					dc := vcenter.Datacenters.(VSphereDatacenters)[0]
-					Ω(dc.DatastorePattern).Should(Equal("DS1"))
-					Ω(dc.PersistentDatastorePattern).Should(Equal("DS1"))
-				})
 			})
 		})
 	})

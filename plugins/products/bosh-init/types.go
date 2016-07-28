@@ -10,39 +10,39 @@ import (
 )
 
 type BoshInitConfig struct {
-	BoshAvailabilityZone              string
-	BoshInstanceSize                  string
-	AWSSubnet                         string
-	AWSPEMFilePath                    string
-	AWSAccessKeyID                    string
-	AWSSecretKey                      string
-	AWSRegion                         string
-	AWSSecurityGroups                 []string
-	AWSKeyName                        string
-	AzureVnet                         string
-	AzureSubnet                       string
-	AzureSubscriptionID               string
-	AzureTenantID                     string
-	AzureClientID                     string
-	AzureClientSecret                 string
-	AzureResourceGroup                string
-	AzureStorageAccount               string
-	AzureDefaultSecurityGroup         string
-	AzureSSHPubKey                    string
-	AzureSSHUser                      string
-	AzureEnvironment                  string
-	AzurePrivateKeyPath               string
-	VSphereAddress                    string
-	VSphereUser                       string
-	VSpherePassword                   string
-	VSphereDatacenterName             string
-	VSphereVMFolder                   string
-	VSphereTemplateFolder             string
-	VSphereDatastorePattern           string
-	VSpherePersistentDatastorePattern string
-	VSphereDiskPath                   string
-	VSphereClusters                   []string
-	VSphereNetworks                   []Network
+	BoshAvailabilityZone      string
+	BoshInstanceSize          string
+	AWSSubnet                 string
+	AWSPEMFilePath            string
+	AWSAccessKeyID            string
+	AWSSecretKey              string
+	AWSRegion                 string
+	AWSSecurityGroups         []string
+	AWSKeyName                string
+	AzureVnet                 string
+	AzureSubnet               string
+	AzureSubscriptionID       string
+	AzureTenantID             string
+	AzureClientID             string
+	AzureClientSecret         string
+	AzureResourceGroup        string
+	AzureStorageAccount       string
+	AzureDefaultSecurityGroup string
+	AzureSSHPubKey            string
+	AzureSSHUser              string
+	AzureEnvironment          string
+	AzurePrivateKeyPath       string
+	VSphereAddress            string
+	VSphereUser               string
+	VSpherePassword           string
+	VSphereDatacenterName     string
+	VSphereVMFolder           string
+	VSphereTemplateFolder     string
+	VSphereDataStore          string
+	VSphereDiskPath           string
+	VSphereResourcePool       string
+	VSphereClusters           []string
+	VSphereNetworks           []Network
 }
 
 type Network struct {
@@ -98,36 +98,42 @@ type Postgres interface {
 }
 
 type BoshBase struct {
-	Mode                string
-	NetworkCIDR         string
-	NetworkGateway      string
-	NetworkDNS          []string
-	DirectorName        string
-	DirectorPassword    string
-	DBPassword          string
-	CPIName             string
-	NtpServers          []string
-	NatsPassword        string
-	MBusPassword        string
-	PrivateIP           string
-	PublicIP            string
-	SSLCert             string
-	SSLKey              string
-	PrivateKey          string
-	PublicKey           string
-	HealthMonitorSecret string
-	LoginSecret         string
-	RegistryPassword    string
-	CACert              string
-	BoshReleaseSHA      string
-	BoshReleaseVersion  string
-	CPIReleaseSHA       string
-	CPIReleaseVersion   string
-	GOAgentVersion      string
-	GOAgentSHA          string
-	UAAReleaseSHA       string
-	UAAReleaseVersion   string
-	TrustedCerts        string
+	Mode                 string
+	NetworkCIDR          string
+	NetworkGateway       string
+	NetworkDNS           []string
+	DirectorName         string
+	DirectorPassword     string
+	DBPassword           string
+	CPIName              string
+	NtpServers           []string
+	PrivateStaticIPs     []string
+	PrivateReservedRange string
+	NatsPassword         string
+	MBusPassword         string
+	PrivateIP            string
+	PublicIP             string
+	SSLCert              string
+	SSLKey               string
+	PrivateKey           string
+	PublicKey            string
+	HealthMonitorSecret  string
+	LoginSecret          string
+	RegistryPassword     string
+	CACert               string
+	BoshReleaseSHA       string
+	BoshReleaseVersion   string
+	BoshReleaseURL       string
+	CPIReleaseSHA        string
+	CPIReleaseVersion    string
+	CPIReleaseURL        string
+	GOAgentVersion       string
+	GOAgentSHA           string
+	GOAgentReleaseURL    string
+	UAAReleaseSHA        string
+	UAAReleaseVersion    string
+	UAAReleaseURL        string
+	TrustedCerts         string
 }
 type BoshDefaults struct {
 	CIDR               string

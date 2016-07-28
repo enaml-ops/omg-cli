@@ -62,18 +62,37 @@ func (s *BoshBase) InitializeKeys() (err error) {
 	return
 }
 
+func (s *BoshBase) getBoshReleaseURL() (url string) {
+	if s.BoshReleaseURL == "" {
+		url = "https://bosh.io/d/github.com/cloudfoundry/bosh?v=" + s.BoshReleaseVersion
+	} else {
+		url = s.BoshReleaseURL
+	}
+	return
+}
+
+func (s *BoshBase) getUAAReleaseURL() (url string) {
+	if s.UAAReleaseURL == "" {
+		url = "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=" + s.UAAReleaseVersion
+	} else {
+		url = s.UAAReleaseURL
+	}
+	return
+}
+
 func (s *BoshBase) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	manifest := &enaml.DeploymentManifest{}
 	manifest.SetName(s.DirectorName)
 	manifest.AddRelease(enaml.Release{
 		Name: "bosh",
-		URL:  "https://bosh.io/d/github.com/cloudfoundry/bosh?v=" + s.BoshReleaseVersion,
+		URL:  s.getBoshReleaseURL(),
 		SHA1: s.BoshReleaseSHA,
 	})
+
 	if s.IsUAA() {
 		manifest.AddRelease(enaml.Release{
 			Name: "uaa",
-			URL:  "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=" + s.UAAReleaseVersion,
+			URL:  s.getUAAReleaseURL(),
 			SHA1: s.UAAReleaseSHA,
 		})
 	}
@@ -122,9 +141,10 @@ func (s *BoshBase) CreateJob() enaml.Job {
 		boshJob.AddProperty("hm", s.createHeathMonitorJobProperties())
 	}
 
+	staticIPs := append(s.PrivateStaticIPs, s.PrivateIP)
 	boshJob.AddNetwork(enaml.Network{
 		Name:      "private",
-		StaticIPs: []string{s.PrivateIP},
+		StaticIPs: staticIPs,
 		Default:   []interface{}{"dns", "gateway"},
 	})
 	return boshJob
