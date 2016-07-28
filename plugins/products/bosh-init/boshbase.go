@@ -44,7 +44,7 @@ func (s *BoshBase) IsUAA() bool {
 //InitializeCerts - initializes certs needed for UAA and health monitor
 func (s *BoshBase) InitializeCerts() (err error) {
 	var cert, key, caCert string
-	if caCert, cert, key, err = utils.GenerateCert([]string{s.PublicIP}); err == nil {
+	if caCert, cert, key, err = utils.GenerateCert([]string{s.GetRoutableIP()}); err == nil {
 		s.SSLCert = cert
 		s.SSLKey = key
 		s.CACert = caCert
@@ -237,7 +237,7 @@ func (s *BoshBase) createUAAProperties() *uaa.Uaa {
 		SslCertificate:      s.SSLCert,
 		SslPrivateKey:       s.SSLKey,
 		RequireHttps:        true,
-		Url:                 fmt.Sprintf("https://%s:8443", s.PublicIP),
+		Url:                 fmt.Sprintf("https://%s:8443", s.GetRoutableIP()),
 		Jwt: &uaa.Jwt{
 			SigningKey:      s.PrivateKey,
 			VerificationKey: s.PublicKey,
@@ -298,7 +298,7 @@ func (s *BoshBase) createUAAProperties() *uaa.Uaa {
 
 func (s *BoshBase) createDirectorUAAProperties() *director.Director {
 	return &director.Director{
-		Address:    s.PublicIP,
+		Address:    s.GetRoutableIP(),
 		Name:       s.DirectorName,
 		CpiJob:     s.CPIName,
 		MaxThreads: 10,
@@ -317,14 +317,14 @@ func (s *BoshBase) createDirectorUAAProperties() *director.Director {
 			Provider: "uaa",
 			Uaa: &director.Uaa{
 				PublicKey: s.PublicKey,
-				Url:       fmt.Sprintf("https://%s:8443", s.PublicIP),
+				Url:       fmt.Sprintf("https://%s:8443", s.GetRoutableIP()),
 			},
 		},
 	}
 }
 func (s *BoshBase) createDirectorProperties() *director.Director {
 	return &director.Director{
-		Address:    s.PublicIP,
+		Address:    s.GetRoutableIP(),
 		Name:       s.DirectorName,
 		CpiJob:     s.CPIName,
 		MaxThreads: 10,
@@ -359,4 +359,11 @@ func (s *BoshBase) createNatsJobProperties() *director.Nats {
 		Password: s.NatsPassword,
 		Address:  "127.0.0.1",
 	}
+}
+
+func (s *BoshBase) GetRoutableIP() string {
+	if s.PublicIP != "" {
+		return s.PublicIP
+	}
+	return s.PrivateIP
 }

@@ -72,9 +72,6 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		CPIName:            c.String("cpi-name"),
 		NtpServers:         c.StringSlice("ntp-server"),
 	}
-	if base.PublicIP == "" {
-		base.PublicIP = base.PrivateIP
-	}
 	base.InitializePasswords()
 	fmt.Println("**********************************")
 	if base.IsUAA() {

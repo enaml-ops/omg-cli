@@ -49,10 +49,12 @@ func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManif
 	manifest.AddNetwork(enaml.NewVIPNetwork("public"))
 	boshJob := manifest.Jobs[0]
 	boshJob.AddTemplate(cpiTemplate)
-	boshJob.AddNetwork(enaml.Network{
-		Name:      "public",
-		StaticIPs: []string{boshbase.PublicIP},
-	})
+	if boshbase.PublicIP != "" {
+		boshJob.AddNetwork(enaml.Network{
+			Name:      "public",
+			StaticIPs: []string{boshbase.PublicIP},
+		})
+	}
 	var agentProperty = aws_cpi.Agent{
 		Mbus: "nats://nats:nats-password@" + boshbase.PrivateIP + ":4222",
 	}
@@ -71,7 +73,7 @@ func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManif
 	)
 	boshJob.AddProperty("azure", azureProperty)
 	manifest.Jobs[0] = boshJob
-	manifest.SetCloudProvider(NewAzureCloudProvider(azureProperty, cpiTemplate, boshbase.PublicIP, cfg.AzurePrivateKeyPath, boshbase.NtpServers))
+	manifest.SetCloudProvider(NewAzureCloudProvider(azureProperty, cpiTemplate, boshbase.GetRoutableIP(), cfg.AzurePrivateKeyPath, boshbase.NtpServers))
 	return manifest
 }
 

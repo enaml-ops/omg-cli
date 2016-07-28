@@ -103,10 +103,16 @@ func (s *AWSBosh) CreateManualNetwork() (net enaml.ManualNetwork) {
 }
 
 func (s *AWSBosh) CreateJobNetwork() (net enaml.Network) {
-	return enaml.Network{
-		Name:      "public",
-		StaticIPs: []string{s.boshbase.PublicIP},
+	if s.boshbase.PublicIP != "" {
+		return enaml.Network{
+			Name:      "public",
+			StaticIPs: []string{s.boshbase.PublicIP},
+		}
 	}
+	return enaml.Network{
+		Name: "public",
+	}
+
 }
 
 func (s *AWSBosh) CreateVIPNetwork() (net enaml.VIPNetwork) {
@@ -141,9 +147,9 @@ func (s *AWSBosh) CreateCloudProvider() (provider enaml.CloudProvider) {
 			Name:    s.boshbase.CPIName,
 			Release: awsCPIReleaseName,
 		},
-		MBus: fmt.Sprintf("https://mbus:%s@%s:6868", s.boshbase.MBusPassword, s.boshbase.PublicIP),
+		MBus: fmt.Sprintf("https://mbus:%s@%s:6868", s.boshbase.MBusPassword, s.boshbase.GetRoutableIP()),
 		SSHTunnel: enaml.SSHTunnel{
-			Host:           s.boshbase.PublicIP,
+			Host:           s.boshbase.GetRoutableIP(),
 			Port:           22,
 			User:           "vcap",
 			PrivateKeyPath: s.cfg.AWSPEMFilePath,
