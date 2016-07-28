@@ -51,6 +51,7 @@ func GetFlags() []cli.Flag {
 		GOAgentSHA:         "ff13c47ac7ce121dee6153c1564bd8965edf9f59",
 		PrivateIP:          "10.0.0.4",
 		NtpServers:         &cli.StringSlice{"0.pool.ntp.org", "1.pool.ntp.org"},
+		CPIName:            "cpi",
 	}
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
