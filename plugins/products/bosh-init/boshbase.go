@@ -325,10 +325,11 @@ func (s *BoshBase) createDirectorUAAProperties() *director.Director {
 }
 func (s *BoshBase) createDirectorProperties() *director.Director {
 	return &director.Director{
-		Address:    s.GetRoutableIP(),
-		Name:       s.DirectorName,
-		CpiJob:     s.CPIName,
-		MaxThreads: 10,
+		Address:      s.GetRoutableIP(),
+		Name:         s.DirectorName,
+		CpiJob:       s.CPIName,
+		MaxThreads:   10,
+		TrustedCerts: s.TrustedCerts,
 		Db: &director.DirectorDb{
 			User:     dbUser,
 			Password: s.DBPassword,
