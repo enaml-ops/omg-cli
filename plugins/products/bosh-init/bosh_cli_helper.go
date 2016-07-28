@@ -24,8 +24,9 @@ func BoshFlags(defaults BoshDefaults) []cli.Flag {
 		cli.StringFlag{Name: "director-name", Value: "enaml-bosh", Usage: "the name of your director"},
 		cli.StringFlag{Name: "uaa-release-ver", Value: "12.2", Usage: "the bosh uaa version you wish to use (found on bosh.io)"},
 		cli.StringFlag{Name: "uaa-release-sha", Value: "899f1e10f27e82ac524f1158a513392bbfabf2a0", Usage: "sha1 of the uaa release being used (found on bosh.io)"},
-		cli.StringFlag{Name: "cpi-name", Value: defaults.CPIName, Usage: ""},
-		cli.StringSliceFlag{Name: "ntp-server", Value: defaults.NtpServers, Usage: ""},
+		cli.StringFlag{Name: "cpi-name", Value: defaults.CPIName, Usage: "name of job that is provided by cpi release"},
+		cli.StringSliceFlag{Name: "ntp-server", Value: defaults.NtpServers, Usage: "ntp server address"},
+		cli.StringFlag{Name: "trusted-certs", Usage: "trusted ssl certs"},
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
 }
@@ -71,6 +72,7 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		UAAReleaseSHA:      c.String("uaa-release-sha"),
 		CPIName:            c.String("cpi-name"),
 		NtpServers:         c.StringSlice("ntp-server"),
+		TrustedCerts:       c.String("trusted-certs"),
 	}
 	base.InitializePasswords()
 	fmt.Println("**********************************")

@@ -127,6 +127,7 @@ type BoshBase struct {
 	GOAgentSHA          string
 	UAAReleaseSHA       string
 	UAAReleaseVersion   string
+	TrustedCerts        string
 }
 type BoshDefaults struct {
 	CIDR               string
