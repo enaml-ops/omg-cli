@@ -38,6 +38,16 @@ build:
 crosscompile:
   steps:
     - setup-go-workspace
+        # Gets the dependencies
+        - script:
+            name: go get
+            code: |
+              cd $WERCKER_SOURCE_DIR
+              go version
+              go get github.com/Masterminds/glide
+              export PATH=$WERCKER_SOURCE_DIR/bin:$PATH
+              glide --version
+              glide install
     - script:
         name: set release id variable for version
         code: |
