@@ -10,8 +10,8 @@ import (
 var _ = Describe("NewAzureBosh", func() {
 	Describe("given the function", func() {
 		Context("when called w/ valid parameters", func() {
-			var boshConfig = BoshInitConfig{
-				BoshInstanceSize:          "Standard_D1",
+			var boshConfig = AzureInitConfig{
+				AzureInstanceSize:         "Standard_D1",
 				AzureVnet:                 "something",
 				AzureSubnet:               "sub-somthing",
 				AzureSubscriptionID:       "azure-subscription-id",

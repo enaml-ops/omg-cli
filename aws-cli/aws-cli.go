@@ -2,9 +2,6 @@ package awscli
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
-	"os"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
@@ -12,32 +9,6 @@ import (
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
 )
-
-func deployYaml(myYaml string, boshInitDeploy func(string)) {
-	fmt.Println("deploying your bosh")
-	content := []byte(myYaml)
-	tmpfile, err := ioutil.TempFile("", "bosh-init-deployment")
-	defer os.Remove(tmpfile.Name())
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if _, err := tmpfile.Write(content); err != nil {
-		log.Fatal(err)
-	}
-	if err := tmpfile.Close(); err != nil {
-		log.Fatal(err)
-	}
-	boshInitDeploy(tmpfile.Name())
-}
-
-func checkRequired(name string, c *cli.Context) {
-	if c.String(name) == "" {
-		fmt.Println("Sorry you need to provide " + name)
-		os.Exit(1)
-	}
-}
 
 func GetFlags() []cli.Flag {
 	boshdefaults := boshinit.GetAWSBoshBase()
@@ -67,11 +38,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			return
 		}
 		lo.G.Debug("Got boshbase", boshBase)
-		checkRequired("aws-subnet", c)
-		checkRequired("aws-pem-path", c)
-		checkRequired("aws-access-key", c)
-		checkRequired("aws-secret", c)
-		checkRequired("aws-region", c)
+		utils.CheckRequired([]string{"aws-subnet", "aws-pem-path", "aws-access-key", "aws-secret", "aws-region"}, c)
 
 		provider := boshinit.NewAWSIaaSProvider(boshinit.AWSInitConfig{
 			AWSInstanceSize:     c.String("aws-instance-size"),
@@ -94,7 +61,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 				fmt.Println(yamlString)
 
 			} else {
-				deployYaml(yamlString, boshInitDeploy)
+				utils.DeployYaml(yamlString, boshInitDeploy)
 			}
 		} else {
 			e = err

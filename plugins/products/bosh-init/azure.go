@@ -14,6 +14,23 @@ const (
 	azureCPIReleaseName = "bosh-azure-cpi"
 )
 
+type AzureInitConfig struct {
+	AzureInstanceSize         string
+	AzureVnet                 string
+	AzureSubnet               string
+	AzureSubscriptionID       string
+	AzureTenantID             string
+	AzureClientID             string
+	AzureClientSecret         string
+	AzureResourceGroup        string
+	AzureStorageAccount       string
+	AzureDefaultSecurityGroup string
+	AzureSSHPubKey            string
+	AzureSSHUser              string
+	AzureEnvironment          string
+	AzurePrivateKeyPath       string
+}
+
 func GetAzureDefaults() *BoshBase {
 	return &BoshBase{
 		NetworkCIDR:       "10.0.0.0/24",
@@ -31,7 +48,7 @@ func GetAzureDefaults() *BoshBase {
 	}
 }
 
-func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
+func NewAzureBosh(cfg AzureInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
 	boshbase.CPIJobName = azureCPIJobName
 	var cpiTemplate = enaml.Template{Name: boshbase.CPIJobName, Release: azureCPIReleaseName}
 	manifest := boshbase.CreateDeploymentManifest()
@@ -51,7 +68,7 @@ func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManif
 		SHA1: boshbase.GOAgentSHA,
 	}
 	resourcePool.CloudProperties = azurecloudproperties.ResourcePool{
-		InstanceType: cfg.BoshInstanceSize,
+		InstanceType: cfg.AzureInstanceSize,
 	}
 	manifest.AddResourcePool(resourcePool)
 	manifest.AddDiskPool(enaml.DiskPool{

@@ -11,7 +11,7 @@ import (
 var _ = Describe("NewVSphereBosh", func() {
 	Describe("given the function", func() {
 		Context("when called w/ valid parameters", func() {
-			var boshConfig = BoshInitConfig{
+			var boshConfig = VSphereInitConfig{
 				VSphereAddress:        "172.16.1.2",
 				VSphereUser:           "vsadmin",
 				VSpherePassword:       "secret",

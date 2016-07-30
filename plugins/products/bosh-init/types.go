@@ -8,42 +8,6 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/registry"
 )
 
-type BoshInitConfig struct {
-	BoshAvailabilityZone      string
-	BoshInstanceSize          string
-	AzureVnet                 string
-	AzureSubnet               string
-	AzureSubscriptionID       string
-	AzureTenantID             string
-	AzureClientID             string
-	AzureClientSecret         string
-	AzureResourceGroup        string
-	AzureStorageAccount       string
-	AzureDefaultSecurityGroup string
-	AzureSSHPubKey            string
-	AzureSSHUser              string
-	AzureEnvironment          string
-	AzurePrivateKeyPath       string
-	VSphereAddress            string
-	VSphereUser               string
-	VSpherePassword           string
-	VSphereDatacenterName     string
-	VSphereVMFolder           string
-	VSphereTemplateFolder     string
-	VSphereDataStore          string
-	VSphereDiskPath           string
-	VSphereResourcePool       string
-	VSphereClusters           []string
-	VSphereNetworks           []Network
-}
-
-type Network struct {
-	Name    string
-	Range   string
-	Gateway string
-	DNS     []string
-}
-
 type Rr registry.Registry
 type Ar aws_cpi.Registry
 
@@ -90,15 +54,14 @@ type Postgres interface {
 }
 
 type BoshBase struct {
-	Mode             string
-	NetworkCIDR      string
-	NetworkGateway   string
-	NetworkDNS       []string
-	DirectorName     string
-	DirectorPassword string
-	DBPassword       string
-	CPIJobName       string
-	//CPIName              string
+	Mode                 string
+	NetworkCIDR          string
+	NetworkGateway       string
+	NetworkDNS           []string
+	DirectorName         string
+	DirectorPassword     string
+	DBPassword           string
+	CPIJobName           string
 	NtpServers           []string
 	PrivateStaticIPs     []string
 	PrivateReservedRange string

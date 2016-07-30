@@ -12,6 +12,27 @@ const (
 	vSphereCPIReleaseName = "bosh-vsphere-cpi"
 )
 
+type VSphereInitConfig struct {
+	VSphereAddress        string
+	VSphereUser           string
+	VSpherePassword       string
+	VSphereDatacenterName string
+	VSphereVMFolder       string
+	VSphereTemplateFolder string
+	VSphereDataStore      string
+	VSphereDiskPath       string
+	VSphereResourcePool   string
+	VSphereClusters       []string
+	VSphereNetworks       []Network
+}
+
+type Network struct {
+	Name    string
+	Range   string
+	Gateway string
+	DNS     []string
+}
+
 func GetVSphereDefaults() *BoshBase {
 	return &BoshBase{
 		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
@@ -25,7 +46,7 @@ func GetVSphereDefaults() *BoshBase {
 }
 
 // NewVSphereBosh creates a new enaml deployment manifest for vSphere
-func NewVSphereBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
+func NewVSphereBosh(cfg VSphereInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
 	boshbase.CPIJobName = vSphereCPIJobName
 	manifest := boshbase.CreateDeploymentManifest()
 
@@ -119,7 +140,7 @@ type ResourcePool struct {
 	ResourcePool string `yaml:"resource_pool"`
 }
 
-func clusterConfig(cfg BoshInitConfig) (clusters []map[string]ResourcePool) {
+func clusterConfig(cfg VSphereInitConfig) (clusters []map[string]ResourcePool) {
 	clusters = make([]map[string]ResourcePool, 0)
 	for _, clusterName := range cfg.VSphereClusters {
 		cluster := make(map[string]ResourcePool)
@@ -132,7 +153,7 @@ func clusterConfig(cfg BoshInitConfig) (clusters []map[string]ResourcePool) {
 	return
 }
 
-func createCloudProvider(cfg BoshInitConfig, boshbase *BoshBase) (provider enaml.CloudProvider) {
+func createCloudProvider(cfg VSphereInitConfig, boshbase *BoshBase) (provider enaml.CloudProvider) {
 
 	return enaml.CloudProvider{
 		Template: enaml.Template{
@@ -159,7 +180,7 @@ func createCloudProvider(cfg BoshInitConfig, boshbase *BoshBase) (provider enaml
 	}
 }
 
-func getDataCenters(cfg BoshInitConfig) VSphereDatacenters {
+func getDataCenters(cfg VSphereInitConfig) VSphereDatacenters {
 	return VSphereDatacenters{VSphereDatacenter{
 		Name:                       cfg.VSphereDatacenterName,
 		VMFolder:                   cfg.VSphereVMFolder,
@@ -171,6 +192,6 @@ func getDataCenters(cfg BoshInitConfig) VSphereDatacenters {
 	}}
 }
 
-func getDataStorePattern(cfg BoshInitConfig) (pattern string) {
+func getDataStorePattern(cfg VSphereInitConfig) (pattern string) {
 	return fmt.Sprintf("^(%s)$", cfg.VSphereDataStore)
 }

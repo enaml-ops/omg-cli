@@ -3,40 +3,14 @@ package azurecli
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
+	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
 )
-
-func deployYaml(myYaml string, boshInitDeploy func(string)) {
-	fmt.Println("deploying your bosh")
-	content := []byte(myYaml)
-	tmpfile, err := ioutil.TempFile("", "bosh-init-deployment")
-	defer os.Remove(tmpfile.Name())
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if _, err := tmpfile.Write(content); err != nil {
-		log.Fatal(err)
-	}
-	if err := tmpfile.Close(); err != nil {
-		log.Fatal(err)
-	}
-	boshInitDeploy(tmpfile.Name())
-}
-
-func checkRequired(name string, c *cli.Context) {
-	if c.String(name) == "" {
-		fmt.Println("Sorry you need to provide " + name)
-		os.Exit(1)
-	}
-}
 
 func GetFlags() []cli.Flag {
 	boshdefaults := boshinit.GetAzureDefaults()
@@ -71,18 +45,12 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			return
 		}
 		var publicKey string
-		checkRequired("azure-vnet", c)
-		checkRequired("azure-subnet", c)
-		checkRequired("azure-subscription-id", c)
-		checkRequired("azure-tenant-id", c)
-		checkRequired("azure-client-id", c)
-		checkRequired("azure-client-secret", c)
-		checkRequired("azure-resource-group", c)
-		checkRequired("azure-storage-account", c)
-		checkRequired("azure-security-group", c)
-		checkRequired("azure-ssh-pub-key-path", c)
-		checkRequired("azure-ssh-user", c)
-		checkRequired("azure-private-key-path", c)
+		utils.CheckRequired([]string{"azure-vnet", "azure-subnet", "azure-subscription-id", "azure-tenant-id",
+			"azure-client-id", "azure-client-secret", "azure-resource-group",
+			"azure-storage-account", "azure-security-group",
+			"azure-ssh-pub-key-path",
+			"azure-ssh-user",
+			"azure-private-key-path"}, c)
 
 		if keybytes, err := ioutil.ReadFile(c.String("azure-ssh-pub-key-path")); err != nil {
 			lo.G.Error("error in reading pubkey file: ", c.String("azure-ssh-pub-key-path"), err)
@@ -91,8 +59,8 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			publicKey = string(keybytes)
 		}
 
-		manifest := boshinit.NewAzureBosh(boshinit.BoshInitConfig{
-			BoshInstanceSize:          c.String("azure-instance-size"),
+		manifest := boshinit.NewAzureBosh(boshinit.AzureInitConfig{
+			AzureInstanceSize:         c.String("azure-instance-size"),
 			AzureVnet:                 c.String("azure-vnet"),
 			AzureSubnet:               c.String("azure-subnet"),
 			AzureSubscriptionID:       c.String("azure-subscription-id"),
@@ -114,7 +82,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 				fmt.Println(yamlString)
 
 			} else {
-				deployYaml(yamlString, boshInitDeploy)
+				utils.DeployYaml(yamlString, boshInitDeploy)
 			}
 		} else {
 			e = err

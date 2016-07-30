@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 
@@ -102,4 +103,23 @@ func CheckRequired(names []string, c *cli.Context) {
 		fmt.Println("Sorry you need to provide", invalidNames, "flags to continue")
 		os.Exit(1)
 	}
+}
+
+func DeployYaml(myYaml string, boshInitDeploy func(string)) {
+	fmt.Println("deploying your bosh")
+	content := []byte(myYaml)
+	tmpfile, err := ioutil.TempFile("", "bosh-init-deployment")
+	defer os.Remove(tmpfile.Name())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if _, err := tmpfile.Write(content); err != nil {
+		log.Fatal(err)
+	}
+	if err := tmpfile.Close(); err != nil {
+		log.Fatal(err)
+	}
+	boshInitDeploy(tmpfile.Name())
 }
