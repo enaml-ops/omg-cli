@@ -40,19 +40,7 @@ func checkRequired(name string, c *cli.Context) {
 
 // GetFlags returns the available CLI flags
 func GetFlags() []cli.Flag {
-	boshdefaults := boshinit.BoshDefaults{
-		CIDR:               "10.0.0.0/24",
-		Gateway:            "10.0.0.1",
-		DNS:                &cli.StringSlice{"10.0.0.2"},
-		BoshReleaseVersion: "256.2",
-		BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-		CPIReleaseVersion:  "22",
-		CPIReleaseSHA:      "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
-		GOAgentVersion:     "3232.4",
-		GOAgentSHA:         "27ec32ddbdea13e3025700206388ae5882a23c67",
-		PrivateIP:          "10.0.0.6",
-		CPIName:            "vsphere_cpi",
-	}
+	boshdefaults := boshinit.GetVSphereDefaults()
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	vsphereFlags := []cli.Flag{

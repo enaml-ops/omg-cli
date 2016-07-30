@@ -26,21 +26,11 @@ var _ = Describe("NewAzureBosh", func() {
 				AzureEnvironment:          "AzureCloud",
 				AzurePrivateKeyPath:       "./bosh",
 			}
-			var boshBase = &BoshBase{
-				Mode:               "uaa",
-				BoshReleaseVersion: "256.2",
-				PrivateIP:          "10.0.0.4",
-				PublicIP:           "x.x.x.x",
-				CPIReleaseVersion:  "11",
-				GOAgentVersion:     "3012",
-				BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-				CPIReleaseSHA:      "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-				GOAgentSHA:         "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
-				NetworkCIDR:        "10.0.0.0/24",
-				NetworkGateway:     "10.0.0.1",
-				NetworkDNS:         []string{"10.0.0.2"},
-				DirectorName:       "my-bosh",
-			}
+			var boshBase = GetAzureDefaults()
+			boshBase.PublicIP = "x.x.x.x"
+			boshBase.Mode = "uaa"
+			boshBase.DirectorName = "my-bosh"
+
 			var manifest *enaml.DeploymentManifest
 
 			BeforeEach(func() {

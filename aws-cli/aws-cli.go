@@ -40,20 +40,7 @@ func checkRequired(name string, c *cli.Context) {
 }
 
 func GetFlags() []cli.Flag {
-	boshdefaults := boshinit.BoshDefaults{
-		CIDR:               "10.0.0.0/24",
-		Gateway:            "10.0.0.1",
-		DNS:                &cli.StringSlice{"10.0.0.2"},
-		BoshReleaseVersion: "256.2",
-		BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-		CPIReleaseVersion:  "52",
-		CPIReleaseSHA:      "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-		GOAgentVersion:     "3012",
-		GOAgentSHA:         "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
-		PrivateIP:          "10.0.0.6",
-		NtpServers:         &cli.StringSlice{"0.pool.ntp.org", "1.pool.ntp.org"},
-		CPIName:            "aws_cpi",
-	}
+	boshdefaults := boshinit.GetAWSBoshBase()
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	awsFlags := []cli.Flag{
@@ -86,17 +73,19 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		checkRequired("aws-secret", c)
 		checkRequired("aws-region", c)
 
-		manifest := boshinit.NewAWSBosh(boshinit.BoshInitConfig{
-			BoshInstanceSize:     c.String("aws-instance-size"),
-			BoshAvailabilityZone: c.String("aws-availability-zone"),
-			AWSSubnet:            c.String("aws-subnet"),
-			AWSPEMFilePath:       c.String("aws-pem-path"),
-			AWSAccessKeyID:       c.String("aws-access-key"),
-			AWSSecretKey:         c.String("aws-secret"),
-			AWSRegion:            c.String("aws-region"),
-			AWSKeyName:           c.String("aws-keyname"),
-			AWSSecurityGroups:    utils.ClearDefaultStringSliceValue(c.StringSlice("aws-security-group")...),
+		provider := boshinit.NewAWSIaaSProvider(boshinit.AWSInitConfig{
+			AWSInstanceSize:     c.String("aws-instance-size"),
+			AWSAvailabilityZone: c.String("aws-availability-zone"),
+			AWSSubnet:           c.String("aws-subnet"),
+			AWSPEMFilePath:      c.String("aws-pem-path"),
+			AWSAccessKeyID:      c.String("aws-access-key"),
+			AWSSecretKey:        c.String("aws-secret"),
+			AWSRegion:           c.String("aws-region"),
+			AWSKeyName:          c.String("aws-keyname"),
+			AWSSecurityGroups:   utils.ClearDefaultStringSliceValue(c.StringSlice("aws-security-group")...),
 		}, boshBase)
+
+		manifest := provider.CreateDeploymentManifest()
 
 		lo.G.Debug("Got manifest", manifest)
 		if yamlString, err := enaml.Paint(manifest); err == nil {

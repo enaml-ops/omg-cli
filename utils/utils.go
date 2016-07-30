@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"io/ioutil"
+	"os"
 	"path"
 
 	"github.com/codegangsta/cli"
@@ -79,4 +81,25 @@ func GetProductCommands(target string) (commands []cli.Command) {
 	}
 	lo.G.Debug("registered product plugins: ", registry.ListProducts())
 	return
+}
+
+func ConvertToCLIStringSliceFlag(values []string) *cli.StringSlice {
+	cliSlice := &cli.StringSlice{}
+	for _, value := range values {
+		cliSlice.Set(value)
+	}
+	return cliSlice
+}
+
+func CheckRequired(names []string, c *cli.Context) {
+	var invalidNames []string
+	for _, name := range names {
+		if c.String(name) == "" {
+			invalidNames = append(invalidNames, name)
+		}
+	}
+	if len(invalidNames) > 0 {
+		fmt.Println("Sorry you need to provide", invalidNames, "flags to continue")
+		os.Exit(1)
+	}
 }

@@ -10,35 +10,23 @@ import (
 var _ = Describe("NewAWSBosh", func() {
 	Describe("given the function", func() {
 		Context("when called w/ valid parameters", func() {
-			var boshConfig = BoshInitConfig{
-				BoshInstanceSize:     "m3.xlarge",
-				BoshAvailabilityZone: "us-east-1c",
-				AWSSubnet:            "subnet-xxxxxx",
-				AWSPEMFilePath:       "./some.pem",
-				AWSAccessKeyID:       "xxxxxxx",
-				AWSSecretKey:         "xxxxxxxxxxxxxxxxxxxx",
-				AWSRegion:            "us-east-1",
+			var boshConfig = AWSInitConfig{
+				AWSInstanceSize:     "m3.xlarge",
+				AWSAvailabilityZone: "us-east-1c",
+				AWSSubnet:           "subnet-xxxxxx",
+				AWSPEMFilePath:      "./some.pem",
+				AWSAccessKeyID:      "xxxxxxx",
+				AWSSecretKey:        "xxxxxxxxxxxxxxxxxxxx",
+				AWSRegion:           "us-east-1",
 			}
-			var boshBase = &BoshBase{
-				Mode:               "uaa",
-				CPIName:            "aws_cpi",
-				BoshReleaseVersion: "256.2",
-				PrivateIP:          "10.0.0.6",
-				PublicIP:           "1.0.2.3",
-				CPIReleaseVersion:  "52",
-				GOAgentVersion:     "3012",
-				BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-				CPIReleaseSHA:      "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-				GOAgentSHA:         "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
-				NetworkCIDR:        "10.0.0.0/24",
-				NetworkGateway:     "10.0.0.1",
-				NetworkDNS:         []string{"10.0.0.2"},
-				DirectorName:       "my-bosh",
-			}
+			boshBase := GetAWSBoshBase()
+			boshBase.Mode = "uaa"
+			var provider IAASManifestProvider
 			var manifest *enaml.DeploymentManifest
 
 			BeforeEach(func() {
-				manifest = NewAWSBosh(boshConfig, boshBase)
+				provider = NewAWSIaaSProvider(boshConfig, boshBase)
+				manifest = provider.CreateDeploymentManifest()
 			})
 
 			It("then it should be using the aws stemcell", func() {

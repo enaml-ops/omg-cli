@@ -9,13 +9,36 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/cpi"
 )
 
+const (
+	azureCPIJobName     = "cpi"
+	azureCPIReleaseName = "bosh-azure-cpi"
+)
+
+func GetAzureDefaults() *BoshBase {
+	return &BoshBase{
+		NetworkCIDR:       "10.0.0.0/24",
+		NetworkGateway:    "10.0.0.1",
+		NetworkDNS:        []string{"168.63.129.16"},
+		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
+		BoshReleaseSHA:    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		CPIReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-azure-cpi-release?v=11",
+		CPIReleaseSHA:     "395fc05c11ead59711188ebd0a684842a03dc93d",
+		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-trusty-go_agent?v=3262.4",
+		GOAgentSHA:        "1ec76310cd99d4ad2dd2b239b3dfde09c609b292",
+		PrivateIP:         "10.0.0.4",
+		NtpServers:        []string{"0.pool.ntp.org", "1.pool.ntp.org"},
+		CPIJobName:        azureCPIJobName,
+	}
+}
+
 func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
-	var cpiTemplate = enaml.Template{Name: "cpi", Release: "bosh-azure-cpi"}
+	boshbase.CPIJobName = azureCPIJobName
+	var cpiTemplate = enaml.Template{Name: boshbase.CPIJobName, Release: azureCPIReleaseName}
 	manifest := boshbase.CreateDeploymentManifest()
 
 	manifest.AddRelease(enaml.Release{
-		Name: "bosh-azure-cpi",
-		URL:  "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-azure-cpi-release?v=" + boshbase.CPIReleaseVersion,
+		Name: azureCPIReleaseName,
+		URL:  boshbase.CPIReleaseURL,
 		SHA1: boshbase.CPIReleaseSHA,
 	})
 
@@ -24,7 +47,7 @@ func NewAzureBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManif
 		Network: "private",
 	}
 	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-trusty-go_agent?v=" + boshbase.GOAgentVersion,
+		URL:  boshbase.GOAgentReleaseURL,
 		SHA1: boshbase.GOAgentSHA,
 	}
 	resourcePool.CloudProperties = azurecloudproperties.ResourcePool{

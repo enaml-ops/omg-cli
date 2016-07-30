@@ -9,43 +9,68 @@ import (
 )
 
 const (
+	awsCPIJobName     = "aws_cpi"
 	awsCPIReleaseName = "bosh-aws-cpi"
 )
 
+type AWSInitConfig struct {
+	AWSAvailabilityZone string
+	AWSInstanceSize     string
+	AWSSubnet           string
+	AWSPEMFilePath      string
+	AWSAccessKeyID      string
+	AWSSecretKey        string
+	AWSRegion           string
+	AWSSecurityGroups   []string
+	AWSKeyName          string
+}
+
 type AWSBosh struct {
-	cfg      BoshInitConfig
+	cfg      AWSInitConfig
 	boshbase *BoshBase
 }
 
-func NewAWSIaaSProvider(cfg BoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
-
+func NewAWSIaaSProvider(cfg AWSInitConfig, boshBase *BoshBase) IAASManifestProvider {
+	boshBase.CPIJobName = awsCPIJobName
 	return &AWSBosh{
 		cfg:      cfg,
 		boshbase: boshBase,
 	}
 }
 
-func NewAWSBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
-	aws := NewAWSIaaSProvider(cfg, boshbase)
-	var manifest = aws.CreateDeploymentManifest()
-	manifest.AddRelease(aws.CreateCPIRelease())
-	manifest.AddResourcePool(aws.CreateResourcePool())
-	manifest.AddDiskPool(aws.CreateDiskPool())
-	manifest.AddNetwork(aws.CreateManualNetwork())
-	manifest.AddNetwork(aws.CreateVIPNetwork())
-	boshJob := manifest.Jobs[0]
-	boshJob.AddTemplate(aws.CreateCPITemplate())
-	boshJob.AddNetwork(aws.CreateJobNetwork())
-	for name, val := range aws.CreateCPIJobProperties() {
-		boshJob.AddProperty(name, val)
+func GetAWSBoshBase() *BoshBase {
+	return &BoshBase{
+		NetworkCIDR:       "10.0.0.0/24",
+		NetworkGateway:    "10.0.0.1",
+		NetworkDNS:        []string{"10.0.0.2"},
+		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
+		BoshReleaseSHA:    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		CPIReleaseURL:     "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=52",
+		CPIReleaseSHA:     "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
+		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3012",
+		GOAgentSHA:        "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
+		PrivateIP:         "10.0.0.6",
+		NtpServers:        []string{"0.pool.ntp.org", "1.pool.ntp.org"},
+		CPIJobName:        awsCPIJobName,
 	}
-	manifest.Jobs[0] = boshJob
-	manifest.SetCloudProvider(aws.CreateCloudProvider())
-	return manifest
 }
 
 func (s *AWSBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
-	return s.boshbase.CreateDeploymentManifest()
+	manifest := s.boshbase.CreateDeploymentManifest()
+	manifest.AddRelease(s.CreateCPIRelease())
+	manifest.AddResourcePool(s.CreateResourcePool())
+	manifest.AddDiskPool(s.CreateDiskPool())
+	manifest.AddNetwork(s.CreateManualNetwork())
+	manifest.AddNetwork(s.CreateVIPNetwork())
+	boshJob := manifest.Jobs[0]
+	boshJob.AddTemplate(s.CreateCPITemplate())
+	boshJob.AddNetwork(s.CreateJobNetwork())
+	for name, val := range s.CreateCPIJobProperties() {
+		boshJob.AddProperty(name, val)
+	}
+	manifest.Jobs[0] = boshJob
+	manifest.SetCloudProvider(s.CreateCloudProvider())
+	return manifest
 }
 
 func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
@@ -54,16 +79,16 @@ func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
 		Network: "private",
 	}
 	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=" + s.boshbase.GOAgentVersion,
+		URL:  s.boshbase.CPIReleaseURL,
 		SHA1: s.boshbase.GOAgentSHA,
 	}
 	resourcePool.CloudProperties = awscloudproperties.ResourcePool{
-		InstanceType: s.cfg.BoshInstanceSize,
+		InstanceType: s.cfg.AWSInstanceSize,
 		EphemeralDisk: awscloudproperties.EphemeralDisk{
 			Size:     25000,
 			DiskType: "gp2",
 		},
-		AvailabilityZone: s.cfg.BoshAvailabilityZone,
+		AvailabilityZone: s.cfg.AWSAvailabilityZone,
 	}
 	return
 }
@@ -71,7 +96,7 @@ func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
 func (s *AWSBosh) CreateCPIRelease() enaml.Release {
 	return enaml.Release{
 		Name: awsCPIReleaseName,
-		URL:  "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=" + s.boshbase.CPIReleaseVersion,
+		URL:  s.boshbase.CPIReleaseURL,
 		SHA1: s.boshbase.CPIReleaseSHA,
 	}
 }
@@ -136,7 +161,7 @@ func (s *AWSBosh) CreateCPIJobProperties() map[string]interface{} {
 
 func (s *AWSBosh) CreateCPITemplate() (template enaml.Template) {
 	return enaml.Template{
-		Name:    s.boshbase.CPIName,
+		Name:    s.boshbase.CPIJobName,
 		Release: awsCPIReleaseName,
 	}
 }
@@ -144,7 +169,7 @@ func (s *AWSBosh) CreateCPITemplate() (template enaml.Template) {
 func (s *AWSBosh) CreateCloudProvider() (provider enaml.CloudProvider) {
 	return enaml.CloudProvider{
 		Template: enaml.Template{
-			Name:    s.boshbase.CPIName,
+			Name:    s.boshbase.CPIJobName,
 			Release: awsCPIReleaseName,
 		},
 		MBus: fmt.Sprintf("https://mbus:%s@%s:6868", s.boshbase.MBusPassword, s.boshbase.GetRoutableIP()),

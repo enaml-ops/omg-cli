@@ -1,7 +1,6 @@
 package boshinit
 
 import (
-	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/aws_cpi"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/director"
@@ -12,13 +11,6 @@ import (
 type BoshInitConfig struct {
 	BoshAvailabilityZone      string
 	BoshInstanceSize          string
-	AWSSubnet                 string
-	AWSPEMFilePath            string
-	AWSAccessKeyID            string
-	AWSSecretKey              string
-	AWSRegion                 string
-	AWSSecurityGroups         []string
-	AWSKeyName                string
 	AzureVnet                 string
 	AzureSubnet               string
 	AzureSubscriptionID       string
@@ -98,14 +90,15 @@ type Postgres interface {
 }
 
 type BoshBase struct {
-	Mode                 string
-	NetworkCIDR          string
-	NetworkGateway       string
-	NetworkDNS           []string
-	DirectorName         string
-	DirectorPassword     string
-	DBPassword           string
-	CPIName              string
+	Mode             string
+	NetworkCIDR      string
+	NetworkGateway   string
+	NetworkDNS       []string
+	DirectorName     string
+	DirectorPassword string
+	DBPassword       string
+	CPIJobName       string
+	//CPIName              string
 	NtpServers           []string
 	PrivateStaticIPs     []string
 	PrivateReservedRange string
@@ -122,32 +115,14 @@ type BoshBase struct {
 	RegistryPassword     string
 	CACert               string
 	BoshReleaseSHA       string
-	BoshReleaseVersion   string
 	BoshReleaseURL       string
 	CPIReleaseSHA        string
-	CPIReleaseVersion    string
 	CPIReleaseURL        string
-	GOAgentVersion       string
 	GOAgentSHA           string
 	GOAgentReleaseURL    string
 	UAAReleaseSHA        string
-	UAAReleaseVersion    string
 	UAAReleaseURL        string
 	TrustedCerts         string
-}
-type BoshDefaults struct {
-	CIDR               string
-	Gateway            string
-	DNS                *cli.StringSlice
-	BoshReleaseVersion string
-	BoshReleaseSHA     string
-	PrivateIP          string
-	CPIReleaseVersion  string
-	CPIReleaseSHA      string
-	CPIName            string
-	GOAgentVersion     string
-	GOAgentSHA         string
-	NtpServers         *cli.StringSlice
 }
 
 //UAAClient - Structure to represent map of client priviledges

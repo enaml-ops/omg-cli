@@ -39,20 +39,7 @@ func checkRequired(name string, c *cli.Context) {
 }
 
 func GetFlags() []cli.Flag {
-	boshdefaults := boshinit.BoshDefaults{
-		CIDR:               "10.0.0.0/24",
-		Gateway:            "10.0.0.1",
-		DNS:                &cli.StringSlice{"168.63.129.16"},
-		BoshReleaseVersion: "256.2",
-		BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-		CPIReleaseVersion:  "11",
-		CPIReleaseSHA:      "395fc05c11ead59711188ebd0a684842a03dc93d",
-		GOAgentVersion:     "3262.4",
-		GOAgentSHA:         "1ec76310cd99d4ad2dd2b239b3dfde09c609b292",
-		PrivateIP:          "10.0.0.4",
-		NtpServers:         &cli.StringSlice{"0.pool.ntp.org", "1.pool.ntp.org"},
-		CPIName:            "cpi",
-	}
+	boshdefaults := boshinit.GetAzureDefaults()
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	azureFlags := []cli.Flag{

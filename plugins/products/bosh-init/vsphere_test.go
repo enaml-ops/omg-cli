@@ -28,20 +28,14 @@ var _ = Describe("NewVSphereBosh", func() {
 					DNS:     []string{"172.16.1.2"},
 				}},
 			}
-			var boshBase = &BoshBase{
-				Mode:               "uaa",
-				BoshReleaseVersion: "256.2",
-				PrivateIP:          "172.16.1.6",
-				CPIReleaseVersion:  "22",
-				GOAgentVersion:     "3232.4",
-				BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-				CPIReleaseSHA:      "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
-				GOAgentSHA:         "27ec32ddbdea13e3025700206388ae5882a23c67",
-				NetworkCIDR:        "10.0.0.0/24",
-				NetworkGateway:     "10.0.0.1",
-				NetworkDNS:         []string{"10.0.0.2"},
-				DirectorName:       "my-bosh",
-			}
+			var boshBase = GetVSphereDefaults()
+			boshBase.Mode = "uaa"
+			boshBase.DirectorName = "my-bosh"
+			boshBase.NetworkCIDR = "172.16.0.0/23"
+			boshBase.NetworkGateway = "172.16.1.1"
+			boshBase.NetworkDNS = []string{"172.16.1.2"}
+			boshBase.PrivateIP = "172.16.1.6"
+
 			var manifest *enaml.DeploymentManifest
 
 			BeforeEach(func() {

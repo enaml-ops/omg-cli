@@ -62,37 +62,19 @@ func (s *BoshBase) InitializeKeys() (err error) {
 	return
 }
 
-func (s *BoshBase) getBoshReleaseURL() (url string) {
-	if s.BoshReleaseURL == "" {
-		url = "https://bosh.io/d/github.com/cloudfoundry/bosh?v=" + s.BoshReleaseVersion
-	} else {
-		url = s.BoshReleaseURL
-	}
-	return
-}
-
-func (s *BoshBase) getUAAReleaseURL() (url string) {
-	if s.UAAReleaseURL == "" {
-		url = "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=" + s.UAAReleaseVersion
-	} else {
-		url = s.UAAReleaseURL
-	}
-	return
-}
-
 func (s *BoshBase) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	manifest := &enaml.DeploymentManifest{}
 	manifest.SetName(s.DirectorName)
 	manifest.AddRelease(enaml.Release{
 		Name: "bosh",
-		URL:  s.getBoshReleaseURL(),
+		URL:  s.BoshReleaseURL,
 		SHA1: s.BoshReleaseSHA,
 	})
 
 	if s.IsUAA() {
 		manifest.AddRelease(enaml.Release{
 			Name: "uaa",
-			URL:  s.getUAAReleaseURL(),
+			URL:  s.UAAReleaseURL,
 			SHA1: s.UAAReleaseSHA,
 		})
 	}
@@ -320,7 +302,7 @@ func (s *BoshBase) createDirectorUAAProperties() *director.Director {
 	return &director.Director{
 		Address:      s.GetRoutableIP(),
 		Name:         s.DirectorName,
-		CpiJob:       s.CPIName,
+		CpiJob:       s.CPIJobName,
 		MaxThreads:   10,
 		TrustedCerts: s.TrustedCerts,
 		Db: &director.DirectorDb{
@@ -347,7 +329,7 @@ func (s *BoshBase) createDirectorProperties() *director.Director {
 	return &director.Director{
 		Address:      s.GetRoutableIP(),
 		Name:         s.DirectorName,
-		CpiJob:       s.CPIName,
+		CpiJob:       s.CPIJobName,
 		MaxThreads:   10,
 		TrustedCerts: s.TrustedCerts,
 		Db: &director.DirectorDb{
