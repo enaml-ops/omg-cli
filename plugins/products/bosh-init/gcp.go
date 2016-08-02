@@ -123,7 +123,7 @@ func (g *GCPBosh) CreateJobNetwork() enaml.Network {
 func (g *GCPBosh) CreateCloudProvider() enaml.CloudProvider {
 	return enaml.CloudProvider{
 		Template: enaml.Template{
-			Name:    g.Base.CPIName,
+			Name:    g.Base.CPIJobName,
 			Release: GCPCPIReleaseName,
 		},
 		SSHTunnel: enaml.SSHTunnel{

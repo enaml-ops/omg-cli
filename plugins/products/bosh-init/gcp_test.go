@@ -126,20 +126,18 @@ var _ = Describe("NewGCPBosh", func() {
 				DefaultZone: controlZone,
 			}
 			var boshBase = &BoshBase{
-				Mode:               "uaa",
-				CPIName:            "bosh-google-cpi",
-				BoshReleaseVersion: "256.2",
-				PrivateIP:          controlPrivateIP,
-				PublicIP:           "1.0.2.3",
-				CPIReleaseVersion:  "52",
-				CPIReleaseSHA:      "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-				NetworkCIDR:        "10.0.0.0/24",
-				NetworkGateway:     "10.0.0.1",
-				NetworkDNS:         []string{"10.0.0.2"},
-				DirectorName:       "my-bosh",
-				NtpServers:         []string{controlNTP},
-				MBusPassword:       controlMbusPass,
-				NatsPassword:       controlNatsPass,
+				Mode:           "uaa",
+				CPIJobName:     "bosh-google-cpi",
+				PrivateIP:      controlPrivateIP,
+				PublicIP:       "1.0.2.3",
+				CPIReleaseSHA:  "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
+				NetworkCIDR:    "10.0.0.0/24",
+				NetworkGateway: "10.0.0.1",
+				NetworkDNS:     []string{"10.0.0.2"},
+				DirectorName:   "my-bosh",
+				NtpServers:     []string{controlNTP},
+				MBusPassword:   controlMbusPass,
+				NatsPassword:   controlNatsPass,
 			}
 
 			var provider IAASManifestProvider
