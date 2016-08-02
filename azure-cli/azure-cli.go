@@ -45,12 +45,12 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			return
 		}
 		var publicKey string
-		utils.CheckRequired([]string{"azure-vnet", "azure-subnet", "azure-subscription-id", "azure-tenant-id",
+		utils.CheckRequired(c, "azure-vnet", "azure-subnet", "azure-subscription-id", "azure-tenant-id",
 			"azure-client-id", "azure-client-secret", "azure-resource-group",
 			"azure-storage-account", "azure-security-group",
 			"azure-ssh-pub-key-path",
 			"azure-ssh-user",
-			"azure-private-key-path"}, c)
+			"azure-private-key-path")
 
 		if keybytes, err := ioutil.ReadFile(c.String("azure-ssh-pub-key-path")); err != nil {
 			lo.G.Error("error in reading pubkey file: ", c.String("azure-ssh-pub-key-path"), err)

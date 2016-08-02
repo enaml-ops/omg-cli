@@ -33,7 +33,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			return
 		}
 		lo.G.Debug("Got boshbase", boshBase)
-		utils.CheckRequired([]string{"gcp-network-name", "gcp-subnetwork-name", "gcp-default-zone", "gcp-project", "gcp-machine-type", "gcp-disk-type"}, c)
+		utils.CheckRequired(c, "gcp-network-name", "gcp-subnetwork-name", "gcp-default-zone", "gcp-project", "gcp-machine-type", "gcp-disk-type")
 
 		provider := boshinit.NewGCPIaaSProvider(&boshinit.GCPBoshInitConfig{
 			NetworkName:    c.String("gcp-network-name"),

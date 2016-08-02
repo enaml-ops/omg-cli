@@ -92,7 +92,7 @@ func ConvertToCLIStringSliceFlag(values []string) *cli.StringSlice {
 	return cliSlice
 }
 
-func CheckRequired(names []string, c *cli.Context) {
+func CheckRequired(c *cli.Context, names ...string) {
 	var invalidNames []string
 	for _, name := range names {
 		if c.String(name) == "" {

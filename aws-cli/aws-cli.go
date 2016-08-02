@@ -38,7 +38,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			return
 		}
 		lo.G.Debug("Got boshbase", boshBase)
-		utils.CheckRequired([]string{"aws-subnet", "aws-pem-path", "aws-access-key", "aws-secret", "aws-region"}, c)
+		utils.CheckRequired(c, "aws-subnet", "aws-pem-path", "aws-access-key", "aws-secret", "aws-region")
 
 		provider := boshinit.NewAWSIaaSProvider(boshinit.AWSInitConfig{
 			AWSInstanceSize:     c.String("aws-instance-size"),

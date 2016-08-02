@@ -32,12 +32,10 @@ func BoshFlags(defaults *BoshBase) []cli.Flag {
 
 func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 
-	utils.CheckRequired([]string{
-		"cidr", "gateway", "dns", "bosh-private-ip",
+	utils.CheckRequired(c, "cidr", "gateway", "dns", "bosh-private-ip",
 		"bosh-release-url", "bosh-release-sha", "bosh-cpi-release-url", "bosh-cpi-release-sha",
 		"go-agent-url", "go-agent-sha", "director-name", "uaa-release-url",
-		"uaa-release-sha", "ntp-server",
-	}, c)
+		"uaa-release-sha", "ntp-server")
 
 	base = &BoshBase{
 		Mode:              c.String("mode"),

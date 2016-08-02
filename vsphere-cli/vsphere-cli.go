@@ -45,9 +45,9 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		if boshBase, e = boshinit.NewBoshBase(c); e != nil {
 			return
 		}
-		utils.CheckRequired([]string{"vsphere-address", "vsphere-user", "vsphere-password", "vsphere-datacenter-name",
+		utils.CheckRequired(c, "vsphere-address", "vsphere-user", "vsphere-password", "vsphere-datacenter-name",
 			"vsphere-vm-folder", "vsphere-template-folder", "vsphere-datastore", "vsphere-disk-path",
-			"vsphere-clusters", "vsphere-resource-pool", "vsphere-subnet1-name", "vsphere-subnet1-range", "vsphere-subnet1-range", "vsphere-subnet1-dns"}, c)
+			"vsphere-clusters", "vsphere-resource-pool", "vsphere-subnet1-name", "vsphere-subnet1-range", "vsphere-subnet1-range", "vsphere-subnet1-dns")
 
 		manifest := boshinit.NewVSphereBosh(boshinit.VSphereInitConfig{
 			// vsphere specific
