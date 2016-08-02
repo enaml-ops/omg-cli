@@ -1,8 +1,8 @@
-hash: a3695b6988f9b73d95ce0cd111bd3be41f2e6bd0b98535c13adb2ca4a3c6fcf5
-updated: 2016-07-29T13:22:57.438352979-06:00
+hash: f03bb6d327bf5c1ba895da2f9ccd0c774103a247b4e9884f0bf990272e70f4dc
+updated: 2016-08-02T12:26:00.761998557-07:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
-  version: 1869f1688304c7614f618ac8bcaae42624cb84f7
+  version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
   - agentclient/http
   - agentclient
@@ -11,7 +11,7 @@ imports:
   - platform/disk
   - platform/deviceutil
 - name: github.com/cloudfoundry/bosh-davcli
-  version: 88a9c7af5430438f53c062f5a96dac32db0bf4bb
+  version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
   subpackages:
   - client
   - config
@@ -76,9 +76,9 @@ imports:
   subpackages:
   - glob
 - name: github.com/codegangsta/cli
-  version: d9021faab69f92295ef7061bd39e4a76dcbdef32
+  version: 168c95418e66e019fe17b8f4f5c45aa62ff80e23
 - name: github.com/enaml-ops/enaml
-  version: 9c0364d3afdfd62a3a095b13b3c953d4c7ff2723
+  version: 50794abdccbacb029fe954a44bc8d3f9ed1a9340
   subpackages:
   - enamlbosh
   - cloudproperties/aws
@@ -147,7 +147,7 @@ imports:
   - osutils
   - command
 - name: github.com/pkg/errors
-  version: 1d2e60385a13aaa66134984235061c2f9302520e
+  version: 2a9be18ecd8c148be18be08a811e33809206da19
 - name: github.com/pkg/sftp
   version: a71e8f580e3b622ebff585309160b1cc549ef4d2
 - name: github.com/square/certstrap
@@ -161,11 +161,11 @@ imports:
   subpackages:
   - ssh
 - name: golang.org/x/net
-  version: 6a513affb38dc9788b449d59ffed099b8de18fa0
+  version: f6d211983832e1efcd77e80779fd5f1142741356
   subpackages:
   - context
 - name: golang.org/x/oauth2
-  version: 1364adb2c63445016c5ed4518fc71f6a3cda6169
+  version: 0aec23fa6269cbce14cd407234f04213227a7917
   subpackages:
   - internal
 - name: google.golang.org/appengine

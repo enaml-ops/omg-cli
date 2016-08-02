@@ -10,6 +10,10 @@ import:
   version: master
 - package: github.com/pkg/errors
   version: master
+- package: github.com/cloudfoundry/bosh-agent
+  version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
+- package: github.com/cloudfoundry/bosh-davcli
+  version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
 - package: github.com/cloudfoundry/bosh-init
   version: afa267bec2ba83d7572075ca34ac4c000a29023d
   repo: https://github.com/sneal/bosh-init.git
@@ -33,7 +37,9 @@ import:
   - cloudproperties/aws
   - cloudproperties/azure
 - package: github.com/onsi/ginkgo
+  version: master
 - package: github.com/onsi/gomega
+  version: master
 - package: github.com/enaml-ops/pluginlib
 - package: golang.org/x/oauth2
 - package: golang.org/x/net
