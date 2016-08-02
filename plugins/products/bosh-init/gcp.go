@@ -22,6 +22,8 @@ type GCPBoshInitConfig struct {
 	SubnetworkName    string
 	DefaultZone       string
 	Project           string
+	MachineType       string
+	DiskType          string
 	DNSRecursor       string
 	BlobstoreProvider string
 }
@@ -78,7 +80,7 @@ func (g *GCPBosh) CreateResourcePool() enaml.ResourcePool {
 			SHA1: GCPStemcellSHA,
 		},
 		CloudProperties: map[string]interface{}{
-			"machine_type":      "n1-standard-4",
+			"machine_type":      g.BoshInitConfig.MachineType,
 			"root_disk_size_gb": 50,
 			"root_disk_type":    "pd-standard",
 			"service_scopes":    []string{"compute", "devstorage.full_control"},

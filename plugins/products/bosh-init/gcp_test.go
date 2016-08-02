@@ -124,6 +124,8 @@ var _ = Describe("NewGCPBosh", func() {
 			cfg := &GCPBoshInitConfig{
 				Project:     controlProject,
 				DefaultZone: controlZone,
+				MachineType: "n1-standard-4",
+				DiskType:    "pd-standard",
 			}
 			var boshBase = &BoshBase{
 				Mode:           "uaa",
