@@ -1,0 +1,10 @@
+- range: 10.0.0.0/24
+  gateway: 10.0.0.1
+  static: [10.0.0.4]
+  cloud_properties:
+    network_name: dwallraff-vnet
+    subnetwork_name: dwallraff-subnet-bosh-us-east1
+    ephemeral_external_ip: false
+    tags:
+      - nat-traverse
+      - no-ip

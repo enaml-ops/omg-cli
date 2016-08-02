@@ -1,8 +1,8 @@
 hash: a3695b6988f9b73d95ce0cd111bd3be41f2e6bd0b98535c13adb2ca4a3c6fcf5
-updated: 2016-07-26T11:07:16.850181971-06:00
+updated: 2016-07-29T13:22:57.438352979-06:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
-  version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
+  version: 1869f1688304c7614f618ac8bcaae42624cb84f7
   subpackages:
   - agentclient/http
   - agentclient
@@ -11,7 +11,7 @@ imports:
   - platform/disk
   - platform/deviceutil
 - name: github.com/cloudfoundry/bosh-davcli
-  version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
+  version: 88a9c7af5430438f53c062f5a96dac32db0bf4bb
   subpackages:
   - client
   - config
@@ -76,15 +76,15 @@ imports:
   subpackages:
   - glob
 - name: github.com/codegangsta/cli
-  version: 492afb91497e22b398e972924eda64bfd706b102
+  version: d9021faab69f92295ef7061bd39e4a76dcbdef32
 - name: github.com/enaml-ops/enaml
-  version: fd2ad78bf24b468d0226771ca2eebe144d001faf
+  version: 9c0364d3afdfd62a3a095b13b3c953d4c7ff2723
   subpackages:
   - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
 - name: github.com/enaml-ops/pluginlib
-  version: 419961981671ea61125c88e6ee569ec6dd9daa0a
+  version: 1ede39ba694aee6e62eefce462ad87af0087f3b9
   subpackages:
   - registry
   - cloudconfig
@@ -92,19 +92,19 @@ imports:
   - pcli
   - util
 - name: github.com/golang/protobuf
-  version: 874264fbbb43f4d91e999fecb4b40143ed611400
+  version: c3cefd437628a0b7d31b34fe44b3a7a540e98527
   subpackages:
   - proto
 - name: github.com/hashicorp/go-plugin
   version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux
-  version: badf81fca035b8ebac61b5ab83330b72541056f4
+  version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
 - name: github.com/onsi/ginkgo
-  version: 6481765dda39cbaae281109e6945449642329197
+  version: 74c678d97c305753605c338c6c78c49ec104b5e7
   subpackages:
   - config
   - internal/codelocation
@@ -121,7 +121,7 @@ imports:
   - internal/spec
   - internal/specrunner
 - name: github.com/onsi/gomega
-  version: a78ae492d53aad5a7a232d0d0462c14c400e3ee7
+  version: 9ed8da19f2156b87a803a8fdf6d126f627a12db1
   subpackages:
   - ghttp
   - internal/assertion
@@ -129,6 +129,7 @@ imports:
   - internal/testingtsupport
   - matchers
   - types
+  - internal/oraclematcher
   - format
   - matchers/support/goraph/bipartitegraph
   - matchers/support/goraph/edge
@@ -137,7 +138,7 @@ imports:
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
-  version: da8295109ceb031ff96dc126bb68d75dd9fddc4b
+  version: e0835a7d46f9ea781e764f0dc9325110e32a97dd
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
 - name: github.com/pivotalservices/gtils
@@ -160,11 +161,11 @@ imports:
   subpackages:
   - ssh
 - name: golang.org/x/net
-  version: 4d38db76854b199960801a1734443fd02870d7e1
+  version: 6a513affb38dc9788b449d59ffed099b8de18fa0
   subpackages:
   - context
 - name: golang.org/x/oauth2
-  version: 12e1e986157ec46fb273824565d9937bd4235105
+  version: 1364adb2c63445016c5ed4518fc71f6a3cda6169
   subpackages:
   - internal
 - name: google.golang.org/appengine
@@ -179,4 +180,8 @@ imports:
   - internal/remote_api
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
-testImports: []
+testImports:
+- name: golang.org/x/sys
+  version: a646d33e2ee3172a661fc09bca23bb4889a41bc8
+  subpackages:
+  - unix

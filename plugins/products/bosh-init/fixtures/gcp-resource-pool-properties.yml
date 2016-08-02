@@ -1,0 +1,6 @@
+machine_type: n1-standard-4
+root_disk_size_gb: 50
+root_disk_type: pd-standard
+service_scopes:
+  - compute
+  - devstorage.full_control
