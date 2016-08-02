@@ -1,56 +1,12 @@
 package boshinit
 
 import (
-	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/aws_cpi"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/director"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/postgres"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/registry"
 )
-
-type BoshInitConfig struct {
-	BoshAvailabilityZone      string
-	BoshInstanceSize          string
-	AWSSubnet                 string
-	AWSPEMFilePath            string
-	AWSAccessKeyID            string
-	AWSSecretKey              string
-	AWSRegion                 string
-	AWSSecurityGroups         []string
-	AWSKeyName                string
-	AzureVnet                 string
-	AzureSubnet               string
-	AzureSubscriptionID       string
-	AzureTenantID             string
-	AzureClientID             string
-	AzureClientSecret         string
-	AzureResourceGroup        string
-	AzureStorageAccount       string
-	AzureDefaultSecurityGroup string
-	AzureSSHPubKey            string
-	AzureSSHUser              string
-	AzureEnvironment          string
-	AzurePrivateKeyPath       string
-	VSphereAddress            string
-	VSphereUser               string
-	VSpherePassword           string
-	VSphereDatacenterName     string
-	VSphereVMFolder           string
-	VSphereTemplateFolder     string
-	VSphereDataStore          string
-	VSphereDiskPath           string
-	VSphereResourcePool       string
-	VSphereClusters           []string
-	VSphereNetworks           []Network
-}
-
-type Network struct {
-	Name    string
-	Range   string
-	Gateway string
-	DNS     []string
-}
 
 type Rr registry.Registry
 type Ar aws_cpi.Registry
@@ -105,7 +61,7 @@ type BoshBase struct {
 	DirectorName         string
 	DirectorPassword     string
 	DBPassword           string
-	CPIName              string
+	CPIJobName           string
 	NtpServers           []string
 	PrivateStaticIPs     []string
 	PrivateReservedRange string
@@ -122,32 +78,14 @@ type BoshBase struct {
 	RegistryPassword     string
 	CACert               string
 	BoshReleaseSHA       string
-	BoshReleaseVersion   string
 	BoshReleaseURL       string
 	CPIReleaseSHA        string
-	CPIReleaseVersion    string
 	CPIReleaseURL        string
-	GOAgentVersion       string
 	GOAgentSHA           string
 	GOAgentReleaseURL    string
 	UAAReleaseSHA        string
-	UAAReleaseVersion    string
 	UAAReleaseURL        string
 	TrustedCerts         string
-}
-type BoshDefaults struct {
-	CIDR               string
-	Gateway            string
-	DNS                *cli.StringSlice
-	BoshReleaseVersion string
-	BoshReleaseSHA     string
-	PrivateIP          string
-	CPIReleaseVersion  string
-	CPIReleaseSHA      string
-	CPIName            string
-	GOAgentVersion     string
-	GOAgentSHA         string
-	NtpServers         *cli.StringSlice
 }
 
 //UAAClient - Structure to represent map of client priviledges

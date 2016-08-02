@@ -7,10 +7,47 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/vsphere_cpi"
 )
 
-// NewVSphereBosh creates a new enaml deployment manifest for vSphere
-func NewVSphereBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
-	//var manifest = NewBoshBase(cfg, "vsphere_cpi", ntpProperty).GetDeploymentManifest()
+const (
+	vSphereCPIJobName     = "vsphere_cpi"
+	vSphereCPIReleaseName = "bosh-vsphere-cpi"
+)
 
+type VSphereInitConfig struct {
+	VSphereAddress        string
+	VSphereUser           string
+	VSpherePassword       string
+	VSphereDatacenterName string
+	VSphereVMFolder       string
+	VSphereTemplateFolder string
+	VSphereDataStore      string
+	VSphereDiskPath       string
+	VSphereResourcePool   string
+	VSphereClusters       []string
+	VSphereNetworks       []Network
+}
+
+type Network struct {
+	Name    string
+	Range   string
+	Gateway string
+	DNS     []string
+}
+
+func GetVSphereDefaults() *BoshBase {
+	return &BoshBase{
+		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
+		BoshReleaseSHA:    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		CPIReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-vsphere-cpi-release?v=22",
+		CPIReleaseSHA:     "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
+		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=3232.4",
+		GOAgentSHA:        "27ec32ddbdea13e3025700206388ae5882a23c67",
+		CPIJobName:        vSphereCPIJobName,
+	}
+}
+
+// NewVSphereBosh creates a new enaml deployment manifest for vSphere
+func NewVSphereBosh(cfg VSphereInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
+	boshbase.CPIJobName = vSphereCPIJobName
 	manifest := boshbase.CreateDeploymentManifest()
 
 	var vcenterProperty = vsphere_cpi.Vcenter{
@@ -25,8 +62,8 @@ func NewVSphereBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentMan
 	}
 
 	manifest.AddRelease(enaml.Release{
-		Name: "bosh-vsphere-cpi",
-		URL:  getVSphereCPIReleaseURL(boshbase),
+		Name: vSphereCPIReleaseName,
+		URL:  boshbase.CPIReleaseURL,
 		SHA1: boshbase.CPIReleaseSHA,
 	})
 
@@ -35,7 +72,7 @@ func NewVSphereBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentMan
 		Network: "private",
 	}
 	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  geStemcellReleaseURL(boshbase),
+		URL:  boshbase.GOAgentReleaseURL,
 		SHA1: boshbase.GOAgentSHA,
 	}
 	resourcePool.CloudProperties = VSpherecloudpropertiesResourcePool{
@@ -68,30 +105,12 @@ func NewVSphereBosh(cfg BoshInitConfig, boshbase *BoshBase) *enaml.DeploymentMan
 	manifest.AddNetwork(net)
 
 	boshJob := manifest.Jobs[0]
-	boshJob.AddTemplate(enaml.Template{Name: "vsphere_cpi", Release: "bosh-vsphere-cpi"})
+	boshJob.AddTemplate(enaml.Template{Name: boshbase.CPIJobName, Release: vSphereCPIReleaseName})
 	boshJob.AddProperty("agent", agentProperty)
 	boshJob.AddProperty("vcenter", vcenterProperty)
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(createCloudProvider(cfg, boshbase))
 	return manifest
-}
-
-func getVSphereCPIReleaseURL(boshbase *BoshBase) (url string) {
-	if boshbase.CPIReleaseURL == "" {
-		url = "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-vsphere-cpi-release?v=" + boshbase.CPIReleaseVersion
-	} else {
-		url = boshbase.CPIReleaseURL
-	}
-	return
-}
-
-func geStemcellReleaseURL(boshbase *BoshBase) (url string) {
-	if boshbase.GOAgentReleaseURL == "" {
-		url = "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=" + boshbase.GOAgentVersion
-	} else {
-		url = boshbase.GOAgentReleaseURL
-	}
-	return
 }
 
 type VSpherecloudpropertiesResourcePool struct {
@@ -121,7 +140,7 @@ type ResourcePool struct {
 	ResourcePool string `yaml:"resource_pool"`
 }
 
-func clusterConfig(cfg BoshInitConfig) (clusters []map[string]ResourcePool) {
+func clusterConfig(cfg VSphereInitConfig) (clusters []map[string]ResourcePool) {
 	clusters = make([]map[string]ResourcePool, 0)
 	for _, clusterName := range cfg.VSphereClusters {
 		cluster := make(map[string]ResourcePool)
@@ -134,12 +153,12 @@ func clusterConfig(cfg BoshInitConfig) (clusters []map[string]ResourcePool) {
 	return
 }
 
-func createCloudProvider(cfg BoshInitConfig, boshbase *BoshBase) (provider enaml.CloudProvider) {
+func createCloudProvider(cfg VSphereInitConfig, boshbase *BoshBase) (provider enaml.CloudProvider) {
 
 	return enaml.CloudProvider{
 		Template: enaml.Template{
-			Name:    boshbase.CPIName,
-			Release: "bosh-vsphere-cpi",
+			Name:    boshbase.CPIJobName,
+			Release: vSphereCPIReleaseName,
 		},
 		MBus: fmt.Sprintf("https://mbus:%s@%s:6868", boshbase.MBusPassword, boshbase.GetRoutableIP()),
 		Properties: &vsphere_cpi.VsphereCpiJob{
@@ -161,7 +180,7 @@ func createCloudProvider(cfg BoshInitConfig, boshbase *BoshBase) (provider enaml
 	}
 }
 
-func getDataCenters(cfg BoshInitConfig) VSphereDatacenters {
+func getDataCenters(cfg VSphereInitConfig) VSphereDatacenters {
 	return VSphereDatacenters{VSphereDatacenter{
 		Name:                       cfg.VSphereDatacenterName,
 		VMFolder:                   cfg.VSphereVMFolder,
@@ -173,6 +192,6 @@ func getDataCenters(cfg BoshInitConfig) VSphereDatacenters {
 	}}
 }
 
-func getDataStorePattern(cfg BoshInitConfig) (pattern string) {
+func getDataStorePattern(cfg VSphereInitConfig) (pattern string) {
 	return fmt.Sprintf("^(%s)$", cfg.VSphereDataStore)
 }
