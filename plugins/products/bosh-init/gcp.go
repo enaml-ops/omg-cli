@@ -35,8 +35,17 @@ type GCPBosh struct {
 
 func NewGCPBoshBase() *BoshBase {
 	return &BoshBase{
-		CPIReleaseURL: GCPCPIURL,
-		CPIReleaseSHA: GCPCPISHA,
+		CPIReleaseURL:     GCPCPIURL,
+		CPIReleaseSHA:     GCPCPISHA,
+		NetworkCIDR:       "10.0.0.0/24",
+		NetworkGateway:    "10.0.0.1",
+		NetworkDNS:        []string{"10.0.0.2"},
+		PrivateIP:         "10.0.0.4",
+		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
+		BoshReleaseSHA:    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		GOAgentReleaseURL: "https://storage.googleapis.com/bosh-cpi-artifacts/light-bosh-stemcell-3262.4-google-kvm-ubuntu-trusty-go_agent.tgz",
+		GOAgentSHA:        "1f44ee6fc5fd495113694aa772d636bf1a8d645a",
+		NtpServers:        []string{"0.pool.ntp.org", "1.pool.ntp.org"},
 	}
 }
 func NewGCPIaaSProvider(cfg *GCPBoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
