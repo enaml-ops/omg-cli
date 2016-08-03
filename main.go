@@ -15,6 +15,7 @@ import (
 	"github.com/enaml-ops/omg-cli/azure-cli"
 	"github.com/enaml-ops/omg-cli/bosh"
 	gcpcli "github.com/enaml-ops/omg-cli/gcp-cli"
+	"github.com/enaml-ops/omg-cli/photon-cli"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/omg-cli/vsphere-cli"
 	"github.com/enaml-ops/pluginlib/registry"
@@ -52,6 +53,12 @@ func main() {
 			Usage:  "gcp [--flags] - deploy a bosh to GCP",
 			Action: gcpcli.GetAction(BoshInitDeploy),
 			Flags:  gcpcli.GetFlags(),
+		},
+		{
+			Name:   "photon",
+			Usage:  "photon [--flags] - deploy a bosh to photon",
+			Action: photoncli.GetAction(BoshInitDeploy),
+			Flags:  photoncli.GetFlags(),
 		},
 		{
 			Name:   "vsphere",
