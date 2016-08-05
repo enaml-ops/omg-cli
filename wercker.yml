@@ -198,6 +198,18 @@ deploy-pre-release:
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: gcp-cloudconfigplugin-osx
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: gcp-cloudconfigplugin-linux
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
     - script:
         name: add repo to artifact
         code: |
