@@ -1,0 +1,9 @@
+- name: z1
+  cloud_properties:
+    availability_zone: test1
+- name: z2
+  cloud_properties:
+    availability_zone: test2
+- name: z3
+  cloud_properties:
+    availability_zone: test3

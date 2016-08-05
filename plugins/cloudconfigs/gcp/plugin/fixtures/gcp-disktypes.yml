@@ -1,0 +1,15 @@
+- name: small
+  disk_size: 3000
+  cloud_properties:
+    root_disk_size_gb: 3
+    root_disk_type: pd-standard
+- name: medium
+  disk_size: 30000
+  cloud_properties:
+    root_disk_size_gb: 50
+    root_disk_type: pd-standard
+- name: large
+  disk_size: 50000
+  cloud_properties:
+    root_disk_size_gb: 50
+    root_disk_type: pd-standard

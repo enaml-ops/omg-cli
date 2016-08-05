@@ -65,6 +65,8 @@ crosscompile:
         code: |
           GOOS=darwin go build -o aws-cloudconfigplugin-osx ./plugins/cloudconfigs/aws/main.go
           GOOS=linux go build -o aws-cloudconfigplugin-linux ./plugins/cloudconfigs/aws/main.go
+          GOOS=darwin go build -o gcp-cloudconfigplugin-osx ./plugins/cloudconfigs/gcp/main.go
+          GOOS=linux go build -o gcp-cloudconfigplugin-linux ./plugins/cloudconfigs/gcp/main.go
 
     - script:
         name: add repo to artifact

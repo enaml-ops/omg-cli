@@ -1,0 +1,5 @@
+workers: 8
+reuse_compilation_vms: true
+az: test1
+vm_type: medium
+network: bosh

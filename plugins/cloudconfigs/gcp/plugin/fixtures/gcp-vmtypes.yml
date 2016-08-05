@@ -1,0 +1,20 @@
+- name: small
+  cloud_properties:
+    machine_type: n1-standard-1
+    root_disk_size_gb: 30
+    root_disk_type: pd-standard
+- name: medium
+  cloud_properties:
+    machine_type: n1-standard-2
+    root_disk_size_gb: 50
+    root_disk_type: pd-standard
+- name: large.memory
+  cloud_properties:
+    machine_type: n1-highmem-4
+    root_disk_size_gb: 50
+    root_disk_type: pd-standard
+- name: large.cpu
+  cloud_properties:
+    machine_type: n1-highcpu-4
+    root_disk_size_gb: 30
+    root_disk_type: pd-standard
