@@ -1,0 +1,20 @@
+- name: small
+  cloud_properties:
+    cpu: 1
+    ram: 2048
+    disk: 30000
+- name: medium
+  cloud_properties:
+    cpu: 2
+    ram: 4096
+    disk: 50000
+- name: large.memory
+  cloud_properties:
+    cpu: 4
+    ram: 65536
+    disk: 50000
+- name: large.cpu
+  cloud_properties:
+    cpu: 4
+    ram: 4096
+    disk: 30000

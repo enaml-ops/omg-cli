@@ -1,0 +1,9 @@
+- name: small
+  disk_size: 3000
+  cloud_properties: {}
+- name: medium
+  disk_size: 30000
+  cloud_properties: {}
+- name: large
+  disk_size: 50000
+  cloud_properties: {}
