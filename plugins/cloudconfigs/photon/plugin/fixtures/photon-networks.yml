@@ -1,0 +1,32 @@
+- name: bosh
+  type: manual
+  subnets:
+  - range: 10.0.0.0/26
+    gateway: 10.0.0.1
+    az: z1
+    static:
+    - 10.0.0.4
+    - 10.0.0.10
+    reserved:
+    - 10.0.0.1-10.0.0.2
+    - 10.0.0.60-10.0.0.63
+    dns: [169.254.169.254, 8.8.8.8]
+    cloud_properties:
+      network_id: vnet
+- name: concourse
+  type: manual
+  subnets:
+  - range: 10.0.0.64/26
+    gateway: 10.0.0.65
+    az: z1
+    static:
+    - 10.0.0.72
+    - 10.0.0.73
+    - 10.0.0.74
+    - 10.0.0.75
+    reserved:
+    - 10.0.0.65-10.0.0.70
+    - 10.0.0.122-10.0.0.127
+    dns: [169.254.169.254, 8.8.8.8]
+    cloud_properties:
+      network_id: vnet

@@ -1,0 +1,12 @@
+- name: small
+  disk_size: 3000
+  cloud_properties:
+    disk_flavor: core-200
+- name: medium
+  disk_size: 30000
+  cloud_properties:
+    disk_flavor: core-200
+- name: large
+  disk_size: 50000
+  cloud_properties:
+    disk_flavor: core-200

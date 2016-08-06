@@ -1,0 +1,20 @@
+- name: small
+  cloud_properties:
+    vm_flavor: core-200
+    vm_attached_disk_size_gb: 30
+    disk_flavor: core-200
+- name: medium
+  cloud_properties:
+    vm_flavor: core-200
+    vm_attached_disk_size_gb: 50
+    disk_flavor: core-200
+- name: large.memory
+  cloud_properties:
+    vm_flavor: core-200
+    vm_attached_disk_size_gb: 50
+    disk_flavor: core-200
+- name: large.cpu
+  cloud_properties:
+    vm_flavor: core-200
+    vm_attached_disk_size_gb: 30
+    disk_flavor: core-200
