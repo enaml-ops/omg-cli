@@ -40,13 +40,17 @@ func (c *PhotonCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) 
 				Type: "manual",
 			}
 			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
-			cloudconfigs.CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d", "network-dns-%d", "network-reserved-%d", "network-static-%d")
+			if err := cloudconfigs.CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d", "network-dns-%d", "network-reserved-%d", "network-static-%d"); err != nil {
+				return nil, err
+			}
 			ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
 			gateways := context.StringSlice(fmt.Sprintf("network-gateway-%d", i))
 			dnsServers := context.StringSlice(fmt.Sprintf("network-dns-%d", i))
 			reservedRanges := context.StringSlice(fmt.Sprintf("network-reserved-%d", i))
 			staticIPs := context.StringSlice(fmt.Sprintf("network-static-%d", i))
-			cloudconfigs.CheckRequiredLength(len(azs), i, context, "photon-network-name-%d")
+			if err := cloudconfigs.CheckRequiredLength(len(azs), i, context, "photon-network-name-%d"); err != nil {
+				return nil, err
+			}
 			photonNetworkNames := context.StringSlice(fmt.Sprintf("photon-network-name-%d", i))
 			for index, az := range azs {
 				subnet := enaml.Subnet{

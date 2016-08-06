@@ -76,7 +76,7 @@ func CheckRequiredLength(targetLength, index int, c *cli.Context, names ...strin
 	for _, name := range names {
 		formattedName := fmt.Sprintf(name, index)
 		if len(c.StringSlice(formattedName)) != targetLength {
-			invalidNames = append(invalidNames, name)
+			invalidNames = append(invalidNames, formattedName)
 		}
 	}
 	if len(invalidNames) > 0 {
