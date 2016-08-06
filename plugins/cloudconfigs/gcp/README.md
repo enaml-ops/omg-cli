@@ -13,9 +13,12 @@
 --bosh-pass admin \
 --ssl-ignore \
 --print-manifest \
-gcp-cloudconfigplugin-osx --az test1 \
---az test2 \
---az test3 \
+gcp-cloudconfigplugin-osx --az z1 \
+--az z2 \
+--az z3 \
+--gcp-availability-zone test1 \
+--gcp-availability-zone test2 \
+--gcp-availability-zone test3 \
 --network-name-1 bosh \
 --network-az-1 z1 \
 --network-cidr-1 10.0.0.0/26 \
