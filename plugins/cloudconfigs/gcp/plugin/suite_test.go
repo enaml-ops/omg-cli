@@ -1,4 +1,4 @@
-package gcp_test
+package plugin_test
 
 import (
 	. "github.com/onsi/ginkgo"

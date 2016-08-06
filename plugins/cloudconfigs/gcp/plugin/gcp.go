@@ -1,4 +1,4 @@
-package gcp
+package plugin
 
 import (
 	"fmt"
@@ -156,23 +156,6 @@ func (c *GCPCloudConfig) CreateDiskTypes() ([]enaml.DiskType, error) {
 	}
 	return diskTypes, nil
 }
-
-/*- name: small
-  disk_size: 3000
-  cloud_properties:
-    root_disk_size_gb: 3
-    root_disk_type: pd-standard
-- name: medium
-  disk_size: 30000
-  cloud_properties:
-    root_disk_size_gb: 50
-    root_disk_type: pd-standard
-- name: large
-  disk_size: 50000
-  cloud_properties:
-    root_disk_size_gb: 50
-    root_disk_type: pd-standard
-*/
 
 func (c *GCPCloudConfig) CreateCompilation() (*enaml.Compilation, error) {
 	compilation := &enaml.Compilation{

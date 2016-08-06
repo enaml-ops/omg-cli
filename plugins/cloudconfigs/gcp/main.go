@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	cloudconfig.Run(new(gcp.Plugin))
+	cloudconfig.Run(new(plugin.Plugin))
 }
