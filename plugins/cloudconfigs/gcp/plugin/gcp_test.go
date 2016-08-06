@@ -19,9 +19,12 @@ var _ = Describe("given GCPCloud Config", func() {
 		BeforeEach(func() {
 			p := new(Plugin)
 			c := p.GetContext([]string{"gcp-cloud-config",
-				"--az", "test1",
-				"--az", "test2",
-				"--az", "test3",
+				"--az", "z1",
+				"--az", "z2",
+				"--az", "z3",
+				"--gcp-availability-zone", "test1",
+				"--gcp-availability-zone", "test2",
+				"--gcp-availability-zone", "test3",
 				"--network-name-1", "bosh",
 				"--network-az-1", "test1",
 				"--network-cidr-1", "10.0.0.0/26",

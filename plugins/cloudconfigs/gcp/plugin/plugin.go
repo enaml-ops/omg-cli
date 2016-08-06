@@ -31,6 +31,7 @@ func (s *Plugin) GetFlags() []cli.Flag {
 		flags = append(flags, cli.StringSliceFlag{Name: cloudconfigs.CreateFlagnameWithSuffix("gcp-subnetwork-name", i), Usage: fmt.Sprintf("gcp subnetwork name for network %d", i)})
 		flags = append(flags, cli.StringSliceFlag{Name: cloudconfigs.CreateFlagnameWithSuffix("gcp-network-tag", i), Usage: fmt.Sprintf("comma delimited list of gcp network tags for network %d", i)})
 	}
+	flags = append(flags, cli.StringSliceFlag{Name: "gcp-availability-zone", Usage: "gcp availability_zone name for az"})
 	return flags
 }
 

@@ -75,13 +75,19 @@ func (c *GCPCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) {
 }
 func (c *GCPCloudConfig) CreateAZs() ([]enaml.AZ, error) {
 	azNames := c.Context.StringSlice("az")
+	gcpAZNames := c.Context.StringSlice("gcp-availability-zone")
+
+	if len(azNames) != len(gcpAZNames) {
+		err := fmt.Errorf("Sorry you need to provide the same number of az and gcp-availability-zone flags")
+		return nil, err
+	}
 	azs := []enaml.AZ{}
 
 	for i, azName := range azNames {
 		az := enaml.AZ{
-			Name: fmt.Sprintf("z%d", i+1),
+			Name: azName,
 			CloudProperties: map[string]string{
-				"availability_zone": azName,
+				"availability_zone": gcpAZNames[i],
 			},
 		}
 		azs = append(azs, az)
