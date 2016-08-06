@@ -3,7 +3,7 @@
   subnets:
   - range: 10.0.0.0/26
     gateway: 10.0.0.1
-    az: test1
+    az: z1
     static:
     - 10.0.0.4
     - 10.0.0.10
@@ -22,7 +22,7 @@
   subnets:
   - range: 10.0.0.64/26
     gateway: 10.0.0.65
-    az: test1
+    az: z1
     static:
     - 10.0.0.72
     - 10.0.0.73
