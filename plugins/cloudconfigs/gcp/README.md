@@ -1,5 +1,4 @@
-# AWS Cloud Config Plugin
+# GCP Cloud Config Plugin
 
-### this is actually a plugin which is vendored
-### it will be compiled separately and bundled
-### with the final release
+This is actually a plugin which is vendored.
+It will be compiled separately and bundled with the final release.
