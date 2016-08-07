@@ -3,12 +3,15 @@ package cloudconfigs
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 )
+
+const SupportedNetworkCount = 10
 
 type BaseCloudConfig struct {
 	Manifest *enaml.CloudConfigManifest
@@ -84,4 +87,55 @@ func CheckRequiredLength(targetLength, index int, c *cli.Context, names ...strin
 		return err
 	}
 	return nil
+}
+
+func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(int, int) error, cloudPropertiesFunction func(int, int) interface{}) ([]enaml.DeploymentNetwork, error) {
+
+	networks := []enaml.DeploymentNetwork{}
+	for i := 1; i <= SupportedNetworkCount; i++ {
+		networkFlag := fmt.Sprintf("network-name-%d", i)
+		if context.IsSet(networkFlag) {
+			network := enaml.ManualNetwork{
+				Name: context.String(networkFlag),
+				Type: "manual",
+			}
+			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
+			if err := CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d", "network-dns-%d", "network-reserved-%d", "network-static-%d"); err != nil {
+				return nil, err
+			}
+			ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
+			gateways := context.StringSlice(fmt.Sprintf("network-gateway-%d", i))
+			dnsServers := context.StringSlice(fmt.Sprintf("network-dns-%d", i))
+			reservedRanges := context.StringSlice(fmt.Sprintf("network-reserved-%d", i))
+			staticIPs := context.StringSlice(fmt.Sprintf("network-static-%d", i))
+			if err := validateCloudPropertiesFunction(len(azs), i); err != nil {
+				return nil, err
+			}
+			for index, az := range azs {
+				subnet := enaml.Subnet{
+					AZ:              az,
+					Range:           ranges[index],
+					Gateway:         gateways[index],
+					DNS:             strings.Split(dnsServers[index], ","),
+					Reserved:        strings.Split(reservedRanges[index], ","),
+					Static:          strings.Split(staticIPs[index], ","),
+					CloudProperties: cloudPropertiesFunction(i, index),
+				}
+				network.AddSubnet(subnet)
+			}
+			networks = append(networks, network)
+		}
+	}
+	return networks, nil
+}
+
+func CreateCompilation(c *cli.Context) (*enaml.Compilation, error) {
+	compilation := &enaml.Compilation{
+		Workers:             8,
+		ReuseCompilationVMs: true,
+		AZ:                  c.StringSlice("network-az-1")[0],
+		VMType:              "medium",
+		Network:             c.String("network-name-1"),
+	}
+	return compilation, nil
 }

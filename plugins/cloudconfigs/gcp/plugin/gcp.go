@@ -31,51 +31,24 @@ func NewGCPCloudConfig(c *cli.Context) cloudconfigs.CloudConfigProvider {
 	return provider
 }
 
-func (c *GCPCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) {
-	context := c.Context
-	networks := []enaml.DeploymentNetwork{}
-	for i := 1; i <= SupportedNetworkCount; i++ {
-		networkFlag := fmt.Sprintf("network-name-%d", i)
-		if context.IsSet(networkFlag) {
-			network := enaml.ManualNetwork{
-				Name: context.String(networkFlag),
-				Type: "manual",
-			}
-			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
-			if err := cloudconfigs.CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d", "network-dns-%d", "network-reserved-%d", "network-static-%d"); err != nil {
-				return nil, err
-			}
-			ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
-			gateways := context.StringSlice(fmt.Sprintf("network-gateway-%d", i))
-			dnsServers := context.StringSlice(fmt.Sprintf("network-dns-%d", i))
-			reservedRanges := context.StringSlice(fmt.Sprintf("network-reserved-%d", i))
-			staticIPs := context.StringSlice(fmt.Sprintf("network-static-%d", i))
-			if err := cloudconfigs.CheckRequiredLength(len(azs), i, context, "gcp-network-name-%d", "gcp-subnetwork-name-%d", "gcp-network-tag-%d"); err != nil {
-				return nil, err
-			}
-			gcpNetworkNames := context.StringSlice(fmt.Sprintf("gcp-network-name-%d", i))
-			gcpSubNetworkNames := context.StringSlice(fmt.Sprintf("gcp-subnetwork-name-%d", i))
-			gcpNetworkTags := context.StringSlice(fmt.Sprintf("gcp-network-tag-%d", i))
-			for index, az := range azs {
-				subnet := enaml.Subnet{
-					AZ:       az,
-					Range:    ranges[index],
-					Gateway:  gateways[index],
-					DNS:      strings.Split(dnsServers[index], ","),
-					Reserved: strings.Split(reservedRanges[index], ","),
-					Static:   strings.Split(staticIPs[index], ","),
-					CloudProperties: NetworkCloudProperties{
-						NetworkName:    gcpNetworkNames[index],
-						SubNetworkName: gcpSubNetworkNames[index],
-						Tags:           strings.Split(gcpNetworkTags[index], ","),
-					},
-				}
-				network.AddSubnet(subnet)
-			}
-			networks = append(networks, network)
-		}
+func (c *GCPCloudConfig) networkCloudProperties(i, index int) interface{} {
+	gcpNetworkNames := c.Context.StringSlice(fmt.Sprintf("gcp-network-name-%d", i))
+	gcpSubNetworkNames := c.Context.StringSlice(fmt.Sprintf("gcp-subnetwork-name-%d", i))
+	gcpNetworkTags := c.Context.StringSlice(fmt.Sprintf("gcp-network-tag-%d", i))
+	return NetworkCloudProperties{
+		NetworkName:    gcpNetworkNames[index],
+		SubNetworkName: gcpSubNetworkNames[index],
+		Tags:           strings.Split(gcpNetworkTags[index], ","),
 	}
-	return networks, nil
+}
+
+func (c *GCPCloudConfig) validateCloudProperties(length, i int) error {
+	return cloudconfigs.CheckRequiredLength(length, i, c.Context, "gcp-network-name-%d", "gcp-subnetwork-name-%d", "gcp-network-tag-%d")
+}
+
+func (c *GCPCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) {
+	networks, err := cloudconfigs.CreateNetworks(c.Context, c.validateCloudProperties, c.networkCloudProperties)
+	return networks, err
 }
 func (c *GCPCloudConfig) CreateAZs() ([]enaml.AZ, error) {
 	azNames := c.Context.StringSlice("az")
@@ -168,12 +141,5 @@ func (c *GCPCloudConfig) CreateDiskTypes() ([]enaml.DiskType, error) {
 }
 
 func (c *GCPCloudConfig) CreateCompilation() (*enaml.Compilation, error) {
-	compilation := &enaml.Compilation{
-		Workers:             8,
-		ReuseCompilationVMs: true,
-		AZ:                  c.Context.StringSlice("network-az-1")[0],
-		VMType:              "medium",
-		Network:             c.Context.String("network-name-1"),
-	}
-	return compilation, nil
+	return cloudconfigs.CreateCompilation(c.Context)
 }

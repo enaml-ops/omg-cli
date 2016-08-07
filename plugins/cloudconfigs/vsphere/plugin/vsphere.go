@@ -2,7 +2,6 @@ package plugin
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
@@ -11,10 +10,6 @@ import (
 
 type AZCloudProperties struct {
 	DataCenters []DataCenter `yaml:"datacenters"`
-	/*datacenters:
-	  - name: my-dc
-	    clusters:
-	    - {my-vsphere-cluster: {resource_pool: my-vsphere-res-pool}}*/
 }
 type DataCenter struct {
 	Name     string                    `yaml:"name"`
@@ -44,47 +39,20 @@ func NewVSphereCloudConfig(c *cli.Context) cloudconfigs.CloudConfigProvider {
 	return provider
 }
 
-func (c *VSphereCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) {
-	context := c.Context
-	networks := []enaml.DeploymentNetwork{}
-	for i := 1; i <= SupportedNetworkCount; i++ {
-		networkFlag := fmt.Sprintf("network-name-%d", i)
-		if context.IsSet(networkFlag) {
-			network := enaml.ManualNetwork{
-				Name: context.String(networkFlag),
-				Type: "manual",
-			}
-			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
-			if err := cloudconfigs.CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d", "network-dns-%d", "network-reserved-%d", "network-static-%d"); err != nil {
-				return nil, err
-			}
-			ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
-			gateways := context.StringSlice(fmt.Sprintf("network-gateway-%d", i))
-			dnsServers := context.StringSlice(fmt.Sprintf("network-dns-%d", i))
-			reservedRanges := context.StringSlice(fmt.Sprintf("network-reserved-%d", i))
-			staticIPs := context.StringSlice(fmt.Sprintf("network-static-%d", i))
-			if err := cloudconfigs.CheckRequiredLength(len(azs), i, context, "vsphere-network-name-%d"); err != nil {
-				return nil, err
-			}
-			photonNetworkNames := context.StringSlice(fmt.Sprintf("vsphere-network-name-%d", i))
-			for index, az := range azs {
-				subnet := enaml.Subnet{
-					AZ:       az,
-					Range:    ranges[index],
-					Gateway:  gateways[index],
-					DNS:      strings.Split(dnsServers[index], ","),
-					Reserved: strings.Split(reservedRanges[index], ","),
-					Static:   strings.Split(staticIPs[index], ","),
-					CloudProperties: NetworkCloudProperties{
-						NetworkName: photonNetworkNames[index],
-					},
-				}
-				network.AddSubnet(subnet)
-			}
-			networks = append(networks, network)
-		}
+func (c *VSphereCloudConfig) networkCloudProperties(i, index int) interface{} {
+	networkNames := c.Context.StringSlice(fmt.Sprintf("vsphere-network-name-%d", i))
+	return NetworkCloudProperties{
+		NetworkName: networkNames[index],
 	}
-	return networks, nil
+}
+
+func (c *VSphereCloudConfig) validateCloudProperties(length, i int) error {
+	return cloudconfigs.CheckRequiredLength(length, i, c.Context, "vsphere-network-name-%d")
+}
+
+func (c *VSphereCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) {
+	networks, err := cloudconfigs.CreateNetworks(c.Context, c.validateCloudProperties, c.networkCloudProperties)
+	return networks, err
 }
 
 func clusterConfig(clusterName, resourcePoolName string) (clusters []map[string]ResourcePool) {
@@ -191,12 +159,5 @@ func (c *VSphereCloudConfig) CreateDiskTypes() ([]enaml.DiskType, error) {
 }
 
 func (c *VSphereCloudConfig) CreateCompilation() (*enaml.Compilation, error) {
-	compilation := &enaml.Compilation{
-		Workers:             8,
-		ReuseCompilationVMs: true,
-		AZ:                  c.Context.StringSlice("network-az-1")[0],
-		VMType:              "medium",
-		Network:             c.Context.String("network-name-1"),
-	}
-	return compilation, nil
+	return cloudconfigs.CreateCompilation(c.Context)
 }
