@@ -64,25 +64,29 @@ func CloudConfigAction(c *cli.Context, cc cloudconfig.CloudConfigDeployer) error
 func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) error {
 	bc := getBoshClient(c)
 	ccm, err := bc.GetCloudConfig()
+
 	if err != nil {
 		return err
 	}
 	bytes, err := ccm.Bytes()
-	if err != nil {
-		return err
-	}
 
-	manifest := productDeployment.GetProduct(c.Args(), bytes)
-	if c.Bool("print-manifest") {
-		UIPrint(string(manifest))
-		return nil
-	}
-	manifest, err = decorateDeploymentWithBoshUUID(manifest, bc)
 	if err != nil {
 		return err
 	}
-	task, err := uploadProductDeployment(bc, manifest, true)
-	lo.G.Debug("bosh task: ", task)
+	manifest := productDeployment.GetProduct(c.Args(), bytes)
+
+	if manifest, err = decorateDeploymentWithBoshUUID(manifest, bc); err == nil {
+
+		if c.Bool("print-manifest") {
+			UIPrint(string(manifest))
+			return nil
+
+		} else {
+			var task enamlbosh.BoshTask
+			task, err = uploadProductDeployment(bc, manifest, true)
+			lo.G.Debug("bosh task: ", task)
+		}
+	}
 	return err
 }
 

@@ -196,6 +196,8 @@ var _ = Describe("bosh", func() {
 		Context("when called with the --print-manifest option", func() {
 			var c *cli.Context
 			var err error
+			var deploymentPostBody []byte
+			var oldPrint = UIPrint
 
 			BeforeEach(func() {
 				port, url := portAndURL(server)
@@ -209,6 +211,11 @@ var _ = Describe("bosh", func() {
 					"--bosh-pass", basicAuthPass,
 				}, GetAuthFlags())
 
+				task := enamlbosh.BoshTask{
+					State: enamlbosh.StatusDone,
+					ID:    42,
+				}
+
 				server.AppendHandlers(
 					ghttp.CombineHandlers(
 						ghttp.VerifyBasicAuth(basicAuthUser, basicAuthPass),
@@ -218,7 +225,41 @@ var _ = Describe("bosh", func() {
 								{Properties: "response"},
 							}),
 					),
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/info"),
+						ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
+					),
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("POST", "/deployments"),
+						ghttp.RespondWithJSONEncoded(http.StatusOK, task),
+						// capture the POST to /deployments so we can verify it later
+						func(w http.ResponseWriter, req *http.Request) {
+							body, _ := ioutil.ReadAll(req.Body)
+							req.Body.Close()
+							deploymentPostBody = body
+						},
+					),
+					ghttp.CombineHandlers(
+						ghttp.VerifyRequest("GET", "/tasks/42"),
+						ghttp.RespondWithJSONEncoded(http.StatusOK, task),
+					),
 				)
+				UIPrint = func(stuff ...interface{}) (int, error) {
+					deploymentPostBody = []byte(stuff[0].(string))
+					return 0, nil
+				}
+			})
+
+			AfterEach(func() {
+				UIPrint = oldPrint
+			})
+
+			It("decorates the deployment with the bosh UUID", func() {
+				ProductAction(c, pd)
+
+				Ω(deploymentPostBody).ShouldNot(BeNil())
+				dm := enaml.NewDeploymentManifest(deploymentPostBody)
+				Ω(dm.DirectorUUID).Should(Equal(controlUUID))
 			})
 
 			It("returns without error", func() {
@@ -226,7 +267,7 @@ var _ = Describe("bosh", func() {
 				Ω(err).ShouldNot(HaveOccurred())
 
 				// it should GET the /info and /cloud_config, but not POST the product
-				Ω(len(server.ReceivedRequests())).Should(Equal(2))
+				Ω(len(server.ReceivedRequests())).Should(Equal(3))
 			})
 		})
 
