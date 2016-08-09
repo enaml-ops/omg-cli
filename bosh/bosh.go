@@ -87,6 +87,10 @@ func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) er
 			lo.G.Debug("bosh task: ", task)
 		}
 	}
+
+	if err != nil {
+		lo.G.Error("there was an error: ", err.Error())
+	}
 	return err
 }
 
