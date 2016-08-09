@@ -19,7 +19,7 @@ func BoshFlags(defaults *BoshBase) []cli.Flag {
 		cli.StringFlag{Name: "bosh-release-url", Value: defaults.BoshReleaseURL, Usage: "url to bosh release"},
 		cli.StringFlag{Name: "bosh-cpi-release-sha", Value: defaults.CPIReleaseSHA, Usage: "sha1 of the cpi release being used (found on bosh.io)"},
 		cli.StringFlag{Name: "bosh-cpi-release-url", Value: defaults.CPIReleaseURL, Usage: "url to bosh cpi release"},
-		cli.StringFlag{Name: "go-agent-sha", Value: defaults.GOAgentSHA, Usage: "sha1 of the go agent being use (found on bosh.io)"},
+		cli.StringFlag{Name: "go-agent-release-sha", Value: defaults.GOAgentSHA, Usage: "sha1 of the go agent being use (found on bosh.io)"},
 		cli.StringFlag{Name: "go-agent-release-url", Value: defaults.GOAgentReleaseURL, Usage: "url to stemcell release"},
 		cli.StringFlag{Name: "director-name", Value: "enaml-bosh", Usage: "the name of your director"},
 		cli.StringFlag{Name: "uaa-release-sha", Value: "899f1e10f27e82ac524f1158a513392bbfabf2a0", Usage: "sha1 of the uaa release being used (found on bosh.io)"},
@@ -30,12 +30,26 @@ func BoshFlags(defaults *BoshBase) []cli.Flag {
 	}
 }
 
+var RequiredBoshFlags = []string{
+	"cidr",
+	"gateway",
+	"dns",
+	"bosh-private-ip",
+	"bosh-release-url",
+	"bosh-release-sha",
+	"bosh-cpi-release-url",
+	"bosh-cpi-release-sha",
+	"go-agent-release-url",
+	"go-agent-release-sha",
+	"director-name",
+	"uaa-release-url",
+	"uaa-release-sha",
+	"ntp-server",
+}
+
 func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 
-	utils.CheckRequired(c, "cidr", "gateway", "dns", "bosh-private-ip",
-		"bosh-release-url", "bosh-release-sha", "bosh-cpi-release-url", "bosh-cpi-release-sha",
-		"go-agent-url", "go-agent-sha", "director-name", "uaa-release-url",
-		"uaa-release-sha", "ntp-server")
+	utils.CheckRequired(c, RequiredBoshFlags...)
 
 	base = &BoshBase{
 		Mode:              c.String("mode"),
@@ -48,7 +62,7 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		BoshReleaseURL:    c.String("bosh-release-url"),
 		CPIReleaseSHA:     c.String("bosh-cpi-release-sha"),
 		CPIReleaseURL:     c.String("bosh-cpi-release-url"),
-		GOAgentSHA:        c.String("go-agent-sha"),
+		GOAgentSHA:        c.String("go-agent-release-sha"),
 		GOAgentReleaseURL: c.String("go-agent-release-url"),
 		DirectorName:      c.String("director-name"),
 		UAAReleaseSHA:     c.String("uaa-release-sha"),
