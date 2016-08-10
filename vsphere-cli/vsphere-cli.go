@@ -64,7 +64,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			VSphereNetworks: []boshinit.Network{boshinit.Network{
 				Name:    c.String("vsphere-subnet1-name"),
 				Range:   c.String("vsphere-subnet1-range"),
-				Gateway: c.String("vsphere-subnet1-range"),
+				Gateway: c.String("vsphere-subnet1-gateway"),
 				DNS:     utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-subnet1-dns")...),
 			}},
 		}, boshBase)
