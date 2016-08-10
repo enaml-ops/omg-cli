@@ -156,7 +156,7 @@ func (s *BoshBase) createHeathMonitorJobProperties() *health_monitor.Hm {
 func (s *BoshBase) createBlobStoreJobProperties() *director.Blobstore {
 	return &director.Blobstore{
 		Port:    25250,
-		Address: "127.0.0.1",
+		Address: s.PrivateIP,
 		Director: &director.BlobstoreDirector{
 			User:     "director",
 			Password: s.DirectorPassword,
@@ -361,7 +361,7 @@ func (s *BoshBase) createNatsJobProperties() *director.Nats {
 	return &director.Nats{
 		User:     "nats",
 		Password: s.NatsPassword,
-		Address:  "127.0.0.1",
+		Address:  s.PrivateIP,
 	}
 }
 
