@@ -32,6 +32,7 @@ func NewPhotonBoshBase() *BoshBase {
 	return &BoshBase{
 		CPIReleaseURL:     PhotonCPIURL,
 		CPIReleaseSHA:     PhotonCPISHA,
+		CPIJobName:        "cpi",
 		NetworkCIDR:       "10.0.0.0/24",
 		NetworkGateway:    "10.0.0.1",
 		NetworkDNS:        []string{"10.0.0.2"},
@@ -123,11 +124,8 @@ func (g *PhotonBosh) CreateJobNetwork() enaml.Network {
 
 func (g *PhotonBosh) CreateCloudProvider() enaml.CloudProvider {
 	return enaml.CloudProvider{
-		Template: enaml.Template{
-			Name:    g.Base.CPIJobName,
-			Release: PhotonCPIReleaseName,
-		},
-		MBus: fmt.Sprintf("https://mbus:%s@%s:6868", g.Base.MBusPassword, g.Base.PrivateIP),
+		Template: g.CreateCPITemplate(),
+		MBus:     fmt.Sprintf("https://mbus:%s@%s:6868", g.Base.MBusPassword, g.Base.PrivateIP),
 		Properties: &photoncpi.PhotoncpiJob{
 			Photon: &g.BoshInitConfig.Photon,
 			Agent: &photoncpi.Agent{
