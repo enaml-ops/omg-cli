@@ -123,8 +123,8 @@ func (g *GCPBosh) CreateVIPNetwork() enaml.VIPNetwork {
 	}
 }
 
-func (g *GCPBosh) CreateJobNetwork() enaml.Network {
-	return enaml.Network{
+func (g *GCPBosh) CreateJobNetwork() *enaml.Network {
+	return &enaml.Network{
 		Name:      "private",
 		StaticIPs: []string{g.Base.PrivateIP},
 		Default:   []interface{}{"dns", "gateway"},
@@ -198,7 +198,10 @@ func (g *GCPBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	manifest.AddNetwork(g.CreateVIPNetwork())
 	boshJob := manifest.Jobs[0]
 	boshJob.AddTemplate(g.CreateCPITemplate())
-	boshJob.AddNetwork(g.CreateJobNetwork())
+	n := g.CreateJobNetwork()
+	if n != nil {
+		boshJob.AddNetwork(*n)
+	}
 	for name, val := range g.CreateCPIJobProperties() {
 		boshJob.AddProperty(name, val)
 	}

@@ -114,12 +114,9 @@ func (g *PhotonBosh) CreateVIPNetwork() enaml.VIPNetwork {
 	}
 }
 
-func (g *PhotonBosh) CreateJobNetwork() enaml.Network {
-	return enaml.Network{
-		Name:      "private",
-		StaticIPs: []string{g.Base.PrivateIP},
-		Default:   []interface{}{"dns", "gateway"},
-	}
+func (g *PhotonBosh) CreateJobNetwork() *enaml.Network {
+	// photon just needs the default private network provided by boshbase
+	return nil
 }
 
 func (g *PhotonBosh) CreateCloudProvider() enaml.CloudProvider {
@@ -164,7 +161,10 @@ func (g *PhotonBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	manifest.AddNetwork(g.CreateVIPNetwork())
 	boshJob := manifest.Jobs[0]
 	boshJob.AddTemplate(g.CreateCPITemplate())
-	boshJob.AddNetwork(g.CreateJobNetwork())
+	n := g.CreateJobNetwork()
+	if n != nil {
+		boshJob.AddNetwork(*n)
+	}
 	for name, val := range g.CreateCPIJobProperties() {
 		boshJob.AddProperty(name, val)
 	}

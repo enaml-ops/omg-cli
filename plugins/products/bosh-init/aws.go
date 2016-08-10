@@ -64,7 +64,10 @@ func (s *AWSBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	manifest.AddNetwork(s.CreateVIPNetwork())
 	boshJob := manifest.Jobs[0]
 	boshJob.AddTemplate(s.CreateCPITemplate())
-	boshJob.AddNetwork(s.CreateJobNetwork())
+	n := s.CreateJobNetwork()
+	if n != nil {
+		boshJob.AddNetwork(*n)
+	}
 	for name, val := range s.CreateCPIJobProperties() {
 		boshJob.AddProperty(name, val)
 	}
@@ -127,17 +130,16 @@ func (s *AWSBosh) CreateManualNetwork() (net enaml.ManualNetwork) {
 	return
 }
 
-func (s *AWSBosh) CreateJobNetwork() (net enaml.Network) {
+func (s *AWSBosh) CreateJobNetwork() *enaml.Network {
 	if s.boshbase.PublicIP != "" {
-		return enaml.Network{
+		return &enaml.Network{
 			Name:      "public",
 			StaticIPs: []string{s.boshbase.PublicIP},
 		}
 	}
-	return enaml.Network{
+	return &enaml.Network{
 		Name: "public",
 	}
-
 }
 
 func (s *AWSBosh) CreateVIPNetwork() (net enaml.VIPNetwork) {

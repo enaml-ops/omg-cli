@@ -162,13 +162,6 @@ var _ = Describe("NewPhotonBosh", func() {
 				Ω(t.Release).Should(Equal(PhotonCPIReleaseName))
 			})
 
-			It("includes the job network", func() {
-				n := provider.CreateJobNetwork()
-				Ω(n.Name).Should(Equal("private"))
-				Ω(n.StaticIPs).Should(ConsistOf(controlPrivateIP))
-				Ω(n.Default).Should(ConsistOf("dns", "gateway"))
-			})
-
 			It("includes the disk pool", func() {
 				d := provider.CreateDiskPool()
 				Ω(d.Name).Should(Equal("disks"))
@@ -207,6 +200,19 @@ var _ = Describe("NewPhotonBosh", func() {
 			It("builds a valid manifest", func() {
 				manifest := provider.CreateDeploymentManifest()
 				Ω(manifest).ShouldNot(BeNil())
+			})
+
+			It("builds a manifest with a bosh job containing a single private network", func() {
+				manifest := provider.CreateDeploymentManifest()
+				Ω(manifest).ShouldNot(BeNil())
+
+				var privateNets int
+				for _, n := range manifest.Jobs[0].Networks {
+					if n.Name == "private" {
+						privateNets++
+					}
+				}
+				Ω(privateNets).Should(Equal(1))
 			})
 		})
 	})
