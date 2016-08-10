@@ -17,8 +17,8 @@ func GetFlags() []cli.Flag {
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	photonFlags := []cli.Flag{
 		cli.StringFlag{Name: "photon-target", Usage: "photon api endpoint http://PHOTON_CTRL_IP:9000"},
-		cli.StringFlag{Name: "photon-user", Value: "admin", Usage: "api admin user"},
-		cli.StringFlag{Name: "photon-password", Value: "unsafepass", Usage: "api admin pass"},
+		cli.StringFlag{Name: "photon-user", Usage: "api admin user"},
+		cli.StringFlag{Name: "photon-password", Usage: "api admin pass"},
 		cli.BoolTFlag{Name: "photon-ignore-cert", Usage: "setting ignore cert or not"},
 		cli.StringFlag{Name: "photon-project-id", Usage: "the photon project id"},
 		cli.StringFlag{Name: "photon-machine-type", Value: "core-200", Usage: "photon instance type name"},
@@ -34,7 +34,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			return
 		}
 		lo.G.Debug("Got boshbase", boshBase)
-		utils.CheckRequired(c, "")
+		utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password")
 
 		provider := boshinit.NewPhotonIaaSProvider(&boshinit.PhotonBoshInitConfig{
 			Photon: photoncpi.Photon{

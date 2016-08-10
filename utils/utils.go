@@ -100,8 +100,7 @@ func CheckRequired(c *cli.Context, names ...string) {
 		}
 	}
 	if len(invalidNames) > 0 {
-		fmt.Println("Sorry you need to provide", invalidNames, "flags to continue")
-		os.Exit(1)
+		lo.G.Panicf("Sorry you need to provide %v flags to continue", invalidNames)
 	}
 }
 
