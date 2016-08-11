@@ -32,7 +32,7 @@ func NewPhotonBoshBase(boshBase *BoshBase) *BoshBase {
 	boshBase.CPIReleaseURL = PhotonCPIURL
 	boshBase.CPIReleaseSHA = PhotonCPISHA
 	boshBase.CPIJobName = "cpi"
-	boshBase.BoshReleaseURL = "https//bosh.io/d/github.com/cloudfoundry/bosh?v=256.2"
+	boshBase.BoshReleaseURL = "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2"
 	boshBase.BoshReleaseSHA = "ff2f4e16e02f66b31c595196052a809100cfd5a8"
 	boshBase.GOAgentReleaseURL = PhotonStemcellURL
 	boshBase.GOAgentSHA = PhotonStemcellSHA
