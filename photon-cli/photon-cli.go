@@ -30,9 +30,10 @@ func GetFlags() []cli.Flag {
 
 func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
-		var boshBase *boshinit.BoshBase
-		if boshBase, e = boshinit.NewBoshBase(c); e != nil {
-			return
+		boshBase := boshinit.NewPhotonBoshBase()
+
+		if boshBase.CPIJobName == "" {
+			lo.G.Panic("sorry we could not proceed bc you did not set a cpijobname in your code.")
 		}
 		lo.G.Debug("Got boshbase", boshBase)
 		utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password", "photon-network-id")
