@@ -11,6 +11,29 @@ import (
 )
 
 var _ = Describe("NewPhotonBosh", func() {
+	Describe("given a NewPhotonBoshBase function", func() {
+		Context("when called with a valid boshbase for uaa", func() {
+			var boshbase *BoshBase
+			const controlDirectorName = "fake-director-name"
+			BeforeEach(func() {
+				b := &BoshBase{
+					Mode:          "uaa",
+					DirectorName:  controlDirectorName,
+					UAAReleaseSHA: "uaa-release.com",
+					UAAReleaseURL: "uaa-release-lkashdjlkgahsdg",
+				}
+				boshbase = NewPhotonBoshBase(b)
+			})
+			It("then it should give us a boshbase with properly set director name", func() {
+				Ω(boshbase.DirectorName).Should(Equal(controlDirectorName))
+			})
+
+			It("then it should give us a boshbase with properly set uaa mode", func() {
+				Ω(boshbase.Mode).Should(Equal("uaa"))
+			})
+		})
+	})
+
 	Describe("given NewPhotonBosh", func() {
 		Context("when using a bosh config with a CPI URL", func() {
 			cfg := &PhotonBoshInitConfig{}
@@ -18,7 +41,7 @@ var _ = Describe("NewPhotonBosh", func() {
 				controlURL = "file://example-cpi"
 				controlSHA = "slkjdaslkdjlakjdsk"
 			)
-			var boshBase = NewPhotonBoshBase()
+			var boshBase = NewPhotonBoshBase(new(BoshBase))
 			boshBase.CPIReleaseURL = controlURL
 			boshBase.CPIReleaseSHA = controlSHA
 
@@ -38,7 +61,7 @@ var _ = Describe("NewPhotonBosh", func() {
 
 		Context("when using a bosh config without a CPI URL", func() {
 			cfg := &PhotonBoshInitConfig{}
-			var boshBase = NewPhotonBoshBase()
+			var boshBase = NewPhotonBoshBase(new(BoshBase))
 			var provider IAASManifestProvider
 
 			BeforeEach(func() {
@@ -59,7 +82,7 @@ var _ = Describe("NewPhotonBosh", func() {
 				controlURL = "file://example-cpi"
 				controlSHA = "slkjdaslkdjlakjdsk"
 			)
-			var boshBase = NewPhotonBoshBase()
+			var boshBase = NewPhotonBoshBase(new(BoshBase))
 			boshBase.CPIReleaseURL = controlURL
 			boshBase.CPIReleaseSHA = controlSHA
 
@@ -87,7 +110,7 @@ var _ = Describe("NewPhotonBosh", func() {
 			cfg := &PhotonBoshInitConfig{
 				NetworkName: "dwallraff-vnet",
 			}
-			var boshBase = NewPhotonBoshBase()
+			var boshBase = NewPhotonBoshBase(new(BoshBase))
 			boshBase.NetworkCIDR = "10.0.0.0/24"
 			boshBase.NetworkGateway = "10.0.0.1"
 			boshBase.PrivateIP = "10.0.0.4"
