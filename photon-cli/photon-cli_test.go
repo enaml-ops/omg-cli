@@ -18,10 +18,12 @@ var _ = Describe("given the photon cli", func() {
 				"--photon-project-id", "stuff",
 				"--photon-user", "to",
 				"--photon-password", "do",
+				"--photon-network-id", "92895-35-2975340-34346346",
 			}, photoncli.GetFlags())
 			Ω(func() { action(ctx) }).ShouldNot(Panic())
 		})
 	})
+
 	Context("when called with an incomplete set of flags", func() {
 		It("then it should panic and exit", func() {
 			action := photoncli.GetAction(func(s string) {})

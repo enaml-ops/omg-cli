@@ -22,6 +22,7 @@ func GetFlags() []cli.Flag {
 		cli.BoolTFlag{Name: "photon-ignore-cert", Usage: "setting ignore cert or not"},
 		cli.StringFlag{Name: "photon-project-id", Usage: "the photon project id"},
 		cli.StringFlag{Name: "photon-machine-type", Value: "core-200", Usage: "photon instance type name"},
+		cli.StringFlag{Name: "photon-network-id", Usage: "the network-id to deploy your bosh onto (THIS IS NOT THE NETWORK NAME)"},
 	}
 	boshFlags = append(boshFlags, photonFlags...)
 	return boshFlags
@@ -34,7 +35,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			return
 		}
 		lo.G.Debug("Got boshbase", boshBase)
-		utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password")
+		utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password", "photon-network-id")
 
 		provider := boshinit.NewPhotonIaaSProvider(&boshinit.PhotonBoshInitConfig{
 			Photon: photoncpi.Photon{
@@ -44,6 +45,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 				IgnoreCert: c.Bool("photon-ignore-cert"),
 				Project:    c.String("photon-project-id"),
 			},
+			NetworkName: c.String("photon-network-id"),
 			MachineType: c.String("photon-machine-type"),
 		}, boshBase)
 
