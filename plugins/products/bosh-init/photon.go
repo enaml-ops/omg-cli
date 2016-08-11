@@ -32,15 +32,10 @@ func NewPhotonBoshBase(boshBase *BoshBase) *BoshBase {
 	boshBase.CPIReleaseURL = PhotonCPIURL
 	boshBase.CPIReleaseSHA = PhotonCPISHA
 	boshBase.CPIJobName = "cpi"
-	boshBase.NetworkCIDR = "10.0.0.0/24"
-	boshBase.NetworkGateway = "10.0.0.1"
-	boshBase.NetworkDNS = []string{"10.0.0.2"}
-	boshBase.PrivateIP = "10.0.0.4"
 	boshBase.BoshReleaseURL = "https//bosh.io/d/github.com/cloudfoundry/bosh?v=256.2"
 	boshBase.BoshReleaseSHA = "ff2f4e16e02f66b31c595196052a809100cfd5a8"
 	boshBase.GOAgentReleaseURL = PhotonStemcellURL
 	boshBase.GOAgentSHA = PhotonStemcellSHA
-	boshBase.NtpServers = []string{"0.pool.ntp.org", "1.pool.ntp.org"}
 	return boshBase
 }
 func NewPhotonIaaSProvider(cfg *PhotonBoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
