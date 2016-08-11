@@ -12,7 +12,7 @@ import (
 )
 
 func GetFlags() []cli.Flag {
-	boshdefaults := boshinit.NewPhotonBoshBase()
+	boshdefaults := boshinit.NewPhotonBoshBase(new(boshinit.BoshBase))
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	photonFlags := []cli.Flag{
@@ -30,11 +30,18 @@ func GetFlags() []cli.Flag {
 
 func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
-		boshBase := boshinit.NewPhotonBoshBase()
+		var b *boshinit.BoshBase
+		var err error
+
+		if b, err = boshinit.NewBoshBase(c); err != nil {
+			lo.G.Panicf("there is something broken in the way you initialized your boshbase: %v", err.Error())
+		}
+		boshBase := boshinit.NewPhotonBoshBase(b)
 
 		if boshBase.CPIJobName == "" {
 			lo.G.Panic("sorry we could not proceed bc you did not set a cpijobname in your code.")
 		}
+
 		lo.G.Debug("Got boshbase", boshBase)
 		utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password", "photon-network-id")
 
