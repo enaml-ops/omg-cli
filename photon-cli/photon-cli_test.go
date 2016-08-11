@@ -19,6 +19,9 @@ var _ = Describe("given the photon cli", func() {
 				"--photon-user", "to",
 				"--photon-password", "do",
 				"--photon-network-id", "92895-35-2975340-34346346",
+				"--bosh-private-ip", "10.0.0.3",
+				"--gateway", "10.0.0.254",
+				"--cidr", "10.0.0.1/24",
 			}, photoncli.GetFlags())
 			Ω(func() { action(ctx) }).ShouldNot(Panic())
 		})

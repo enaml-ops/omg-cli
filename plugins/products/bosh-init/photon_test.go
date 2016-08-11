@@ -17,10 +17,13 @@ var _ = Describe("NewPhotonBosh", func() {
 			const controlDirectorName = "fake-director-name"
 			BeforeEach(func() {
 				b := &BoshBase{
-					Mode:          "uaa",
-					DirectorName:  controlDirectorName,
-					UAAReleaseSHA: "uaa-release.com",
-					UAAReleaseURL: "uaa-release-lkashdjlkgahsdg",
+					Mode:           "uaa",
+					DirectorName:   controlDirectorName,
+					UAAReleaseSHA:  "uaa-release.com",
+					UAAReleaseURL:  "uaa-release-lkashdjlkgahsdg",
+					NetworkCIDR:    "10.0.0.1/24",
+					NetworkGateway: "10.0.0.254",
+					PrivateIP:      "10.0.0.4",
 				}
 				boshbase = NewPhotonBoshBase(b)
 			})
@@ -111,6 +114,7 @@ var _ = Describe("NewPhotonBosh", func() {
 				NetworkName: "dwallraff-vnet",
 			}
 			var boshBase = NewPhotonBoshBase(new(BoshBase))
+			boshBase.NetworkDNS = []string{"10.0.0.2"}
 			boshBase.NetworkCIDR = "10.0.0.0/24"
 			boshBase.NetworkGateway = "10.0.0.1"
 			boshBase.PrivateIP = "10.0.0.4"

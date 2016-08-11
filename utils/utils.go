@@ -28,7 +28,7 @@ func ClearDefaultStringSliceValue(stringSliceArgs ...string) (res []string) {
 }
 
 func isJustDefault(stringSliceArgs []string) bool {
-	return len(stringSliceArgs) == 1
+	return len(stringSliceArgs) <= 1
 }
 
 // GetCloudConfigCommands builds a list of CLI commands depending on
