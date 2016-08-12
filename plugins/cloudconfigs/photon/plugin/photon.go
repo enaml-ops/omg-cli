@@ -13,19 +13,19 @@ type VMProperties struct {
 	RootDiskSizeGB int    `yaml:"vm_attached_disk_size_gb,omitempty"`
 	RootDiskType   string `yaml:"disk_flavor"`
 }
+
 type NetworkCloudProperties struct {
 	NetworkName string `yaml:"network_id"`
 }
+
 type PhotonCloudConfig struct {
 	Context *cli.Context
 }
 
 func NewPhotonCloudConfig(c *cli.Context) cloudconfigs.CloudConfigProvider {
-
-	provider := &PhotonCloudConfig{
+	return &PhotonCloudConfig{
 		Context: c,
 	}
-	return provider
 }
 
 func (c *PhotonCloudConfig) networkCloudProperties(i, index int) interface{} {

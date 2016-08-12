@@ -100,7 +100,7 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 				Type: "manual",
 			}
 			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
-			if err := CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d", "network-dns-%d", "network-reserved-%d", "network-static-%d"); err != nil {
+			if err := CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
 				return nil, err
 			}
 			ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
