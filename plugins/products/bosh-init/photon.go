@@ -123,7 +123,7 @@ func (g *PhotonBosh) CreateCloudProvider() enaml.CloudProvider {
 				Mbus: fmt.Sprintf("https://mbus:%s@0.0.0.0:6868", g.Base.MBusPassword),
 			},
 			Blobstore: &photoncpi.Blobstore{
-				Provider: "local",
+				Provider: "dav",
 				Options: map[string]string{
 					"blobstore_path": "/var/vcap/micro_bosh/data/cache",
 				},

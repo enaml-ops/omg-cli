@@ -5,16 +5,12 @@ package cpi
 */
 type AgentBlobstore struct {
 
-	/*SecretAccessKey - Descr: AWS secret_access_key for agent used by s3 blobstore plugin Default: <nil>
+	/*Provider - Descr: Provider type for the blobstore used by deployed BOSH agents (e.g. dav, s3) Default: dav
 */
-	SecretAccessKey interface{} `yaml:"secret_access_key,omitempty"`
+	Provider interface{} `yaml:"provider,omitempty"`
 
-	/*Address - Descr: Address for agent to connect to blobstore server used by simple blobstore plugin Default: <nil>
+	/*Options - Descr: Options for the blobstore used by deployed BOSH agents Default: map[]
 */
-	Address interface{} `yaml:"address,omitempty"`
-
-	/*AccessKeyId - Descr: AWS access_key_id for agent used by s3 blobstore plugin Default: <nil>
-*/
-	AccessKeyId interface{} `yaml:"access_key_id,omitempty"`
+	Options interface{} `yaml:"options,omitempty"`
 
 }

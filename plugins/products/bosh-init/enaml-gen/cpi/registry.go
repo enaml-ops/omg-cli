@@ -5,24 +5,20 @@ package cpi
 */
 type Registry struct {
 
-	/*Password - Descr: Password to access the Registry Default: <nil>
-*/
-	Password interface{} `yaml:"password,omitempty"`
-
-	/*Port - Descr: Port of the Registry to connect to Default: 25777
+	/*Port - Descr: Port of registry Default: 6301
 */
 	Port interface{} `yaml:"port,omitempty"`
 
-	/*Host - Descr: Address of the Registry to connect to Default: <nil>
-*/
-	Host interface{} `yaml:"host,omitempty"`
-
-	/*Endpoint - Descr: Full URL for the registry endpoint that may include basic auth credentials Default: <nil>
-*/
-	Endpoint interface{} `yaml:"endpoint,omitempty"`
-
-	/*Username - Descr: User to access the Registry Default: <nil>
+	/*Username - Descr: Username for registry Default: 
 */
 	Username interface{} `yaml:"username,omitempty"`
+
+	/*Password - Descr: Password for registry Default: 
+*/
+	Password interface{} `yaml:"password,omitempty"`
+
+	/*Host - Descr: Hostname of registry Default: 
+*/
+	Host interface{} `yaml:"host,omitempty"`
 
 }

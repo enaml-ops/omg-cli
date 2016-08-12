@@ -95,10 +95,13 @@ var _ = Describe("NewPhotonBosh", func() {
 				provider = NewPhotonIaaSProvider(cfg, boshBase)
 			})
 
-			It("then it should properly set the cloud provider template cpi name", func() {
-
+			It("then it should properly set the cloud provider", func() {
 				cp := provider.CreateCloudProvider()
 				Ω(cp.Template.Name).Should(Equal("cpi"))
+
+				props := cp.Properties.(*photoncpi.PhotoncpiJob)
+				Ω(props.Blobstore).ShouldNot(BeNil())
+				Ω(props.Blobstore.Provider).Should(Equal("dav"))
 			})
 
 			It("creates a CPI release with the specified URL and SHA", func() {

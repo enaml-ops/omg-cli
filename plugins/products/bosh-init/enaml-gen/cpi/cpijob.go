@@ -5,32 +5,24 @@ package cpi
 */
 type CpiJob struct {
 
-	/*Ntp - Descr: List of ntp server IPs. pool.ntp.org attempts to return IPs closest to your location, but you can still specify if needed. Default: [0.pool.ntp.org 1.pool.ntp.org]
+	/*Cpi - Descr: Options for the blobstore used by deployed BOSH agents Default: map[]
 */
-	Ntp interface{} `yaml:"ntp,omitempty"`
+	Cpi *Cpi `yaml:"cpi,omitempty"`
 
-	/*Nats - Descr: Address of the nats server Default: <nil>
+	/*Photon - Descr: Photon user's password Default: 
 */
-	Nats *Nats `yaml:"nats,omitempty"`
+	Photon *Photon `yaml:"photon,omitempty"`
 
-	/*Registry - Descr: User to access the Registry Default: <nil>
-*/
-	Registry *Registry `yaml:"registry,omitempty"`
-
-	/*Blobstore - Descr: Port of blobstore server used by simple blobstore plugin Default: 25250
-*/
-	Blobstore *Blobstore `yaml:"blobstore,omitempty"`
-
-	/*Azure - Descr: The tenant id for your service principal Default: <nil>
-*/
-	Azure *Azure `yaml:"azure,omitempty"`
-
-	/*Agent - Descr: AWS access_key_id for agent used by s3 blobstore plugin Default: <nil>
+	/*Agent - Descr: Mbus URL used by deployed BOSH agents Default: 
 */
 	Agent *Agent `yaml:"agent,omitempty"`
 
-	/*Env - Descr: Http proxy to connect to cloud API's Default: <nil>
+	/*Blobstore - Descr: Provider type for the blobstore used by deployed BOSH agents (e.g. dav, s3) Default: 
 */
-	Env *Env `yaml:"env,omitempty"`
+	Blobstore *Blobstore `yaml:"blobstore,omitempty"`
+
+	/*Ntp - Descr: ntp Default: 
+*/
+	Ntp interface{} `yaml:"ntp,omitempty"`
 
 }

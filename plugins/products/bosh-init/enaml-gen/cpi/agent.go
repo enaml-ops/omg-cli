@@ -5,16 +5,8 @@ package cpi
 */
 type Agent struct {
 
-	/*Nats - Descr: Address of the nats server Default: <nil>
-*/
-	Nats *AgentNats `yaml:"nats,omitempty"`
-
-	/*Mbus - Descr: Agent mbus Default: <nil>
+	/*Mbus - Descr: Mbus URL used by deployed BOSH agents Default: 
 */
 	Mbus interface{} `yaml:"mbus,omitempty"`
-
-	/*Blobstore - Descr: AWS access_key_id for agent used by s3 blobstore plugin Default: <nil>
-*/
-	Blobstore *AgentBlobstore `yaml:"blobstore,omitempty"`
 
 }
