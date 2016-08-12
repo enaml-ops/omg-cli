@@ -3,7 +3,6 @@ package cloudconfigs
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"gopkg.in/yaml.v2"
 
@@ -116,9 +115,9 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 					AZ:              az,
 					Range:           ranges[index],
 					Gateway:         gateways[index],
-					DNS:             strings.Split(dnsServers[index], ","),
-					Reserved:        strings.Split(reservedRanges[index], ","),
-					Static:          strings.Split(staticIPs[index], ","),
+					DNS:             dnsServers,
+					Reserved:        reservedRanges,
+					Static:          staticIPs,
 					CloudProperties: cloudPropertiesFunction(i, index),
 				}
 				network.AddSubnet(subnet)
