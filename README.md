@@ -28,6 +28,8 @@ composes bosh-init, enaml and plugins to create a simple cli installer
 ## install a BOSH using OMG-cli (aws example)
 *check the bosh docs to setup your vpc (https://bosh.io/docs/init-aws.html)*
 ```bash
+$> wget -O omg https://github.com/enaml-ops/omg-cli/releases/download/v0.0.25/omg-osx && chmod +x omg
+
 $> ./omg aws \
 --mode uaa \
 --aws-subnet subnet-xxxxxxxxxxx \
@@ -51,10 +53,13 @@ $> ./omg gcp --help
 
 ## Setup Cloud Config on your BOSH (aws example)
 ```bash
+# download cloudconfig plugin for aws
+$> wget https://github.com/enaml-ops/omg-cli/releases/download/v0.0.25/aws-cloudconfigplugin-osx
+
 # register the cloud config plugin for your iaas
 $> ./omg register-plugin \
 --type cloudconfig \
---pluginpath ~/Downloads/aws-cloudconfigplugin-osx
+--pluginpath aws-cloudconfigplugin-osx
 
 # to see your newly added plugin
 $> ./omg list-cloudconfigs
@@ -83,34 +88,20 @@ aws-cloudconfigplugin-osx \
 $> ./omg deploy-cloudconfig aws-cloudconfigplugin-osx --help
 ```
 
-## How to use omg + plugins to install concourse (bosh, cloud-config, aws and osx)
+## How to use omg + plugins to install a product (ex,. concourse on aws)
 
 *tips & tricks*
 - set `LOG_LEVEL=debug` for verbose output
 - adding the `--print-manifest` flag with the bosh creds will simply print the manifest you are about to deploy
 
-### initial setup
-*install your omg-cli & plugins*
-```
-export VERSION=v0.0.12
-export OS=osx
-$ wget https://github.com/enaml-ops/omg-cli/releases/download/${VERSION}/omg-${OS}
-$ wget https://github.com/enaml-ops/omg-cli/releases/download/${VERSION}/concourse-plugin-${OS}
-$ wget https://github.com/enaml-ops/omg-cli/releases/download/${VERSION}/aws-cloudconfigplugin-${OS}
-
-$ mv ./omg-${OS} omg && chmod +x omg
-$ ./omg register-plugin --type cloudconfig --pluginpath aws-cloudconfigplugin-${OS}
-$ ./omg list-cloudconfigs
-
-```
-
 ### bosh deployed concourse
 *deploy a concourse*
 ```bash
+# download concourse product plugin
+$> wget https://github.com/enaml-ops/omg-product-bundle/releases/download/v0.0.14/concourse-plugin-osx
 
-# register the concourse plugin downloaded from enaml.pezapp.io
+# register concourse product plugin
 $> ./omg register-plugin --type product --pluginpath concourse-plugin-osx
-$> ./omg list-products
 
 # please only upload your releases and stemcells manually if your deployment does not use remote urls
 # otherwise this will be automatically uploaded via omg-cli
