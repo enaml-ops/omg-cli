@@ -1,6 +1,9 @@
 package utils_test
 
 import (
+	"os"
+	"path"
+
 	"github.com/codegangsta/cli"
 	. "github.com/enaml-ops/omg-cli/utils"
 	. "github.com/onsi/ginkgo"
@@ -33,6 +36,30 @@ var _ = Describe("utils", func() {
 				Ω(len(commands)).Should(Equal(1))
 				Ω(commands[0].Name).Should(ContainSubstring("testproductplugin-"))
 				Ω(commands[0].Action).ShouldNot(BeNil())
+			})
+		})
+	})
+
+	Describe("given a deployyaml method", func() {
+		Context("when called with valid arguments", func() {
+			var stringSpy string
+
+			AfterEach(func() {
+				stringSpy = ""
+			})
+
+			It("then it should create a temporary file in the pwd", func() {
+				DeployYaml("something", func(s string) { stringSpy = s })
+				matchstr, _ := os.Getwd()
+				matchstr = path.Join(matchstr, "omg-bosh.*")
+				ismatch, err := path.Match(matchstr, stringSpy)
+				Ω(ismatch).Should(BeTrue())
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+			It("then it should cleanup its tempfile", func() {
+				DeployYaml("something", func(s string) { stringSpy = s })
+				_, errnofile := os.Stat(stringSpy)
+				Ω(errnofile).Should(HaveOccurred())
 			})
 		})
 	})

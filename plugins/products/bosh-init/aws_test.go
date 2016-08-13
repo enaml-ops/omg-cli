@@ -31,7 +31,7 @@ var _ = Describe("NewAWSBosh", func() {
 
 			It("then it should be using the aws stemcell", func() {
 				Ω(manifest.ResourcePools[0].Stemcell.URL).ShouldNot(ContainSubstring("azure"))
-				Ω(manifest.ResourcePools[0].Stemcell.URL).Should(ContainSubstring("aws"))
+				Ω(manifest.ResourcePools[0].Stemcell.URL).Should(ContainSubstring("bosh-aws-xen-hvm-ubuntu-trusty-go_agent"))
 			})
 
 			It("then it should have the correct job config to deploy a bosh", func() {

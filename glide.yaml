@@ -16,7 +16,7 @@ import:
   version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
 - package: github.com/cloudfoundry/bosh-init
   version: afa267bec2ba83d7572075ca34ac4c000a29023d
-  repo: https://github.com/sneal/bosh-init.git
+  repo: https://github.com/enaml-ops/bosh-init.git
   vcs: git
   subpackages:
   - cmd

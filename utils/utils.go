@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"crypto/rand"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"math/big"
 	"os"
 	"path"
 
@@ -104,10 +106,27 @@ func CheckRequired(c *cli.Context, names ...string) {
 	}
 }
 
+func GetBoshDeployPath() string {
+	wd, _ := os.Getwd()
+	return path.Join(wd, "omg-bosh."+randomsuffix())
+}
+
+func randomsuffix() string {
+	max := big.NewInt(999999)
+	n, err := rand.Int(rand.Reader, max)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return fmt.Sprintf("%v", n.Int64())
+}
+
 func DeployYaml(myYaml string, boshInitDeploy func(string)) {
 	fmt.Println("deploying your bosh")
 	content := []byte(myYaml)
-	tmpfile, err := ioutil.TempFile("", "bosh-init-deployment")
+	boshdeploypath := GetBoshDeployPath()
+	os.Remove(boshdeploypath)
+	tmpfile, err := os.Create(boshdeploypath)
+	defer tmpfile.Close()
 	defer os.Remove(tmpfile.Name())
 
 	if err != nil {

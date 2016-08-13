@@ -43,12 +43,12 @@ func GetAWSBoshBase() *BoshBase {
 		NetworkCIDR:       "10.0.0.0/24",
 		NetworkGateway:    "10.0.0.1",
 		NetworkDNS:        []string{"10.0.0.2"},
-		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
-		BoshReleaseSHA:    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-		CPIReleaseURL:     "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=52",
-		CPIReleaseSHA:     "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3012",
-		GOAgentSHA:        "3380b55948abe4c437dee97f67d2d8df4eec3fc1",
+		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=257.3",
+		BoshReleaseSHA:    "e4442afcc64123e11f2b33cc2be799a0b59207d0",
+		CPIReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=57",
+		CPIReleaseSHA:     "cbc7ed758f4a41063e9aee881bfc164292664b84",
+		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3262.7",
+		GOAgentSHA:        "bf44a5f81d29346af6a309199d2e012237dd222c",
 		PrivateIP:         "10.0.0.6",
 		NtpServers:        []string{"0.pool.ntp.org", "1.pool.ntp.org"},
 		CPIJobName:        awsCPIJobName,
@@ -82,7 +82,7 @@ func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
 		Network: "private",
 	}
 	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  s.boshbase.CPIReleaseURL,
+		URL:  s.boshbase.GOAgentReleaseURL,
 		SHA1: s.boshbase.GOAgentSHA,
 	}
 	resourcePool.CloudProperties = awscloudproperties.ResourcePool{

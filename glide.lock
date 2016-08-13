@@ -1,5 +1,5 @@
-hash: f03bb6d327bf5c1ba895da2f9ccd0c774103a247b4e9884f0bf990272e70f4dc
-updated: 2016-08-02T12:26:00.761998557-07:00
+hash: 836efb9943afdfe8377e07483e58282fc3d2fbb74a6922f3fe8f08e9d04b2df9
+updated: 2016-08-12T21:58:42.268229118-04:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -17,7 +17,7 @@ imports:
   - config
 - name: github.com/cloudfoundry/bosh-init
   version: afa267bec2ba83d7572075ca34ac4c000a29023d
-  repo: https://github.com/sneal/bosh-init.git
+  repo: https://github.com/enaml-ops/bosh-init.git
   vcs: git
   subpackages:
   - cmd
@@ -78,13 +78,13 @@ imports:
 - name: github.com/codegangsta/cli
   version: 168c95418e66e019fe17b8f4f5c45aa62ff80e23
 - name: github.com/enaml-ops/enaml
-  version: 50794abdccbacb029fe954a44bc8d3f9ed1a9340
+  version: b3d35ea89f0d1274cf7ed101f3a1a80e0394d24d
   subpackages:
   - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
 - name: github.com/enaml-ops/pluginlib
-  version: 1ede39ba694aee6e62eefce462ad87af0087f3b9
+  version: 5cdbbd7e521f2224ae9b03cef9d2623d26ba888f
   subpackages:
   - registry
   - cloudconfig
@@ -92,7 +92,7 @@ imports:
   - pcli
   - util
 - name: github.com/golang/protobuf
-  version: c3cefd437628a0b7d31b34fe44b3a7a540e98527
+  version: 2c1988e8c18d14b142c0b472624f71647cf39adb
   subpackages:
   - proto
 - name: github.com/hashicorp/go-plugin
@@ -104,37 +104,9 @@ imports:
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
 - name: github.com/onsi/ginkgo
-  version: 74c678d97c305753605c338c6c78c49ec104b5e7
-  subpackages:
-  - config
-  - internal/codelocation
-  - internal/failer
-  - internal/remote
-  - internal/suite
-  - internal/testingtproxy
-  - internal/writer
-  - reporters
-  - reporters/stenographer
-  - types
-  - internal/containernode
-  - internal/leafnodes
-  - internal/spec
-  - internal/specrunner
+  version: 609d49a3caf785206c0f285755da0622c49eec99
 - name: github.com/onsi/gomega
   version: 9ed8da19f2156b87a803a8fdf6d126f627a12db1
-  subpackages:
-  - ghttp
-  - internal/assertion
-  - internal/asyncassertion
-  - internal/testingtsupport
-  - matchers
-  - types
-  - internal/oraclematcher
-  - format
-  - matchers/support/goraph/bipartitegraph
-  - matchers/support/goraph/edge
-  - matchers/support/goraph/node
-  - matchers/support/goraph/util
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
@@ -142,12 +114,12 @@ imports:
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
 - name: github.com/pivotalservices/gtils
-  version: 2efb2d5d8a2ee2ad307f7343a04b8088f44c4e4b
+  version: 2605eda5a33230d9613738bba5271d1c040e4a15
   subpackages:
   - osutils
   - command
 - name: github.com/pkg/errors
-  version: 2a9be18ecd8c148be18be08a811e33809206da19
+  version: a22138067af1c4942683050411a841ade67fe1eb
 - name: github.com/pkg/sftp
   version: a71e8f580e3b622ebff585309160b1cc549ef4d2
 - name: github.com/square/certstrap
@@ -155,21 +127,23 @@ imports:
   subpackages:
   - pkix
 - name: github.com/xchapter7x/lo
-  version: aa2602d0e8e8647f0ce7b53109b37040941915aa
+  version: e33b245fc7a8186582208abc2458c2691bff681c
 - name: golang.org/x/crypto
   version: bfc286917c5fcb7420d7e3092b50bbfd31b38a98
   subpackages:
   - ssh
+  - curve25519
+  - ed25519
 - name: golang.org/x/net
-  version: f6d211983832e1efcd77e80779fd5f1142741356
+  version: 07b51741c1d6423d4a6abab1c49940ec09cb1aaf
   subpackages:
   - context
 - name: golang.org/x/oauth2
-  version: 0aec23fa6269cbce14cd407234f04213227a7917
+  version: 4784bb855e56a530f1ce5d788959359ed6cb4a16
   subpackages:
   - internal
 - name: google.golang.org/appengine
-  version: 267c27e7492265b84fc6719503b14a1e17975d79
+  version: e951d3868b377b14f4e60efa3a301532ee3c1ebf
   subpackages:
   - urlfetch
   - internal
@@ -180,8 +154,4 @@ imports:
   - internal/remote_api
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
-testImports:
-- name: golang.org/x/sys
-  version: a646d33e2ee3172a661fc09bca23bb4889a41bc8
-  subpackages:
-  - unix
+devImports: []
