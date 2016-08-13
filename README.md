@@ -5,45 +5,82 @@ an iaas independent plugable executable to install bosh, cloud configs and produ
 [![wercker status](https://app.wercker.com/status/429f96482fd95fecbc70ecc25aee8c70/s/master "wercker status")](https://app.wercker.com/project/bykey/429f96482fd95fecbc70ecc25aee8c70)
 
 
-### What is OMG
+### What is OMG (http://enaml.pezapp.io)
 omg is a cli tool. It natively allows users to:
 - spin up a bosh on a target iaas,
 - load it up with a cloud config
 - deploy 'products' via their new bosh (vault, cloudfoundry, concourse, etc)
 
-### how we do bosh / cloud config / deployments
-composes bosh-init, enaml and plugins to create a simple cli installer
-
-## download omg-cli here:
-https://github.com/enaml-ops/omg-cli/releases/latest
-
-## download supported products here:
-https://github.com/enaml-ops/omg-product-bundle/releases/latest
-
-
-## install bosh on aws
-*check the bosh docs to setup your vpc (https://bosh.io/docs/init-aws.html)*
-```
-$ omg-osx aws --aws-subnet subnet-123456 --aws-elastic-ip 12.34.567.890 --aws-pem-path ~/boshstuff/bosh.pem --aws-access-key  xxxxxxxxxxxx --aws-secret xxxxxxxxxx --aws-instance-size t2.micro --aws-region us-east-1 --aws-availability-zone us-east-1c
-```
-
-## install bosh on azure
-*check the bosh docs to setup your vpc (https://bosh.io/docs/init-azure.html)*
-```
-$ $ ./omg-osx azure --name bosh --azure-public-ip xxxx --azure-vnet xxxx --azure-subnet xxxx --azure-subscription-id xxxx --azure-tenant-id xxxx --azure-client-id xxxx --azure-client-secret xxxx --azure-resource-group xxxx --azure-storage-account xxxx --azure-security-group xxxx --azure-ssh-pub-key xxxx --azure-ssh-user xxxx --azure-private-key-path xxxx
-```
-
-## register a plugin
+### What are plugins
 #### plugins are your way of extending omg, providing a deployment definition or cloud config definition. instead of dealing with yaml or tiles, we build testable plugins using `enaml` and simply register them with omg.
 *download a bundled plugin from a omg release or build your own*
 *available plugin types are `cloudconfig` or `product` for more info about how to build a plugin take a look at one of the bundled plugins (ie. https://github.com/enaml-ops/omg-cli/tree/master/cloudconfigs/aws)*
+
+### how we do bosh / cloud config / deployments
+composes bosh-init, enaml and plugins to create a simple cli installer
+
+### downloads:
+- omg/cloudconfig (http://enaml.pezapp.io/downloads/release/)
+  - omg-cli (azure, gcp, vsphere, aws, photon)
+- product plugins (http://enaml.pezapp.io/downloads/products/)
+  - vault, concourse, pcf, redis, docker
+
+## install a BOSH using OMG-cli (aws example)
+*check the bosh docs to setup your vpc (https://bosh.io/docs/init-aws.html)*
+```bash
+$> ./omg aws \
+--mode uaa \
+--aws-subnet subnet-xxxxxxxxxxx \
+--bosh-public-ip x.x.x.x \
+--aws-pem-path ~/bosh.pem \
+--aws-access-key  xxxxxxxxxxxxxxxxxxxxxx \
+--aws-secret xxxxxxxxxxxxxxxxxxx \
+--aws-instance-size t2.micro \
+--aws-region us-east-1 \
+--aws-availability-zone us-east-1c
 ```
-$ ./omg-osx register-plugin --type cloudconfig --pluginpath ~/Downloads/aws-cloudconfigplugin-osx
+
+*instructions on how to install BOSH on other supported iaas can be found by:*
+```bash
+$> ./omg azure --help
+$> ./omg aws --help
+$> ./omg vsphere --help
+$> ./omg photon --help
+$> ./omg gcp --help
+```
+
+## Setup Cloud Config on your BOSH (aws example)
+```bash
+# register the cloud config plugin for your iaas
+$> ./omg register-plugin \
+--type cloudconfig \
+--pluginpath ~/Downloads/aws-cloudconfigplugin-osx
 
 # to see your newly added plugin
-$ ./omg-osx list-cloudconfigs
+$> ./omg list-cloudconfigs
 Cloud Configs:
 aws  -  .plugins/cloudconfig/aws-cloudconfigplugin-osx  -  map[]
+
+# upload cloud config
+$> ./omg deploy-cloudconfig \
+--bosh-url https://bosh.url.com --bosh-port 25555 \
+--bosh-user admin --bosh-pass admin --ssl-ignore \
+aws-cloudconfigplugin-osx \
+--aws-region us-east-1 \
+--aws-security-group bosh \
+--bosh-az-name-1 z1 \
+--cidr-1 10.0.0.0/24 \
+--gateway-1 10.0.0.1 \
+--dns-1 10.0.0.2 \
+--aws-az-name-1 us-east-1a \
+--aws-subnet-name-1 aws-subnet-1 \
+--bosh-reserve-range-1 "10.0.0.1-10.0.0.10"
+
+```
+
+*for information on other options and flags:*
+```bash
+$> ./omg deploy-cloudconfig aws-cloudconfigplugin-osx --help
 ```
 
 ## How to use omg + plugins to install concourse (bosh, cloud-config, aws and osx)
@@ -64,68 +101,24 @@ $ wget https://github.com/enaml-ops/omg-cli/releases/download/${VERSION}/aws-clo
 $ mv ./omg-${OS} omg && chmod +x omg
 $ ./omg register-plugin --type cloudconfig --pluginpath aws-cloudconfigplugin-${OS}
 $ ./omg list-cloudconfigs
-$ ./omg register-plugin --type product --pluginpath concourse-plugin-${OS}
-$ ./omg list-products
-```
 
-### bosh install
-*build your bosh*
-```
-$ ./omg aws \
---aws-subnet subnet-123456 \
---aws-elastic-ip bosh.url.com \
---aws-pem-path ~/boshstuff/bosh.pem \
---aws-access-key  xxxxxxxxxxxxxxxxxxxx \
---aws-secret xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx \
---aws-instance-size t2.micro \
---aws-region us-east-1 \
---aws-availability-zone us-east-1c
-```
-
-### setup cloud config
-*setup a cloud config*
-```
-$ ./omg deploy-cloudconfig \
---bosh-url https://bosh.url.com \
---bosh-port 25555 \
---bosh-user admin \
---bosh-pass admin \
---ssl-ignore \
---print-manifest \
-aws-cloudconfigplugin-osx \
---aws-region us-east-1 \
---aws-security-group bosh \
---bosh-az-name-1 z1 \
---aws-az-name-1 us-east-1a \
---cidr-1 10.10.0.0/24 \
---gateway-1 10.0.0.1 \
---aws-subnet-name-1 aws-subnet-1 \
---dns-1 10.10.0.2 \
---bosh-reserve-range-1 "10.10.0.3-10.10.0.25" \
---bosh-az-name-2 z2 \
---aws-az-name-2 us-east-1b \
---cidr-2 10.10.64.0/24 \
---gateway-2 10.10.64.1 \
---aws-subnet-name-2 aws-subnet-2 \
---dns-2 10.10.0.2 \
---bosh-reserve-range-2 "10.10.64.3-10.10.64.25"
 ```
 
 ### bosh deployed concourse
 *deploy a concourse*
-```
+```bash
+
+# register the concourse plugin downloaded from enaml.pezapp.io
+$> ./omg register-plugin --type product --pluginpath concourse-plugin-osx
+$> ./omg list-products
+
 # please only upload your releases and stemcells manually if your deployment does not use remote urls
 # otherwise this will be automatically uploaded via omg-cli
-$ bosh upload release https://bosh.io/d/github.com/concourse/concourse?v=1.0.1
-$ bosh upload release https://bosh.io/d/github.com/cloudfoundry-incubator/garden-linux-release?v=0.337.0
-$ bosh upload stemcell https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3232.4
 
-$ ./omg deploy-product \
---bosh-url https://bosh.url.com \
---bosh-port 25555 \
---bosh-user admin \
---bosh-pass admin \
---ssl-ignore \
+# deploy your concourse
+$> ./omg deploy-product \
+--bosh-url https://bosh.url.com --bosh-port 25555 --bosh-user admin \
+--bosh-pass admin --ssl-ignore \
 concourse-plugin-osx \
 --web-vm-type small \
 --worker-vm-type small \
