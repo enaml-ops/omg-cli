@@ -28,8 +28,12 @@ composes bosh-init, enaml and plugins to create a simple cli installer
 ## install a BOSH using OMG-cli (aws example)
 *check the bosh docs to setup your vpc (https://bosh.io/docs/init-aws.html)*
 ```bash
+# download omg cli
 $> wget -O omg https://github.com/enaml-ops/omg-cli/releases/download/v0.0.25/omg-osx && chmod +x omg
+```
 
+```bash
+# deploy your bosh using the omg cli
 $> ./omg aws \
 --mode uaa \
 --aws-subnet subnet-xxxxxxxxxxx \
@@ -55,17 +59,22 @@ $> ./omg gcp --help
 ```bash
 # download cloudconfig plugin for aws
 $> wget https://github.com/enaml-ops/omg-cli/releases/download/v0.0.25/aws-cloudconfigplugin-osx
-
+```
+```bash
 # register the cloud config plugin for your iaas
 $> ./omg register-plugin \
 --type cloudconfig \
 --pluginpath aws-cloudconfigplugin-osx
+```
 
+```bash
 # to see your newly added plugin
 $> ./omg list-cloudconfigs
 Cloud Configs:
 aws  -  .plugins/cloudconfig/aws-cloudconfigplugin-osx  -  map[]
+```
 
+```bash
 # upload cloud config
 $> ./omg deploy-cloudconfig \
 --bosh-url https://bosh.url.com --bosh-port 25555 \
@@ -99,13 +108,19 @@ $> ./omg deploy-cloudconfig aws-cloudconfigplugin-osx --help
 ```bash
 # download concourse product plugin
 $> wget https://github.com/enaml-ops/omg-product-bundle/releases/download/v0.0.14/concourse-plugin-osx
+```
 
+```bash
 # register concourse product plugin
 $> ./omg register-plugin --type product --pluginpath concourse-plugin-osx
+```
 
+```bash
 # please only upload your releases and stemcells manually if your deployment does not use remote urls
 # otherwise this will be automatically uploaded via omg-cli
+```
 
+```bash
 # deploy your concourse
 $> ./omg deploy-product \
 --bosh-url https://bosh.url.com --bosh-port 25555 --bosh-user admin \
