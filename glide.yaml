@@ -46,3 +46,4 @@ import:
   subpackages:
   - context
 - package: github.com/square/certstrap
+- package: github.com/olekukonko/tablewriter

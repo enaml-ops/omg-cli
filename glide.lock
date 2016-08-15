@@ -1,5 +1,5 @@
-hash: 836efb9943afdfe8377e07483e58282fc3d2fbb74a6922f3fe8f08e9d04b2df9
-updated: 2016-08-12T21:58:42.268229118-04:00
+hash: 7ceb8587e4a7049914ab8aa41bbe76c0889de7ed946d6311883eb3a44ff510e9
+updated: 2016-08-15T08:01:52.159656728-04:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -78,11 +78,38 @@ imports:
 - name: github.com/codegangsta/cli
   version: 168c95418e66e019fe17b8f4f5c45aa62ff80e23
 - name: github.com/enaml-ops/enaml
-  version: b3d35ea89f0d1274cf7ed101f3a1a80e0394d24d
+  version: d0a63c6f1678db0ff366dcdfd1128907a4714fda
   subpackages:
   - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
+- name: github.com/enaml-ops/omg-cli
+  version: e098f9b2fb6b7c393746baabc63e61e2b8d92c81
+  subpackages:
+  - aws-cli
+  - azure-cli
+  - bosh
+  - gcp-cli
+  - photon-cli
+  - utils
+  - vsphere-cli
+  - plugins/products/bosh-init
+  - plugins/products/bosh-init/enaml-gen/photoncpi
+  - plugins/cloudconfigs/aws/plugin
+  - plugins/cloudconfigs/aws/cloud-config
+  - plugins/cloudconfigs/gcp/plugin
+  - plugins/cloudconfigs
+  - plugins/cloudconfigs/photon/plugin
+  - plugins/cloudconfigs/vsphere/plugin
+  - plugins/products/bosh-init/enaml-gen/aws_cpi
+  - plugins/products/bosh-init/enaml-gen/cpi
+  - plugins/products/bosh-init/enaml-gen/director
+  - plugins/products/bosh-init/enaml-gen/google_cpi
+  - plugins/products/bosh-init/enaml-gen/health_monitor
+  - plugins/products/bosh-init/enaml-gen/postgres
+  - plugins/products/bosh-init/enaml-gen/registry
+  - plugins/products/bosh-init/enaml-gen/uaa
+  - plugins/products/bosh-init/enaml-gen/vsphere_cpi
 - name: github.com/enaml-ops/pluginlib
   version: 5cdbbd7e521f2224ae9b03cef9d2623d26ba888f
   subpackages:
@@ -101,10 +128,14 @@ imports:
   version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
+- name: github.com/mattn/go-runewidth
+  version: d6bea18f789704b5f83375793155289da36a3c7f
 - name: github.com/nu7hatch/gouuid
   version: 179d4d0c4d8d407a32af483c2354df1d2c91e6c3
+- name: github.com/olekukonko/tablewriter
+  version: daf2955e742cf123959884fdff4685aa79b63135
 - name: github.com/onsi/ginkgo
-  version: 609d49a3caf785206c0f285755da0622c49eec99
+  version: 120efcfd33906beedc53369a8659c41cc9190e81
 - name: github.com/onsi/gomega
   version: 9ed8da19f2156b87a803a8fdf6d126f627a12db1
 - name: github.com/op/go-logging
@@ -132,8 +163,6 @@ imports:
   version: bfc286917c5fcb7420d7e3092b50bbfd31b38a98
   subpackages:
   - ssh
-  - curve25519
-  - ed25519
 - name: golang.org/x/net
   version: 07b51741c1d6423d4a6abab1c49940ec09cb1aaf
   subpackages:

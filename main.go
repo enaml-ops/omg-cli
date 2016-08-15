@@ -19,6 +19,7 @@ import (
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/omg-cli/vsphere-cli"
 	"github.com/enaml-ops/pluginlib/registry"
+	"github.com/olekukonko/tablewriter"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
 )
@@ -70,9 +71,27 @@ func main() {
 			Name: "list-cloudconfigs",
 			Action: func(c *cli.Context) error {
 				fmt.Println("Cloud Configs:")
-				for _, plgn := range registry.ListCloudConfigs() {
-					fmt.Println(plgn.Name, " - ", plgn.Path, " - ", plgn.Properties)
+				table := tablewriter.NewWriter(os.Stdin)
+				table.SetHeader([]string{"Name", "Command", "Properties"})
+				data := make([][]string, 0)
+				formatProperties := func(p map[string]interface{}) string {
+					var res string
+					for n, v := range p {
+						res += fmt.Sprintf("%v: %v\n", n, v)
+					}
+					return res
 				}
+
+				for _, plgn := range registry.ListCloudConfigs() {
+					row := []string{
+						plgn.Name,
+						path.Base(plgn.Path),
+						formatProperties(plgn.Properties),
+					}
+					data = append(data, row)
+				}
+				table.AppendBulk(data)
+				table.Render()
 				return nil
 			},
 		},
@@ -80,9 +99,27 @@ func main() {
 			Name: "list-products",
 			Action: func(c *cli.Context) error {
 				fmt.Println("Products:")
-				for _, plgn := range registry.ListProducts() {
-					fmt.Println(plgn.Name, " - ", plgn.Path, " - ", plgn.Properties)
+				table := tablewriter.NewWriter(os.Stdin)
+				table.SetHeader([]string{"Name", "Command", "Properties"})
+				data := make([][]string, 0)
+				formatProperties := func(p map[string]interface{}) string {
+					var res string
+					for n, v := range p {
+						res += fmt.Sprintf("%v: %v\n", n, v)
+					}
+					return res
 				}
+
+				for _, plgn := range registry.ListProducts() {
+					row := []string{
+						plgn.Name,
+						path.Base(plgn.Path),
+						formatProperties(plgn.Properties),
+					}
+					data = append(data, row)
+				}
+				table.AppendBulk(data)
+				table.Render()
 				return nil
 			},
 		},
