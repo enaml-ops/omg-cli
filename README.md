@@ -4,6 +4,7 @@ an iaas independent plugable executable to install bosh, cloud configs and produ
 
 [![wercker status](https://app.wercker.com/status/429f96482fd95fecbc70ecc25aee8c70/s/master "wercker status")](https://app.wercker.com/project/bykey/429f96482fd95fecbc70ecc25aee8c70)
 
+[![release info](https://img.shields.io/github/downloads/enaml-ops/omg-cli/total.svg?maxAge=2592000 "release info")](http://www.somsubhra.com/github-release-stats/?username=enaml-ops&repository=omg-cli)
 
 ### What is OMG (http://enaml.pezapp.io)
 omg is a cli tool. It natively allows users to:
