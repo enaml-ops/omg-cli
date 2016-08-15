@@ -9,7 +9,9 @@ import (
 	"github.com/enaml-ops/pluginlib/util"
 )
 
-type Plugin struct{}
+type Plugin struct {
+	PluginVersion string
+}
 
 func (s *Plugin) GetFlags() []cli.Flag {
 	flags := cloudconfigs.CreateAZFlags()
@@ -30,6 +32,9 @@ func networkFlags(flags []cli.Flag, i int) []cli.Flag {
 func (s *Plugin) GetMeta() cloudconfig.Meta {
 	return cloudconfig.Meta{
 		Name: "vsphere",
+		Properties: map[string]interface{}{
+			"version": s.PluginVersion,
+		},
 	}
 }
 

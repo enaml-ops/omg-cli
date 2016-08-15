@@ -46,3 +46,7 @@ plugins/products/cloudfoundry/cmd/cloudfoundry/cloudfoundry
 plugins/products/cloudfoundry/cmd/passgen/passgen
 plugins/products/cloudfoundry/cmd/certgen/certgen
 pluginlib/product/example/example
+plugins/cloudconfigs/aws/aws
+plugins/cloudconfigs/gcp/gcp
+plugins/cloudconfigs/photon/photon
+plugins/cloudconfigs/vsphere/vsphere

@@ -14,7 +14,9 @@ import (
 const AZCountSupported = 10
 
 // AWSCloudConfig --
-type AWSCloudConfig struct{}
+type AWSCloudConfig struct {
+	PluginVersion string
+}
 
 //CreateFlagnameWithSuffix - creates a CLI flag with flagname-index pattern
 func CreateFlagnameWithSuffix(name string, suffix int) (flagname string) {
@@ -43,6 +45,9 @@ func (s *AWSCloudConfig) GetFlags() (flags []cli.Flag) {
 func (s *AWSCloudConfig) GetMeta() cloudconfig.Meta {
 	return cloudconfig.Meta{
 		Name: "aws",
+		Properties: map[string]interface{}{
+			"version": s.PluginVersion,
+		},
 	}
 }
 

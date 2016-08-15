@@ -5,6 +5,10 @@ import (
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 )
 
+var Version string = "v0.0.0"
+
 func main() {
-	cloudconfig.Run(new(awsccplugin.AWSCloudConfig))
+	cloudconfig.Run(&awsccplugin.AWSCloudConfig{
+		PluginVersion: Version,
+	})
 }
