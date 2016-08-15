@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/enaml-ops/enaml"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
 )
 
@@ -123,9 +124,19 @@ func (g *PhotonBosh) CreateCloudProvider() enaml.CloudProvider {
 				Mbus: fmt.Sprintf("https://mbus:%s@0.0.0.0:6868", g.Base.MBusPassword),
 			},
 			Blobstore: &photoncpi.Blobstore{
-				Provider: "dav",
-				Options: map[string]string{
+				Provider: "local",
+				Options: map[string]interface{}{
 					"blobstore_path": "/var/vcap/micro_bosh/data/cache",
+					"address":        g.Base.PrivateIP,
+					"port":           25250,
+					"agent": blobstore.Agent{
+						User:     "agent",
+						Password: g.Base.NatsPassword,
+					},
+					"director": blobstore.Director{
+						User:     "director",
+						Password: g.Base.DirectorPassword,
+					},
 				},
 			},
 			Ntp: g.createNTP(),

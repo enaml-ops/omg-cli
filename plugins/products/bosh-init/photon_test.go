@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 
 	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -79,6 +80,63 @@ var _ = Describe("NewPhotonBosh", func() {
 			})
 		})
 
+		Context("when using a bosh config for cpi version 0.9.0", func() {
+			cfg := &PhotonBoshInitConfig{}
+			const (
+				controlURL               = "file://example-cpi"
+				controlSHA               = "slkjdaslkdjlakjdsk"
+				controlPrivateIP         = "1.2.3.4"
+				controlDirectorPassword  = "blah"
+				controlNatsAgentPassword = "bleh"
+			)
+			var boshBase = NewPhotonBoshBase(&BoshBase{
+				PrivateIP:        controlPrivateIP,
+				DirectorPassword: controlDirectorPassword,
+				NatsPassword:     controlNatsAgentPassword,
+			})
+			boshBase.CPIReleaseURL = controlURL
+			boshBase.CPIReleaseSHA = controlSHA
+
+			var provider IAASManifestProvider
+			var blobstoreOptions map[string]interface{}
+			var props *photoncpi.PhotoncpiJob
+
+			BeforeEach(func() {
+				provider = NewPhotonIaaSProvider(cfg, boshBase)
+				cp := provider.CreateCloudProvider()
+				Ω(cp.Template.Name).Should(Equal("cpi"))
+				props = cp.Properties.(*photoncpi.PhotoncpiJob)
+				blobstoreOptions = props.Blobstore.Options.(map[string]interface{})
+			})
+
+			It("then it should set a valid blobstore path", func() {
+				Ω(blobstoreOptions).Should(HaveKeyWithValue("blobstore_path", "/var/vcap/micro_bosh/data/cache"))
+			})
+
+			It("then it should set a valid blobstore ip address", func() {
+				Ω(blobstoreOptions).Should(HaveKeyWithValue("address", controlPrivateIP))
+			})
+
+			It("then it should set a valid blobstore port", func() {
+				Ω(blobstoreOptions).Should(HaveKeyWithValue("port", 25250))
+			})
+
+			It("then it should set valid blobstore agent credentials", func() {
+				Ω(blobstoreOptions["agent"].(blobstore.Agent).User).Should(Equal("agent"))
+				Ω(blobstoreOptions["agent"].(blobstore.Agent).Password).Should(Equal(controlNatsAgentPassword))
+			})
+
+			It("then it should set valid director credentials", func() {
+				Ω(blobstoreOptions["director"].(blobstore.Director).User).Should(Equal("director"))
+				Ω(blobstoreOptions["director"].(blobstore.Director).Password).Should(Equal(controlDirectorPassword))
+			})
+
+			It("then it should properly set the cloud provider", func() {
+				Ω(props.Blobstore).ShouldNot(BeNil())
+				Ω(props.Blobstore.Provider).Should(Equal("local"))
+			})
+		})
+
 		Context("when using a bosh config with a CPI URL", func() {
 			cfg := &PhotonBoshInitConfig{}
 			const (
@@ -93,15 +151,6 @@ var _ = Describe("NewPhotonBosh", func() {
 
 			BeforeEach(func() {
 				provider = NewPhotonIaaSProvider(cfg, boshBase)
-			})
-
-			It("then it should properly set the cloud provider", func() {
-				cp := provider.CreateCloudProvider()
-				Ω(cp.Template.Name).Should(Equal("cpi"))
-
-				props := cp.Properties.(*photoncpi.PhotoncpiJob)
-				Ω(props.Blobstore).ShouldNot(BeNil())
-				Ω(props.Blobstore.Provider).Should(Equal("dav"))
 			})
 
 			It("creates a CPI release with the specified URL and SHA", func() {
