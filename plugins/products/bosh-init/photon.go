@@ -127,16 +127,6 @@ func (g *PhotonBosh) CreateCloudProvider() enaml.CloudProvider {
 				Provider: "local",
 				Options: map[string]interface{}{
 					"blobstore_path": "/var/vcap/micro_bosh/data/cache",
-					"address":        g.Base.PrivateIP,
-					"port":           25250,
-					"agent": blobstore.Agent{
-						User:     "agent",
-						Password: g.Base.NatsPassword,
-					},
-					"director": blobstore.Director{
-						User:     "director",
-						Password: g.Base.DirectorPassword,
-					},
 				},
 			},
 			Ntp: g.createNTP(),
@@ -173,7 +163,29 @@ func (g *PhotonBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	for name, val := range g.CreateCPIJobProperties() {
 		boshJob.AddProperty(name, val)
 	}
+	boshJob.AddProperty("blobstore", g.getJobPropertyBlobstore())
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(g.CreateCloudProvider())
 	return manifest
+}
+
+func (g *PhotonBosh) getJobPropertyBlobstore() map[string]interface{} {
+	return map[string]interface{}{
+		"address": g.Base.PrivateIP,
+		"port":    25250,
+		"agent": blobstore.Agent{
+			User:     "agent",
+			Password: g.Base.NatsPassword,
+		},
+		"director": blobstore.Director{
+			User:     "director",
+			Password: g.Base.DirectorPassword,
+		},
+		"provider": "dav",
+		"options": map[string]interface{}{
+			"endpoint": fmt.Sprintf("http://%v:25250", g.Base.PrivateIP),
+			"user":     "agent",
+			"password": g.Base.NatsPassword,
+		},
+	}
 }

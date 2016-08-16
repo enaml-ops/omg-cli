@@ -1,6 +1,7 @@
 package boshinit_test
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
@@ -99,6 +100,7 @@ var _ = Describe("NewPhotonBosh", func() {
 
 			var provider IAASManifestProvider
 			var blobstoreOptions map[string]interface{}
+			var bs map[string]interface{}
 			var props *photoncpi.PhotoncpiJob
 
 			BeforeEach(func() {
@@ -107,28 +109,40 @@ var _ = Describe("NewPhotonBosh", func() {
 				Ω(cp.Template.Name).Should(Equal("cpi"))
 				props = cp.Properties.(*photoncpi.PhotoncpiJob)
 				blobstoreOptions = props.Blobstore.Options.(map[string]interface{})
+				dm := provider.(*PhotonBosh).CreateDeploymentManifest()
+				bs = dm.GetJobByName("bosh").Properties["blobstore"].(map[string]interface{})
+			})
+
+			It("then it should set a valid blobstore port", func() {
+				Ω(bs).Should(HaveKeyWithValue("provider", "dav"))
+			})
+
+			It("then it should set valid options", func() {
+				Ω(bs["options"]).Should(HaveKeyWithValue("endpoint", fmt.Sprintf("http://%v:25250", controlPrivateIP)))
+				Ω(bs["options"]).Should(HaveKeyWithValue("user", "agent"))
+				Ω(bs["options"]).Should(HaveKeyWithValue("password", controlNatsAgentPassword))
+			})
+
+			It("then it should set a valid blobstore ip address", func() {
+				Ω(bs).Should(HaveKeyWithValue("address", controlPrivateIP))
+			})
+
+			It("then it should set a valid blobstore port", func() {
+				Ω(bs).Should(HaveKeyWithValue("port", 25250))
+			})
+
+			It("then it should set valid blobstore agent credentials", func() {
+				Ω(bs["agent"].(blobstore.Agent).User).Should(Equal("agent"))
+				Ω(bs["agent"].(blobstore.Agent).Password).Should(Equal(controlNatsAgentPassword))
+			})
+
+			It("then it should set valid director credentials", func() {
+				Ω(bs["director"].(blobstore.Director).User).Should(Equal("director"))
+				Ω(bs["director"].(blobstore.Director).Password).Should(Equal(controlDirectorPassword))
 			})
 
 			It("then it should set a valid blobstore path", func() {
 				Ω(blobstoreOptions).Should(HaveKeyWithValue("blobstore_path", "/var/vcap/micro_bosh/data/cache"))
-			})
-
-			It("then it should set a valid blobstore ip address", func() {
-				Ω(blobstoreOptions).Should(HaveKeyWithValue("address", controlPrivateIP))
-			})
-
-			It("then it should set a valid blobstore port", func() {
-				Ω(blobstoreOptions).Should(HaveKeyWithValue("port", 25250))
-			})
-
-			It("then it should set valid blobstore agent credentials", func() {
-				Ω(blobstoreOptions["agent"].(blobstore.Agent).User).Should(Equal("agent"))
-				Ω(blobstoreOptions["agent"].(blobstore.Agent).Password).Should(Equal(controlNatsAgentPassword))
-			})
-
-			It("then it should set valid director credentials", func() {
-				Ω(blobstoreOptions["director"].(blobstore.Director).User).Should(Equal("director"))
-				Ω(blobstoreOptions["director"].(blobstore.Director).Password).Should(Equal(controlDirectorPassword))
 			})
 
 			It("then it should properly set the cloud provider", func() {
