@@ -27,8 +27,12 @@ func (s *BoshBase) InitializePasswords() {
 	s.RegistryPassword = utils.NewPassword(20)
 	s.HealthMonitorSecret = utils.NewPassword(20)
 	s.DBPassword = utils.NewPassword(20)
-	s.NatsPassword = utils.NewPassword(20)
-	s.MBusPassword = utils.NewPassword(20)
+	if s.NatsPassword == "" {
+		s.NatsPassword = utils.NewPassword(20)
+	}
+	if s.MBusPassword == "" {
+		s.MBusPassword = utils.NewPassword(20)
+	}
 }
 
 //IsBasic - is this a basic Bosh director

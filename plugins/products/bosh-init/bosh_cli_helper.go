@@ -26,6 +26,8 @@ func BoshFlags(defaults *BoshBase) []cli.Flag {
 		cli.StringFlag{Name: "uaa-release-url", Value: "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=12.2", Usage: "url to uaa release"},
 		cli.StringSliceFlag{Name: "ntp-server", Value: utils.ConvertToCLIStringSliceFlag(defaults.NtpServers), Usage: "ntp server address"},
 		cli.StringFlag{Name: "trusted-certs", Usage: "trusted ssl certs"},
+		cli.StringFlag{Name: "nats-pwd", Usage: "password for nats"},
+		cli.StringFlag{Name: "mbus-pwd", Usage: "password for mbus"},
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
 }
@@ -69,6 +71,8 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		UAAReleaseURL:     c.String("uaa-release-url"),
 		NtpServers:        utils.ClearDefaultStringSliceValue(c.StringSlice("ntp-server")...),
 		TrustedCerts:      c.String("trusted-certs"),
+		MBusPassword:      c.String("mbus-pwd"),
+		NatsPassword:      c.String("nats-pwd"),
 	}
 	base.InitializePasswords()
 	fmt.Println("**********************************")
