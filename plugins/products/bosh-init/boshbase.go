@@ -30,9 +30,7 @@ func (s *BoshBase) InitializePasswords() {
 	if s.NatsPassword == "" {
 		s.NatsPassword = utils.NewPassword(20)
 	}
-	if s.MBusPassword == "" {
-		s.MBusPassword = utils.NewPassword(20)
-	}
+	s.MBusPassword = utils.NewPassword(20)
 }
 
 //IsBasic - is this a basic Bosh director

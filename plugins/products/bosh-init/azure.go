@@ -33,18 +33,19 @@ type AzureInitConfig struct {
 
 func GetAzureDefaults() *BoshBase {
 	return &BoshBase{
-		NetworkCIDR:       "10.0.0.0/24",
-		NetworkGateway:    "10.0.0.1",
-		NetworkDNS:        []string{"168.63.129.16"},
-		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
-		BoshReleaseSHA:    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-		CPIReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-azure-cpi-release?v=11",
-		CPIReleaseSHA:     "395fc05c11ead59711188ebd0a684842a03dc93d",
-		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-trusty-go_agent?v=3262.4",
-		GOAgentSHA:        "1ec76310cd99d4ad2dd2b239b3dfde09c609b292",
-		PrivateIP:         "10.0.0.4",
-		NtpServers:        []string{"0.pool.ntp.org", "1.pool.ntp.org"},
-		CPIJobName:        azureCPIJobName,
+		NetworkCIDR:        "10.0.0.0/24",
+		NetworkGateway:     "10.0.0.1",
+		NetworkDNS:         []string{"168.63.129.16"},
+		BoshReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
+		BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		CPIReleaseURL:      "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-azure-cpi-release?v=11",
+		CPIReleaseSHA:      "395fc05c11ead59711188ebd0a684842a03dc93d",
+		GOAgentReleaseURL:  "https://bosh.io/d/stemcells/bosh-azure-hyperv-ubuntu-trusty-go_agent?v=3262.4",
+		GOAgentSHA:         "1ec76310cd99d4ad2dd2b239b3dfde09c609b292",
+		PrivateIP:          "10.0.0.4",
+		NtpServers:         []string{"0.pool.ntp.org", "1.pool.ntp.org"},
+		CPIJobName:         azureCPIJobName,
+		PersistentDiskSize: 20000,
 	}
 }
 
@@ -73,7 +74,7 @@ func NewAzureBosh(cfg AzureInitConfig, boshbase *BoshBase) *enaml.DeploymentMani
 	manifest.AddResourcePool(resourcePool)
 	manifest.AddDiskPool(enaml.DiskPool{
 		Name:     "disks",
-		DiskSize: 20000,
+		DiskSize: boshbase.PersistentDiskSize,
 	})
 	net := enaml.NewManualNetwork("private")
 	net.AddSubnet(enaml.Subnet{

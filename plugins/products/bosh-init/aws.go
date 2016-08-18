@@ -40,18 +40,19 @@ func NewAWSIaaSProvider(cfg AWSInitConfig, boshBase *BoshBase) IAASManifestProvi
 
 func GetAWSBoshBase() *BoshBase {
 	return &BoshBase{
-		NetworkCIDR:       "10.0.0.0/24",
-		NetworkGateway:    "10.0.0.1",
-		NetworkDNS:        []string{"10.0.0.2"},
-		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=257.3",
-		BoshReleaseSHA:    "e4442afcc64123e11f2b33cc2be799a0b59207d0",
-		CPIReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=57",
-		CPIReleaseSHA:     "cbc7ed758f4a41063e9aee881bfc164292664b84",
-		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3262.7",
-		GOAgentSHA:        "bf44a5f81d29346af6a309199d2e012237dd222c",
-		PrivateIP:         "10.0.0.6",
-		NtpServers:        []string{"0.pool.ntp.org", "1.pool.ntp.org"},
-		CPIJobName:        awsCPIJobName,
+		NetworkCIDR:        "10.0.0.0/24",
+		NetworkGateway:     "10.0.0.1",
+		NetworkDNS:         []string{"10.0.0.2"},
+		BoshReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry/bosh?v=257.3",
+		BoshReleaseSHA:     "e4442afcc64123e11f2b33cc2be799a0b59207d0",
+		CPIReleaseURL:      "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-aws-cpi-release?v=57",
+		CPIReleaseSHA:      "cbc7ed758f4a41063e9aee881bfc164292664b84",
+		GOAgentReleaseURL:  "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3262.7",
+		GOAgentSHA:         "bf44a5f81d29346af6a309199d2e012237dd222c",
+		PrivateIP:          "10.0.0.6",
+		NtpServers:         []string{"0.pool.ntp.org", "1.pool.ntp.org"},
+		CPIJobName:         awsCPIJobName,
+		PersistentDiskSize: 25000,
 	}
 }
 
@@ -88,7 +89,7 @@ func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
 	resourcePool.CloudProperties = awscloudproperties.ResourcePool{
 		InstanceType: s.cfg.AWSInstanceSize,
 		EphemeralDisk: awscloudproperties.EphemeralDisk{
-			Size:     25000,
+			Size:     s.boshbase.PersistentDiskSize,
 			DiskType: "gp2",
 		},
 		AvailabilityZone: s.cfg.AWSAvailabilityZone,
@@ -107,7 +108,7 @@ func (s *AWSBosh) CreateCPIRelease() enaml.Release {
 func (s *AWSBosh) CreateDiskPool() enaml.DiskPool {
 	return enaml.DiskPool{
 		Name:     "disks",
-		DiskSize: 20000,
+		DiskSize: s.boshbase.PersistentDiskSize,
 		CloudProperties: awscloudproperties.RootDisk{
 			DiskType: "gp2",
 		},

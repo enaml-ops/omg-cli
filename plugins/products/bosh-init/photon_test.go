@@ -19,13 +19,14 @@ var _ = Describe("NewPhotonBosh", func() {
 			const controlDirectorName = "fake-director-name"
 			BeforeEach(func() {
 				b := &BoshBase{
-					Mode:           "uaa",
-					DirectorName:   controlDirectorName,
-					UAAReleaseSHA:  "uaa-release.com",
-					UAAReleaseURL:  "uaa-release-lkashdjlkgahsdg",
-					NetworkCIDR:    "10.0.0.1/24",
-					NetworkGateway: "10.0.0.254",
-					PrivateIP:      "10.0.0.4",
+					Mode:               "uaa",
+					DirectorName:       controlDirectorName,
+					UAAReleaseSHA:      "uaa-release.com",
+					UAAReleaseURL:      "uaa-release-lkashdjlkgahsdg",
+					NetworkCIDR:        "10.0.0.1/24",
+					NetworkGateway:     "10.0.0.254",
+					PrivateIP:          "10.0.0.4",
+					PersistentDiskSize: 32768,
 				}
 				boshbase = NewPhotonBoshBase(b)
 			})
@@ -229,18 +230,19 @@ var _ = Describe("NewPhotonBosh", func() {
 				MachineType: "n1-standard-4",
 			}
 			var boshBase = &BoshBase{
-				Mode:           "uaa",
-				CPIJobName:     "bosh-photon-cpi",
-				PrivateIP:      controlPrivateIP,
-				PublicIP:       "1.0.2.3",
-				CPIReleaseSHA:  "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-				NetworkCIDR:    "10.0.0.0/24",
-				NetworkGateway: "10.0.0.1",
-				NetworkDNS:     []string{"10.0.0.2"},
-				DirectorName:   "my-bosh",
-				NtpServers:     []string{controlNTP},
-				MBusPassword:   controlMbusPass,
-				NatsPassword:   controlNatsPass,
+				Mode:               "uaa",
+				CPIJobName:         "bosh-photon-cpi",
+				PrivateIP:          controlPrivateIP,
+				PublicIP:           "1.0.2.3",
+				CPIReleaseSHA:      "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
+				NetworkCIDR:        "10.0.0.0/24",
+				NetworkGateway:     "10.0.0.1",
+				NetworkDNS:         []string{"10.0.0.2"},
+				DirectorName:       "my-bosh",
+				NtpServers:         []string{controlNTP},
+				MBusPassword:       controlMbusPass,
+				NatsPassword:       controlNatsPass,
+				PersistentDiskSize: 32768,
 			}
 
 			var provider IAASManifestProvider

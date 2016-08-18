@@ -35,13 +35,14 @@ type Network struct {
 
 func GetVSphereDefaults() *BoshBase {
 	return &BoshBase{
-		BoshReleaseURL:    "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
-		BoshReleaseSHA:    "ff2f4e16e02f66b31c595196052a809100cfd5a8",
-		CPIReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-vsphere-cpi-release?v=22",
-		CPIReleaseSHA:     "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
-		GOAgentReleaseURL: "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=3232.4",
-		GOAgentSHA:        "27ec32ddbdea13e3025700206388ae5882a23c67",
-		CPIJobName:        vSphereCPIJobName,
+		BoshReleaseURL:     "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2",
+		BoshReleaseSHA:     "ff2f4e16e02f66b31c595196052a809100cfd5a8",
+		CPIReleaseURL:      "https://bosh.io/d/github.com/cloudfoundry-incubator/bosh-vsphere-cpi-release?v=22",
+		CPIReleaseSHA:      "dd1827e5f4dfc37656017c9f6e48441f51a7ab73",
+		GOAgentReleaseURL:  "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=3232.4",
+		GOAgentSHA:         "27ec32ddbdea13e3025700206388ae5882a23c67",
+		CPIJobName:         vSphereCPIJobName,
+		PersistentDiskSize: 20000,
 	}
 }
 
@@ -77,7 +78,7 @@ func NewVSphereBosh(cfg VSphereInitConfig, boshbase *BoshBase) *enaml.Deployment
 	}
 	resourcePool.CloudProperties = VSpherecloudpropertiesResourcePool{
 		CPU:         2,
-		Disk:        20000,
+		Disk:        boshbase.PersistentDiskSize,
 		RAM:         4096,
 		Datacenters: getDataCenters(cfg),
 	}

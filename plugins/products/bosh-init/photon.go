@@ -37,6 +37,7 @@ func NewPhotonBoshBase(boshBase *BoshBase) *BoshBase {
 	boshBase.BoshReleaseSHA = "ff2f4e16e02f66b31c595196052a809100cfd5a8"
 	boshBase.GOAgentReleaseURL = PhotonStemcellURL
 	boshBase.GOAgentSHA = PhotonStemcellSHA
+	boshBase.PersistentDiskSize = 32768
 	return boshBase
 }
 func NewPhotonIaaSProvider(cfg *PhotonBoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
@@ -64,7 +65,7 @@ func (g *PhotonBosh) CreateCPITemplate() enaml.Template {
 func (g *PhotonBosh) CreateDiskPool() enaml.DiskPool {
 	return enaml.DiskPool{
 		Name:     "disks",
-		DiskSize: 32768,
+		DiskSize: g.Base.PersistentDiskSize,
 		CloudProperties: map[string]interface{}{
 			"disk_flavor": "core-200",
 		},

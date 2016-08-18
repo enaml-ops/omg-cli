@@ -27,7 +27,7 @@ func BoshFlags(defaults *BoshBase) []cli.Flag {
 		cli.StringSliceFlag{Name: "ntp-server", Value: utils.ConvertToCLIStringSliceFlag(defaults.NtpServers), Usage: "ntp server address"},
 		cli.StringFlag{Name: "trusted-certs", Usage: "trusted ssl certs"},
 		cli.StringFlag{Name: "nats-pwd", Usage: "password for nats"},
-		cli.StringFlag{Name: "mbus-pwd", Usage: "password for mbus"},
+		cli.IntFlag{Name: "persistent-disk-size", Value: defaults.PersistentDiskSize, Usage: "size of persistent disk"},
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
 }
@@ -47,6 +47,7 @@ var RequiredBoshFlags = []string{
 	"uaa-release-url",
 	"uaa-release-sha",
 	"ntp-server",
+	"persistent-disk-size",
 }
 
 func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
@@ -54,25 +55,25 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 	utils.CheckRequired(c, RequiredBoshFlags...)
 
 	base = &BoshBase{
-		Mode:              c.String("mode"),
-		NetworkCIDR:       c.String("cidr"),
-		NetworkGateway:    c.String("gateway"),
-		NetworkDNS:        utils.ClearDefaultStringSliceValue(c.StringSlice("dns")...),
-		PrivateIP:         c.String("bosh-private-ip"),
-		PublicIP:          c.String("bosh-public-ip"),
-		BoshReleaseSHA:    c.String("bosh-release-sha"),
-		BoshReleaseURL:    c.String("bosh-release-url"),
-		CPIReleaseSHA:     c.String("bosh-cpi-release-sha"),
-		CPIReleaseURL:     c.String("bosh-cpi-release-url"),
-		GOAgentSHA:        c.String("go-agent-release-sha"),
-		GOAgentReleaseURL: c.String("go-agent-release-url"),
-		DirectorName:      c.String("director-name"),
-		UAAReleaseSHA:     c.String("uaa-release-sha"),
-		UAAReleaseURL:     c.String("uaa-release-url"),
-		NtpServers:        utils.ClearDefaultStringSliceValue(c.StringSlice("ntp-server")...),
-		TrustedCerts:      c.String("trusted-certs"),
-		MBusPassword:      c.String("mbus-pwd"),
-		NatsPassword:      c.String("nats-pwd"),
+		Mode:               c.String("mode"),
+		NetworkCIDR:        c.String("cidr"),
+		NetworkGateway:     c.String("gateway"),
+		NetworkDNS:         utils.ClearDefaultStringSliceValue(c.StringSlice("dns")...),
+		PrivateIP:          c.String("bosh-private-ip"),
+		PublicIP:           c.String("bosh-public-ip"),
+		BoshReleaseSHA:     c.String("bosh-release-sha"),
+		BoshReleaseURL:     c.String("bosh-release-url"),
+		CPIReleaseSHA:      c.String("bosh-cpi-release-sha"),
+		CPIReleaseURL:      c.String("bosh-cpi-release-url"),
+		GOAgentSHA:         c.String("go-agent-release-sha"),
+		GOAgentReleaseURL:  c.String("go-agent-release-url"),
+		DirectorName:       c.String("director-name"),
+		UAAReleaseSHA:      c.String("uaa-release-sha"),
+		UAAReleaseURL:      c.String("uaa-release-url"),
+		NtpServers:         utils.ClearDefaultStringSliceValue(c.StringSlice("ntp-server")...),
+		TrustedCerts:       c.String("trusted-certs"),
+		NatsPassword:       c.String("nats-pwd"),
+		PersistentDiskSize: c.Int("persistent-disk-size"),
 	}
 	base.InitializePasswords()
 	fmt.Println("**********************************")
