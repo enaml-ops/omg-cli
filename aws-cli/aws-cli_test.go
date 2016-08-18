@@ -1,8 +1,8 @@
-package photoncli_test
+package awscli_test
 
 import (
 	"github.com/codegangsta/cli"
-	photoncli "github.com/enaml-ops/omg-cli/photon-cli"
+	awscli "github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -11,18 +11,18 @@ import (
 var _ = Describe("given the photon cli", func() {
 	Context("when called with a complete set of flags", func() {
 		It("then it should NOT panic", func() {
-			action := photoncli.GetAction(func(s string) {})
+			action := awscli.GetAction(func(s string) {})
 			var ctx *cli.Context
 			ctx = pluginutil.NewContext([]string{"someapp",
-				"--photon-target", "some",
-				"--photon-project-id", "stuff",
-				"--photon-user", "to",
-				"--photon-password", "do",
-				"--photon-network-id", "92895-35-2975340-34346346",
-				"--bosh-private-ip", "10.0.0.3",
+				"--aws-instance-size", "some",
+				"--aws-subnet", "stuff",
+				"--aws-pem-path", "to",
+				"--aws-access-key", "do",
+				"--aws-keyname", "92895-35-2975340-34346346",
+				"--aws-secret", "10.0.0.3",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
-			}, photoncli.GetFlags())
+			}, awscli.GetFlags())
 			err := action(ctx)
 			Ω(err).ShouldNot(HaveOccurred())
 		})
@@ -30,9 +30,9 @@ var _ = Describe("given the photon cli", func() {
 
 	Context("when called with an incomplete set of flags", func() {
 		It("then it should panic and exit", func() {
-			action := photoncli.GetAction(func(s string) {})
+			action := awscli.GetAction(func(s string) {})
 			var ctx *cli.Context
-			ctx = pluginutil.NewContext([]string{"someapp"}, photoncli.GetFlags())
+			ctx = pluginutil.NewContext([]string{"someapp"}, awscli.GetFlags())
 			err := action(ctx)
 			Ω(err).Should(HaveOccurred())
 		})

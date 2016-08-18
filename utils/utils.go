@@ -94,7 +94,7 @@ func ConvertToCLIStringSliceFlag(values []string) *cli.StringSlice {
 	return cliSlice
 }
 
-func CheckRequired(c *cli.Context, names ...string) {
+func CheckRequired(c *cli.Context, names ...string) error {
 	var invalidNames []string
 	for _, name := range names {
 		if c.String(name) == "" {
@@ -102,8 +102,9 @@ func CheckRequired(c *cli.Context, names ...string) {
 		}
 	}
 	if len(invalidNames) > 0 {
-		lo.G.Panicf("Sorry you need to provide %v flags to continue", invalidNames)
+		return fmt.Errorf("Sorry you need to provide %v flags to continue", invalidNames)
 	}
+	return nil
 }
 
 func GetBoshDeployPath() string {

@@ -34,16 +34,21 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		var err error
 
 		if b, err = boshinit.NewBoshBase(c); err != nil {
-			lo.G.Panicf("there is something broken in the way you initialized your boshbase: %v", err.Error())
+			lo.G.Error(err.Error())
+			return err
 		}
 		boshBase := boshinit.NewPhotonBoshBase(b)
 
 		if boshBase.CPIJobName == "" {
-			lo.G.Panic("sorry we could not proceed bc you did not set a cpijobname in your code.")
+			lo.G.Error("sorry we could not proceed bc you did not set a cpijobname in your code.")
+			return err
 		}
 
 		lo.G.Debug("Got boshbase", boshBase)
-		utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password", "photon-network-id")
+		if err := utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password", "photon-network-id"); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
 
 		provider := boshinit.NewPhotonIaaSProvider(&boshinit.PhotonBoshInitConfig{
 			Photon: photoncpi.Photon{

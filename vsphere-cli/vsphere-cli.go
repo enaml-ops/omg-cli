@@ -7,6 +7,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/xchapter7x/lo"
 )
 
 // GetFlags returns the available CLI flags
@@ -24,7 +25,7 @@ func GetFlags() []cli.Flag {
 		cli.StringFlag{Name: "vsphere-template-folder", Value: "", Usage: "the name of the folder created to hold stemcells"},
 		cli.StringFlag{Name: "vsphere-datastore", Value: "", Usage: "name of the datastore the Director will use for storing VMs"},
 		cli.StringFlag{Name: "vsphere-disk-path", Value: "", Usage: "name of the VMs folder, disk folder will be automatically created in the chosen datastore."},
-		cli.StringSliceFlag{Name: "vsphere-clusters", Value: &cli.StringSlice{""}, Usage: "one or more vSphere datacenter cluster names"},
+		cli.StringSliceFlag{Name: "vsphere-clusters", Usage: "one or more vSphere datacenter cluster names"},
 		cli.StringFlag{Name: "vsphere-resource-pool", Value: "", Usage: "Name of resource pool for vsphere cluster"},
 		// vsphere subnet1 flags
 		cli.StringFlag{Name: "vsphere-subnet1-name", Usage: "name of the vSphere network for subnet1"},
@@ -43,11 +44,15 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
 		var boshBase *boshinit.BoshBase
 		if boshBase, e = boshinit.NewBoshBase(c); e != nil {
-			return
+			lo.G.Error(e.Error())
+			return e
 		}
-		utils.CheckRequired(c, "vsphere-address", "vsphere-user", "vsphere-password", "vsphere-datacenter-name",
+		if err := utils.CheckRequired(c, "vsphere-address", "vsphere-user", "vsphere-password", "vsphere-datacenter-name",
 			"vsphere-vm-folder", "vsphere-template-folder", "vsphere-datastore", "vsphere-disk-path",
-			"vsphere-clusters", "vsphere-resource-pool", "vsphere-subnet1-name", "vsphere-subnet1-range", "vsphere-subnet1-range", "vsphere-subnet1-dns")
+			"vsphere-clusters", "vsphere-resource-pool", "vsphere-subnet1-name", "vsphere-subnet1-range", "vsphere-subnet1-range", "vsphere-subnet1-dns"); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
 
 		manifest := boshinit.NewVSphereBosh(boshinit.VSphereInitConfig{
 			// vsphere specific

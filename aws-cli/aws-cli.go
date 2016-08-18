@@ -35,10 +35,14 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
 		var boshBase *boshinit.BoshBase
 		if boshBase, e = boshinit.NewBoshBase(c); e != nil {
-			return
+			lo.G.Error(e.Error())
+			return e
 		}
 		lo.G.Debug("Got boshbase", boshBase)
-		utils.CheckRequired(c, "aws-subnet", "aws-pem-path", "aws-access-key", "aws-secret", "aws-region")
+		if err := utils.CheckRequired(c, "aws-subnet", "aws-pem-path", "aws-access-key", "aws-secret", "aws-region"); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
 
 		provider := boshinit.NewAWSIaaSProvider(boshinit.AWSInitConfig{
 			AWSInstanceSize:     c.String("aws-instance-size"),

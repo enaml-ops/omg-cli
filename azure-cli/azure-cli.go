@@ -3,7 +3,6 @@ package azurecli
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
@@ -42,19 +41,23 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
 		var boshBase *boshinit.BoshBase
 		if boshBase, e = boshinit.NewBoshBase(c); e != nil {
-			return
+			lo.G.Error(e.Error())
+			return e
 		}
 		var publicKey string
-		utils.CheckRequired(c, "azure-vnet", "azure-subnet", "azure-subscription-id", "azure-tenant-id",
+		if err := utils.CheckRequired(c, "azure-vnet", "azure-subnet", "azure-subscription-id", "azure-tenant-id",
 			"azure-client-id", "azure-client-secret", "azure-resource-group",
 			"azure-storage-account", "azure-security-group",
 			"azure-ssh-pub-key-path",
 			"azure-ssh-user",
-			"azure-private-key-path")
+			"azure-private-key-path"); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
 
 		if keybytes, err := ioutil.ReadFile(c.String("azure-ssh-pub-key-path")); err != nil {
 			lo.G.Error("error in reading pubkey file: ", c.String("azure-ssh-pub-key-path"), err)
-			os.Exit(1)
+			return err
 		} else {
 			publicKey = string(keybytes)
 		}
