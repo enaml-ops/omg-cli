@@ -34,7 +34,7 @@ var _ = Describe("NewAzureBosh", func() {
 			var manifest *enaml.DeploymentManifest
 
 			BeforeEach(func() {
-				manifest = NewAzureBosh(boshConfig, boshBase)
+				manifest = NewAzureIaaSProvider(boshConfig, boshBase).CreateDeploymentManifest()
 			})
 
 			It("then it should be using the azure stemcell", func() {

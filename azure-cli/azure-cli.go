@@ -1,11 +1,9 @@
 package azurecli
 
 import (
-	"fmt"
 	"io/ioutil"
 
 	"github.com/codegangsta/cli"
-	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
@@ -62,7 +60,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			publicKey = string(keybytes)
 		}
 
-		manifest := boshinit.NewAzureBosh(boshinit.AzureInitConfig{
+		provider := boshinit.NewAzureIaaSProvider(boshinit.AzureInitConfig{
 			AzureInstanceSize:         c.String("azure-instance-size"),
 			AzureVnet:                 c.String("azure-vnet"),
 			AzureSubnet:               c.String("azure-subnet"),
@@ -79,17 +77,10 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AzurePrivateKeyPath:       c.String("azure-private-key-path"),
 		}, boshBase)
 
-		if yamlString, err := enaml.Paint(manifest); err == nil {
-
-			if c.Bool("print-manifest") {
-				fmt.Println(yamlString)
-
-			} else {
-				utils.DeployYaml(yamlString, boshInitDeploy)
-			}
-		} else {
-			e = err
+		if err := boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {
+			return err
 		}
-		return
+
+		return nil
 	}
 }

@@ -39,7 +39,7 @@ var _ = Describe("NewVSphereBosh", func() {
 			var manifest *enaml.DeploymentManifest
 
 			BeforeEach(func() {
-				manifest = NewVSphereBosh(boshConfig, boshBase)
+				manifest = NewVSphereIaaSProvider(boshConfig, boshBase).CreateDeploymentManifest()
 			})
 
 			It("then it should be using the vsphere esx stemcell", func() {

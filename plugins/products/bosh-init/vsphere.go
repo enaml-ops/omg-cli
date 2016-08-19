@@ -46,78 +46,10 @@ func GetVSphereDefaults() *BoshBase {
 	}
 }
 
-// NewVSphereBosh creates a new enaml deployment manifest for vSphere
-func NewVSphereBosh(cfg VSphereInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
-	boshbase.CPIJobName = vSphereCPIJobName
-	manifest := boshbase.CreateDeploymentManifest()
-
-	var vcenterProperty = vsphere_cpi.Vcenter{
-		Address:     cfg.VSphereAddress,
-		User:        cfg.VSphereUser,
-		Password:    cfg.VSpherePassword,
-		Datacenters: getDataCenters(cfg),
-	}
-
-	var agentProperty = vsphere_cpi.Agent{
-		Mbus: fmt.Sprintf("nats://nats:%s@%s:4222", boshbase.NatsPassword, boshbase.PrivateIP),
-	}
-
-	manifest.AddRelease(enaml.Release{
-		Name: vSphereCPIReleaseName,
-		URL:  boshbase.CPIReleaseURL,
-		SHA1: boshbase.CPIReleaseSHA,
-	})
-
-	resourcePool := enaml.ResourcePool{
-		Name:    "vms",
-		Network: "private",
-	}
-	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  boshbase.GOAgentReleaseURL,
-		SHA1: boshbase.GOAgentSHA,
-	}
-	resourcePool.CloudProperties = VSpherecloudpropertiesResourcePool{
-		CPU:         2,
-		Disk:        boshbase.PersistentDiskSize,
-		RAM:         4096,
-		Datacenters: getDataCenters(cfg),
-	}
-	// c1oudc0w is a default password for vcap user
-	/*resourcePool.Env = map[string]interface{}{
-		"bosh": map[string]string{
-			"password": "$6$4gDD3aV0rdqlrKC$2axHCxGKIObs6tAmMTqYCspcdvQXh3JJcvWOY2WGb4SrdXtnCyNaWlrf3WEqvYR2MYizEGp3kMmbpwBC6jsHt0",
-		},
-	}*/
-	manifest.AddResourcePool(resourcePool)
-	manifest.AddDiskPool(enaml.DiskPool{
-		Name:     "disks",
-		DiskSize: 20000,
-	})
-
-	net := enaml.NewManualNetwork("private")
-	net.AddSubnet(enaml.Subnet{
-		Range:   cfg.VSphereNetworks[0].Range,
-		Gateway: cfg.VSphereNetworks[0].Gateway,
-		DNS:     cfg.VSphereNetworks[0].DNS,
-		CloudProperties: VSpherecloudpropertiesNetwork{
-			Name: cfg.VSphereNetworks[0].Name,
-		},
-	})
-	manifest.AddNetwork(net)
-
-	boshJob := manifest.Jobs[0]
-	boshJob.AddTemplate(enaml.Template{Name: boshbase.CPIJobName, Release: vSphereCPIReleaseName})
-	boshJob.AddProperty("agent", agentProperty)
-	boshJob.AddProperty("vcenter", vcenterProperty)
-	manifest.Jobs[0] = boshJob
-	manifest.SetCloudProvider(createCloudProvider(cfg, boshbase))
-	return manifest
-}
-
 type VSpherecloudpropertiesResourcePool struct {
-	CPU         int                `yaml:"cpu,omitempty"`  // [Integer, required]: Number of CPUs.
-	RAM         int                `yaml:"ram,omitempty"`  // [Integer, required]: Specified the amount of RAM in megabytes.
-	Disk        int                `yaml:"disk,omitempty"` // [Integer, required]: Specifies the disk size in megabytes.
+	CPU         int                `yaml:"cpu,omitempty"`  // [Integer, required]: Number of CPUv.
+	RAM         int                `yaml:"ram,omitempty"`  // [Integer, required]: Specified the amount of RAM in megabytev.
+	Disk        int                `yaml:"disk,omitempty"` // [Integer, required]: Specifies the disk size in megabytev.
 	Datacenters VSphereDatacenters `yaml:"datacenters,omitempty"`
 }
 
@@ -132,7 +64,7 @@ type VSphereDatacenter struct {
 	VMFolder                   string                    `yaml:"vm_folder"`                    // [String, required]: The folder to create PCF VMs in.
 	TemplateFolder             string                    `yaml:"template_folder"`              // [String, required]: The folder to store stemcells in.
 	DatastorePattern           string                    `yaml:"datastore_pattern"`            // [String, required]: The pattern to the vSphere datastore.
-	PersistentDatastorePattern string                    `yaml:"persistent_datastore_pattern"` // [String, required]: The pattern to the vSphere datastore for persistent disks.
+	PersistentDatastorePattern string                    `yaml:"persistent_datastore_pattern"` // [String, required]: The pattern to the vSphere datastore for persistent diskv.
 	DiskPath                   string                    `yaml:"disk_path"`                    // [String, required]: The disk path.
 	Clusters                   []map[string]ResourcePool `yaml:"clusters"`                     // [[]String], required]: The vSphere cluster(s).
 }
@@ -141,37 +73,89 @@ type ResourcePool struct {
 	ResourcePool string `yaml:"resource_pool"`
 }
 
-func clusterConfig(cfg VSphereInitConfig) (clusters []map[string]ResourcePool) {
-	clusters = make([]map[string]ResourcePool, 0)
-	for _, clusterName := range cfg.VSphereClusters {
-		cluster := make(map[string]ResourcePool)
-		cluster[clusterName] = ResourcePool{
-			ResourcePool: cfg.VSphereResourcePool,
-		}
-		clusters = append(clusters, cluster)
-
-	}
-	return
+type VSphereBosh struct {
+	cfg      VSphereInitConfig
+	boshbase *BoshBase
 }
 
-func createCloudProvider(cfg VSphereInitConfig, boshbase *BoshBase) (provider enaml.CloudProvider) {
+func NewVSphereIaaSProvider(cfg VSphereInitConfig, boshBase *BoshBase) IAASManifestProvider {
+	boshBase.CPIJobName = vSphereCPIJobName
+	return &VSphereBosh{
+		cfg:      cfg,
+		boshbase: boshBase,
+	}
+}
 
+func (v *VSphereBosh) CreateCPIRelease() enaml.Release {
+	return enaml.Release{
+		Name: vSphereCPIReleaseName,
+		URL:  v.boshbase.CPIReleaseURL,
+		SHA1: v.boshbase.CPIReleaseSHA,
+	}
+}
+func (v *VSphereBosh) CreateCPITemplate() enaml.Template {
+	return enaml.Template{
+		Name:    v.boshbase.CPIJobName,
+		Release: vSphereCPIReleaseName,
+	}
+}
+func (v *VSphereBosh) CreateDiskPool() enaml.DiskPool {
+	return enaml.DiskPool{
+		Name:     "disks",
+		DiskSize: v.boshbase.PersistentDiskSize,
+	}
+}
+func (v *VSphereBosh) CreateResourcePool() enaml.ResourcePool {
+	return enaml.ResourcePool{
+		Name:    "vms",
+		Network: "private",
+		Stemcell: enaml.Stemcell{
+			URL:  v.boshbase.GOAgentReleaseURL,
+			SHA1: v.boshbase.GOAgentSHA,
+		},
+		CloudProperties: VSpherecloudpropertiesResourcePool{
+			CPU:         2,
+			Disk:        v.boshbase.PersistentDiskSize,
+			RAM:         4096,
+			Datacenters: v.getDataCenters(),
+		},
+	}
+}
+func (v *VSphereBosh) CreateManualNetwork() enaml.ManualNetwork {
+	net := enaml.NewManualNetwork("private")
+	net.AddSubnet(enaml.Subnet{
+		Range:   v.cfg.VSphereNetworks[0].Range,
+		Gateway: v.cfg.VSphereNetworks[0].Gateway,
+		DNS:     v.cfg.VSphereNetworks[0].DNS,
+		CloudProperties: VSpherecloudpropertiesNetwork{
+			Name: v.cfg.VSphereNetworks[0].Name,
+		},
+	})
+	return net
+}
+func (v *VSphereBosh) CreateVIPNetwork() enaml.VIPNetwork {
+	return enaml.NewVIPNetwork("public")
+}
+func (v *VSphereBosh) CreateJobNetwork() *enaml.Network {
+	return nil
+}
+func (v *VSphereBosh) CreateCloudProvider() enaml.CloudProvider {
 	return enaml.CloudProvider{
 		Template: enaml.Template{
-			Name:    boshbase.CPIJobName,
+			Name:    v.boshbase.CPIJobName,
 			Release: vSphereCPIReleaseName,
 		},
-		MBus: fmt.Sprintf("https://mbus:%s@%s:6868", boshbase.MBusPassword, boshbase.GetRoutableIP()),
+		MBus: fmt.Sprintf("https://mbus:%s@%s:6868", v.boshbase.MBusPassword, v.boshbase.GetRoutableIP()),
 		Properties: &vsphere_cpi.VsphereCpiJob{
 			Vcenter: &vsphere_cpi.Vcenter{
-				Address:     cfg.VSphereAddress,
-				User:        cfg.VSphereUser,
-				Password:    cfg.VSpherePassword,
-				Datacenters: getDataCenters(cfg),
+				Address:     v.cfg.VSphereAddress,
+				User:        v.cfg.VSphereUser,
+				Password:    v.cfg.VSpherePassword,
+				Datacenters: v.getDataCenters(),
 			},
-			Ntp: boshbase.NtpServers,
+			Ntp: v.boshbase.NtpServers,
 			Agent: &vsphere_cpi.Agent{
-				Mbus: fmt.Sprintf("https://mbus:%s@0.0.0.0:6868", boshbase.MBusPassword),
+				Mbus: fmt.Sprintf("https://mbus:%s@0.0.0.0:6868", v.boshbase.MBusPassword),
 			},
 			Blobstore: &vsphere_cpi.Blobstore{
 				Provider: "local",
@@ -180,19 +164,65 @@ func createCloudProvider(cfg VSphereInitConfig, boshbase *BoshBase) (provider en
 		},
 	}
 }
+func (v *VSphereBosh) CreateCPIJobProperties() map[string]interface{} {
+	return map[string]interface{}{
+		"vcenter": &vsphere_cpi.Vcenter{
+			Address:     v.cfg.VSphereAddress,
+			User:        v.cfg.VSphereUser,
+			Password:    v.cfg.VSpherePassword,
+			Datacenters: v.getDataCenters(),
+		},
+		"agent": &vsphere_cpi.Agent{
+			Mbus: fmt.Sprintf("nats://nats:%s@%s:4222", v.boshbase.NatsPassword, v.boshbase.PrivateIP),
+		},
+	}
+}
 
-func getDataCenters(cfg VSphereInitConfig) VSphereDatacenters {
+func (v *VSphereBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
+	manifest := v.boshbase.CreateDeploymentManifest()
+	manifest.AddRelease(v.CreateCPIRelease())
+	manifest.AddResourcePool(v.CreateResourcePool())
+	manifest.AddDiskPool(v.CreateDiskPool())
+	manifest.AddNetwork(v.CreateManualNetwork())
+	//manifest.AddNetwork(v.CreateVIPNetwork())
+	boshJob := manifest.Jobs[0]
+	boshJob.AddTemplate(v.CreateCPITemplate())
+	n := v.CreateJobNetwork()
+	if n != nil {
+		boshJob.AddNetwork(*n)
+	}
+	for name, val := range v.CreateCPIJobProperties() {
+		boshJob.AddProperty(name, val)
+	}
+	manifest.Jobs[0] = boshJob
+	manifest.SetCloudProvider(v.CreateCloudProvider())
+	return manifest
+}
+
+func (v *VSphereBosh) getDataCenters() VSphereDatacenters {
 	return VSphereDatacenters{VSphereDatacenter{
-		Name:                       cfg.VSphereDatacenterName,
-		VMFolder:                   cfg.VSphereVMFolder,
-		TemplateFolder:             cfg.VSphereTemplateFolder,
-		DatastorePattern:           getDataStorePattern(cfg),
-		PersistentDatastorePattern: getDataStorePattern(cfg),
-		DiskPath:                   cfg.VSphereDiskPath,
-		Clusters:                   clusterConfig(cfg),
+		Name:                       v.cfg.VSphereDatacenterName,
+		VMFolder:                   v.cfg.VSphereVMFolder,
+		TemplateFolder:             v.cfg.VSphereTemplateFolder,
+		DatastorePattern:           v.getDataStorePattern(),
+		PersistentDatastorePattern: v.getDataStorePattern(),
+		DiskPath:                   v.cfg.VSphereDiskPath,
+		Clusters:                   v.clusterConfig(),
 	}}
 }
 
-func getDataStorePattern(cfg VSphereInitConfig) (pattern string) {
-	return fmt.Sprintf("^(%s)$", cfg.VSphereDataStore)
+func (v *VSphereBosh) getDataStorePattern() (pattern string) {
+	return fmt.Sprintf("^(%s)$", v.cfg.VSphereDataStore)
+}
+func (v *VSphereBosh) clusterConfig() (clusters []map[string]ResourcePool) {
+	clusters = make([]map[string]ResourcePool, 0)
+	for _, clusterName := range v.cfg.VSphereClusters {
+		cluster := make(map[string]ResourcePool)
+		cluster[clusterName] = ResourcePool{
+			ResourcePool: v.cfg.VSphereResourcePool,
+		}
+		clusters = append(clusters, cluster)
+
+	}
+	return
 }

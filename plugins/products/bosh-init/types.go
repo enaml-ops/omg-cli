@@ -87,6 +87,7 @@ type BoshBase struct {
 	UAAReleaseURL        string
 	TrustedCerts         string
 	PersistentDiskSize   int
+	PrintManifest        bool
 }
 
 //UAAClient - Structure to represent map of client priviledges

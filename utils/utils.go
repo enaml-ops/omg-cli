@@ -122,7 +122,6 @@ func randomsuffix() string {
 }
 
 func DeployYaml(myYaml string, boshInitDeploy func(string)) {
-	fmt.Println("deploying your bosh")
 	content := []byte(myYaml)
 	boshdeploypath := GetBoshDeployPath()
 	os.Remove(boshdeploypath)

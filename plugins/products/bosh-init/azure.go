@@ -5,8 +5,7 @@ import (
 
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/cloudproperties/azure"
-	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/aws_cpi"
-	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/cpi"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/azure_cpi"
 )
 
 const (
@@ -49,110 +48,139 @@ func GetAzureDefaults() *BoshBase {
 	}
 }
 
-func NewAzureBosh(cfg AzureInitConfig, boshbase *BoshBase) *enaml.DeploymentManifest {
-	boshbase.CPIJobName = azureCPIJobName
-	var cpiTemplate = enaml.Template{Name: boshbase.CPIJobName, Release: azureCPIReleaseName}
-	manifest := boshbase.CreateDeploymentManifest()
+type AzureBosh struct {
+	cfg      AzureInitConfig
+	boshbase *BoshBase
+}
 
-	manifest.AddRelease(enaml.Release{
+func NewAzureIaaSProvider(cfg AzureInitConfig, boshBase *BoshBase) IAASManifestProvider {
+	boshBase.CPIJobName = azureCPIJobName
+	return &AzureBosh{
+		cfg:      cfg,
+		boshbase: boshBase,
+	}
+}
+
+func (a *AzureBosh) CreateCPIRelease() enaml.Release {
+	return enaml.Release{
 		Name: azureCPIReleaseName,
-		URL:  boshbase.CPIReleaseURL,
-		SHA1: boshbase.CPIReleaseSHA,
-	})
-
-	resourcePool := enaml.ResourcePool{
+		URL:  a.boshbase.CPIReleaseURL,
+		SHA1: a.boshbase.CPIReleaseSHA,
+	}
+}
+func (a *AzureBosh) CreateCPITemplate() enaml.Template {
+	return enaml.Template{
+		Name:    a.boshbase.CPIJobName,
+		Release: azureCPIReleaseName}
+}
+func (a *AzureBosh) CreateDiskPool() enaml.DiskPool {
+	return enaml.DiskPool{
+		Name:     "disks",
+		DiskSize: a.boshbase.PersistentDiskSize,
+	}
+}
+func (a *AzureBosh) CreateResourcePool() enaml.ResourcePool {
+	return enaml.ResourcePool{
 		Name:    "vms",
 		Network: "private",
+		Stemcell: enaml.Stemcell{
+			URL:  a.boshbase.GOAgentReleaseURL,
+			SHA1: a.boshbase.GOAgentSHA,
+		},
+		CloudProperties: azurecloudproperties.ResourcePool{
+			InstanceType: a.cfg.AzureInstanceSize,
+		},
 	}
-	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  boshbase.GOAgentReleaseURL,
-		SHA1: boshbase.GOAgentSHA,
-	}
-	resourcePool.CloudProperties = azurecloudproperties.ResourcePool{
-		InstanceType: cfg.AzureInstanceSize,
-	}
-	manifest.AddResourcePool(resourcePool)
-	manifest.AddDiskPool(enaml.DiskPool{
-		Name:     "disks",
-		DiskSize: boshbase.PersistentDiskSize,
-	})
+}
+func (a *AzureBosh) CreateManualNetwork() enaml.ManualNetwork {
 	net := enaml.NewManualNetwork("private")
 	net.AddSubnet(enaml.Subnet{
-		Range:   boshbase.NetworkCIDR,
-		Gateway: boshbase.NetworkGateway,
-		DNS:     boshbase.NetworkDNS,
+		Range:   a.boshbase.NetworkCIDR,
+		Gateway: a.boshbase.NetworkGateway,
+		DNS:     a.boshbase.NetworkDNS,
 		CloudProperties: azurecloudproperties.Network{
-			VnetName:   cfg.AzureVnet,
-			SubnetName: cfg.AzureSubnet,
+			VnetName:   a.cfg.AzureVnet,
+			SubnetName: a.cfg.AzureSubnet,
 		},
 	})
-	manifest.AddNetwork(net)
-	manifest.AddNetwork(enaml.NewVIPNetwork("public"))
-	boshJob := manifest.Jobs[0]
-	boshJob.AddTemplate(cpiTemplate)
-	if boshbase.PublicIP != "" {
-		boshJob.AddNetwork(enaml.Network{
-			Name:      "public",
-			StaticIPs: []string{boshbase.PublicIP},
-		})
-	}
-	var agentProperty = aws_cpi.Agent{
-		Mbus: "nats://nats:nats-password@" + boshbase.PrivateIP + ":4222",
-	}
-	boshJob.AddProperty("agent", agentProperty)
-	azureProperty := NewAzureProperty(
-		cfg.AzureEnvironment,
-		cfg.AzureSubscriptionID,
-		cfg.AzureTenantID,
-		cfg.AzureClientID,
-		cfg.AzureClientSecret,
-		cfg.AzureResourceGroup,
-		cfg.AzureStorageAccount,
-		cfg.AzureDefaultSecurityGroup,
-		cfg.AzureSSHUser,
-		cfg.AzureSSHPubKey,
-	)
-	boshJob.AddProperty("azure", azureProperty)
-	manifest.Jobs[0] = boshJob
-	manifest.SetCloudProvider(NewAzureCloudProvider(azureProperty, cpiTemplate, boshbase.GetRoutableIP(), cfg.AzurePrivateKeyPath, boshbase.NtpServers))
-	return manifest
+	return net
 }
-
-func NewAzureCloudProvider(myazure cpi.Azure, cpiTemplate enaml.Template, pubip, keypath string, ntpProperty []string) enaml.CloudProvider {
+func (a *AzureBosh) CreateVIPNetwork() enaml.VIPNetwork {
+	return enaml.NewVIPNetwork("public")
+}
+func (a *AzureBosh) CreateJobNetwork() *enaml.Network {
+	if a.boshbase.PublicIP != "" {
+		return &enaml.Network{
+			Name:      "public",
+			StaticIPs: []string{a.boshbase.PublicIP},
+		}
+	}
+	return nil
+}
+func (a *AzureBosh) CreateCloudProvider() enaml.CloudProvider {
 	return enaml.CloudProvider{
-		Template: cpiTemplate,
-		MBus:     fmt.Sprintf("https://mbus:mbus-password@%s:6868", pubip),
+		Template: a.CreateCPITemplate(),
+		MBus:     fmt.Sprintf("https://mbus:%s@%s:6868", a.boshbase.MBusPassword, a.boshbase.GetRoutableIP()),
 		SSHTunnel: enaml.SSHTunnel{
-			Host:           pubip,
+			Host:           a.boshbase.GetRoutableIP(),
 			Port:           22,
 			User:           "vcap",
-			PrivateKeyPath: keypath,
+			PrivateKeyPath: a.cfg.AzurePrivateKeyPath,
 		},
-		Properties: map[string]interface{}{
-			"azure": myazure,
-			"agent": map[string]string{
-				"mbus": "https://mbus:mbus-password@0.0.0.0:6868",
+		Properties: azure_cpi.AzureCpiJob{
+			Azure: a.createAzure(),
+			Agent: &azure_cpi.Agent{
+				Mbus: fmt.Sprintf("https://mbus:%s@0.0.0.0:6868", a.boshbase.MBusPassword),
 			},
-			"blobstore": map[string]string{
-				"provider": "local",
-				"path":     "/var/vcap/micro_bosh/data/cache",
+			Blobstore: &azure_cpi.Blobstore{
+				Provider: "local",
+				Path:     "/var/vcap/micro_bosh/data/cache",
 			},
-			"ntp": ntpProperty,
+			Ntp: a.boshbase.NtpServers,
 		},
 	}
 }
 
-func NewAzureProperty(azureenv, subid, tenantid, clientid, clientsecret, resourcegroup, storageaccount, securitygroup, sshuser, sshkey string) cpi.Azure {
-	return cpi.Azure{
-		Environment:          azureenv,
-		SubscriptionId:       subid,
-		TenantId:             tenantid,
-		ClientId:             clientid,
-		ClientSecret:         clientsecret,
-		ResourceGroupName:    resourcegroup,
-		StorageAccountName:   storageaccount,
-		DefaultSecurityGroup: securitygroup,
-		SshUser:              sshuser,
-		SshPublicKey:         sshkey,
+func (a *AzureBosh) createAzure() *azure_cpi.Azure {
+	return &azure_cpi.Azure{
+		Environment:          a.cfg.AzureEnvironment,
+		SubscriptionId:       a.cfg.AzureSubscriptionID,
+		TenantId:             a.cfg.AzureTenantID,
+		ClientId:             a.cfg.AzureClientID,
+		ClientSecret:         a.cfg.AzureClientSecret,
+		ResourceGroupName:    a.cfg.AzureResourceGroup,
+		StorageAccountName:   a.cfg.AzureStorageAccount,
+		DefaultSecurityGroup: a.cfg.AzureDefaultSecurityGroup,
+		SshUser:              a.cfg.AzureSSHUser,
+		SshPublicKey:         a.cfg.AzureSSHPubKey,
 	}
+}
+func (a *AzureBosh) CreateCPIJobProperties() map[string]interface{} {
+	return map[string]interface{}{
+		"azure": a.createAzure(),
+		"agent": &azure_cpi.Agent{
+			Mbus: fmt.Sprintf("nats://nats:%s@%s:4222", a.boshbase.NatsPassword, a.boshbase.PrivateIP),
+		},
+	}
+}
+
+func (a *AzureBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
+	manifest := a.boshbase.CreateDeploymentManifest()
+	manifest.AddRelease(a.CreateCPIRelease())
+	manifest.AddResourcePool(a.CreateResourcePool())
+	manifest.AddDiskPool(a.CreateDiskPool())
+	manifest.AddNetwork(a.CreateManualNetwork())
+	manifest.AddNetwork(a.CreateVIPNetwork())
+	boshJob := manifest.Jobs[0]
+	boshJob.AddTemplate(a.CreateCPITemplate())
+	n := a.CreateJobNetwork()
+	if n != nil {
+		boshJob.AddNetwork(*n)
+	}
+	for name, val := range a.CreateCPIJobProperties() {
+		boshJob.AddProperty(name, val)
+	}
+	manifest.Jobs[0] = boshJob
+	manifest.SetCloudProvider(a.CreateCloudProvider())
+	return manifest
 }

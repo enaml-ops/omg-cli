@@ -1,10 +1,7 @@
 package awscli
 
 import (
-	"fmt"
-
 	"github.com/codegangsta/cli"
-	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
@@ -56,20 +53,10 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AWSSecurityGroups:   utils.ClearDefaultStringSliceValue(c.StringSlice("aws-security-group")...),
 		}, boshBase)
 
-		manifest := provider.CreateDeploymentManifest()
-
-		lo.G.Debug("Got manifest", manifest)
-		if yamlString, err := enaml.Paint(manifest); err == nil {
-
-			if c.Bool("print-manifest") {
-				fmt.Println(yamlString)
-
-			} else {
-				utils.DeployYaml(yamlString, boshInitDeploy)
-			}
-		} else {
-			e = err
+		if err := boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {
+			return err
 		}
-		return
+
+		return nil
 	}
 }

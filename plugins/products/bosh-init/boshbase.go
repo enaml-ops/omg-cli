@@ -2,6 +2,8 @@ package boshinit
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/enaml-ops/enaml"
@@ -11,6 +13,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/registry"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/uaa"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/xchapter7x/lo"
 )
 
 const (
@@ -31,6 +34,70 @@ func (s *BoshBase) InitializePasswords() {
 		s.NatsPassword = utils.NewPassword(20)
 	}
 	s.MBusPassword = utils.NewPassword(20)
+}
+
+func (s *BoshBase) HandleDeployment(provider IAASManifestProvider, boshInitDeploy func(string)) error {
+	var yamlString string
+	var err error
+	manifest := provider.CreateDeploymentManifest()
+
+	lo.G.Debug("Got manifest", manifest)
+	if yamlString, err = enaml.Paint(manifest); err != nil {
+		lo.G.Error(err.Error())
+		return err
+	}
+
+	if s.PrintManifest {
+		fmt.Println(yamlString)
+	} else {
+		if err = s.deployYaml(yamlString, boshInitDeploy); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
+		if err := s.CreateAuthenticationFiles(); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
+
+	}
+	return nil
+}
+
+func (s *BoshBase) deployYaml(myYaml string, boshInitDeploy func(string)) error {
+	var err error
+	var tmpfile *os.File
+	content := []byte(myYaml)
+	boshdeploypath := utils.GetBoshDeployPath()
+	os.Remove(boshdeploypath)
+	if tmpfile, err = os.Create(boshdeploypath); err != nil {
+		lo.G.Error(err.Error())
+		return err
+	}
+	defer tmpfile.Close()
+	defer os.Remove(tmpfile.Name())
+	if _, err = tmpfile.Write(content); err != nil {
+		lo.G.Error(err.Error())
+		return err
+	}
+	if err = tmpfile.Close(); err != nil {
+		lo.G.Error(err.Error())
+		return err
+	}
+	boshInitDeploy(tmpfile.Name())
+	return nil
+}
+func (s *BoshBase) CreateAuthenticationFiles() error {
+	if s.CACert != "" {
+		if err := ioutil.WriteFile("./rootCA.pem", []byte(s.CACert), 0666); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
+	}
+	if err := ioutil.WriteFile("./director.pwd", []byte(s.DirectorPassword), 0666); err != nil {
+		lo.G.Error(err.Error())
+		return err
+	}
+	return nil
 }
 
 //IsBasic - is this a basic Bosh director

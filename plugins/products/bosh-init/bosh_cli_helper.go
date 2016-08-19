@@ -1,8 +1,6 @@
 package boshinit
 
 import (
-	"fmt"
-
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/utils"
 )
@@ -74,9 +72,9 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		TrustedCerts:       c.String("trusted-certs"),
 		NatsPassword:       c.String("nats-pwd"),
 		PersistentDiskSize: c.Int("persistent-disk-size"),
+		PrintManifest:      c.Bool("print-manifest"),
 	}
 	base.InitializePasswords()
-	fmt.Println("**********************************")
 	if base.IsUAA() {
 		if err = base.InitializeCerts(); err != nil {
 			return
@@ -84,10 +82,6 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		if err = base.InitializeKeys(); err != nil {
 			return
 		}
-		fmt.Println("Director CA Certificate")
-		fmt.Println(base.CACert)
 	}
-	fmt.Println("Director PWD:", base.DirectorPassword)
-	fmt.Println("**********************************")
 	return
 }
