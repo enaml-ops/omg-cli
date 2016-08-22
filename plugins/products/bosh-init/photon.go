@@ -6,13 +6,18 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
+	"github.com/xchapter7x/lo"
 )
 
 const (
 	PhotonCPIReleaseName = "bosh-photon-cpi"
-	PhotonCPIURL         = "https://github.com/enaml-ops/bosh-photon-cpi-release/releases/download/v0.9.0/bosh-photon-cpi-0.9.0.dev.1.tgz"
-	PhotonCPISHA         = "dc90202ee3981087a237fa0eb249d3345157a1e4"
 	PhotonCPIJobName     = "cpi"
+
+	PhotonCPIURL = "https://s3.amazonaws.com/concourse-photon/bosh-photon-cpi-1.0.0.tgz"
+	PhotonCPISHA = "71626961a8505447fa34ca569f97f8c70a0ef39a"
+
+	PhotonBoshReleaseURL = "https://bosh.io/d/github.com/cloudfoundry/bosh?v=257.3"
+	PhotonBoshReleaseSHA = "e4442afcc64123e11f2b33cc2be799a0b59207d0"
 
 	PhotonStemcellURL = "https://bosh.io/d/stemcells/bosh-vsphere-esxi-ubuntu-trusty-go_agent?v=3232.1"
 	PhotonStemcellSHA = "169df93e3e344cd84ac6ef16d76dd0276e321a25"
@@ -30,16 +35,25 @@ type PhotonBosh struct {
 }
 
 func NewPhotonBoshBase(boshBase *BoshBase) *BoshBase {
+	// for now we override any CPI flags that were specified.
+	// until we determine whether or not this is the correct behavior, we should at least warn the user
+	if boshBase.CPIReleaseURL != "" || boshBase.CPIReleaseSHA != "" {
+		lo.G.Warning("You specified Photon CPI flags, but the Photon deployment is overriding them")
+	}
+	if boshBase.BoshReleaseURL != "" || boshBase.BoshReleaseSHA != "" {
+		lo.G.Warning("You specified BOSH release flags, but the Photon deployment is overriding them")
+	}
 	boshBase.CPIReleaseURL = PhotonCPIURL
 	boshBase.CPIReleaseSHA = PhotonCPISHA
-	boshBase.CPIJobName = "cpi"
-	boshBase.BoshReleaseURL = "https://bosh.io/d/github.com/cloudfoundry/bosh?v=256.2"
-	boshBase.BoshReleaseSHA = "ff2f4e16e02f66b31c595196052a809100cfd5a8"
+	boshBase.CPIJobName = PhotonCPIJobName
+	boshBase.BoshReleaseURL = PhotonBoshReleaseURL
+	boshBase.BoshReleaseSHA = PhotonBoshReleaseSHA
 	boshBase.GOAgentReleaseURL = PhotonStemcellURL
 	boshBase.GOAgentSHA = PhotonStemcellSHA
 	boshBase.PersistentDiskSize = 32768
 	return boshBase
 }
+
 func NewPhotonIaaSProvider(cfg *PhotonBoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
 	return &PhotonBosh{
 		BoshInitConfig: cfg,
