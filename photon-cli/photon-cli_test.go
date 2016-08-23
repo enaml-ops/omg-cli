@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("given the photon cli", func() {
 	Context("when called with a complete set of flags", func() {
-		It("then it should NOT panic", func() {
+		It("then it should not return an error", func() {
 			action := photoncli.GetAction(func(s string) {})
 			var ctx *cli.Context
 			ctx = pluginutil.NewContext([]string{"someapp",
@@ -29,10 +29,46 @@ var _ = Describe("given the photon cli", func() {
 	})
 
 	Context("when called with an incomplete set of flags", func() {
-		It("then it should panic and exit", func() {
+		It("then it should return an error", func() {
 			action := photoncli.GetAction(func(s string) {})
 			var ctx *cli.Context
 			ctx = pluginutil.NewContext([]string{"someapp"}, photoncli.GetFlags())
+			err := action(ctx)
+			Ω(err).Should(HaveOccurred())
+		})
+	})
+
+	Context("when called with a username but without a password", func() {
+		It("then it should return an error", func() {
+			action := photoncli.GetAction(func(s string) {})
+			var ctx *cli.Context
+			ctx = pluginutil.NewContext([]string{"someapp",
+				"--photon-target", "some",
+				"--photon-project-id", "stuff",
+				"--photon-user", "to",
+				"--photon-network-id", "92895-35-2975340-34346346",
+				"--bosh-private-ip", "10.0.0.3",
+				"--gateway", "10.0.0.254",
+				"--cidr", "10.0.0.1/24",
+			}, photoncli.GetFlags())
+			err := action(ctx)
+			Ω(err).Should(HaveOccurred())
+		})
+	})
+
+	Context("when called with a password but without a username", func() {
+		It("then it should return an error", func() {
+			action := photoncli.GetAction(func(s string) {})
+			var ctx *cli.Context
+			ctx = pluginutil.NewContext([]string{"someapp",
+				"--photon-target", "some",
+				"--photon-project-id", "stuff",
+				"--photon-password", "do",
+				"--photon-network-id", "92895-35-2975340-34346346",
+				"--bosh-private-ip", "10.0.0.3",
+				"--gateway", "10.0.0.254",
+				"--cidr", "10.0.0.1/24",
+			}, photoncli.GetFlags())
 			err := action(ctx)
 			Ω(err).Should(HaveOccurred())
 		})

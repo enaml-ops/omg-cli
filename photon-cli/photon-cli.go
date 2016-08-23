@@ -1,6 +1,8 @@
 package photoncli
 
 import (
+	"errors"
+
 	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
@@ -42,9 +44,16 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		}
 
 		lo.G.Debug("Got boshbase", boshBase)
-		if err := utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-user", "photon-password", "photon-network-id"); err != nil {
+		if err := utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-network-id"); err != nil {
 			lo.G.Error(err.Error())
 			return err
+		}
+
+		user := c.IsSet("photon-user")
+		pass := c.IsSet("photon-password")
+		if user != pass {
+			lo.G.Error("--photon-user and --photon-password must be specified together")
+			return errors.New("--photon-user and --photon-password must be specified together")
 		}
 
 		provider := boshinit.NewPhotonIaaSProvider(&boshinit.PhotonBoshInitConfig{
