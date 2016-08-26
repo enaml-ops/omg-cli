@@ -16,10 +16,32 @@ const (
 	country     = "US"
 )
 
+//GenerateCertWithCA - generates a certificate with a caCert and caKey, also return ca as string
+func GenerateCertWithCA(hosts []string, cacrt *pkix.Certificate, cakey *pkix.Key) (caCert, cert, key string, err error) {
+
+	var crtKey *pkix.Key
+	var crt *pkix.Certificate
+
+	if crt, crtKey, err = createCert(cacrt, cakey, hosts); err != nil {
+		return
+	}
+	crtBytes, _ := crt.Export()
+	cert = string(crtBytes[:])
+
+	crkKeyBytes, _ := crtKey.ExportPrivate()
+	key = string(crkKeyBytes[:])
+
+	caCrtBytes, _ := cacrt.Export()
+	caCert = string(caCrtBytes[:])
+
+	return
+}
+
+//GenerateCert - generates a caCert, cert and key
 func GenerateCert(hosts []string) (caCert, cert, key string, err error) {
 	var cakey, crtKey *pkix.Key
 	var cacrt, crt *pkix.Certificate
-	if cakey, cacrt, err = initialize("enaml"); err == nil {
+	if cakey, cacrt, err = Initialize(); err == nil {
 		if crt, crtKey, err = createCert(cacrt, cakey, hosts); err != nil {
 			return
 		}
@@ -36,11 +58,12 @@ func GenerateCert(hosts []string) (caCert, cert, key string, err error) {
 	return
 }
 
-func initialize(commonName string) (key *pkix.Key, crt *pkix.Certificate, err error) {
+//Initialize - generates a caCert and caKey
+func Initialize() (key *pkix.Key, crt *pkix.Certificate, err error) {
 	if key, err = pkix.CreateRSAKey(2048); err != nil {
 		return
 	}
-	if crt, err = pkix.CreateCertificateAuthority(key, orgUnit, caCertYears, org, "", "", "", commonName); err != nil {
+	if crt, err = pkix.CreateCertificateAuthority(key, orgUnit, caCertYears, org, "", "", "", ""); err != nil {
 		return
 	}
 	return
