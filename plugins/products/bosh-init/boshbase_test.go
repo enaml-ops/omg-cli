@@ -11,8 +11,9 @@ import (
 var _ = Describe("given boshbase", func() {
 
 	const (
-		controlSecret = "health-monitor-secret"
-		controlCACert = "health-monitor-ca-cert"
+		controlSecret          = "health-monitor-secret"
+		controlCACert          = "health-monitor-ca-cert"
+		controlGraphiteAddress = "graphite.your.org"
 	)
 
 	Context("when configured for UAA", func() {
@@ -24,6 +25,8 @@ var _ = Describe("given boshbase", func() {
 				Mode:                "uaa",
 				HealthMonitorSecret: controlSecret,
 				CACert:              controlCACert,
+				GraphiteAddress:     controlGraphiteAddress,
+				GraphitePort:        2003,
 			}
 			job = bb.CreateJob()
 			Ω(bb.IsUAA()).Should(BeTrue())
@@ -40,6 +43,10 @@ var _ = Describe("given boshbase", func() {
 
 			Ω(hm.DirectorAccount.User).Should(BeNil())
 			Ω(hm.DirectorAccount.Password).Should(BeNil())
+
+			Ω(hm.GraphiteEnabled).Should(BeTrue())
+			Ω(hm.Graphite.Address).Should(Equal(controlGraphiteAddress))
+			Ω(hm.Graphite.Port).Should(Equal(2003))
 		})
 	})
 
@@ -68,6 +75,8 @@ var _ = Describe("given boshbase", func() {
 			Ω(hm.DirectorAccount.ClientId).Should(BeNil())
 			Ω(hm.DirectorAccount.ClientSecret).Should(BeNil())
 
+			Ω(hm.GraphiteEnabled).Should(BeNil())
+			Ω(hm.Graphite).Should(BeNil())
 		})
 	})
 })

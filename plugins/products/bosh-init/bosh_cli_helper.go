@@ -27,6 +27,8 @@ func BoshFlags(defaults *BoshBase) []cli.Flag {
 		cli.StringFlag{Name: "nats-pwd", Usage: "password for nats"},
 		cli.IntFlag{Name: "persistent-disk-size", Value: defaults.PersistentDiskSize, Usage: "size of persistent disk"},
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
+		cli.StringFlag{Name: "hm-graphite-address", Usage: "graphite address to forward health monitor heartbeats"},
+		cli.IntFlag{Name: "hm-graphite-port", Usage: "graphite port to forward health monitor heartbeats", Value: 2003},
 	}
 }
 
@@ -73,6 +75,8 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		NatsPassword:       c.String("nats-pwd"),
 		PersistentDiskSize: c.Int("persistent-disk-size"),
 		PrintManifest:      c.Bool("print-manifest"),
+		GraphiteAddress:    c.String("hm-graphite-address"),
+		GraphitePort:       c.Int("hm-graphite-port"),
 	}
 	base.InitializePasswords()
 	if base.IsUAA() {

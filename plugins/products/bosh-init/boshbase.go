@@ -204,10 +204,18 @@ func (s *BoshBase) CreateJob() enaml.Job {
 }
 
 func (s *BoshBase) createHealthMonitorJobProperties() *health_monitor.Hm {
-	return &health_monitor.Hm{
+	hm := &health_monitor.Hm{
 		ResurrectorEnabled: true,
 		Resurrector:        &health_monitor.Resurrector{},
 	}
+	if s.GraphiteAddress != "" {
+		hm.GraphiteEnabled = true
+		hm.Graphite = &health_monitor.Graphite{
+			Address: s.GraphiteAddress,
+			Port:    s.GraphitePort,
+		}
+	}
+	return hm
 }
 
 func (s *BoshBase) addHealthMonitorUAA(hm *health_monitor.Hm) {

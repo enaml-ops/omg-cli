@@ -88,6 +88,8 @@ type BoshBase struct {
 	TrustedCerts         string
 	PersistentDiskSize   int
 	PrintManifest        bool
+	GraphiteAddress      string
+	GraphitePort         int
 }
 
 //UAAClient - Structure to represent map of client priviledges
