@@ -14,6 +14,8 @@ import:
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
 - package: github.com/cloudfoundry/bosh-davcli
   version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
+- package: github.com/cloudfoundry/bosh-utils
+  version: 99c230d990674e484143e3b1452576912ab55380
 - package: github.com/cloudfoundry/bosh-init
   version: afa267bec2ba83d7572075ca34ac4c000a29023d
   repo: https://github.com/enaml-ops/bosh-init.git

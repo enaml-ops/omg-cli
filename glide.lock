@@ -1,15 +1,15 @@
-hash: 7ceb8587e4a7049914ab8aa41bbe76c0889de7ed946d6311883eb3a44ff510e9
-updated: 2016-08-15T08:01:52.159656728-04:00
+hash: b7acc194563ab81f9490516153799efc4591e1e31c4dac4bf7eb0aeb8d0e383a
+updated: 2016-08-29T10:29:11.127657635-06:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
-  - agentclient/http
   - agentclient
   - agentclient/applyspec
-  - settings
-  - platform/disk
+  - agentclient/http
   - platform/deviceutil
+  - platform/disk
+  - settings
 - name: github.com/cloudfoundry/bosh-davcli
   version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
   subpackages:
@@ -20,12 +20,11 @@ imports:
   repo: https://github.com/enaml-ops/bosh-init.git
   vcs: git
   subpackages:
-  - cmd
-  - logger
-  - ui
-  - ui/fmt
   - blobstore
   - cloud
+  - cmd
+  - common/net
+  - common/util
   - config
   - cpi/release
   - crypto
@@ -39,30 +38,32 @@ imports:
   - deployment/vm
   - index
   - installation
+  - installation/blobextract
   - installation/manifest
+  - installation/pkg
   - installation/tarball
+  - logger
   - registry
   - release
+  - release/job
+  - release/job/manifest
+  - release/manifest
+  - release/pkg
   - release/set/manifest
+  - state/job
   - state/pkg
   - stemcell
   - templatescompiler
   - templatescompiler/erbrenderer
-  - release/job
-  - release/pkg
-  - state/job
-  - common/net
-  - common/util
-  - installation/blobextract
-  - installation/pkg
-  - release/manifest
-  - release/job/manifest
+  - ui
+  - ui/fmt
 - name: github.com/cloudfoundry/bosh-utils
   version: 99c230d990674e484143e3b1452576912ab55380
   subpackages:
   - blobstore
   - errors
   - fileutil
+  - http
   - httpclient
   - logger
   - logger/file
@@ -70,56 +71,28 @@ imports:
   - retrystrategy
   - system
   - uuid
-  - http
 - name: github.com/cloudfoundry/gofileutils
-  version: 94cb17960d629e2ca9a67d381228ec499966a69b
+  version: 511ba4f8a696af09fe7637d0f303675a246232ee
   subpackages:
   - glob
 - name: github.com/codegangsta/cli
-  version: 168c95418e66e019fe17b8f4f5c45aa62ff80e23
+  version: 33bb4c121333cd8eb7d8cc8d74474f4ec156f371
 - name: github.com/enaml-ops/enaml
-  version: d0a63c6f1678db0ff366dcdfd1128907a4714fda
+  version: 55d585ffc06f5bedbc6e0baa9bc2a9ab9b1ae44b
   subpackages:
-  - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
-- name: github.com/enaml-ops/omg-cli
-  version: e098f9b2fb6b7c393746baabc63e61e2b8d92c81
-  subpackages:
-  - aws-cli
-  - azure-cli
-  - bosh
-  - gcp-cli
-  - photon-cli
-  - utils
-  - vsphere-cli
-  - plugins/products/bosh-init
-  - plugins/products/bosh-init/enaml-gen/photoncpi
-  - plugins/cloudconfigs/aws/plugin
-  - plugins/cloudconfigs/aws/cloud-config
-  - plugins/cloudconfigs/gcp/plugin
-  - plugins/cloudconfigs
-  - plugins/cloudconfigs/photon/plugin
-  - plugins/cloudconfigs/vsphere/plugin
-  - plugins/products/bosh-init/enaml-gen/aws_cpi
-  - plugins/products/bosh-init/enaml-gen/cpi
-  - plugins/products/bosh-init/enaml-gen/director
-  - plugins/products/bosh-init/enaml-gen/google_cpi
-  - plugins/products/bosh-init/enaml-gen/health_monitor
-  - plugins/products/bosh-init/enaml-gen/postgres
-  - plugins/products/bosh-init/enaml-gen/registry
-  - plugins/products/bosh-init/enaml-gen/uaa
-  - plugins/products/bosh-init/enaml-gen/vsphere_cpi
+  - enamlbosh
 - name: github.com/enaml-ops/pluginlib
-  version: 5cdbbd7e521f2224ae9b03cef9d2623d26ba888f
+  version: c9c21f74c42f8fc4c28751918423d991f63fc59b
   subpackages:
-  - registry
   - cloudconfig
-  - product
   - pcli
+  - product
+  - registry
   - util
 - name: github.com/golang/protobuf
-  version: 2c1988e8c18d14b142c0b472624f71647cf39adb
+  version: 888eb0692c857ec880338addf316bd662d5e630e
   subpackages:
   - proto
 - name: github.com/hashicorp/go-plugin
@@ -135,9 +108,37 @@ imports:
 - name: github.com/olekukonko/tablewriter
   version: daf2955e742cf123959884fdff4685aa79b63135
 - name: github.com/onsi/ginkgo
-  version: 120efcfd33906beedc53369a8659c41cc9190e81
+  version: 43e2af1f01ace55adbb6d7d0f30416476db1baae
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - types
 - name: github.com/onsi/gomega
-  version: 9ed8da19f2156b87a803a8fdf6d126f627a12db1
+  version: b48c9a8b2644326d0a44eaaacc8d83e35174a05d
+  subpackages:
+  - format
+  - ghttp
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/oraclematcher
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
@@ -147,10 +148,10 @@ imports:
 - name: github.com/pivotalservices/gtils
   version: 2605eda5a33230d9613738bba5271d1c040e4a15
   subpackages:
-  - osutils
   - command
+  - osutils
 - name: github.com/pkg/errors
-  version: a22138067af1c4942683050411a841ade67fe1eb
+  version: 17b591df37844cde689f4d5813e5cea0927d8dd2
 - name: github.com/pkg/sftp
   version: a71e8f580e3b622ebff585309160b1cc549ef4d2
 - name: github.com/square/certstrap
@@ -160,27 +161,34 @@ imports:
 - name: github.com/xchapter7x/lo
   version: e33b245fc7a8186582208abc2458c2691bff681c
 - name: golang.org/x/crypto
-  version: bfc286917c5fcb7420d7e3092b50bbfd31b38a98
+  version: 351dc6a5bf92a5f2ae22fadeee08eb6a45aa2d93
   subpackages:
+  - curve25519
+  - ed25519
+  - ed25519/internal/edwards25519
   - ssh
 - name: golang.org/x/net
-  version: 07b51741c1d6423d4a6abab1c49940ec09cb1aaf
+  version: 6250b412798208e6c90b03b7c4f226de5aa299e2
   subpackages:
   - context
 - name: golang.org/x/oauth2
-  version: 4784bb855e56a530f1ce5d788959359ed6cb4a16
+  version: 4d549c893be7d4011bab739cc585d091a7188d27
   subpackages:
   - internal
 - name: google.golang.org/appengine
-  version: e951d3868b377b14f4e60efa3a301532ee3c1ebf
+  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
   subpackages:
-  - urlfetch
   - internal
-  - internal/urlfetch
   - internal/base
   - internal/datastore
   - internal/log
   - internal/remote_api
+  - internal/urlfetch
+  - urlfetch
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
-devImports: []
+testImports:
+- name: golang.org/x/sys
+  version: a646d33e2ee3172a661fc09bca23bb4889a41bc8
+  subpackages:
+  - unix

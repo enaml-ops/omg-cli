@@ -186,11 +186,13 @@ func (s *BoshBase) CreateJob() enaml.Job {
 	boshJob.AddProperty("blobstore", s.createBlobStoreJobProperties())
 
 	boshJob.AddTemplate(enaml.Template{Name: "health_monitor", Release: "bosh"})
+	hm := s.createHealthMonitorJobProperties()
 	if s.IsUAA() {
-		boshJob.AddProperty("hm", s.createHeathMonitorUAAJobProperties())
+		s.addHealthMonitorUAA(hm)
 	} else {
-		boshJob.AddProperty("hm", s.createHeathMonitorJobProperties())
+		s.addHealthMonitorBasicAuth(hm)
 	}
+	boshJob.AddProperty("hm", hm)
 
 	staticIPs := append(s.PrivateStaticIPs, s.PrivateIP)
 	boshJob.AddNetwork(enaml.Network{
@@ -201,27 +203,28 @@ func (s *BoshBase) CreateJob() enaml.Job {
 	return boshJob
 }
 
-func (s *BoshBase) createHeathMonitorUAAJobProperties() *health_monitor.Hm {
+func (s *BoshBase) createHealthMonitorJobProperties() *health_monitor.Hm {
 	return &health_monitor.Hm{
-		DirectorAccount: &health_monitor.DirectorAccount{
-			CaCert:       s.CACert,
-			ClientId:     "health_monitor",
-			ClientSecret: s.HealthMonitorSecret,
-		},
 		ResurrectorEnabled: true,
 		Resurrector:        &health_monitor.Resurrector{},
 	}
 }
-func (s *BoshBase) createHeathMonitorJobProperties() *health_monitor.Hm {
-	return &health_monitor.Hm{
-		DirectorAccount: &health_monitor.DirectorAccount{
-			User:     "hm",
-			Password: s.HealthMonitorSecret,
-		},
-		ResurrectorEnabled: true,
-		Resurrector:        &health_monitor.Resurrector{},
+
+func (s *BoshBase) addHealthMonitorUAA(hm *health_monitor.Hm) {
+	hm.DirectorAccount = &health_monitor.DirectorAccount{
+		CaCert:       s.CACert,
+		ClientId:     "health_monitor",
+		ClientSecret: s.HealthMonitorSecret,
 	}
 }
+
+func (s *BoshBase) addHealthMonitorBasicAuth(hm *health_monitor.Hm) {
+	hm.DirectorAccount = &health_monitor.DirectorAccount{
+		User:     "hm",
+		Password: s.HealthMonitorSecret,
+	}
+}
+
 func (s *BoshBase) createBlobStoreJobProperties() *director.Blobstore {
 	return &director.Blobstore{
 		Port:    25250,
