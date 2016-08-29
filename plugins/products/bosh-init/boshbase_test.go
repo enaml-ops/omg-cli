@@ -14,6 +14,7 @@ var _ = Describe("given boshbase", func() {
 		controlSecret          = "health-monitor-secret"
 		controlCACert          = "health-monitor-ca-cert"
 		controlGraphiteAddress = "graphite.your.org"
+		controlSyslogAddress   = "syslog.your.org"
 	)
 
 	Context("when configured for UAA", func() {
@@ -47,6 +48,9 @@ var _ = Describe("given boshbase", func() {
 			Ω(hm.GraphiteEnabled).Should(BeTrue())
 			Ω(hm.Graphite.Address).Should(Equal(controlGraphiteAddress))
 			Ω(hm.Graphite.Port).Should(Equal(2003))
+
+			Ω(hm.SyslogEventForwarderEnabled).Should(BeNil())
+			Ω(hm.SyslogEventForwarder).Should(BeNil())
 		})
 	})
 
@@ -58,6 +62,9 @@ var _ = Describe("given boshbase", func() {
 			bb = &boshinit.BoshBase{
 				Mode:                "basic",
 				HealthMonitorSecret: controlSecret,
+				SyslogAddress:       controlSyslogAddress,
+				SyslogPort:          5514,
+				SyslogTransport:     "tcp",
 			}
 			job = bb.CreateJob()
 			Ω(bb.IsUAA()).Should(BeFalse())
@@ -77,6 +84,12 @@ var _ = Describe("given boshbase", func() {
 
 			Ω(hm.GraphiteEnabled).Should(BeNil())
 			Ω(hm.Graphite).Should(BeNil())
+
+			Ω(hm.SyslogEventForwarderEnabled).Should(BeTrue())
+			Ω(hm.SyslogEventForwarder).ShouldNot(BeNil())
+			Ω(hm.SyslogEventForwarder.Address).Should(Equal(controlSyslogAddress))
+			Ω(hm.SyslogEventForwarder.Port).Should(Equal(5514))
+			Ω(hm.SyslogEventForwarder.Transport).Should(Equal("tcp"))
 		})
 	})
 })

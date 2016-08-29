@@ -90,6 +90,9 @@ type BoshBase struct {
 	PrintManifest        bool
 	GraphiteAddress      string
 	GraphitePort         int
+	SyslogAddress        string
+	SyslogPort           int
+	SyslogTransport      string
 }
 
 //UAAClient - Structure to represent map of client priviledges

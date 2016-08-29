@@ -215,6 +215,14 @@ func (s *BoshBase) createHealthMonitorJobProperties() *health_monitor.Hm {
 			Port:    s.GraphitePort,
 		}
 	}
+	if s.SyslogAddress != "" {
+		hm.SyslogEventForwarderEnabled = true
+		hm.SyslogEventForwarder = &health_monitor.SyslogEventForwarder{
+			Address:   s.SyslogAddress,
+			Port:      s.SyslogPort,
+			Transport: s.SyslogTransport,
+		}
+	}
 	return hm
 }
 

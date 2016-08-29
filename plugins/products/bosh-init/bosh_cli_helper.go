@@ -29,6 +29,9 @@ func BoshFlags(defaults *BoshBase) []cli.Flag {
 		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 		cli.StringFlag{Name: "hm-graphite-address", Usage: "graphite address to forward health monitor heartbeats"},
 		cli.IntFlag{Name: "hm-graphite-port", Usage: "graphite port to forward health monitor heartbeats", Value: 2003},
+		cli.StringFlag{Name: "syslog-address", Usage: "address of syslog server for forwarding heartbeats"},
+		cli.IntFlag{Name: "syslog-port", Usage: "port of syslog server", Value: 5514},
+		cli.StringFlag{Name: "syslog-transport", Usage: "transport to syslog server", Value: "tcp"},
 	}
 }
 
@@ -77,6 +80,9 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		PrintManifest:      c.Bool("print-manifest"),
 		GraphiteAddress:    c.String("hm-graphite-address"),
 		GraphitePort:       c.Int("hm-graphite-port"),
+		SyslogAddress:      c.String("syslog-address"),
+		SyslogPort:         c.Int("syslog-port"),
+		SyslogTransport:    c.String("syslog-transport"),
 	}
 	base.InitializePasswords()
 	if base.IsUAA() {
