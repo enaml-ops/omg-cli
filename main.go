@@ -26,13 +26,13 @@ import (
 	"github.com/xchapter7x/lo"
 )
 
-//Version of product
+// Version is the version of omg-cli.
 var Version string
 
-// CloudConfigPluginsDir - location of cloud config plugins directory
+// CloudConfigPluginsDir is the directory where registered cloud config plugins are stored.
 var CloudConfigPluginsDir = "./.plugins/cloudconfig"
 
-//ProductPluginsDir location of products plugins
+// ProductPluginsDir is the directory where registered product plugins are stored.
 var ProductPluginsDir = "./.plugins/product"
 
 func main() {
@@ -75,7 +75,7 @@ func main() {
 				fmt.Println("Cloud Configs:")
 				table := tablewriter.NewWriter(os.Stdin)
 				table.SetHeader([]string{"Name", "Command", "Properties"})
-				data := make([][]string, 0)
+				var data [][]string
 				formatProperties := func(p map[string]interface{}) string {
 					var res string
 					for n, v := range p {
@@ -105,10 +105,19 @@ func main() {
 			},
 		},
 		{
+			Name:  "product-meta",
+			Usage: "product-meta <prod-name> - show product metadata",
+			Action: func(c *cli.Context) error {
+				if len(c.Args()) > 0 {
+					return productMeta(c.Args().First())
+				}
+				return nil
+			},
+		},
+		{
 			Name:  "register-plugin",
 			Usage: "register-plugin -type [cloudconfig, product] -pluginpath <plugin-binary>",
 			Action: func(c *cli.Context) (err error) {
-
 				if c.String("type") != "" && c.String("pluginpath") != "" {
 					err = registerPlugin(c.String("type"), c.String("pluginpath"))
 				}
@@ -140,7 +149,6 @@ func main() {
 }
 
 func init() {
-
 	if strings.ToLower(os.Getenv("LOG_LEVEL")) != "debug" {
 		log.SetOutput(ioutil.Discard)
 	}
@@ -181,24 +189,36 @@ func copyPlugin(src io.Reader, dst string) (err error) {
 
 func formatProps(props map[string]interface{}) string {
 	var keys []string
-	for k, _ := range props {
+	for k := range props {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
 
 	buf := &bytes.Buffer{}
+
+	// output version first, then the remainder of the properties (sorted)
+	ver, ok := props["version"]
+	if ok {
+		fmt.Fprintln(buf, "version:", ver)
+	}
+
 	for _, key := range keys {
+		// don't output version twice
+		if ok && key == "version" {
+			continue
+		}
 		fmt.Fprintf(buf, "%v: %v\n", key, props[key])
 	}
 	return buf.String()
 }
 
+// ListProducts writes a formatted list of products to w.
 func ListProducts(w io.Writer, products map[string]registry.Record) {
 	table := tablewriter.NewWriter(w)
 	table.SetHeader([]string{"Name", "Command", "Properties"})
 
 	var keys []string
-	for k, _ := range products {
+	for k := range products {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)
@@ -212,4 +232,13 @@ func ListProducts(w io.Writer, products map[string]registry.Record) {
 		table.Append(row)
 	}
 	table.Render()
+}
+
+func productMeta(product string) error {
+	record, ok := registry.ListProducts()[product]
+	if !ok {
+		return fmt.Errorf("product '%s' not found", product)
+	}
+	fmt.Println(formatProps(record.Properties))
+	return nil
 }
