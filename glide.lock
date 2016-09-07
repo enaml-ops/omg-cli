@@ -1,5 +1,5 @@
-hash: b7acc194563ab81f9490516153799efc4591e1e31c4dac4bf7eb0aeb8d0e383a
-updated: 2016-08-29T10:29:11.127657635-06:00
+hash: 2f5349efe8f45189a5b6c223786ee79e6cf36b30a1037963f515d80587f0fcb2
+updated: 2016-09-07T11:55:50.023547691-07:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -76,7 +76,7 @@ imports:
   subpackages:
   - glob
 - name: github.com/codegangsta/cli
-  version: 33bb4c121333cd8eb7d8cc8d74474f4ec156f371
+  version: c723b19a84af34d905773672ffa1b8ead802e505
 - name: github.com/enaml-ops/enaml
   version: 55d585ffc06f5bedbc6e0baa9bc2a9ab9b1ae44b
   subpackages:
@@ -84,7 +84,7 @@ imports:
   - cloudproperties/azure
   - enamlbosh
 - name: github.com/enaml-ops/pluginlib
-  version: c9c21f74c42f8fc4c28751918423d991f63fc59b
+  version: 2d5b79581d399b0cff5b5bdc00ecf518aebcc09a
   subpackages:
   - cloudconfig
   - pcli
@@ -92,7 +92,7 @@ imports:
   - registry
   - util
 - name: github.com/golang/protobuf
-  version: 888eb0692c857ec880338addf316bd662d5e630e
+  version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
   subpackages:
   - proto
 - name: github.com/hashicorp/go-plugin
@@ -108,7 +108,7 @@ imports:
 - name: github.com/olekukonko/tablewriter
   version: daf2955e742cf123959884fdff4685aa79b63135
 - name: github.com/onsi/ginkgo
-  version: 43e2af1f01ace55adbb6d7d0f30416476db1baae
+  version: 7b6efc7d7b052568b49ac02d3141c9d7a5a494a4
   subpackages:
   - config
   - internal/codelocation
@@ -161,14 +161,14 @@ imports:
 - name: github.com/xchapter7x/lo
   version: e33b245fc7a8186582208abc2458c2691bff681c
 - name: golang.org/x/crypto
-  version: 351dc6a5bf92a5f2ae22fadeee08eb6a45aa2d93
+  version: 9e590154d2353f3f5e1b24da7275686040dcf491
   subpackages:
   - curve25519
   - ed25519
   - ed25519/internal/edwards25519
   - ssh
 - name: golang.org/x/net
-  version: 6250b412798208e6c90b03b7c4f226de5aa299e2
+  version: 9bc2a3340c92c17a20edcd0080e93851ed58f5d5
   subpackages:
   - context
 - name: golang.org/x/oauth2
@@ -189,6 +189,6 @@ imports:
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
 testImports:
 - name: golang.org/x/sys
-  version: a646d33e2ee3172a661fc09bca23bb4889a41bc8
+  version: 30de6d19a3bd89a5f38ae4028e23aaa5582648af
   subpackages:
   - unix

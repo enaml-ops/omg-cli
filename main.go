@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -8,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"sort"
 	"strings"
 
 	"github.com/codegangsta/cli"
@@ -98,28 +100,7 @@ func main() {
 		{
 			Name: "list-products",
 			Action: func(c *cli.Context) error {
-				fmt.Println("Products:")
-				table := tablewriter.NewWriter(os.Stdin)
-				table.SetHeader([]string{"Name", "Command", "Properties"})
-				data := make([][]string, 0)
-				formatProperties := func(p map[string]interface{}) string {
-					var res string
-					for n, v := range p {
-						res += fmt.Sprintf("%v: %v\n", n, v)
-					}
-					return res
-				}
-
-				for _, plgn := range registry.ListProducts() {
-					row := []string{
-						plgn.Name,
-						path.Base(plgn.Path),
-						formatProperties(plgn.Properties),
-					}
-					data = append(data, row)
-				}
-				table.AppendBulk(data)
-				table.Render()
+				ListProducts(os.Stdout, registry.ListProducts())
 				return nil
 			},
 		},
@@ -196,4 +177,39 @@ func copyPlugin(src io.Reader, dst string) (err error) {
 		os.Chmod(dst, 755)
 	}
 	return
+}
+
+func formatProps(props map[string]interface{}) string {
+	var keys []string
+	for k, _ := range props {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	buf := &bytes.Buffer{}
+	for _, key := range keys {
+		fmt.Fprintf(buf, "%v: %v\n", key, props[key])
+	}
+	return buf.String()
+}
+
+func ListProducts(w io.Writer, products map[string]registry.Record) {
+	table := tablewriter.NewWriter(w)
+	table.SetHeader([]string{"Name", "Command", "Properties"})
+
+	var keys []string
+	for k, _ := range products {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		row := []string{
+			products[key].Name,
+			path.Base(products[key].Path),
+			formatProps(products[key].Properties),
+		}
+		table.Append(row)
+	}
+	table.Render()
 }
