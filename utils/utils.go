@@ -16,23 +16,6 @@ import (
 	"gopkg.in/urfave/cli.v2"
 )
 
-// ClearDefaultStringSliceValue - this is simply to work around a defect in the
-// cli package, where the default is appended to rather than replaced by user
-// defined flags for StringSliceFlag values.
-func ClearDefaultStringSliceValue(stringSliceArgs ...string) (res []string) {
-	if isJustDefault(stringSliceArgs) {
-		res = stringSliceArgs
-
-	} else {
-		res = stringSliceArgs[1:]
-	}
-	return
-}
-
-func isJustDefault(stringSliceArgs []string) bool {
-	return len(stringSliceArgs) <= 1
-}
-
 // GetCloudConfigCommands builds a list of CLI commands depending on
 // which cloud config plugins are installed.
 func GetCloudConfigCommands(target string) (commands []*cli.Command) {

@@ -1,10 +1,10 @@
 package awscli
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
 func GetFlags() []cli.Flag {
@@ -50,7 +50,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			AWSSecretKey:        c.String("aws-secret"),
 			AWSRegion:           c.String("aws-region"),
 			AWSKeyName:          c.String("aws-keyname"),
-			AWSSecurityGroups:   utils.ClearDefaultStringSliceValue(c.StringSlice("aws-security-group")...),
+			AWSSecurityGroups:   c.StringSlice("aws-security-group"),
 		}, boshBase)
 
 		if err := boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {

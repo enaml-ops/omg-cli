@@ -1,8 +1,8 @@
 package boshinit
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/utils"
+	"gopkg.in/urfave/cli.v2"
 )
 
 func BoshFlags(defaults *BoshBase) []cli.Flag {
@@ -61,7 +61,7 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		Mode:               c.String("mode"),
 		NetworkCIDR:        c.String("cidr"),
 		NetworkGateway:     c.String("gateway"),
-		NetworkDNS:         utils.ClearDefaultStringSliceValue(c.StringSlice("dns")...),
+		NetworkDNS:         c.StringSlice("dns"),
 		PrivateIP:          c.String("bosh-private-ip"),
 		PublicIP:           c.String("bosh-public-ip"),
 		BoshReleaseSHA:     c.String("bosh-release-sha"),
@@ -73,7 +73,7 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 		DirectorName:       c.String("director-name"),
 		UAAReleaseSHA:      c.String("uaa-release-sha"),
 		UAAReleaseURL:      c.String("uaa-release-url"),
-		NtpServers:         utils.ClearDefaultStringSliceValue(c.StringSlice("ntp-server")...),
+		NtpServers:         c.StringSlice("ntp-server"),
 		TrustedCerts:       c.String("trusted-certs"),
 		NatsPassword:       c.String("nats-pwd"),
 		PersistentDiskSize: c.Int("persistent-disk-size"),

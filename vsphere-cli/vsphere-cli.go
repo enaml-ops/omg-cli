@@ -1,10 +1,10 @@
 package vspherecli
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
 // GetFlags returns the available CLI flags
@@ -61,13 +61,13 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			VSphereTemplateFolder: c.String("vsphere-template-folder"),
 			VSphereDataStore:      c.String("vsphere-datastore"),
 			VSphereDiskPath:       c.String("vsphere-disk-path"),
-			VSphereClusters:       utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-clusters")...),
+			VSphereClusters:       c.StringSlice("vsphere-clusters"),
 			VSphereResourcePool:   c.String("vsphere-resource-pool"),
 			VSphereNetworks: []boshinit.Network{boshinit.Network{
 				Name:    c.String("vsphere-subnet1-name"),
 				Range:   c.String("vsphere-subnet1-range"),
 				Gateway: c.String("vsphere-subnet1-gateway"),
-				DNS:     utils.ClearDefaultStringSliceValue(c.StringSlice("vsphere-subnet1-dns")...),
+				DNS:     c.StringSlice("vsphere-subnet1-dns"),
 			}},
 		}, boshBase)
 
