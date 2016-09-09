@@ -1,5 +1,5 @@
-hash: 6be9191195f5421b53a911c4a2409717fb21201a7a19e7516846e5d1b9ad1b19
-updated: 2016-09-09T11:49:55.779470539-06:00
+hash: 62932fa30e6ac66fa98a54a79b3cb14d72c18abba4a1110a510143a3980abe00
+updated: 2016-09-09T15:01:48.399094735-06:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -82,7 +82,7 @@ imports:
   - cloudproperties/azure
   - enamlbosh
 - name: github.com/enaml-ops/pluginlib
-  version: cdbf9881da6246adb7030a0600d7c74d26ac10af
+  version: 19fe2845d9ba6d5842b5c8a852ebf92254225ec9
   subpackages:
   - cloudconfig
   - pcli

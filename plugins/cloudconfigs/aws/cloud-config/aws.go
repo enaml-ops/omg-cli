@@ -31,12 +31,12 @@ var (
 )
 
 type SubnetBucket struct {
-	BoshAZName string
-	Cidr string
-	Gateway string
-	DNS[] string
-	AWSAZName string
-	AWSSubnetName string
+	BoshAZName       string
+	Cidr             string
+	Gateway          string
+	DNS              []string
+	AWSAZName        string
+	AWSSubnetName    string
 	BoshReserveRange []string
 }
 

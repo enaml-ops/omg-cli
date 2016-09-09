@@ -1,11 +1,11 @@
 package vspherecli_test
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	vspherecli "github.com/enaml-ops/omg-cli/vsphere-cli"
 	"github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("given the photon cli", func() {
@@ -30,7 +30,7 @@ var _ = Describe("given the photon cli", func() {
 				"--vsphere-subnet1-dns", "asdfasdf",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
-			}, vspherecli.GetFlags())
+			}, pluginutil.ToCliFlagArray(vspherecli.GetFlags()))
 			err := action(ctx)
 			Ω(err).ShouldNot(HaveOccurred())
 		})
@@ -40,7 +40,7 @@ var _ = Describe("given the photon cli", func() {
 		It("then it should panic and exit", func() {
 			action := vspherecli.GetAction(func(s string) {})
 			var ctx *cli.Context
-			ctx = pluginutil.NewContext([]string{"someapp"}, vspherecli.GetFlags())
+			ctx = pluginutil.NewContext([]string{"someapp"}, pluginutil.ToCliFlagArray(vspherecli.GetFlags()))
 			err := action(ctx)
 			Ω(err).Should(HaveOccurred())
 		})

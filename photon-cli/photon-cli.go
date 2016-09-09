@@ -3,25 +3,26 @@ package photoncli
 import (
 	"errors"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
-func GetFlags() []cli.Flag {
+func GetFlags() []pcli.Flag {
 	boshdefaults := boshinit.NewPhotonBoshBase(new(boshinit.BoshBase))
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
-	photonFlags := []cli.Flag{
-		&cli.StringFlag{Name: "photon-target", Usage: "photon api endpoint http://PHOTON_CTRL_IP:9000"},
-		&cli.StringFlag{Name: "photon-user", Usage: "api admin user"},
-		&cli.StringFlag{Name: "photon-password", Usage: "api admin pass"},
-		&cli.BoolFlag{Value: true,Name: "photon-ignore-cert", Usage: "setting ignore cert or not"},
-		&cli.StringFlag{Name: "photon-project-id", Usage: "the photon project id"},
-		&cli.StringFlag{Name: "photon-machine-type", Value: "core-200", Usage: "photon instance type name"},
-		&cli.StringFlag{Name: "photon-network-id", Usage: "the network-id to deploy your bosh onto (THIS IS NOT THE NETWORK NAME)"},
+	photonFlags := []pcli.Flag{
+		pcli.CreateStringFlag("photon-target", "photon api endpoint http://PHOTON_CTRL_IP:9000"),
+		pcli.CreateStringFlag("photon-user", "api admin user"),
+		pcli.CreateStringFlag("photon-password", "api admin pass"),
+		pcli.CreateBoolTFlag("photon-ignore-cert", "setting ignore cert or not"),
+		pcli.CreateStringFlag("photon-project-id", "the photon project id"),
+		pcli.CreateStringFlag("photon-machine-type", "photon instance type name", "core-200"),
+		pcli.CreateStringFlag("photon-network-id", "the network-id to deploy your bosh onto (THIS IS NOT THE NETWORK NAME)"),
 	}
 	boshFlags = append(boshFlags, photonFlags...)
 	return boshFlags

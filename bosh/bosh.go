@@ -7,6 +7,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/product"
 	"github.com/xchapter7x/lo"
 	"gopkg.in/urfave/cli.v2"
@@ -36,14 +37,14 @@ func getBoshClient(c *cli.Context) *enamlbosh.Client {
 	return boshclient
 }
 
-func GetAuthFlags() []cli.Flag {
-	return []cli.Flag{
-		&cli.StringFlag{Name: "bosh-url", Value: "https://mybosh.com", Usage: "this is the url or ip of your bosh director"},
-		&cli.IntFlag{Name: "bosh-port", Value: 25555, Usage: "this is the port of your bosh director"},
-		&cli.StringFlag{Name: "bosh-user", Value: "bosh", Usage: "this is the username for your bosh director"},
-		&cli.StringFlag{Name: "bosh-pass", Value: "", Usage: "this is the pasword for your bosh director"},
-		&cli.BoolFlag{Name: "ssl-ignore", Usage: "ingore ssl self signed cert warnings"},
-		&cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
+func GetAuthFlags() []pcli.Flag {
+	return []pcli.Flag{
+		pcli.CreateStringFlag("bosh-url", "the url or ip of your bosh director", "https://mybosh.com"),
+		pcli.CreateIntFlag("bosh-port", "the port of your bosh director", "25555"),
+		pcli.CreateStringFlag("bosh-user", "the username for your bosh director", "bosh"),
+		pcli.CreateStringFlag("bosh-pass", "the pasword for your bosh director"),
+		pcli.CreateBoolFlag("ssl-ignore", "ingore ssl self signed cert warnings"),
+		pcli.CreateBoolFlag("print-manifest", "if you would simply like to output a manifest the set this flag as true."),
 	}
 }
 

@@ -3,24 +3,25 @@ package plugin
 import (
 	"fmt"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/util"
+	"gopkg.in/urfave/cli.v2"
 )
 
 type Plugin struct {
 	PluginVersion string
 }
 
-func (s *Plugin) GetFlags() []cli.Flag {
+func (s *Plugin) GetFlags() []pcli.Flag {
 	flags := cloudconfigs.CreateAZFlags()
 	flags = cloudconfigs.CreateNetworkFlags(flags, networkFlags)
 	return flags
 }
 
-func networkFlags(flags []cli.Flag, i int) []cli.Flag {
-	flags = append(flags, &cli.StringSliceFlag{Name: cloudconfigs.CreateFlagnameWithSuffix("photon-network-name", i), Usage: fmt.Sprintf("photon network name for network %d", i)})
+func networkFlags(flags []pcli.Flag, i int) []pcli.Flag {
+	flags = append(flags, pcli.CreateStringSliceFlag(cloudconfigs.CreateFlagnameWithSuffix("photon-network-name", i), fmt.Sprintf("photon network name for network %d", i)))
 	return flags
 }
 
@@ -37,7 +38,7 @@ func (s *Plugin) GetMeta() cloudconfig.Meta {
 //GetCloudConfig - get a serialized form of AWS cloud configuration
 func (s *Plugin) GetCloudConfig(args []string) (b []byte) {
 	var err error
-	c := pluginutil.NewContext(args, s.GetFlags())
+	c := pluginutil.NewContext(args, pluginutil.ToCliFlagArray(s.GetFlags()))
 	cloudConfig := NewPhotonCloudConfig(c)
 	if b, err = cloudconfigs.GetDeploymentManifestBytes(cloudConfig); err != nil {
 		panic(err)
@@ -47,6 +48,6 @@ func (s *Plugin) GetCloudConfig(args []string) (b []byte) {
 
 //GetContext -
 func (s *Plugin) GetContext(args []string) (c *cli.Context) {
-	c = pluginutil.NewContext(args, s.GetFlags())
+	c = pluginutil.NewContext(args, pluginutil.ToCliFlagArray(s.GetFlags()))
 	return
 }

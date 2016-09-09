@@ -1,8 +1,8 @@
 package main
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/pcli"
 )
 
 func main() {
@@ -11,7 +11,7 @@ func main() {
 
 type MyCloudConfig struct{}
 
-func (s *MyCloudConfig) GetFlags() (flags []cli.Flag) {
+func (s *MyCloudConfig) GetFlags() (flags []pcli.Flag) {
 	return
 }
 

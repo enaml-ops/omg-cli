@@ -1,11 +1,11 @@
 package awscli_test
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	awscli "github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("given the photon cli", func() {
@@ -22,7 +22,7 @@ var _ = Describe("given the photon cli", func() {
 				"--aws-secret", "10.0.0.3",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
-			}, awscli.GetFlags())
+			}, pluginutil.ToCliFlagArray(awscli.GetFlags()))
 			err := action(ctx)
 			Ω(err).ShouldNot(HaveOccurred())
 		})
@@ -32,7 +32,7 @@ var _ = Describe("given the photon cli", func() {
 		It("then it should panic and exit", func() {
 			action := awscli.GetAction(func(s string) {})
 			var ctx *cli.Context
-			ctx = pluginutil.NewContext([]string{"someapp"}, awscli.GetFlags())
+			ctx = pluginutil.NewContext([]string{"someapp"}, pluginutil.ToCliFlagArray(awscli.GetFlags()))
 			err := action(ctx)
 			Ω(err).Should(HaveOccurred())
 		})

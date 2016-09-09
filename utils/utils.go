@@ -28,7 +28,7 @@ func GetCloudConfigCommands(target string) (commands []*cli.Command) {
 		commands = append(commands, &cli.Command{
 			Name:  f.Name(),
 			Usage: "deploy the " + f.Name() + " cloud config",
-			Flags: flags,
+			Flags: pluginutil.ToCliFlagArray(flags),
 			Action: func(c *cli.Context) error {
 				lo.G.Debug("running the cloud config plugin")
 				client, cc := registry.GetCloudConfigReference(pluginPath)
@@ -70,10 +70,7 @@ func GetProductCommands(target string) (commands []*cli.Command) {
 }
 
 func ConvertToCLIStringSliceFlag(values []string) *cli.StringSlice {
-	cliSlice := cli.NewStringSlice()
-	for _, value := range values {
-		cliSlice.Set(value)
-	}
+	cliSlice := cli.NewStringSlice(values...)
 	return cliSlice
 }
 

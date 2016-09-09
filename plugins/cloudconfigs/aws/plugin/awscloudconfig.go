@@ -3,11 +3,12 @@ package awsccplugin
 import (
 	"strconv"
 
-	"gopkg.in/urfave/cli.v2"
 	aws "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/cloud-config"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/util"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
 //AZCountSupported - number of supported AZ's, setting to 10 to start with.
@@ -24,19 +25,19 @@ func CreateFlagnameWithSuffix(name string, suffix int) (flagname string) {
 }
 
 //GetFlags - Get flags associated with plugin
-func (s *AWSCloudConfig) GetFlags() (flags []cli.Flag) {
-	flags = []cli.Flag{
-		&cli.StringFlag{Name: "aws-region", Usage: "aws region"},
-		&cli.StringSliceFlag{Name: "aws-security-group", Usage: "list of security groups"},
+func (s *AWSCloudConfig) GetFlags() (flags []pcli.Flag) {
+	flags = []pcli.Flag{
+		pcli.CreateStringFlag("aws-region", "aws region"),
+		pcli.CreateStringSliceFlag("aws-security-group", "list of security groups"),
 	}
 	for i := 1; i <= AZCountSupported; i++ {
-		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("bosh-az-name", i), Usage: "name for bosh availablility zone in cloud config"})
-		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("cidr", i), Usage: "cidr range for the given network"})
-		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("gateway", i), Usage: "gateway for given network"})
-		flags = append(flags, &cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("dns", i), Usage: "dns for given network"})
-		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-az-name", i), Usage: "aws az name for given network"})
-		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-subnet-name", i), Usage: "aws subnet name for given network"})
-		flags = append(flags, &cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("bosh-reserve-range", i), Usage: "bosh reserve range for given network"})
+		flags = append(flags, pcli.CreateStringFlag(CreateFlagnameWithSuffix("bosh-az-name", i), "name for bosh availablility zone in cloud config"))
+		flags = append(flags, pcli.CreateStringFlag(CreateFlagnameWithSuffix("cidr", i), "cidr range for the given network"))
+		flags = append(flags, pcli.CreateStringFlag(CreateFlagnameWithSuffix("gateway", i), "gateway for given network"))
+		flags = append(flags, pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("dns", i), "dns for given network"))
+		flags = append(flags, pcli.CreateStringFlag(CreateFlagnameWithSuffix("aws-az-name", i), "aws az name for given network"))
+		flags = append(flags, pcli.CreateStringFlag(CreateFlagnameWithSuffix("aws-subnet-name", i), "aws subnet name for given network"))
+		flags = append(flags, pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("bosh-reserve-range", i), "bosh reserve range for given network"))
 	}
 	return
 }
@@ -54,7 +55,7 @@ func (s *AWSCloudConfig) GetMeta() cloudconfig.Meta {
 //GetCloudConfig - get a serialized form of AWS cloud configuration
 func (s *AWSCloudConfig) GetCloudConfig(args []string) (b []byte) {
 	var err error
-	c := pluginutil.NewContext(args, s.GetFlags())
+	c := pluginutil.NewContext(args, pluginutil.ToCliFlagArray(s.GetFlags()))
 	cloud := aws.NewAWSCloudConfig(
 		c.String("aws-region"),
 		c.StringSlice("aws-security-group"),

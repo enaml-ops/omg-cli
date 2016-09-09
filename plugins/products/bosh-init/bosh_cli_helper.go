@@ -1,37 +1,40 @@
 package boshinit
 
 import (
+	"strconv"
+
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"gopkg.in/urfave/cli.v2"
 )
 
-func BoshFlags(defaults *BoshBase) []cli.Flag {
-	return []cli.Flag{
-		&cli.StringFlag{Name: "mode", Value: "basic", Usage: "what type of bosh director to install.  Options are basic or uaa"},
-		&cli.StringFlag{Name: "cidr", Value: defaults.NetworkCIDR, Usage: "the network cidr range for your bosh deployment"},
-		&cli.StringFlag{Name: "gateway", Value: defaults.NetworkGateway, Usage: "the gateway ip"},
-		&cli.StringSliceFlag{Name: "dns", Value: utils.ConvertToCLIStringSliceFlag(defaults.NetworkDNS), Usage: "the dns ip"},
-		&cli.StringFlag{Name: "bosh-private-ip", Value: defaults.PrivateIP, Usage: "the private ip for the bosh vm to be created"},
-		&cli.StringFlag{Name: "bosh-public-ip", Usage: "the public ip for the bosh vm to be created"},
-		&cli.StringFlag{Name: "bosh-release-sha", Value: defaults.BoshReleaseSHA, Usage: "sha1 of the bosh release being used (found on bosh.io)"},
-		&cli.StringFlag{Name: "bosh-release-url", Value: defaults.BoshReleaseURL, Usage: "url to bosh release"},
-		&cli.StringFlag{Name: "bosh-cpi-release-sha", Value: defaults.CPIReleaseSHA, Usage: "sha1 of the cpi release being used (found on bosh.io)"},
-		&cli.StringFlag{Name: "bosh-cpi-release-url", Value: defaults.CPIReleaseURL, Usage: "url to bosh cpi release"},
-		&cli.StringFlag{Name: "go-agent-release-sha", Value: defaults.GOAgentSHA, Usage: "sha1 of the go agent being use (found on bosh.io)"},
-		&cli.StringFlag{Name: "go-agent-release-url", Value: defaults.GOAgentReleaseURL, Usage: "url to stemcell release"},
-		&cli.StringFlag{Name: "director-name", Value: "enaml-bosh", Usage: "the name of your director"},
-		&cli.StringFlag{Name: "uaa-release-sha", Value: "899f1e10f27e82ac524f1158a513392bbfabf2a0", Usage: "sha1 of the uaa release being used (found on bosh.io)"},
-		&cli.StringFlag{Name: "uaa-release-url", Value: "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=12.2", Usage: "url to uaa release"},
-		&cli.StringSliceFlag{Name: "ntp-server", Value: utils.ConvertToCLIStringSliceFlag(defaults.NtpServers), Usage: "ntp server address"},
-		&cli.StringFlag{Name: "trusted-certs", Usage: "trusted ssl certs"},
-		&cli.StringFlag{Name: "nats-pwd", Usage: "password for nats"},
-		&cli.IntFlag{Name: "persistent-disk-size", Value: defaults.PersistentDiskSize, Usage: "size of persistent disk"},
-		&cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
-		&cli.StringFlag{Name: "hm-graphite-address", Usage: "graphite address to forward health monitor heartbeats"},
-		&cli.IntFlag{Name: "hm-graphite-port", Usage: "graphite port to forward health monitor heartbeats", Value: 2003},
-		&cli.StringFlag{Name: "syslog-address", Usage: "address of syslog server for forwarding heartbeats"},
-		&cli.IntFlag{Name: "syslog-port", Usage: "port of syslog server", Value: 5514},
-		&cli.StringFlag{Name: "syslog-transport", Usage: "transport to syslog server", Value: "tcp"},
+func BoshFlags(defaults *BoshBase) []pcli.Flag {
+	return []pcli.Flag{
+		pcli.CreateStringFlag("mode", "what type of bosh director to install.  Options are basic or uaa", "basic"),
+		pcli.CreateStringFlag("cidr", "the network cidr range for your bosh deployment", defaults.NetworkCIDR),
+		pcli.CreateStringFlag("gateway", "the gateway ip", defaults.NetworkGateway),
+		pcli.CreateStringSliceFlag("dns", "the dns ip", defaults.NetworkDNS...),
+		pcli.CreateStringFlag("bosh-private-ip", "the private ip for the bosh vm to be created", defaults.PrivateIP),
+		pcli.CreateStringFlag("bosh-public-ip", "the public ip for the bosh vm to be created"),
+		pcli.CreateStringFlag("bosh-release-sha", "sha1 of the bosh release being used (found on bosh.io)", defaults.BoshReleaseSHA),
+		pcli.CreateStringFlag("bosh-release-url", "url to bosh release", defaults.BoshReleaseURL),
+		pcli.CreateStringFlag("bosh-cpi-release-sha", "sha1 of the cpi release being used (found on bosh.io)", defaults.CPIReleaseSHA),
+		pcli.CreateStringFlag("bosh-cpi-release-url", "url to bosh cpi release", defaults.CPIReleaseURL),
+		pcli.CreateStringFlag("go-agent-release-sha", "sha1 of the go agent being use (found on bosh.io)", defaults.GOAgentSHA),
+		pcli.CreateStringFlag("go-agent-release-url", "url to stemcell release", defaults.GOAgentReleaseURL),
+		pcli.CreateStringFlag("director-name", "the name of your director", "enaml-bosh"),
+		pcli.CreateStringFlag("uaa-release-sha", "sha1 of the uaa release being used (found on bosh.io)", "899f1e10f27e82ac524f1158a513392bbfabf2a0"),
+		pcli.CreateStringFlag("uaa-release-url", "url to uaa release", "https://bosh.io/d/github.com/cloudfoundry/uaa-release?v=12.2"),
+		pcli.CreateStringSliceFlag("ntp-server", "ntp server address", defaults.NtpServers...),
+		pcli.CreateStringFlag("trusted-certs", "trusted ssl certs"),
+		pcli.CreateStringFlag("nats-pwd", "password for nats"),
+		pcli.CreateIntFlag("persistent-disk-size", "size of persistent disk", strconv.Itoa(defaults.PersistentDiskSize)),
+		pcli.CreateBoolFlag("print-manifest", "if you would simply like to output a manifest the set this flag as true."),
+		pcli.CreateStringFlag("hm-graphite-address", "graphite address to forward health monitor heartbeats"),
+		pcli.CreateIntFlag("hm-graphite-port", "graphite port to forward health monitor heartbeats", "2003"),
+		pcli.CreateStringFlag("syslog-address", "address of syslog server for forwarding heartbeats"),
+		pcli.CreateIntFlag("syslog-port", "port of syslog server", "5514"),
+		pcli.CreateStringFlag("syslog-transport", "transport to syslog server", "tcp"),
 	}
 }
 

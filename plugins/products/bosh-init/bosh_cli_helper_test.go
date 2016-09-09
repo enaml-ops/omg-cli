@@ -12,7 +12,7 @@ var _ = Describe("BOSH CLI helpers", func() {
 			It("then it should only allow fields to be defined when they are valid bosh flags", func() {
 				var validFlags []string
 				for _, f := range BoshFlags(NewPhotonBoshBase(new(BoshBase))) {
-					validFlags = append(validFlags, f.Names()[0])
+					validFlags = append(validFlags, f.Name)
 				}
 				for _, required := range RequiredBoshFlags {
 					Ω(validFlags).Should(ContainElement(required))

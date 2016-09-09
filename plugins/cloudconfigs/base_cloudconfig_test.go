@@ -1,12 +1,13 @@
 package cloudconfigs_test
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("cloud config", func() {
@@ -24,7 +25,7 @@ var _ = Describe("cloud config", func() {
 			var err error
 			var nets []enaml.DeploymentNetwork
 			BeforeEach(func() {
-				nop := func(f []cli.Flag, i int) []cli.Flag { return f }
+				nop := func(f []pcli.Flag, i int) []pcli.Flag { return f }
 				c = pluginutil.NewContext([]string{
 					"foo",
 					"--az", "az1",
@@ -36,9 +37,7 @@ var _ = Describe("cloud config", func() {
 					"--network-static-1", "MyStaticNetwork",
 					"--network-dns-1", "10.148.20.5",
 					"--network-dns-1", "10.148.20.6",
-				}, cloudconfigs.CreateNetworkFlags([]cli.Flag{
-					&cli.StringFlag{Name: "az"},
-				}, nop))
+				}, pluginutil.ToCliFlagArray(cloudconfigs.CreateNetworkFlags([]pcli.Flag{pcli.CreateStringFlag("az", "az flag")}, nop)))
 				nets, err = cloudconfigs.CreateNetworks(c, validateCP, cp)
 			})
 
@@ -59,7 +58,7 @@ var _ = Describe("cloud config", func() {
 			var err error
 			var nets []enaml.DeploymentNetwork
 			BeforeEach(func() {
-				nop := func(f []cli.Flag, i int) []cli.Flag { return f }
+				nop := func(f []pcli.Flag, i int) []pcli.Flag { return f }
 				c = pluginutil.NewContext([]string{
 					"foo",
 					"--az", "az1",
@@ -71,9 +70,7 @@ var _ = Describe("cloud config", func() {
 					"--network-reserved-1", "10.180.134.0-10.180.135.251",
 					"--network-static-1", "MyStaticNetwork",
 					"--network-dns-1", "10.148.20.6",
-				}, cloudconfigs.CreateNetworkFlags([]cli.Flag{
-					&cli.StringFlag{Name: "az"},
-				}, nop))
+				}, pluginutil.ToCliFlagArray(cloudconfigs.CreateNetworkFlags([]pcli.Flag{pcli.CreateStringFlag("az", "az flag")}, nop)))
 				nets, err = cloudconfigs.CreateNetworks(c, validateCP, cp)
 			})
 
@@ -94,7 +91,7 @@ var _ = Describe("cloud config", func() {
 			var err error
 			var nets []enaml.DeploymentNetwork
 			BeforeEach(func() {
-				nop := func(f []cli.Flag, i int) []cli.Flag { return f }
+				nop := func(f []pcli.Flag, i int) []pcli.Flag { return f }
 				c = pluginutil.NewContext([]string{
 					"foo",
 					"--az", "az1",
@@ -106,9 +103,7 @@ var _ = Describe("cloud config", func() {
 					"--network-static-1", "MyStaticNetwork",
 					"--network-static-1", "MyStaticNetwork",
 					"--network-dns-1", "10.148.20.6",
-				}, cloudconfigs.CreateNetworkFlags([]cli.Flag{
-					&cli.StringFlag{Name: "az"},
-				}, nop))
+				}, pluginutil.ToCliFlagArray(cloudconfigs.CreateNetworkFlags([]pcli.Flag{pcli.CreateStringFlag("az", "az flag")}, nop)))
 				nets, err = cloudconfigs.CreateNetworks(c, validateCP, cp)
 			})
 

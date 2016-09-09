@@ -12,7 +12,6 @@ import (
 	"sort"
 	"strings"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
 	"github.com/enaml-ops/omg-cli/bosh"
@@ -20,10 +19,13 @@ import (
 	"github.com/enaml-ops/omg-cli/photon-cli"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/omg-cli/vsphere-cli"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/registry"
+	"github.com/enaml-ops/pluginlib/util"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
 // Version is the version of omg-cli.
@@ -43,31 +45,31 @@ func main() {
 			Name:   "azure",
 			Usage:  "azure [--flags] - deploy a bosh to azure",
 			Action: azurecli.GetAction(BoshInitDeploy),
-			Flags:  azurecli.GetFlags(),
+			Flags:  pluginutil.ToCliFlagArray(azurecli.GetFlags()),
 		},
 		{
 			Name:   "aws",
 			Usage:  "aws [--flags] - deploy a bosh to aws",
 			Action: awscli.GetAction(BoshInitDeploy),
-			Flags:  awscli.GetFlags(),
+			Flags:  pluginutil.ToCliFlagArray(awscli.GetFlags()),
 		},
 		{
 			Name:   "gcp",
 			Usage:  "gcp [--flags] - deploy a bosh to GCP",
 			Action: gcpcli.GetAction(BoshInitDeploy),
-			Flags:  gcpcli.GetFlags(),
+			Flags:  pluginutil.ToCliFlagArray(gcpcli.GetFlags()),
 		},
 		{
 			Name:   "photon",
 			Usage:  "photon [--flags] - deploy a bosh to photon",
 			Action: photoncli.GetAction(BoshInitDeploy),
-			Flags:  photoncli.GetFlags(),
+			Flags:  pluginutil.ToCliFlagArray(photoncli.GetFlags()),
 		},
 		{
 			Name:   "vsphere",
 			Usage:  "vsphere [--flags] - deploy a bosh to vsphere",
 			Action: vspherecli.GetAction(BoshInitDeploy),
-			Flags:  vspherecli.GetFlags(),
+			Flags:  pluginutil.ToCliFlagArray(vspherecli.GetFlags()),
 		},
 		{
 			Name: "list-cloudconfigs",
@@ -123,21 +125,21 @@ func main() {
 				}
 				return
 			},
-			Flags: []cli.Flag{
-				&cli.StringFlag{Name: "type", Value: "product", Usage: "define if the plugin to be registered is a cloudconfig or a product"},
-				&cli.StringFlag{Name: "pluginpath", Value: "", Usage: "the path to the plugin you wish to register"},
-			},
+			Flags: pluginutil.ToCliFlagArray([]pcli.Flag{
+				pcli.CreateStringFlag("type", "define if the plugin to be registered is a cloudconfig or a product", "product"),
+				pcli.CreateStringFlag("pluginpath", "the path to the plugin you wish to register"),
+			}),
 		},
 		{
 			Name:        "deploy-cloudconfig",
 			Usage:       "deploy-cloudconfig <cloudconfig-name> [--flags] - deploy a cloudconfig to bosh",
-			Flags:       bosh.GetAuthFlags(),
+			Flags:       pluginutil.ToCliFlagArray(bosh.GetAuthFlags()),
 			Subcommands: utils.GetCloudConfigCommands(CloudConfigPluginsDir),
 		},
 		{
 			Name:        "deploy-product",
 			Usage:       "deploy-product <prod-name> [--flags] - deploy a product via bosh",
-			Flags:       bosh.GetAuthFlags(),
+			Flags:       pluginutil.ToCliFlagArray(bosh.GetAuthFlags()),
 			Subcommands: utils.GetProductCommands(ProductPluginsDir),
 		},
 	}

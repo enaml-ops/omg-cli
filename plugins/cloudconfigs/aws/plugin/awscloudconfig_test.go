@@ -3,9 +3,9 @@ package awsccplugin_test
 import (
 	"fmt"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/plugin"
+	"github.com/enaml-ops/pluginlib/pcli"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/yaml.v2"
@@ -13,7 +13,7 @@ import (
 
 var _ = Describe("given AWSCloudConfig Plugin", func() {
 	Context("when calling GetFlags", func() {
-		var flags []cli.Flag
+		var flags []pcli.Flag
 		BeforeEach(func() {
 			cfg := new(AWSCloudConfig)
 			flags = cfg.GetFlags()
@@ -128,17 +128,17 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 	})
 })
 
-func testMultiAZFlagExists(flagname string, flags []cli.Flag) {
+func testMultiAZFlagExists(flagname string, flags []pcli.Flag) {
 	for i := 1; i <= AZCountSupported; i++ {
 		fn := CreateFlagnameWithSuffix(flagname, i)
 		testFlagExists(fn, flags)
 	}
 }
 
-func testFlagExists(flagname string, flags []cli.Flag) {
+func testFlagExists(flagname string, flags []pcli.Flag) {
 	var err = fmt.Errorf("could not find flag %s", flagname)
 	for _, flg := range flags {
-		if flg.Names()[0] == flagname {
+		if flg.Name == flagname {
 			err = nil
 		}
 	}

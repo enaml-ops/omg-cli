@@ -1,23 +1,24 @@
 package gcpcli
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
-func GetFlags() []cli.Flag {
+func GetFlags() []pcli.Flag {
 	boshdefaults := boshinit.NewGCPBoshBase()
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
-	gcpFlags := []cli.Flag{
-		&cli.StringFlag{Name: "gcp-network-name", Usage: "the GCP network name"},
-		&cli.StringFlag{Name: "gcp-subnetwork-name", Usage: "the GCP subnetwork"},
-		&cli.StringFlag{Name: "gcp-default-zone", Usage: "the default GCP zone"},
-		&cli.StringFlag{Name: "gcp-project", Usage: "the GCP project"},
-		&cli.StringFlag{Name: "gcp-machine-type", Value: "n1-standard-4", Usage: "GCP machine type"},
-		&cli.StringFlag{Name: "gcp-disk-type", Value: "pd-standard", Usage: "root disk type property"},
+	gcpFlags := []pcli.Flag{
+		pcli.CreateStringFlag("gcp-network-name", "the GCP network name"),
+		pcli.CreateStringFlag("gcp-subnetwork-name", "the GCP subnetwork"),
+		pcli.CreateStringFlag("gcp-default-zone", "the default GCP zone"),
+		pcli.CreateStringFlag("gcp-project", "the GCP project"),
+		pcli.CreateStringFlag("gcp-machine-type", "GCP machine type", "n1-standard-4"),
+		pcli.CreateStringFlag("gcp-disk-type", "root disk type property", "pd-standard"),
 	}
 	boshFlags = append(boshFlags, gcpFlags...)
 	return boshFlags

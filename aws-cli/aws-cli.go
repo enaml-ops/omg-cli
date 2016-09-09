@@ -3,24 +3,25 @@ package awscli
 import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
 	"gopkg.in/urfave/cli.v2"
 )
 
-func GetFlags() []cli.Flag {
+func GetFlags() []pcli.Flag {
 	boshdefaults := boshinit.GetAWSBoshBase()
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
-	awsFlags := []cli.Flag{
-		&cli.StringFlag{Name: "aws-instance-size", Value: "m3.xlarge", Usage: "the size of aws instance you wish to create"},
-		&cli.StringFlag{Name: "aws-availability-zone", Value: "us-east-1c", Usage: "the ec2 az you wish to deploy to"},
-		&cli.StringFlag{Name: "aws-subnet", Value: "", Usage: "your target vpc subnet"},
-		&cli.StringFlag{Name: "aws-pem-path", Value: "", Usage: "your aws pem file path"},
-		&cli.StringFlag{Name: "aws-access-key", Value: "", Usage: "aws account access key"},
-		&cli.StringFlag{Name: "aws-keyname", Value: "bosh", Usage: "aws keyname"},
-		&cli.StringFlag{Name: "aws-secret", Value: "", Usage: "aws account secret key"},
-		&cli.StringFlag{Name: "aws-region", Value: "us-east-1", Usage: "ec2 region to deploy on"},
-		&cli.StringSliceFlag{Name: "aws-security-group", Value: cli.NewStringSlice("bosh"), Usage: "this is for security groups to apply to your VM. you can add as many security group flags as you like"},
+	awsFlags := []pcli.Flag{
+		pcli.CreateStringFlag("aws-instance-size", "the size of aws instance you wish to create", "m3.xlarge"),
+		pcli.CreateStringFlag("aws-availability-zone", "the ec2 az you wish to deploy to", "us-east-1c"),
+		pcli.CreateStringFlag("aws-subnet", "your target vpc subnet"),
+		pcli.CreateStringFlag("aws-pem-path", "your aws pem file path"),
+		pcli.CreateStringFlag("aws-access-key", "aws account access key"),
+		pcli.CreateStringFlag("aws-keyname", "aws keyname", "bosh"),
+		pcli.CreateStringFlag("aws-secret", "aws account secret key"),
+		pcli.CreateStringFlag("aws-region", "ec2 region to deploy on", "us-east-1"),
+		pcli.CreateStringSliceFlag("aws-security-group", "this is for security groups to apply to your VM. you can add as many security group flags as you like", "bosh"),
 	}
 	for _, flag := range awsFlags {
 		boshFlags = append(boshFlags, flag)
@@ -56,7 +57,6 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		if err := boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {
 			return err
 		}
-
 		return nil
 	}
 }

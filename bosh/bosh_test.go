@@ -16,7 +16,6 @@ import (
 	"net/http"
 	"net/url"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
@@ -26,6 +25,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
+	"gopkg.in/urfave/cli.v2"
 )
 
 const (
@@ -55,8 +55,8 @@ func (f FakeCloudConfigDeployer) GetMeta() cloudconfig.Meta {
 	return cloudconfig.Meta{Name: "test"}
 }
 
-func (f FakeCloudConfigDeployer) GetFlags() []cli.Flag {
-	return []cli.Flag{}
+func (f FakeCloudConfigDeployer) GetFlags() []pcli.Flag {
+	return []pcli.Flag{}
 }
 
 func (f FakeCloudConfigDeployer) GetCloudConfig(args []string) []byte {
@@ -128,7 +128,7 @@ var _ = Describe("bosh", func() {
 					"--bosh-port", port,
 					"--bosh-user", basicAuthUser,
 					"--bosh-pass", basicAuthPass,
-				}, GetAuthFlags())
+				}, pluginutil.ToCliFlagArray(GetAuthFlags()))
 				err = CloudConfigAction(c, ccd)
 			})
 
@@ -160,7 +160,7 @@ var _ = Describe("bosh", func() {
 					"--bosh-port", port,
 					"--bosh-user", basicAuthUser,
 					"--bosh-pass", basicAuthPass,
-				}, GetAuthFlags())
+				}, pluginutil.ToCliFlagArray(GetAuthFlags()))
 			})
 
 			It("makes a request and returns without error", func() {
@@ -209,7 +209,7 @@ var _ = Describe("bosh", func() {
 					"--bosh-port", port,
 					"--bosh-user", basicAuthUser,
 					"--bosh-pass", basicAuthPass,
-				}, GetAuthFlags())
+				}, pluginutil.ToCliFlagArray(GetAuthFlags()))
 
 				task := enamlbosh.BoshTask{
 					State: enamlbosh.StatusDone,
@@ -286,7 +286,7 @@ var _ = Describe("bosh", func() {
 					"--bosh-port", port,
 					"--bosh-user", basicAuthUser,
 					"--bosh-pass", basicAuthPass,
-				}, GetAuthFlags())
+				}, pluginutil.ToCliFlagArray(GetAuthFlags()))
 
 				task := enamlbosh.BoshTask{
 					State: enamlbosh.StatusDone,

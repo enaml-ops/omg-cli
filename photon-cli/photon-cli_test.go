@@ -1,11 +1,11 @@
 package photoncli_test
 
 import (
-	"gopkg.in/urfave/cli.v2"
 	photoncli "github.com/enaml-ops/omg-cli/photon-cli"
 	"github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("given the photon cli", func() {
@@ -22,7 +22,7 @@ var _ = Describe("given the photon cli", func() {
 				"--bosh-private-ip", "10.0.0.3",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
-			}, photoncli.GetFlags())
+			}, pluginutil.ToCliFlagArray(photoncli.GetFlags()))
 			err := action(ctx)
 			Ω(err).ShouldNot(HaveOccurred())
 		})
@@ -32,7 +32,7 @@ var _ = Describe("given the photon cli", func() {
 		It("then it should return an error", func() {
 			action := photoncli.GetAction(func(s string) {})
 			var ctx *cli.Context
-			ctx = pluginutil.NewContext([]string{"someapp"}, photoncli.GetFlags())
+			ctx = pluginutil.NewContext([]string{"someapp"}, pluginutil.ToCliFlagArray(photoncli.GetFlags()))
 			err := action(ctx)
 			Ω(err).Should(HaveOccurred())
 		})
@@ -50,7 +50,7 @@ var _ = Describe("given the photon cli", func() {
 				"--bosh-private-ip", "10.0.0.3",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
-			}, photoncli.GetFlags())
+			}, pluginutil.ToCliFlagArray(photoncli.GetFlags()))
 			err := action(ctx)
 			Ω(err).Should(HaveOccurred())
 		})
@@ -68,7 +68,7 @@ var _ = Describe("given the photon cli", func() {
 				"--bosh-private-ip", "10.0.0.3",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
-			}, photoncli.GetFlags())
+			}, pluginutil.ToCliFlagArray(photoncli.GetFlags()))
 			err := action(ctx)
 			Ω(err).Should(HaveOccurred())
 		})

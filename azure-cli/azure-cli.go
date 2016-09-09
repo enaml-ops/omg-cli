@@ -3,31 +3,32 @@ package azurecli
 import (
 	"io/ioutil"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
-func GetFlags() []cli.Flag {
+func GetFlags() []pcli.Flag {
 	boshdefaults := boshinit.GetAzureDefaults()
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
-	azureFlags := []cli.Flag{
-		&cli.StringFlag{Name: "azure-instance-size", Value: "Standard_D1", Usage: "the instance size of your bosh"},
-		&cli.StringFlag{Name: "azure-vnet", Value: "", Usage: "your azure vnet name"},
-		&cli.StringFlag{Name: "azure-subnet", Value: "", Usage: "your azure subnet name"},
-		&cli.StringFlag{Name: "azure-subscription-id", Value: "", Usage: "your azure subscription id"},
-		&cli.StringFlag{Name: "azure-tenant-id", Value: "", Usage: "azure tenant id"},
-		&cli.StringFlag{Name: "azure-client-id", Value: "", Usage: "azure client id"},
-		&cli.StringFlag{Name: "azure-client-secret", Value: "", Usage: "azure client secret"},
-		&cli.StringFlag{Name: "azure-resource-group", Value: "", Usage: "azure resource group"},
-		&cli.StringFlag{Name: "azure-storage-account", Value: "", Usage: "azure storage account"},
-		&cli.StringFlag{Name: "azure-security-group", Value: "", Usage: "azure security group"},
-		&cli.StringFlag{Name: "azure-ssh-pub-key-path", Value: "", Usage: "the path to your azure ssh public key"},
-		&cli.StringFlag{Name: "azure-ssh-user", Value: "", Usage: "azure ssh user"},
-		&cli.StringFlag{Name: "azure-environment", Value: "AzureCloud", Usage: "the name of your azure environment"},
-		&cli.StringFlag{Name: "azure-private-key-path", Value: "", Usage: "the path to your private bosh key"},
+	azureFlags := []pcli.Flag{
+		pcli.CreateStringFlag("azure-instance-size", "the instance size of your bosh", "Standard_D1"),
+		pcli.CreateStringFlag("azure-vnet", "your azure vnet name"),
+		pcli.CreateStringFlag("azure-subnet", "your azure subnet name"),
+		pcli.CreateStringFlag("azure-subscription-id", "your azure subscription id"),
+		pcli.CreateStringFlag("azure-tenant-id", "azure tenant id"),
+		pcli.CreateStringFlag("azure-client-id", "azure client id"),
+		pcli.CreateStringFlag("azure-client-secret", "azure client secret"),
+		pcli.CreateStringFlag("azure-resource-group", "azure resource group"),
+		pcli.CreateStringFlag("azure-storage-account", "azure storage account"),
+		pcli.CreateStringFlag("azure-security-group", "azure security group"),
+		pcli.CreateStringFlag("azure-ssh-pub-key-path", "the path to your azure ssh public key"),
+		pcli.CreateStringFlag("azure-ssh-user", "azure ssh user"),
+		pcli.CreateStringFlag("azure-environment", "the name of your azure environment", "AzureCloud"),
+		pcli.CreateStringFlag("azure-private-key-path", "the path to your private bosh key"),
 	}
 	for _, flag := range azureFlags {
 		boshFlags = append(boshFlags, flag)
