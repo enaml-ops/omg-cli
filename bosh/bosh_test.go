@@ -16,7 +16,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/pluginlib/cloudconfig"

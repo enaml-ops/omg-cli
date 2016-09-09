@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/product"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var UIPrint = fmt.Println
@@ -38,19 +38,19 @@ func getBoshClient(c *cli.Context) *enamlbosh.Client {
 
 func GetAuthFlags() []cli.Flag {
 	return []cli.Flag{
-		cli.StringFlag{Name: "bosh-url", Value: "https://mybosh.com", Usage: "this is the url or ip of your bosh director"},
-		cli.IntFlag{Name: "bosh-port", Value: 25555, Usage: "this is the port of your bosh director"},
-		cli.StringFlag{Name: "bosh-user", Value: "bosh", Usage: "this is the username for your bosh director"},
-		cli.StringFlag{Name: "bosh-pass", Value: "", Usage: "this is the pasword for your bosh director"},
-		cli.BoolFlag{Name: "ssl-ignore", Usage: "ingore ssl self signed cert warnings"},
-		cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
+		&cli.StringFlag{Name: "bosh-url", Value: "https://mybosh.com", Usage: "this is the url or ip of your bosh director"},
+		&cli.IntFlag{Name: "bosh-port", Value: 25555, Usage: "this is the port of your bosh director"},
+		&cli.StringFlag{Name: "bosh-user", Value: "bosh", Usage: "this is the username for your bosh director"},
+		&cli.StringFlag{Name: "bosh-pass", Value: "", Usage: "this is the pasword for your bosh director"},
+		&cli.BoolFlag{Name: "ssl-ignore", Usage: "ingore ssl self signed cert warnings"},
+		&cli.BoolFlag{Name: "print-manifest", Usage: "if you would simply like to output a manifest the set this flag as true."},
 	}
 }
 
 // CloudConfigAction is the action that is executed for
 // each cloud config command
 func CloudConfigAction(c *cli.Context, cc cloudconfig.CloudConfigDeployer) error {
-	manifest := cc.GetCloudConfig(c.Args())
+	manifest := cc.GetCloudConfig(c.Args().Slice())
 	lo.G.Debug("we found a manifest and context: ", manifest, c)
 	if c.Bool("print-manifest") {
 		UIPrint(string(manifest))
@@ -73,7 +73,7 @@ func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) er
 	if err != nil {
 		return err
 	}
-	manifest := productDeployment.GetProduct(c.Args(), bytes)
+	manifest := productDeployment.GetProduct(c.Args().Slice(), bytes)
 
 	if manifest, err = decorateDeploymentWithBoshUUID(manifest, bc); err == nil {
 

@@ -1,7 +1,7 @@
 package cloudconfigs_test
 
 import (
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
 	"github.com/enaml-ops/pluginlib/util"
@@ -37,7 +37,7 @@ var _ = Describe("cloud config", func() {
 					"--network-dns-1", "10.148.20.5",
 					"--network-dns-1", "10.148.20.6",
 				}, cloudconfigs.CreateNetworkFlags([]cli.Flag{
-					cli.StringFlag{Name: "az"},
+					&cli.StringFlag{Name: "az"},
 				}, nop))
 				nets, err = cloudconfigs.CreateNetworks(c, validateCP, cp)
 			})
@@ -72,7 +72,7 @@ var _ = Describe("cloud config", func() {
 					"--network-static-1", "MyStaticNetwork",
 					"--network-dns-1", "10.148.20.6",
 				}, cloudconfigs.CreateNetworkFlags([]cli.Flag{
-					cli.StringFlag{Name: "az"},
+					&cli.StringFlag{Name: "az"},
 				}, nop))
 				nets, err = cloudconfigs.CreateNetworks(c, validateCP, cp)
 			})
@@ -107,7 +107,7 @@ var _ = Describe("cloud config", func() {
 					"--network-static-1", "MyStaticNetwork",
 					"--network-dns-1", "10.148.20.6",
 				}, cloudconfigs.CreateNetworkFlags([]cli.Flag{
-					cli.StringFlag{Name: "az"},
+					&cli.StringFlag{Name: "az"},
 				}, nop))
 				nets, err = cloudconfigs.CreateNetworks(c, validateCP, cp)
 			})

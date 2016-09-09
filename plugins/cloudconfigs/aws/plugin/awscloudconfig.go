@@ -3,7 +3,7 @@ package awsccplugin
 import (
 	"strconv"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	aws "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/cloud-config"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/util"
@@ -26,17 +26,17 @@ func CreateFlagnameWithSuffix(name string, suffix int) (flagname string) {
 //GetFlags - Get flags associated with plugin
 func (s *AWSCloudConfig) GetFlags() (flags []cli.Flag) {
 	flags = []cli.Flag{
-		cli.StringFlag{Name: "aws-region", Usage: "aws region"},
-		cli.StringSliceFlag{Name: "aws-security-group", Usage: "list of security groups"},
+		&cli.StringFlag{Name: "aws-region", Usage: "aws region"},
+		&cli.StringSliceFlag{Name: "aws-security-group", Usage: "list of security groups"},
 	}
 	for i := 1; i <= AZCountSupported; i++ {
-		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("bosh-az-name", i), Usage: "name for bosh availablility zone in cloud config"})
-		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("cidr", i), Usage: "cidr range for the given network"})
-		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("gateway", i), Usage: "gateway for given network"})
-		flags = append(flags, cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("dns", i), Usage: "dns for given network"})
-		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-az-name", i), Usage: "aws az name for given network"})
-		flags = append(flags, cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-subnet-name", i), Usage: "aws subnet name for given network"})
-		flags = append(flags, cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("bosh-reserve-range", i), Usage: "bosh reserve range for given network"})
+		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("bosh-az-name", i), Usage: "name for bosh availablility zone in cloud config"})
+		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("cidr", i), Usage: "cidr range for the given network"})
+		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("gateway", i), Usage: "gateway for given network"})
+		flags = append(flags, &cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("dns", i), Usage: "dns for given network"})
+		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-az-name", i), Usage: "aws az name for given network"})
+		flags = append(flags, &cli.StringFlag{Name: CreateFlagnameWithSuffix("aws-subnet-name", i), Usage: "aws subnet name for given network"})
+		flags = append(flags, &cli.StringSliceFlag{Name: CreateFlagnameWithSuffix("bosh-reserve-range", i), Usage: "bosh reserve range for given network"})
 	}
 	return
 }

@@ -1,5 +1,5 @@
-hash: 2f5349efe8f45189a5b6c223786ee79e6cf36b30a1037963f515d80587f0fcb2
-updated: 2016-09-07T11:55:50.023547691-07:00
+hash: 6be9191195f5421b53a911c4a2409717fb21201a7a19e7516846e5d1b9ad1b19
+updated: 2016-09-09T11:49:55.779470539-06:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -75,16 +75,14 @@ imports:
   version: 511ba4f8a696af09fe7637d0f303675a246232ee
   subpackages:
   - glob
-- name: github.com/codegangsta/cli
-  version: c723b19a84af34d905773672ffa1b8ead802e505
 - name: github.com/enaml-ops/enaml
-  version: 55d585ffc06f5bedbc6e0baa9bc2a9ab9b1ae44b
+  version: c59b4a0511a43ddb7500d84b4ea542d6fb0277fd
   subpackages:
   - cloudproperties/aws
   - cloudproperties/azure
   - enamlbosh
 - name: github.com/enaml-ops/pluginlib
-  version: 2d5b79581d399b0cff5b5bdc00ecf518aebcc09a
+  version: cdbf9881da6246adb7030a0600d7c74d26ac10af
   subpackages:
   - cloudconfig
   - pcli
@@ -153,7 +151,7 @@ imports:
 - name: github.com/pkg/errors
   version: 17b591df37844cde689f4d5813e5cea0927d8dd2
 - name: github.com/pkg/sftp
-  version: a71e8f580e3b622ebff585309160b1cc549ef4d2
+  version: 8197a2e580736b78d704be0fc47b2324c0591a32
 - name: github.com/square/certstrap
   version: b6aef507a0840bf78bac99e7ffa6e6eb5c2c3c9f
   subpackages:
@@ -185,6 +183,8 @@ imports:
   - internal/remote_api
   - internal/urlfetch
   - urlfetch
+- name: gopkg.in/urfave/cli.v2
+  version: c72728f42438425ffcd487986936357e17ebba3f
 - name: gopkg.in/yaml.v2
   version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
 testImports:

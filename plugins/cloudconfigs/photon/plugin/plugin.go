@@ -3,7 +3,7 @@ package plugin
 import (
 	"fmt"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/util"
@@ -20,7 +20,7 @@ func (s *Plugin) GetFlags() []cli.Flag {
 }
 
 func networkFlags(flags []cli.Flag, i int) []cli.Flag {
-	flags = append(flags, cli.StringSliceFlag{Name: cloudconfigs.CreateFlagnameWithSuffix("photon-network-name", i), Usage: fmt.Sprintf("photon network name for network %d", i)})
+	flags = append(flags, &cli.StringSliceFlag{Name: cloudconfigs.CreateFlagnameWithSuffix("photon-network-name", i), Usage: fmt.Sprintf("photon network name for network %d", i)})
 	return flags
 }
 

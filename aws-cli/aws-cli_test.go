@@ -1,7 +1,7 @@
 package awscli_test
 
 import (
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	awscli "github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/pluginlib/util"
 	. "github.com/onsi/ginkgo"

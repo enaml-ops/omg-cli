@@ -1,7 +1,7 @@
 package gcpcli
 
 import (
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/xchapter7x/lo"
@@ -12,12 +12,12 @@ func GetFlags() []cli.Flag {
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	gcpFlags := []cli.Flag{
-		cli.StringFlag{Name: "gcp-network-name", Usage: "the GCP network name"},
-		cli.StringFlag{Name: "gcp-subnetwork-name", Usage: "the GCP subnetwork"},
-		cli.StringFlag{Name: "gcp-default-zone", Usage: "the default GCP zone"},
-		cli.StringFlag{Name: "gcp-project", Usage: "the GCP project"},
-		cli.StringFlag{Name: "gcp-machine-type", Value: "n1-standard-4", Usage: "GCP machine type"},
-		cli.StringFlag{Name: "gcp-disk-type", Value: "pd-standard", Usage: "root disk type property"},
+		&cli.StringFlag{Name: "gcp-network-name", Usage: "the GCP network name"},
+		&cli.StringFlag{Name: "gcp-subnetwork-name", Usage: "the GCP subnetwork"},
+		&cli.StringFlag{Name: "gcp-default-zone", Usage: "the default GCP zone"},
+		&cli.StringFlag{Name: "gcp-project", Usage: "the GCP project"},
+		&cli.StringFlag{Name: "gcp-machine-type", Value: "n1-standard-4", Usage: "GCP machine type"},
+		&cli.StringFlag{Name: "gcp-disk-type", Value: "pd-standard", Usage: "root disk type property"},
 	}
 	boshFlags = append(boshFlags, gcpFlags...)
 	return boshFlags

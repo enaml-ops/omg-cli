@@ -25,8 +25,8 @@ import:
   - logger
   - ui
   - ui/fmt
-- package: github.com/codegangsta/cli
-  version: master
+- package: gopkg.in/urfave/cli.v2
+  version: c72728f42438425ffcd487986936357e17ebba3f
 - package: github.com/hashicorp/go-plugin
   version: master
 - package: github.com/xchapter7x/lo
@@ -43,7 +43,7 @@ import:
 - package: github.com/onsi/gomega
   version: master
 - package: github.com/enaml-ops/pluginlib
-  version: 2d5b79581d399b0cff5b5bdc00ecf518aebcc09a
+  version: cdbf9881da6246adb7030a0600d7c74d26ac10af
 - package: golang.org/x/oauth2
 - package: golang.org/x/net
   subpackages:

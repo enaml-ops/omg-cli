@@ -3,7 +3,7 @@ package plugin
 import (
 	"fmt"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/util"
@@ -16,15 +16,15 @@ type Plugin struct {
 func (s *Plugin) GetFlags() []cli.Flag {
 	flags := cloudconfigs.CreateAZFlags()
 	flags = cloudconfigs.CreateNetworkFlags(flags, networkFlags)
-	flags = append(flags, cli.StringSliceFlag{Name: "vsphere-datacenter", Usage: "vsphere datacenter name"})
-	flags = append(flags, cli.StringSliceFlag{Name: "vsphere-cluster", Usage: "vsphere cluster name"})
-	flags = append(flags, cli.StringSliceFlag{Name: "vsphere-resource-pool", Usage: "vsphere resource pool name"})
+	flags = append(flags, &cli.StringSliceFlag{Name: "vsphere-datacenter", Usage: "vsphere datacenter name"})
+	flags = append(flags, &cli.StringSliceFlag{Name: "vsphere-cluster", Usage: "vsphere cluster name"})
+	flags = append(flags, &cli.StringSliceFlag{Name: "vsphere-resource-pool", Usage: "vsphere resource pool name"})
 
 	return flags
 }
 
 func networkFlags(flags []cli.Flag, i int) []cli.Flag {
-	flags = append(flags, cli.StringSliceFlag{Name: cloudconfigs.CreateFlagnameWithSuffix("vsphere-network-name", i), Usage: fmt.Sprintf("vsphere network name for network %d", i)})
+	flags = append(flags, &cli.StringSliceFlag{Name: cloudconfigs.CreateFlagnameWithSuffix("vsphere-network-name", i), Usage: fmt.Sprintf("vsphere network name for network %d", i)})
 	return flags
 }
 

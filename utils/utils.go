@@ -9,11 +9,11 @@ import (
 	"os"
 	"path"
 
-	"github.com/codegangsta/cli"
 	"github.com/enaml-ops/omg-cli/bosh"
 	"github.com/enaml-ops/pluginlib/registry"
 	"github.com/enaml-ops/pluginlib/util"
 	"github.com/xchapter7x/lo"
+	"gopkg.in/urfave/cli.v2"
 )
 
 // ClearDefaultStringSliceValue - this is simply to work around a defect in the
@@ -35,14 +35,14 @@ func isJustDefault(stringSliceArgs []string) bool {
 
 // GetCloudConfigCommands builds a list of CLI commands depending on
 // which cloud config plugins are installed.
-func GetCloudConfigCommands(target string) (commands []cli.Command) {
+func GetCloudConfigCommands(target string) (commands []*cli.Command) {
 	files, _ := ioutil.ReadDir(target)
 	for _, f := range files {
 		lo.G.Debug("registering: ", f.Name())
 		pluginPath := path.Join(target, f.Name())
 		flags, _ := registry.RegisterCloudConfig(pluginPath)
 
-		commands = append(commands, cli.Command{
+		commands = append(commands, &cli.Command{
 			Name:  f.Name(),
 			Usage: "deploy the " + f.Name() + " cloud config",
 			Flags: flags,
@@ -52,9 +52,9 @@ func GetCloudConfigCommands(target string) (commands []cli.Command) {
 				defer client.Kill()
 				lo.G.Debug("we found client and cloud config: ", client, cc)
 				lo.G.Debug("meta", cc.GetMeta())
-				lo.G.Debug("args: ", c.Parent().Args())
+				lo.G.Debug("args: ", c.Lineage()[1].Args())
 
-				return bosh.CloudConfigAction(c.Parent(), cc)
+				return bosh.CloudConfigAction(c.Lineage()[1], cc)
 			},
 		})
 	}
@@ -64,21 +64,21 @@ func GetCloudConfigCommands(target string) (commands []cli.Command) {
 
 // GetProductCommands builds a list of CLI commands depending on which
 // product plugins are installed.
-func GetProductCommands(target string) (commands []cli.Command) {
+func GetProductCommands(target string) (commands []*cli.Command) {
 	files, _ := ioutil.ReadDir(target)
 	for _, f := range files {
 		lo.G.Debug("registering: ", f.Name())
 		pluginPath := path.Join(target, f.Name())
 		flags, _ := registry.RegisterProduct(pluginPath)
 
-		commands = append(commands, cli.Command{
+		commands = append(commands, &cli.Command{
 			Name:  f.Name(),
 			Usage: "deploy the " + f.Name() + " product",
 			Flags: pluginutil.ToCliFlagArray(flags),
 			Action: func(c *cli.Context) (err error) {
 				client, productDeployment := registry.GetProductReference(pluginPath)
 				defer client.Kill()
-				return bosh.ProductAction(c.Parent(), productDeployment)
+				return bosh.ProductAction(c.Lineage()[1], productDeployment)
 			},
 		})
 	}
@@ -87,7 +87,7 @@ func GetProductCommands(target string) (commands []cli.Command) {
 }
 
 func ConvertToCLIStringSliceFlag(values []string) *cli.StringSlice {
-	cliSlice := &cli.StringSlice{}
+	cliSlice := cli.NewStringSlice()
 	for _, value := range values {
 		cliSlice.Set(value)
 	}

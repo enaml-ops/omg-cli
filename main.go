@@ -12,7 +12,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/aws-cli"
 	"github.com/enaml-ops/omg-cli/azure-cli"
 	"github.com/enaml-ops/omg-cli/bosh"
@@ -36,9 +36,9 @@ var CloudConfigPluginsDir = "./.plugins/cloudconfig"
 var ProductPluginsDir = "./.plugins/product"
 
 func main() {
-	app := cli.NewApp()
+	app := (&cli.App{})
 	app.Version = Version
-	app.Commands = []cli.Command{
+	app.Commands = []*cli.Command{
 		{
 			Name:   "azure",
 			Usage:  "azure [--flags] - deploy a bosh to azure",
@@ -108,7 +108,7 @@ func main() {
 			Name:  "product-meta",
 			Usage: "product-meta <prod-name> - show product metadata",
 			Action: func(c *cli.Context) error {
-				if len(c.Args()) > 0 {
+				if c.Args().Len() > 0 {
 					return productMeta(c.Args().First())
 				}
 				return nil
@@ -124,8 +124,8 @@ func main() {
 				return
 			},
 			Flags: []cli.Flag{
-				cli.StringFlag{Name: "type", Value: "product", Usage: "define if the plugin to be registered is a cloudconfig or a product"},
-				cli.StringFlag{Name: "pluginpath", Value: "", Usage: "the path to the plugin you wish to register"},
+				&cli.StringFlag{Name: "type", Value: "product", Usage: "define if the plugin to be registered is a cloudconfig or a product"},
+				&cli.StringFlag{Name: "pluginpath", Value: "", Usage: "the path to the plugin you wish to register"},
 			},
 		},
 		{

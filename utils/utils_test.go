@@ -4,17 +4,17 @@ import (
 	"os"
 	"path"
 
-	"github.com/codegangsta/cli"
 	. "github.com/enaml-ops/omg-cli/utils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("utils", func() {
 
 	Describe("given a GetCloudConfigCommands func", func() {
 		Context("when called with a valid plugin dir", func() {
-			var commands []cli.Command
+			var commands []*cli.Command
 			BeforeEach(func() {
 				commands = GetCloudConfigCommands("../pluginlib/registry/fixtures/cloudconfig")
 			})
@@ -28,7 +28,7 @@ var _ = Describe("utils", func() {
 
 	Describe("given a GetProductCommands func", func() {
 		Context("when called with a valid plugin dir", func() {
-			var commands []cli.Command
+			var commands []*cli.Command
 			BeforeEach(func() {
 				commands = GetProductCommands("../pluginlib/registry/fixtures/product")
 			})

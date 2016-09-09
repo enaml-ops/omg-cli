@@ -3,7 +3,7 @@ package photoncli
 import (
 	"errors"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
 	"github.com/enaml-ops/omg-cli/utils"
@@ -15,13 +15,13 @@ func GetFlags() []cli.Flag {
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	photonFlags := []cli.Flag{
-		cli.StringFlag{Name: "photon-target", Usage: "photon api endpoint http://PHOTON_CTRL_IP:9000"},
-		cli.StringFlag{Name: "photon-user", Usage: "api admin user"},
-		cli.StringFlag{Name: "photon-password", Usage: "api admin pass"},
-		cli.BoolTFlag{Name: "photon-ignore-cert", Usage: "setting ignore cert or not"},
-		cli.StringFlag{Name: "photon-project-id", Usage: "the photon project id"},
-		cli.StringFlag{Name: "photon-machine-type", Value: "core-200", Usage: "photon instance type name"},
-		cli.StringFlag{Name: "photon-network-id", Usage: "the network-id to deploy your bosh onto (THIS IS NOT THE NETWORK NAME)"},
+		&cli.StringFlag{Name: "photon-target", Usage: "photon api endpoint http://PHOTON_CTRL_IP:9000"},
+		&cli.StringFlag{Name: "photon-user", Usage: "api admin user"},
+		&cli.StringFlag{Name: "photon-password", Usage: "api admin pass"},
+		&cli.BoolFlag{Value: true,Name: "photon-ignore-cert", Usage: "setting ignore cert or not"},
+		&cli.StringFlag{Name: "photon-project-id", Usage: "the photon project id"},
+		&cli.StringFlag{Name: "photon-machine-type", Value: "core-200", Usage: "photon instance type name"},
+		&cli.StringFlag{Name: "photon-network-id", Usage: "the network-id to deploy your bosh onto (THIS IS NOT THE NETWORK NAME)"},
 	}
 	boshFlags = append(boshFlags, photonFlags...)
 	return boshFlags

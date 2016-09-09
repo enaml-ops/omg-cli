@@ -3,7 +3,7 @@ package awsccplugin_test
 import (
 	"fmt"
 
-	"github.com/codegangsta/cli"
+	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/plugin"
 	. "github.com/onsi/ginkgo"
@@ -138,7 +138,7 @@ func testMultiAZFlagExists(flagname string, flags []cli.Flag) {
 func testFlagExists(flagname string, flags []cli.Flag) {
 	var err = fmt.Errorf("could not find flag %s", flagname)
 	for _, flg := range flags {
-		if flg.GetName() == flagname {
+		if flg.Names()[0] == flagname {
 			err = nil
 		}
 	}
