@@ -47,19 +47,20 @@ func (s *BoshBase) HandleDeployment(provider IAASManifestProvider, boshInitDeplo
 		return err
 	}
 
+	if err = s.CreateAuthenticationFiles(); err != nil {
+		return err
+	}
+
 	if s.PrintManifest {
 		fmt.Println(yamlString)
-	} else {
-		if err = s.deployYaml(yamlString, boshInitDeploy); err != nil {
-			lo.G.Error(err.Error())
-			return err
-		}
-		if err := s.CreateAuthenticationFiles(); err != nil {
-			lo.G.Error(err.Error())
-			return err
-		}
-
+		return nil
 	}
+
+	if err = s.deployYaml(yamlString, boshInitDeploy); err != nil {
+		lo.G.Error(err.Error())
+		return err
+	}
+
 	return nil
 }
 
