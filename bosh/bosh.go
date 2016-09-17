@@ -245,9 +245,10 @@ func checkTaskStatus(task enamlbosh.BoshTask, client *enamlbosh.Client, poll boo
 func pollTaskAndWait(task enamlbosh.BoshTask, client *enamlbosh.Client, tries int) error {
 	UIPrint("polling task...")
 	defer UIPrint(fmt.Sprintf("Finished with Task %s", task.Description))
-
+	ticker := time.Tick(time.Second)
 	count := 0
 	for {
+		<-ticker
 		var err error
 		task, err = client.GetTask(task.ID)
 		if err != nil {
@@ -262,8 +263,7 @@ func pollTaskAndWait(task enamlbosh.BoshTask, client *enamlbosh.Client, tries in
 			lo.G.Error("task error: " + err.Error())
 			return err
 		default:
-			UIPrintStatus(fmt.Sprintf("task is %s - %s", task.State, task.Description))
-			time.Sleep(1 * time.Second)
+			UIPrintStatus(fmt.Sprintf("task '%s' is %s", task.Description, task.State))
 		}
 		count++
 

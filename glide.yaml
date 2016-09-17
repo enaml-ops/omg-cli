@@ -33,7 +33,7 @@ import:
   version: master
 - package: github.com/pivotal-golang/clock
 - package: github.com/enaml-ops/enaml
-  version: master
+  version: v0.0.14
   subpackages:
   - enamlbosh
   - cloudproperties/aws
@@ -43,7 +43,7 @@ import:
 - package: github.com/onsi/gomega
   version: master
 - package: github.com/enaml-ops/pluginlib
-  version: 19fe2845d9ba6d5842b5c8a852ebf92254225ec9
+  version: v0.0.7 
 - package: golang.org/x/oauth2
 - package: golang.org/x/net
   subpackages:
