@@ -13,7 +13,18 @@ import (
 	"gopkg.in/urfave/cli.v2"
 )
 
+// Reset all custom styles
+const RESET = "\033[0m"
+
+// Return curor to start of line and clean it
+const RESET_LINE = "\r\033[K"
+
 var UIPrint = fmt.Println
+
+var UIPrintStatus = func(i ...interface{}) (int, error) {
+	fmt.Print(RESET_LINE)
+	return fmt.Printf(i[0].(string)+getProcessing(), i[1:]...)
+}
 
 var boshclient *enamlbosh.Client
 
@@ -233,7 +244,7 @@ func checkTaskStatus(task enamlbosh.BoshTask, client *enamlbosh.Client, poll boo
 // A -1 value for tries indicates infinite attempts.
 func pollTaskAndWait(task enamlbosh.BoshTask, client *enamlbosh.Client, tries int) error {
 	UIPrint("polling task...")
-	defer UIPrint(fmt.Sprintf("Task %s is %s", task.Description, task.State))
+	defer UIPrint(fmt.Sprintf("Finished with Task %s", task.Description))
 
 	count := 0
 	for {
@@ -244,21 +255,31 @@ func pollTaskAndWait(task enamlbosh.BoshTask, client *enamlbosh.Client, tries in
 		}
 		switch task.State {
 		case enamlbosh.StatusDone:
-			UIPrint(fmt.Sprintf("task state %s", task.State))
+			UIPrintStatus(fmt.Sprintf("task state %s", task.State))
 			return nil
 		case enamlbosh.StatusCancelled, enamlbosh.StatusError:
 			err := fmt.Errorf("%s - %s", task.State, task.Description)
 			lo.G.Error("task error: " + err.Error())
 			return err
 		default:
-			UIPrint(fmt.Sprintf("task is %s - %s", task.State, task.Description))
+			UIPrintStatus(fmt.Sprintf("task is %s - %s", task.State, task.Description))
 			time.Sleep(1 * time.Second)
 		}
 		count++
 
 		if tries != -1 && count >= tries {
-			UIPrint("hit poll limit, exiting task poller without error")
+			UIPrintStatus("hit poll limit, exiting task poller without error")
 			return nil
 		}
 	}
+}
+
+var processingState = 0
+var processingStateValues = []string{
+	"|", "/", "-", "\\",
+}
+
+func getProcessing() string {
+	processingState++
+	return " [ " + processingStateValues[(processingState%4)] + " ] "
 }
