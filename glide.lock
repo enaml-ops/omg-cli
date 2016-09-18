@@ -1,5 +1,5 @@
-hash: 56da8f32b4da9f6b7e82d33bef7335fd53cedc3a6b917dbed1b626a029089404
-updated: 2016-09-17T11:00:20.639330257-04:00
+hash: fc59bdcb14525006593a1bcd7a716c791a7b440ece680af464598a8636e4ae6f
+updated: 2016-09-18T12:48:26.260249604-04:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -76,13 +76,13 @@ imports:
   subpackages:
   - glob
 - name: github.com/enaml-ops/enaml
-  version: 4febd27aeed0c4228d20302be1fd0ebc7c4860f8
+  version: b232608251205ea0fc1e039631214a64954f7cb1
   subpackages:
   - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
 - name: github.com/enaml-ops/pluginlib
-  version: cbe8cf40f9ba44ab44fec16747d9ddd7f08b1682
+  version: ef4633a4434ad733be7b0763b387564c7910d499
   subpackages:
   - pcli
   - registry
@@ -135,15 +135,15 @@ imports:
   subpackages:
   - ssh
 - name: golang.org/x/net
-  version: 9bc2a3340c92c17a20edcd0080e93851ed58f5d5
+  version: 71a035914f99bb58fe82eac0f1289f10963d876c
   subpackages:
   - context
 - name: golang.org/x/oauth2
-  version: 4d549c893be7d4011bab739cc585d091a7188d27
+  version: 3c3a985cb79f52a3190fbc056984415ca6763d01
   subpackages:
   - internal
 - name: google.golang.org/appengine
-  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
+  version: 78199dcb0669fc381c22e919e1e97eba879e8f60
   subpackages:
   - urlfetch
   - internal
@@ -155,5 +155,5 @@ imports:
 - name: gopkg.in/urfave/cli.v2
   version: c72728f42438425ffcd487986936357e17ebba3f
 - name: gopkg.in/yaml.v2
-  version: e4d366fc3c7938e2958e662b4258c7a89e1f0e3e
+  version: 31c299268d302dd0aa9a0dcf765a3d58971ac83f
 devImports: []
