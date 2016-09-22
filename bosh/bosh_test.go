@@ -11,6 +11,7 @@
 package bosh
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -63,7 +64,9 @@ func (f FakeCloudConfigDeployer) GetCloudConfig(args []string) []byte {
 	return []byte(controlCloudConfig)
 }
 
-type FakeProductDeployer struct{}
+type FakeProductDeployer struct {
+	ErrControl error
+}
 
 func (f FakeProductDeployer) GetMeta() product.Meta {
 	return product.Meta{Name: "test"}
@@ -73,14 +76,51 @@ func (f FakeProductDeployer) GetFlags() []pcli.Flag {
 	return []pcli.Flag{}
 }
 
-func (f FakeProductDeployer) GetProduct(args []string, cloudConfig []byte) []byte {
-	return []byte(controlProduct)
+func (f FakeProductDeployer) GetProduct(args []string, cloudConfig []byte) ([]byte, error) {
+	return []byte(controlProduct), f.ErrControl
 }
 
 func portAndURL(s *ghttp.Server) (port, host string) {
 	u, _ := url.Parse(s.URL())
 	host, port, _ = net.SplitHostPort(u.Host)
 	return port, u.Scheme + "://" + host
+}
+
+func decorateServerWithRoutes(server *ghttp.Server) (*ghttp.Server, []byte) {
+	var deploymentPostBody []byte
+	var task = enamlbosh.BoshTask{
+		State: enamlbosh.StatusDone,
+		ID:    42,
+	}
+	server.AppendHandlers(
+		ghttp.CombineHandlers(
+			ghttp.VerifyBasicAuth(basicAuthUser, basicAuthPass),
+			ghttp.VerifyRequest("GET", "/cloud_configs"),
+			ghttp.RespondWithJSONEncoded(http.StatusOK,
+				[]enamlbosh.CloudConfigResponseBody{
+					{Properties: "response"},
+				}),
+		),
+		ghttp.CombineHandlers(
+			ghttp.VerifyRequest("GET", "/info"),
+			ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
+		),
+		ghttp.CombineHandlers(
+			ghttp.VerifyRequest("POST", "/deployments"),
+			ghttp.RespondWithJSONEncoded(http.StatusOK, task),
+			// capture the POST to /deployments so we can verify it later
+			func(w http.ResponseWriter, req *http.Request) {
+				body, _ := ioutil.ReadAll(req.Body)
+				req.Body.Close()
+				deploymentPostBody = body
+			},
+		),
+		ghttp.CombineHandlers(
+			ghttp.VerifyRequest("GET", "/tasks/42"),
+			ghttp.RespondWithJSONEncoded(http.StatusOK, task),
+		),
+	)
+	return server, deploymentPostBody
 }
 
 var _ = Describe("bosh", func() {
@@ -174,11 +214,9 @@ var _ = Describe("bosh", func() {
 	})
 
 	Describe("ProductAction", func() {
-		var pd product.ProductDeployer
 		var server *ghttp.Server
 
 		BeforeEach(func() {
-			pd = FakeProductDeployer{}
 			server = ghttp.NewTLSServer()
 			server.AppendHandlers(
 				// have our test server respond to /info acting as a basic-auth bosh
@@ -193,13 +231,15 @@ var _ = Describe("bosh", func() {
 			server.Close()
 		})
 
-		Context("when called with the --print-manifest option", func() {
+		Context("when the productdeployer's GetProduct() method returns an error", func() {
+			var pd product.ProductDeployer
 			var c *cli.Context
-			var err error
 			var deploymentPostBody []byte
-			var oldPrint = UIPrint
 
 			BeforeEach(func() {
+				pd = FakeProductDeployer{
+					ErrControl: fmt.Errorf("random error "),
+				}
 				port, url := portAndURL(server)
 				c = pluginutil.NewContext([]string{
 					"foo",
@@ -210,40 +250,7 @@ var _ = Describe("bosh", func() {
 					"--bosh-user", basicAuthUser,
 					"--bosh-pass", basicAuthPass,
 				}, pluginutil.ToCliFlagArray(GetAuthFlags()))
-
-				task := enamlbosh.BoshTask{
-					State: enamlbosh.StatusDone,
-					ID:    42,
-				}
-
-				server.AppendHandlers(
-					ghttp.CombineHandlers(
-						ghttp.VerifyBasicAuth(basicAuthUser, basicAuthPass),
-						ghttp.VerifyRequest("GET", "/cloud_configs"),
-						ghttp.RespondWithJSONEncoded(http.StatusOK,
-							[]enamlbosh.CloudConfigResponseBody{
-								{Properties: "response"},
-							}),
-					),
-					ghttp.CombineHandlers(
-						ghttp.VerifyRequest("GET", "/info"),
-						ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
-					),
-					ghttp.CombineHandlers(
-						ghttp.VerifyRequest("POST", "/deployments"),
-						ghttp.RespondWithJSONEncoded(http.StatusOK, task),
-						// capture the POST to /deployments so we can verify it later
-						func(w http.ResponseWriter, req *http.Request) {
-							body, _ := ioutil.ReadAll(req.Body)
-							req.Body.Close()
-							deploymentPostBody = body
-						},
-					),
-					ghttp.CombineHandlers(
-						ghttp.VerifyRequest("GET", "/tasks/42"),
-						ghttp.RespondWithJSONEncoded(http.StatusOK, task),
-					),
-				)
+				server, deploymentPostBody = decorateServerWithRoutes(server)
 				UIPrint = func(stuff ...interface{}) (int, error) {
 					deploymentPostBody = []byte(stuff[0].(string))
 					return 0, nil
@@ -251,89 +258,130 @@ var _ = Describe("bosh", func() {
 			})
 
 			AfterEach(func() {
-				UIPrint = oldPrint
+				server.Close()
 			})
 
-			It("decorates the deployment with the bosh UUID", func() {
-				ProductAction(c, pd)
-
-				Ω(deploymentPostBody).ShouldNot(BeNil())
-				dm := enaml.NewDeploymentManifest(deploymentPostBody)
-				Ω(dm.DirectorUUID).Should(Equal(controlUUID))
-			})
-
-			It("returns without error", func() {
-				err = ProductAction(c, pd)
-				Ω(err).ShouldNot(HaveOccurred())
-
-				// it should GET the /info and /cloud_config, but not POST the product
-				Ω(len(server.ReceivedRequests())).Should(Equal(3))
+			It("then it should report the reason for failing", func() {
+				err := ProductAction(c, pd)
+				Ω(err).Should(HaveOccurred())
 			})
 		})
 
-		Context("when called without the --print-manifest option", func() {
-			var c *cli.Context
-			var err error
-
-			var deploymentPostBody []byte
-
+		Context("when the productdeployer's GetProduct() method DOES NOT return an error", func() {
+			var pd product.ProductDeployer
 			BeforeEach(func() {
-				port, url := portAndURL(server)
-				c = pluginutil.NewContext([]string{
-					"foo",
-					"--ssl-ignore",
-					"--bosh-url", url,
-					"--bosh-port", port,
-					"--bosh-user", basicAuthUser,
-					"--bosh-pass", basicAuthPass,
-				}, pluginutil.ToCliFlagArray(GetAuthFlags()))
-
-				task := enamlbosh.BoshTask{
-					State: enamlbosh.StatusDone,
-					ID:    42,
-				}
-
-				server.AppendHandlers(
-					ghttp.CombineHandlers(
-						ghttp.VerifyBasicAuth(basicAuthUser, basicAuthPass),
-						ghttp.VerifyRequest("GET", "/cloud_configs"),
-						ghttp.RespondWithJSONEncoded(http.StatusOK,
-							[]enamlbosh.CloudConfigResponseBody{
-								{Properties: "response"},
-							}),
-					),
-					ghttp.CombineHandlers(
-						ghttp.VerifyRequest("GET", "/info"),
-						ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
-					),
-					ghttp.CombineHandlers(
-						ghttp.VerifyRequest("POST", "/deployments"),
-						ghttp.RespondWithJSONEncoded(http.StatusOK, task),
-						// capture the POST to /deployments so we can verify it later
-						func(w http.ResponseWriter, req *http.Request) {
-							body, _ := ioutil.ReadAll(req.Body)
-							req.Body.Close()
-							deploymentPostBody = body
-						},
-					),
-					ghttp.CombineHandlers(
-						ghttp.VerifyRequest("GET", "/tasks/42"),
-						ghttp.RespondWithJSONEncoded(http.StatusOK, task),
-					),
-				)
+				pd = FakeProductDeployer{}
 			})
 
-			It("returns without error", func() {
-				err = ProductAction(c, pd)
-				Ω(err).ShouldNot(HaveOccurred())
+			Context("when called with the --print-manifest option", func() {
+				var c *cli.Context
+				var err error
+				var deploymentPostBody []byte
+				var oldPrint = UIPrint
+
+				BeforeEach(func() {
+					port, url := portAndURL(server)
+					c = pluginutil.NewContext([]string{
+						"foo",
+						"--print-manifest",
+						"--ssl-ignore",
+						"--bosh-url", url,
+						"--bosh-port", port,
+						"--bosh-user", basicAuthUser,
+						"--bosh-pass", basicAuthPass,
+					}, pluginutil.ToCliFlagArray(GetAuthFlags()))
+					server, deploymentPostBody = decorateServerWithRoutes(server)
+					UIPrint = func(stuff ...interface{}) (int, error) {
+						deploymentPostBody = []byte(stuff[0].(string))
+						return 0, nil
+					}
+				})
+
+				AfterEach(func() {
+					UIPrint = oldPrint
+				})
+
+				It("decorates the deployment with the bosh UUID", func() {
+					ProductAction(c, pd)
+
+					Ω(deploymentPostBody).ShouldNot(BeNil())
+					dm := enaml.NewDeploymentManifest(deploymentPostBody)
+					Ω(dm.DirectorUUID).Should(Equal(controlUUID))
+				})
+
+				It("returns without error", func() {
+					err = ProductAction(c, pd)
+					Ω(err).ShouldNot(HaveOccurred())
+
+					// it should GET the /info and /cloud_config, but not POST the product
+					Ω(len(server.ReceivedRequests())).Should(Equal(3))
+				})
 			})
 
-			It("decorates the deployment with the bosh UUID", func() {
-				ProductAction(c, pd)
+			Context("when called without the --print-manifest option", func() {
+				var c *cli.Context
+				var err error
 
-				Ω(deploymentPostBody).ShouldNot(BeNil())
-				dm := enaml.NewDeploymentManifest(deploymentPostBody)
-				Ω(dm.DirectorUUID).Should(Equal(controlUUID))
+				var deploymentPostBody []byte
+
+				BeforeEach(func() {
+					port, url := portAndURL(server)
+					c = pluginutil.NewContext([]string{
+						"foo",
+						"--ssl-ignore",
+						"--bosh-url", url,
+						"--bosh-port", port,
+						"--bosh-user", basicAuthUser,
+						"--bosh-pass", basicAuthPass,
+					}, pluginutil.ToCliFlagArray(GetAuthFlags()))
+
+					task := enamlbosh.BoshTask{
+						State: enamlbosh.StatusDone,
+						ID:    42,
+					}
+
+					server.AppendHandlers(
+						ghttp.CombineHandlers(
+							ghttp.VerifyBasicAuth(basicAuthUser, basicAuthPass),
+							ghttp.VerifyRequest("GET", "/cloud_configs"),
+							ghttp.RespondWithJSONEncoded(http.StatusOK,
+								[]enamlbosh.CloudConfigResponseBody{
+									{Properties: "response"},
+								}),
+						),
+						ghttp.CombineHandlers(
+							ghttp.VerifyRequest("GET", "/info"),
+							ghttp.RespondWith(http.StatusOK, basicAuthBoshInfo),
+						),
+						ghttp.CombineHandlers(
+							ghttp.VerifyRequest("POST", "/deployments"),
+							ghttp.RespondWithJSONEncoded(http.StatusOK, task),
+							// capture the POST to /deployments so we can verify it later
+							func(w http.ResponseWriter, req *http.Request) {
+								body, _ := ioutil.ReadAll(req.Body)
+								req.Body.Close()
+								deploymentPostBody = body
+							},
+						),
+						ghttp.CombineHandlers(
+							ghttp.VerifyRequest("GET", "/tasks/42"),
+							ghttp.RespondWithJSONEncoded(http.StatusOK, task),
+						),
+					)
+				})
+
+				It("returns without error", func() {
+					err = ProductAction(c, pd)
+					Ω(err).ShouldNot(HaveOccurred())
+				})
+
+				It("decorates the deployment with the bosh UUID", func() {
+					ProductAction(c, pd)
+
+					Ω(deploymentPostBody).ShouldNot(BeNil())
+					dm := enaml.NewDeploymentManifest(deploymentPostBody)
+					Ω(dm.DirectorUUID).Should(Equal(controlUUID))
+				})
 			})
 		})
 	})

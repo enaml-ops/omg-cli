@@ -85,7 +85,12 @@ func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) er
 	if err != nil {
 		return err
 	}
-	manifest := productDeployment.GetProduct(c.Args().Slice(), bytes)
+
+	var manifest []byte
+	if manifest, err = productDeployment.GetProduct(c.Args().Slice(), bytes); err != nil {
+		lo.G.Errorf("there was an error calling get product: %v", err.Error())
+		return err
+	}
 
 	if manifest, err = decorateDeploymentWithBoshUUID(manifest, bc); err == nil {
 
