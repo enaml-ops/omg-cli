@@ -88,7 +88,7 @@ func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) er
 
 	var manifest []byte
 	if manifest, err = productDeployment.GetProduct(c.Args().Slice(), bytes); err != nil {
-		lo.G.Errorf("there was an error calling get product: %v", err.Error())
+		lo.G.Errorf("there was an error calling get product: '%v' - '%v'", err.Error(), err)
 		return err
 	}
 
