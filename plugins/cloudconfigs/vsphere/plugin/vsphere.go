@@ -4,8 +4,11 @@ import (
 	"fmt"
 
 	"gopkg.in/urfave/cli.v2"
+	"gopkg.in/yaml.v2"
+
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
+	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs/vsphere/plugin/generated"
 )
 
 type AZCloudProperties struct {
@@ -100,62 +103,30 @@ func (c *VSphereCloudConfig) CreateAZs() ([]enaml.AZ, error) {
 }
 
 func (c *VSphereCloudConfig) CreateVMTypes() ([]enaml.VMType, error) {
-	vmTypes := []enaml.VMType{
-		enaml.VMType{
-			Name: "small",
-			CloudProperties: VMProperties{
-				CPU:  1,
-				RAM:  2048,
-				Disk: 30000,
-			},
-		},
-		enaml.VMType{
-			Name: "medium",
-			CloudProperties: VMProperties{
-				CPU:  2,
-				RAM:  4096,
-				Disk: 50000,
-			},
-		},
-		enaml.VMType{
-			Name: "large.memory",
-			CloudProperties: VMProperties{
-				CPU:  4,
-				RAM:  65536,
-				Disk: 50000,
-			},
-		},
-		enaml.VMType{
-			Name: "large.cpu",
-			CloudProperties: VMProperties{
-				CPU:  4,
-				RAM:  4096,
-				Disk: 30000,
-			},
-		},
+
+	var vmTypes []enaml.VMType
+	if fileBytes, err := generated.Asset("files/vm_types.yml"); err == nil {
+		if err = yaml.Unmarshal(fileBytes, &vmTypes); err == nil {
+			return vmTypes, nil
+		} else {
+			return nil, err
+		}
+	} else {
+		return nil, err
 	}
-	return vmTypes, nil
 }
 
 func (c *VSphereCloudConfig) CreateDiskTypes() ([]enaml.DiskType, error) {
-	diskTypes := []enaml.DiskType{
-		enaml.DiskType{
-			Name:            "small",
-			DiskSize:        3000,
-			CloudProperties: VMProperties{},
-		},
-		enaml.DiskType{
-			Name:            "medium",
-			DiskSize:        30000,
-			CloudProperties: VMProperties{},
-		},
-		enaml.DiskType{
-			Name:            "large",
-			DiskSize:        50000,
-			CloudProperties: VMProperties{},
-		},
+	var diskTypes []enaml.DiskType
+	if fileBytes, err := generated.Asset("files/disk_types.yml"); err == nil {
+		if err = yaml.Unmarshal(fileBytes, &diskTypes); err == nil {
+			return diskTypes, nil
+		} else {
+			return nil, err
+		}
+	} else {
+		return nil, err
 	}
-	return diskTypes, nil
 }
 
 func (c *VSphereCloudConfig) CreateCompilation() (*enaml.Compilation, error) {

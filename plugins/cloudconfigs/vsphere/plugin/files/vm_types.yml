@@ -1,0 +1,105 @@
+- name: nano
+  cloud_properties:
+    ram: 512
+    cpu: 1
+    disk: 8192
+- name: micro
+  cloud_properties:
+    ram: 1024
+    cpu: 1
+    disk: 8192
+- name: micro.ram
+  cloud_properties:
+    ram: 1024
+    cpu: 2
+    disk: 8192
+- name: small
+  cloud_properties:
+    ram: 2048
+    cpu: 1
+    disk: 8192
+- name: small.disk
+  cloud_properties:
+    ram: 2048
+    cpu: 1
+    disk: 16384
+- name: medium
+  cloud_properties:
+    ram: 4096
+    cpu: 2
+    disk: 8192
+- name: medium.mem
+  cloud_properties:
+    ram: 8192
+    cpu: 1
+    disk: 8192
+- name: medium.disk
+  cloud_properties:
+    ram: 4096
+    cpu: 2
+    disk: 32768
+- name: medium.cpu
+  cloud_properties:
+    ram: 2048
+    cpu: 4
+    disk: 8192
+- name: large
+  cloud_properties:
+    ram: 8192
+    cpu: 2
+    disk: 16384
+- name: large.mem
+  cloud_properties:
+    ram: 16384
+    cpu: 1
+    disk: 16384
+- name: large.disk
+  cloud_properties:
+    ram: 8192
+    cpu: 2
+    disk: 65536
+- name: large.cpu
+  cloud_properties:
+    ram: 4096
+    cpu: 4
+    disk: 16384
+- name: xlarge
+  cloud_properties:
+    ram: 16384
+    cpu: 4
+    disk: 32768
+- name: xlarge.mem
+  cloud_properties:
+    ram: 32768
+    cpu: 2
+    disk: 32768
+- name: xlarge.disk
+  cloud_properties:
+    ram: 16384
+    cpu: 4
+    disk: 131072
+- name: xlarge.cpu
+  cloud_properties:
+    ram: 8192
+    cpu: 8
+    disk: 32768
+- name: 2xlarge
+  cloud_properties:
+    ram: 32768
+    cpu: 8
+    disk: 65536
+- name: 2xlarge.mem
+  cloud_properties:
+    ram: 65536
+    cpu: 4
+    disk: 65536
+- name: 2xlarge.disk
+  cloud_properties:
+    ram: 32768
+    cpu: 8
+    disk: 262144
+- name: 2xlarge.cpu
+  cloud_properties:
+    ram: 16384
+    cpu: 16
+    disk: 65536

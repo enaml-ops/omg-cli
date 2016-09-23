@@ -5,6 +5,7 @@ import (
 
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
+	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs/utils"
 	. "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/vsphere/plugin"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -75,13 +76,8 @@ var _ = Describe("given vSphere Cloud Config", func() {
 		It("then it should return vmtypes", func() {
 			vmTypes, err := provider.CreateVMTypes()
 			Ω(err).ShouldNot(HaveOccurred())
-
-			bytes, err := ioutil.ReadFile("fixtures/vcenter-vmtypes.yml")
-			Ω(err).ShouldNot(HaveOccurred())
-			vmTypesYml, err := yaml.Marshal(vmTypes)
-			Ω(err).ShouldNot(HaveOccurred())
-
-			Ω(vmTypesYml).Should(MatchYAML(bytes))
+			Ω(vmTypes).Should(HaveLen(21))
+			Ω(utils.GetVMTypeNames(vmTypes)).Should(ConsistOf("nano", "micro", "micro.ram", "small", "small.disk", "medium", "medium.mem", "medium.disk", "medium.cpu", "large", "large.mem", "large.disk", "large.cpu", "xlarge", "xlarge.mem", "xlarge.disk", "xlarge.cpu", "2xlarge", "2xlarge.mem", "2xlarge.disk", "2xlarge.cpu"))
 		})
 		It("then it have a manifest with 2 network", func() {
 			Ω(err).ShouldNot(HaveOccurred())
@@ -92,14 +88,11 @@ var _ = Describe("given vSphere Cloud Config", func() {
 
 			Ω(networkYml).Should(MatchYAML(bytes))
 		})
-		It("then it have a manifest disk types", func() {
+		It("then it return disk types", func() {
+			diskTypes, err := provider.CreateDiskTypes()
 			Ω(err).ShouldNot(HaveOccurred())
-			bytes, err := ioutil.ReadFile("fixtures/vcenter-disktypes.yml")
-			Ω(err).ShouldNot(HaveOccurred())
-			diskTypeYml, err := yaml.Marshal(manifest.DiskTypes)
-			Ω(err).ShouldNot(HaveOccurred())
-
-			Ω(diskTypeYml).Should(MatchYAML(bytes))
+			Ω(diskTypes).Should(HaveLen(19))
+			Ω(utils.GetDiskTypeNames(diskTypes)).Should(ConsistOf("1024", "2048", "5120", "10240", "20480", "30720", "51200", "76800", "102400", "153600", "204800", "307200", "512000", "768000", "1048576", "2097152", "5242880", "10485760", "16777216"))
 		})
 		It("then it have a manifest with a compilation", func() {
 			Ω(err).ShouldNot(HaveOccurred())
