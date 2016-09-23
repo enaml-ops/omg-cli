@@ -1,5 +1,5 @@
-hash: de89bf3c0c0f14dd46524a61b631cedc432b8c7e22e6ba5cf3db4488fd098877
-updated: 2016-09-22T16:32:24.896355085-04:00
+hash: ccf0ff90a16b1938a3f8822bb51b65282714648874ddb61a2298b18519c55323
+updated: 2016-09-22T22:38:44.297089823-04:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -81,8 +81,36 @@ imports:
   - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
+- name: github.com/enaml-ops/omg-cli
+  version: 33150f1345ecf41bb32ecbade875cc61be5d6429
+  subpackages:
+  - aws-cli
+  - azure-cli
+  - bosh
+  - gcp-cli
+  - photon-cli
+  - utils
+  - vsphere-cli
+  - plugins/products/bosh-init
+  - plugins/products/bosh-init/enaml-gen/photoncpi
+  - plugins/cloudconfigs/aws/plugin
+  - plugins/cloudconfigs/aws/cloud-config
+  - plugins/cloudconfigs/gcp/plugin
+  - plugins/cloudconfigs
+  - plugins/cloudconfigs/photon/plugin
+  - plugins/cloudconfigs/vsphere/plugin
+  - plugins/products/bosh-init/enaml-gen/aws_cpi
+  - plugins/products/bosh-init/enaml-gen/azure_cpi
+  - plugins/products/bosh-init/enaml-gen/blobstore
+  - plugins/products/bosh-init/enaml-gen/director
+  - plugins/products/bosh-init/enaml-gen/google_cpi
+  - plugins/products/bosh-init/enaml-gen/health_monitor
+  - plugins/products/bosh-init/enaml-gen/postgres
+  - plugins/products/bosh-init/enaml-gen/registry
+  - plugins/products/bosh-init/enaml-gen/uaa
+  - plugins/products/bosh-init/enaml-gen/vsphere_cpi
 - name: github.com/enaml-ops/pluginlib
-  version: 9051db46c85247a518f588f5573f046eec1e7b93
+  version: 7f4ab68b253d4b60af55de1555b0646c6db55c8c
   subpackages:
   - pcli
   - registry
