@@ -43,10 +43,9 @@ import:
 - package: github.com/onsi/gomega
   version: master
 - package: github.com/enaml-ops/pluginlib
-  version: v0.1.2 
+  version: v0.1.3
 - package: golang.org/x/oauth2
 - package: golang.org/x/net
   subpackages:
   - context
-- package: github.com/square/certstrap
 - package: github.com/olekukonko/tablewriter

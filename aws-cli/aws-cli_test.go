@@ -2,7 +2,7 @@ package awscli_test
 
 import (
 	awscli "github.com/enaml-ops/omg-cli/aws-cli"
-	"github.com/enaml-ops/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/urfave/cli.v2"

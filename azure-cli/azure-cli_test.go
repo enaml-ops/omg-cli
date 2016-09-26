@@ -2,7 +2,7 @@ package azurecli_test
 
 import (
 	azurecli "github.com/enaml-ops/omg-cli/azure-cli"
-	"github.com/enaml-ops/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/urfave/cli.v2"

@@ -2,7 +2,7 @@ package gcpcli_test
 
 import (
 	gcpcli "github.com/enaml-ops/omg-cli/gcp-cli"
-	"github.com/enaml-ops/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/urfave/cli.v2"

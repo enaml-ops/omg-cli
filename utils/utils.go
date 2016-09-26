@@ -10,8 +10,8 @@ import (
 	"path"
 
 	"github.com/enaml-ops/omg-cli/bosh"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	"github.com/enaml-ops/pluginlib/registry"
-	"github.com/enaml-ops/pluginlib/util"
 	"github.com/xchapter7x/lo"
 	"gopkg.in/urfave/cli.v2"
 )

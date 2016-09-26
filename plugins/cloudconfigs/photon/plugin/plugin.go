@@ -6,7 +6,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	"gopkg.in/urfave/cli.v2"
 )
 

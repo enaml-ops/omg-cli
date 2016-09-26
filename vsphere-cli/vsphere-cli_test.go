@@ -2,7 +2,7 @@ package vspherecli_test
 
 import (
 	vspherecli "github.com/enaml-ops/omg-cli/vsphere-cli"
-	"github.com/enaml-ops/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/urfave/cli.v2"

@@ -21,7 +21,7 @@ import (
 	"github.com/enaml-ops/omg-cli/vsphere-cli"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/registry"
-	"github.com/enaml-ops/pluginlib/util"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"

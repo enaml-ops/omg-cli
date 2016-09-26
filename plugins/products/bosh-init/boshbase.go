@@ -13,6 +13,7 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/registry"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/uaa"
 	"github.com/enaml-ops/omg-cli/utils"
+	"github.com/enaml-ops/pluginlib/pluginutil"
 	"github.com/xchapter7x/lo"
 )
 
@@ -25,15 +26,15 @@ const (
 )
 
 func (s *BoshBase) InitializePasswords() {
-	s.DirectorPassword = utils.NewPassword(20)
-	s.LoginSecret = utils.NewPassword(20)
-	s.RegistryPassword = utils.NewPassword(20)
-	s.HealthMonitorSecret = utils.NewPassword(20)
-	s.DBPassword = utils.NewPassword(20)
+	s.DirectorPassword = pluginutil.NewPassword(20)
+	s.LoginSecret = pluginutil.NewPassword(20)
+	s.RegistryPassword = pluginutil.NewPassword(20)
+	s.HealthMonitorSecret = pluginutil.NewPassword(20)
+	s.DBPassword = pluginutil.NewPassword(20)
 	if s.NatsPassword == "" {
-		s.NatsPassword = utils.NewPassword(20)
+		s.NatsPassword = pluginutil.NewPassword(20)
 	}
-	s.MBusPassword = utils.NewPassword(20)
+	s.MBusPassword = pluginutil.NewPassword(20)
 }
 
 func (s *BoshBase) HandleDeployment(provider IAASManifestProvider, boshInitDeploy func(string)) error {
@@ -114,7 +115,7 @@ func (s *BoshBase) IsUAA() bool {
 //InitializeCerts - initializes certs needed for UAA and health monitor
 func (s *BoshBase) InitializeCerts() (err error) {
 	var cert, key, caCert string
-	if caCert, cert, key, err = utils.GenerateCert([]string{s.GetRoutableIP()}); err == nil {
+	if caCert, cert, key, err = pluginutil.GenerateCert([]string{s.GetRoutableIP()}); err == nil {
 		s.SSLCert = cert
 		s.SSLKey = key
 		s.CACert = caCert
@@ -125,7 +126,7 @@ func (s *BoshBase) InitializeCerts() (err error) {
 //InitializeKeys - initializes public/private keys
 func (s *BoshBase) InitializeKeys() (err error) {
 	var publicKey, privateKey string
-	if publicKey, privateKey, err = utils.GenerateKeys(); err == nil {
+	if publicKey, privateKey, err = pluginutil.GenerateKeys(); err == nil {
 		s.PublicKey = publicKey
 		s.PrivateKey = privateKey
 	}
