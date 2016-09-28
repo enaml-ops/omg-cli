@@ -32,10 +32,20 @@ import (
 var Version string
 
 // CloudConfigPluginsDir is the directory where registered cloud config plugins are stored.
-var CloudConfigPluginsDir = "./.plugins/cloudconfig"
+var CloudConfigPluginsDir = ".plugins/cloudconfig"
 
 // ProductPluginsDir is the directory where registered product plugins are stored.
-var ProductPluginsDir = "./.plugins/product"
+var ProductPluginsDir = ".plugins/product"
+
+func init() {
+	defaultBasePath := "."
+
+	if os.Getenv("OMG_PLUGIN_DIR") != "" {
+		defaultBasePath = os.Getenv("OMG_PLUGIN_DIR")
+	}
+	CloudConfigPluginsDir = path.Join(defaultBasePath, CloudConfigPluginsDir)
+	ProductPluginsDir = path.Join(defaultBasePath, ProductPluginsDir)
+}
 
 func main() {
 	app := (&cli.App{})
