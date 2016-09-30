@@ -125,6 +125,45 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 				Ω(subnetCount).Should(BeNumerically(">", 1))
 			})
 		})
+
+		Context("when GetCloudConfig is called with flags for static ranges", func() {
+			var mycloud []byte
+			BeforeEach(func() {
+				mycloud = myplugin.GetCloudConfig([]string{
+					"test",
+					"--aws-region", "us-east-1",
+					"--aws-security-group", "bosh",
+					"--bosh-az-name-1", "bosh-az1",
+					"--cidr-1", "10.0.0.0/24",
+					"--gateway-1", "10.0.0.1",
+					"--dns-1", "10.0.0.240",
+					"--aws-az-name-1", "aws-az1-blah",
+					"--aws-subnet-name-1", "my-aws-subnet-13857298354792835",
+					"--bosh-reserve-range-1", "10.0.0.1-10.0.0.10",
+					"--bosh-reserve-range-1", "10.0.0.20-10.0.0.30",
+					"--bosh-az-name-2", "bosh-az2",
+					"--cidr-2", "10.1.0.0/24",
+					"--gateway-2", "10.1.0.1",
+					"--dns-2", "10.1.0.240",
+					"--aws-az-name-2", "aws-az2-blah",
+					"--aws-subnet-name-2", "my-aws-subnet2-13857298354792835",
+					"--bosh-reserve-range-2", "10.1.0.1-10.1.0.10",
+					"--bosh-reserve-range-2", "10.1.0.20-10.1.0.30",
+					"--bosh-static-range-1", "10.1.0.60-10.1.0.70",
+				})
+			})
+			It("then it should return the bytes representation of the object", func() {
+				Ω(mycloud).ShouldNot(BeEmpty())
+			})
+			It("then should contain static record for the subnet", func() {
+				var subnet1 = new(enaml.ManualNetwork)
+				ccManifest := enaml.NewCloudConfigManifest(mycloud)
+				testNetwork, _ := yaml.Marshal(ccManifest.Networks[0])
+				yaml.Unmarshal(testNetwork, subnet1)
+				Ω(subnet1.Subnets).ShouldNot(BeEmpty(), "there should be at least 1 subnet defined")
+				Ω(subnet1.Subnets[0].Static).ShouldNot(BeEmpty(), "we should have static ips in this subnet defined")
+			})
+		})
 	})
 })
 
