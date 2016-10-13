@@ -38,6 +38,7 @@ type SubnetBucket struct {
 	AWSAZName        string
 	AWSSubnetName    string
 	BoshReserveRange []string
+	BoshStaticRange  []string
 }
 
 func NewAWSCloudConfig(region string, securityGroupList []string, subnets []SubnetBucket) (awsCloudConfig *enaml.CloudConfigManifest) {
@@ -133,6 +134,10 @@ func createSubnet(subnetBucket SubnetBucket) enaml.Subnet {
 
 	for _, r := range subnetBucket.BoshReserveRange {
 		subnet.AddReserved(r)
+	}
+
+	for _, r := range subnetBucket.BoshStaticRange {
+		subnet.AddStatic(r)
 	}
 	subnet.CloudProperties = awscloudproperties.Network{
 		Subnet: subnetBucket.AWSSubnetName,

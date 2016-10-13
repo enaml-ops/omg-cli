@@ -1,15 +1,15 @@
-hash: 86230e4ab0327eaa40eb4a10e3d68234e7fe835241527886035caf9d77b64afb
-updated: 2016-09-26T10:46:54.545621798-06:00
+hash: daf065162441a02aeac65a253573b23fec4ff34e32dde9880dc7eb7f38786015
+updated: 2016-09-29T21:03:53.340835085-04:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
+  - agentclient/http
   - agentclient
   - agentclient/applyspec
-  - agentclient/http
-  - platform/deviceutil
-  - platform/disk
   - settings
+  - platform/disk
+  - platform/deviceutil
 - name: github.com/cloudfoundry/bosh-davcli
   version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
   subpackages:
@@ -20,11 +20,12 @@ imports:
   repo: https://github.com/enaml-ops/bosh-init.git
   vcs: git
   subpackages:
+  - cmd
+  - logger
+  - ui
+  - ui/fmt
   - blobstore
   - cloud
-  - cmd
-  - common/net
-  - common/util
   - config
   - cpi/release
   - crypto
@@ -38,57 +39,85 @@ imports:
   - deployment/vm
   - index
   - installation
-  - installation/blobextract
   - installation/manifest
-  - installation/pkg
   - installation/tarball
-  - logger
   - registry
   - release
-  - release/job
-  - release/job/manifest
-  - release/manifest
-  - release/pkg
   - release/set/manifest
-  - state/job
   - state/pkg
   - stemcell
   - templatescompiler
   - templatescompiler/erbrenderer
-  - ui
-  - ui/fmt
+  - release/job
+  - release/pkg
+  - state/job
+  - common/net
+  - common/util
+  - installation/blobextract
+  - installation/pkg
+  - release/manifest
+  - release/job/manifest
 - name: github.com/cloudfoundry/bosh-utils
   version: 99c230d990674e484143e3b1452576912ab55380
   subpackages:
-  - blobstore
   - errors
-  - fileutil
-  - http
-  - httpclient
   - logger
   - logger/file
-  - property
-  - retrystrategy
   - system
   - uuid
+  - fileutil
+  - httpclient
+  - retrystrategy
+  - property
+  - blobstore
+  - http
 - name: github.com/cloudfoundry/gofileutils
   version: 511ba4f8a696af09fe7637d0f303675a246232ee
   subpackages:
   - glob
 - name: github.com/enaml-ops/enaml
-  version: b232608251205ea0fc1e039631214a64954f7cb1
+  version: 354a165b4ef98f0e154b6a0d8e8a54138abac102
   subpackages:
+  - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
-  - enamlbosh
-- name: github.com/enaml-ops/pluginlib
-  version: 71083d2749838a653c1666f6dd137483faad80a4
+- name: github.com/enaml-ops/omg-cli
+  version: 45bd22ba800ed09c67552291e82c4121eb24b330
   subpackages:
-  - cloudconfig
+  - aws-cli
+  - azure-cli
+  - bosh
+  - gcp-cli
+  - photon-cli
+  - utils
+  - vsphere-cli
+  - plugins/products/bosh-init
+  - plugins/products/bosh-init/enaml-gen/photoncpi
+  - plugins/cloudconfigs/aws/plugin
+  - plugins/cloudconfigs/aws/cloud-config
+  - plugins/cloudconfigs/gcp/plugin
+  - plugins/cloudconfigs
+  - plugins/cloudconfigs/photon/plugin
+  - plugins/cloudconfigs/vsphere/plugin
+  - plugins/cloudconfigs/vsphere/plugin/generated
+  - plugins/products/bosh-init/enaml-gen/aws_cpi
+  - plugins/products/bosh-init/enaml-gen/azure_cpi
+  - plugins/products/bosh-init/enaml-gen/blobstore
+  - plugins/products/bosh-init/enaml-gen/director
+  - plugins/products/bosh-init/enaml-gen/google_cpi
+  - plugins/products/bosh-init/enaml-gen/health_monitor
+  - plugins/products/bosh-init/enaml-gen/postgres
+  - plugins/products/bosh-init/enaml-gen/registry
+  - plugins/products/bosh-init/enaml-gen/uaa
+  - plugins/products/bosh-init/enaml-gen/vsphere_cpi
+- name: github.com/enaml-ops/pluginlib
+  version: 73ee3fd3d0a7d0876ef976e3fe8cbb2f784b8e0d
+  subpackages:
   - pcli
   - pluginutil
-  - product
   - registry
+  - cloudconfig
+  - product
 - name: github.com/golang/protobuf
   version: 1f49d83d9aa00e6ce4fc8258c71cc7786aec968a
   subpackages:
@@ -106,37 +135,9 @@ imports:
 - name: github.com/olekukonko/tablewriter
   version: bdcc175572fd7abece6c831e643891b9331bc9e7
 - name: github.com/onsi/ginkgo
-  version: 46c87bb63f2d8d62b3076873b7a84da124da72ce
-  subpackages:
-  - config
-  - internal/codelocation
-  - internal/containernode
-  - internal/failer
-  - internal/leafnodes
-  - internal/remote
-  - internal/spec
-  - internal/specrunner
-  - internal/suite
-  - internal/testingtproxy
-  - internal/writer
-  - reporters
-  - reporters/stenographer
-  - types
+  version: 45a5f6ffb2a14e4f29698c16ae4c0a34018a8951
 - name: github.com/onsi/gomega
   version: d59fa0ac68bb5dd932ee8d24eed631cdd519efc3
-  subpackages:
-  - format
-  - ghttp
-  - internal/assertion
-  - internal/asyncassertion
-  - internal/oraclematcher
-  - internal/testingtsupport
-  - matchers
-  - matchers/support/goraph/bipartitegraph
-  - matchers/support/goraph/edge
-  - matchers/support/goraph/node
-  - matchers/support/goraph/util
-  - types
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
@@ -146,10 +147,10 @@ imports:
 - name: github.com/pivotalservices/gtils
   version: 2605eda5a33230d9613738bba5271d1c040e4a15
   subpackages:
-  - command
   - osutils
+  - command
 - name: github.com/pkg/errors
-  version: a887431f7f6ef7687b556dbf718d9f351d4858a0
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/pkg/sftp
   version: 8197a2e580736b78d704be0fc47b2324c0591a32
 - name: github.com/square/certstrap
@@ -173,19 +174,15 @@ imports:
 - name: google.golang.org/appengine
   version: 45688856612892bdabe348fff413e5075ac72f46
   subpackages:
+  - urlfetch
   - internal
+  - internal/urlfetch
   - internal/base
   - internal/datastore
   - internal/log
   - internal/remote_api
-  - internal/urlfetch
-  - urlfetch
 - name: gopkg.in/urfave/cli.v2
   version: c72728f42438425ffcd487986936357e17ebba3f
 - name: gopkg.in/yaml.v2
   version: 31c299268d302dd0aa9a0dcf765a3d58971ac83f
-testImports:
-- name: golang.org/x/sys
-  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
-  subpackages:
-  - unix
+devImports: []

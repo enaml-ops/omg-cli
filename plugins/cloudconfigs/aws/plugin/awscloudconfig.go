@@ -38,6 +38,7 @@ func (s *AWSCloudConfig) GetFlags() (flags []pcli.Flag) {
 		flags = append(flags, pcli.CreateStringFlag(CreateFlagnameWithSuffix("aws-az-name", i), "aws az name for given network"))
 		flags = append(flags, pcli.CreateStringFlag(CreateFlagnameWithSuffix("aws-subnet-name", i), "aws subnet name for given network"))
 		flags = append(flags, pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("bosh-reserve-range", i), "bosh reserve range for given network"))
+		flags = append(flags, pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("bosh-static-range", i), "bosh static range for given network"))
 	}
 	return
 }
@@ -78,6 +79,7 @@ func getSubnetBucketList(c *cli.Context) (bucket []aws.SubnetBucket) {
 			AWSAZName:        c.String(CreateFlagnameWithSuffix("aws-az-name", i)),
 			AWSSubnetName:    c.String(CreateFlagnameWithSuffix("aws-subnet-name", i)),
 			BoshReserveRange: c.StringSlice(CreateFlagnameWithSuffix("bosh-reserve-range", i)),
+			BoshStaticRange:  c.StringSlice(CreateFlagnameWithSuffix("bosh-static-range", i)),
 		}
 		if isValidSubnetBucket(tmpBucket) {
 			bucket = append(bucket, tmpBucket)
