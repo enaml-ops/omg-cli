@@ -25,5 +25,6 @@ func CreateNetworkFlags(flags []pcli.Flag, iaasNetworkFlagFunction func([]pcli.F
 
 		flags = iaasNetworkFlagFunction(flags, i)
 	}
+	flags = append(flags, pcli.CreateBoolFlag("multi-assign-az", "Assigns all the AZs for each subnet"))
 	return flags
 }

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strconv"
 
+	"gopkg.in/urfave/cli.v2"
 	"gopkg.in/yaml.v2"
 
-	"gopkg.in/urfave/cli.v2"
 	"github.com/enaml-ops/enaml"
 )
 
@@ -110,17 +110,31 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 			if err := validateCloudPropertiesFunction(len(azs), i); err != nil {
 				return nil, err
 			}
-			for index, az := range azs {
+			multiAssignAZ := context.Bool("multi-assign-az")
+			if multiAssignAZ {
 				subnet := enaml.Subnet{
-					AZ:              az,
-					Range:           ranges[index],
-					Gateway:         gateways[index],
+					AZs:             azs,
+					Range:           ranges[0],
+					Gateway:         gateways[0],
 					DNS:             dnsServers,
 					Reserved:        reservedRanges,
 					Static:          staticIPs,
-					CloudProperties: cloudPropertiesFunction(i, index),
+					CloudProperties: cloudPropertiesFunction(i, 0),
 				}
 				network.AddSubnet(subnet)
+			} else {
+				for index, az := range azs {
+					subnet := enaml.Subnet{
+						AZ:              az,
+						Range:           ranges[index],
+						Gateway:         gateways[index],
+						DNS:             dnsServers,
+						Reserved:        reservedRanges,
+						Static:          staticIPs,
+						CloudProperties: cloudPropertiesFunction(i, index),
+					}
+					network.AddSubnet(subnet)
+				}
 			}
 			networks = append(networks, network)
 		}
