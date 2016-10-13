@@ -99,8 +99,15 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 				Type: "manual",
 			}
 			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
-			if err := CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
-				return nil, err
+			multiAssignAZ := context.Bool("multi-assign-az")
+			if multiAssignAZ {
+				if err := CheckRequiredLength(1, i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
+					return nil, err
+				}
+			} else {
+				if err := CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
+					return nil, err
+				}
 			}
 			ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
 			gateways := context.StringSlice(fmt.Sprintf("network-gateway-%d", i))
@@ -110,7 +117,6 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 			if err := validateCloudPropertiesFunction(len(azs), i); err != nil {
 				return nil, err
 			}
-			multiAssignAZ := context.Bool("multi-assign-az")
 			if multiAssignAZ {
 				subnet := enaml.Subnet{
 					AZs:             azs,
