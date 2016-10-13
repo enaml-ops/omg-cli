@@ -50,7 +50,13 @@ func (c *VSphereCloudConfig) networkCloudProperties(i, index int) interface{} {
 }
 
 func (c *VSphereCloudConfig) validateCloudProperties(length, i int) error {
-	return cloudconfigs.CheckRequiredLength(length, i, c.Context, "vsphere-network-name-%d")
+	multiAssignAZ := c.Context.Bool("multi-assign-az")
+	if multiAssignAZ {
+		return cloudconfigs.CheckRequiredLength(1, i, c.Context, "vsphere-network-name-%d")
+	} else {
+		return cloudconfigs.CheckRequiredLength(length, i, c.Context, "vsphere-network-name-%d")
+	}
+
 }
 
 func (c *VSphereCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) {
