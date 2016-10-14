@@ -1,11 +1,14 @@
 package vspherecli
 
 import (
+	"fmt"
+
+	"gopkg.in/urfave/cli.v2"
+
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
-	"gopkg.in/urfave/cli.v2"
 )
 
 // GetFlags returns the available CLI flags
@@ -24,7 +27,7 @@ func GetFlags() []pcli.Flag {
 		pcli.CreateStringFlag("vsphere-datastore", "name of the datastore the Director will use for storing VMs"),
 		pcli.CreateStringFlag("vsphere-disk-path", "name of the VMs folder, disk folder will be automatically created in the chosen datastore."),
 		pcli.CreateStringSliceFlag("vsphere-clusters", "one or more vSphere datacenter cluster names"),
-		pcli.CreateStringFlag("vsphere-resource-pool", "Name of resource pool for vsphere cluster"),
+		pcli.CreateStringSliceFlag("vsphere-resource-pool", "Name of resource pool for vsphere cluster"),
 		// vsphere subnet1 flags
 		pcli.CreateStringFlag("vsphere-subnet1-name", "name of the vSphere network for subnet1"),
 		pcli.CreateStringFlag("vsphere-subnet1-range", "CIDR range for subnet1"),
@@ -51,7 +54,14 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			lo.G.Error(err.Error())
 			return err
 		}
+		vSphereClusters := c.StringSlice("vsphere-clusters")
+		vSphereResourcePools := c.StringSlice("vsphere-resource-pool")
 
+		if len(vSphereClusters) != len(vSphereResourcePools) {
+			err := fmt.Errorf("vsphere-clusters and vsphere-resource-pools need to have same length")
+			lo.G.Error(err.Error())
+			return err
+		}
 		provider := boshinit.NewVSphereIaaSProvider(boshinit.VSphereInitConfig{
 			// vsphere specific
 			VSphereAddress:        c.String("vsphere-address"),
@@ -62,8 +72,8 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			VSphereTemplateFolder: c.String("vsphere-template-folder"),
 			VSphereDataStore:      c.String("vsphere-datastore"),
 			VSphereDiskPath:       c.String("vsphere-disk-path"),
-			VSphereClusters:       c.StringSlice("vsphere-clusters"),
-			VSphereResourcePool:   c.String("vsphere-resource-pool"),
+			VSphereClusters:       vSphereClusters,
+			VSphereResourcePool:   vSphereResourcePools,
 			VSphereNetworks: []boshinit.Network{boshinit.Network{
 				Name:    c.String("vsphere-subnet1-name"),
 				Range:   c.String("vsphere-subnet1-range"),

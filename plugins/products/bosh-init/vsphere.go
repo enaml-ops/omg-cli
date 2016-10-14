@@ -21,7 +21,7 @@ type VSphereInitConfig struct {
 	VSphereTemplateFolder string
 	VSphereDataStore      string
 	VSphereDiskPath       string
-	VSphereResourcePool   string
+	VSphereResourcePool   []string
 	VSphereClusters       []string
 	VSphereNetworks       []Network
 }
@@ -216,10 +216,10 @@ func (v *VSphereBosh) getDataStorePattern() (pattern string) {
 }
 func (v *VSphereBosh) clusterConfig() (clusters []map[string]ResourcePool) {
 	clusters = make([]map[string]ResourcePool, 0)
-	for _, clusterName := range v.cfg.VSphereClusters {
+	for index, clusterName := range v.cfg.VSphereClusters {
 		cluster := make(map[string]ResourcePool)
 		cluster[clusterName] = ResourcePool{
-			ResourcePool: v.cfg.VSphereResourcePool,
+			ResourcePool: v.cfg.VSphereResourcePool[index],
 		}
 		clusters = append(clusters, cluster)
 

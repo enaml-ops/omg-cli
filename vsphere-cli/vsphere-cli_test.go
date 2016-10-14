@@ -45,4 +45,29 @@ var _ = Describe("given the photon cli", func() {
 			Ω(err).Should(HaveOccurred())
 		})
 	})
+	Context("when called unbalance clusters and resource pools", func() {
+		It("then it should panic and exit", func() {
+			action := vspherecli.GetAction(func(s string) {})
+			var ctx *cli.Context
+			ctx = pluginutil.NewContext([]string{"someapp",
+				"--vsphere-address", "some",
+				"--vsphere-user", "stuff",
+				"--vsphere-password", "to",
+				"--vsphere-datacenter-name", "do",
+				"--vsphere-vm-folder", "asdfadf",
+				"--vsphere-template-folder", "asdfasdf",
+				"--vsphere-datastore", "asdfasdf",
+				"--vsphere-disk-path", "asdfasdf",
+				"--vsphere-clusters", "asdfasdf",
+				"--vsphere-subnet1-name", "asdfasdf",
+				"--vsphere-subnet1-range", "asdfasdf",
+				"--vsphere-subnet1-gateway", "asdfasdf",
+				"--vsphere-subnet1-dns", "asdfasdf",
+				"--gateway", "10.0.0.254",
+				"--cidr", "10.0.0.1/24",
+			}, pluginutil.ToCliFlagArray(vspherecli.GetFlags()))
+			err := action(ctx)
+			Ω(err).Should(HaveOccurred())
+		})
+	})
 })

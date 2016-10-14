@@ -21,6 +21,7 @@ var _ = Describe("NewVSphereBosh", func() {
 				VSphereDataStore:      "DS1",
 				VSphereDiskPath:       "pcf_disks",
 				VSphereClusters:       []string{"PCF1"},
+				VSphereResourcePool:   []string{"RP01"},
 				VSphereNetworks: []Network{Network{
 					Name:    "PCF_Net1",
 					Range:   "172.16.0.0/23",
