@@ -1,8 +1,6 @@
 package vspherecli
 
 import (
-	"fmt"
-
 	"gopkg.in/urfave/cli.v2"
 
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
@@ -56,14 +54,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		}
 		vSphereClusters := c.StringSlice("vsphere-clusters")
 		vSphereResourcePools := c.StringSlice("vsphere-resource-pool")
-
-		if len(vSphereClusters) != len(vSphereResourcePools) {
-			err := fmt.Errorf("vsphere-clusters and vsphere-resource-pools need to have same length")
-			lo.G.Error(err.Error())
-			return err
-		}
-		provider := boshinit.NewVSphereIaaSProvider(boshinit.VSphereInitConfig{
-			// vsphere specific
+		vsphereConfig := boshinit.VSphereInitConfig{
 			VSphereAddress:        c.String("vsphere-address"),
 			VSphereUser:           c.String("vsphere-user"),
 			VSpherePassword:       c.String("vsphere-password"),
@@ -73,14 +64,18 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			VSphereDataStore:      c.String("vsphere-datastore"),
 			VSphereDiskPath:       c.String("vsphere-disk-path"),
 			VSphereClusters:       vSphereClusters,
-			VSphereResourcePool:   vSphereResourcePools,
 			VSphereNetworks: []boshinit.Network{boshinit.Network{
 				Name:    c.String("vsphere-subnet1-name"),
 				Range:   c.String("vsphere-subnet1-range"),
 				Gateway: c.String("vsphere-subnet1-gateway"),
 				DNS:     c.StringSlice("vsphere-subnet1-dns"),
 			}},
-		}, boshBase)
+		}
+
+		if len(vSphereResourcePools) > 0 {
+			vsphereConfig.VSphereResourcePool = vSphereResourcePools
+		}
+		provider := boshinit.NewVSphereIaaSProvider(vsphereConfig, boshBase)
 
 		if err := boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {
 			return err

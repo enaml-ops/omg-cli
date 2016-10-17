@@ -8,7 +8,7 @@ import (
 	"gopkg.in/urfave/cli.v2"
 )
 
-var _ = Describe("given the photon cli", func() {
+var _ = Describe("given the vsphere cli", func() {
 	Context("when called with a complete set of flags", func() {
 		It("then it should NOT panic", func() {
 			action := vspherecli.GetAction(func(s string) {})
@@ -66,7 +66,7 @@ var _ = Describe("given the photon cli", func() {
 				"--cidr", "10.0.0.1/24",
 			}, pluginutil.ToCliFlagArray(vspherecli.GetFlags()))
 			err := action(ctx)
-			Ω(err).Should(HaveOccurred())
+			Ω(err).ShouldNot(HaveOccurred())
 		})
 	})
 })
