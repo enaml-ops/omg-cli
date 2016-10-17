@@ -23,7 +23,6 @@ var _ = Describe("given the photon cli", func() {
 				"--vsphere-datastore", "asdfasdf",
 				"--vsphere-disk-path", "asdfasdf",
 				"--vsphere-clusters", "asdfasdf",
-				"--vsphere-resource-pool", "asdfasdf",
 				"--vsphere-subnet1-name", "asdfasdf",
 				"--vsphere-subnet1-range", "asdfasdf",
 				"--vsphere-subnet1-gateway", "asdfasdf",

@@ -50,7 +50,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		}
 		if err := utils.CheckRequired(c, "vsphere-address", "vsphere-user", "vsphere-password", "vsphere-datacenter-name",
 			"vsphere-vm-folder", "vsphere-template-folder", "vsphere-datastore", "vsphere-disk-path",
-			"vsphere-clusters", "vsphere-resource-pool", "vsphere-subnet1-name", "vsphere-subnet1-range", "vsphere-subnet1-range", "vsphere-subnet1-dns"); err != nil {
+			"vsphere-clusters", "vsphere-subnet1-name", "vsphere-subnet1-range", "vsphere-subnet1-range", "vsphere-subnet1-dns"); err != nil {
 			lo.G.Error(err.Error())
 			return err
 		}
