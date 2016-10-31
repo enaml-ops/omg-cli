@@ -51,7 +51,7 @@ var _ = Describe("given boshbase", func() {
 			Ω(bb.IsUAA()).Should(BeTrue())
 		})
 
-		FIt("should create a proper list of clients", func() {
+		It("should create a proper list of clients", func() {
 			Ω(job.Properties).Should(HaveKey("uaa"))
 			uaa := job.Properties["uaa"].(*uaa.Uaa)
 			Ω(uaa.Clients).Should(HaveKey("bosh_cli"))
