@@ -6,6 +6,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	boshinit "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/health_monitor"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/uaa"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -48,6 +49,15 @@ var _ = Describe("given boshbase", func() {
 			}
 			job = bb.CreateJob()
 			Ω(bb.IsUAA()).Should(BeTrue())
+		})
+
+		FIt("should create a proper list of clients", func() {
+			Ω(job.Properties).Should(HaveKey("uaa"))
+			uaa := job.Properties["uaa"].(*uaa.Uaa)
+			Ω(uaa.Clients).Should(HaveKey("bosh_cli"))
+			Ω(uaa.Clients).Should(HaveKey("health_monitor"))
+			Ω(uaa.Clients).Should(HaveKey("director"))
+			Ω(uaa.Clients).Should(HaveKey("login"))
 		})
 
 		It("configures health monitor", func() {

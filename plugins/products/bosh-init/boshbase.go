@@ -368,6 +368,15 @@ func (s *BoshBase) createUAAProperties() *uaa.Uaa {
 				AccessTokenValidity:  600,
 				Secret:               s.HealthMonitorSecret,
 			},
+			"director": UAAClient{
+				AuthorizedGrantTypes: "client_credentials",
+				Override:             true,
+				Scope:                "",
+				Authorities:          "bosh.admin",
+				RefreshTokenValidity: 86400,
+				AccessTokenValidity:  600,
+				Secret:               s.DirectorPassword,
+			},
 			"login": UAAClient{
 				AuthorizedGrantTypes: "password,authorization_code",
 				AutoApprove:          true,
