@@ -1,0 +1,63 @@
+- name: nano
+  cloud_properties:
+    instance_type: Standard_A0
+- name: micro
+  cloud_properties:
+    instance_type: Standard_A1
+- name: micro.ram
+  cloud_properties:
+    instance_type: Standard_A2
+- name: small
+  cloud_properties:
+    instance_type: Standard_A2
+- name: small.disk
+  cloud_properties:
+    instance_type: Standard_A2
+- name: medium
+  cloud_properties:
+    instance_type: Standard_D1
+- name: medium.mem
+  cloud_properties:
+    instance_type: Standard_D2
+- name: medium.disk
+  cloud_properties:
+    instance_type: Standard_D2
+- name: medium.cpu
+  cloud_properties:
+    instance_type: Standard_D3
+- name: large
+  cloud_properties:
+    instance_type: Standard_D2
+- name: large.mem
+  cloud_properties:
+    instance_type: Standard_D11
+- name: large.disk
+  cloud_properties:
+    instance_type: Standard_D2
+- name: large.cpu
+  cloud_properties:
+    instance_type: Standard_D3
+- name: xlarge
+  cloud_properties:
+    instance_type: Standard_D3
+- name: xlarge.mem
+  cloud_properties:
+    instance_type: Standard_D12
+- name: xlarge.disk
+  cloud_properties:
+    instance_type: Standard_D3
+- name: xlarge.cpu
+  cloud_properties:
+    instance_type: Standard_D4
+- name: 2xlarge
+  cloud_properties:
+    instance_type: Standard_D4
+- name: 2xlarge.mem
+  cloud_properties:
+    instance_type: Standard_D13
+- name: 2xlarge.disk
+  cloud_properties:
+    instance_type: Standard_D4
+- name: 2xlarge.cpu
+  cloud_properties:
+    instance_type: Standard_D14
