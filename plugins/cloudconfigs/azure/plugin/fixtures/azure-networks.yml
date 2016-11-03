@@ -1,0 +1,20 @@
+- name: default
+  type: manual
+  subnets:
+  - range: 10.0.0.0/26
+    gateway: 10.0.0.1
+    dns: [169.254.169.254, 8.8.8.8]
+    azs: [z1,z2]
+    cloud_properties:
+      virtual_network_name: boshnet
+      subnet_name: boshsub
+- name: concourse
+  type: manual
+  subnets:
+  - range: 10.0.0.64/26
+    gateway: 10.0.0.65
+    dns: [169.254.169.254, 8.8.8.8]
+    azs: [z1,z2]
+    cloud_properties:
+      virtual_network_name: boshnet
+      subnet_name: concoursesub

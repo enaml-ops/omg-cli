@@ -73,6 +73,8 @@ crosscompile:
           GOOS=linux go build -o photon-cloudconfigplugin-linux -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" ./plugins/cloudconfigs/photon/main.go
           GOOS=darwin go build -o vsphere-cloudconfigplugin-osx -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" ./plugins/cloudconfigs/vsphere/main.go
           GOOS=linux go build -o vsphere-cloudconfigplugin-linux -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" ./plugins/cloudconfigs/vsphere/main.go
+          GOOS=darwin go build -o azure-cloudconfigplugin-osx -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" ./plugins/cloudconfigs/azure/main.go
+          GOOS=linux go build -o azure-cloudconfigplugin-linux -ldflags "-X main.Version=${WERCKER_GITHUB_CREATE_RELEASE_ID}-`git rev-parse HEAD | cut -c1-6`" ./plugins/cloudconfigs/azure/main.go
 
     - script:
         name: add repo to artifact
@@ -168,6 +170,18 @@ publish-release:
     - github-upload-asset:
         token: $GITHUB_TOKEN
         file: vsphere-cloudconfigplugin-linux
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: azure-cloudconfigplugin-osx
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: azure-cloudconfigplugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
@@ -273,6 +287,18 @@ deploy-pre-release:
     - github-upload-asset:
         token: $GITHUB_TOKEN
         file: vsphere-cloudconfigplugin-linux
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: azure-cloudconfigplugin-osx
+        release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
+        content-type: application/x-gzip
+
+    - github-upload-asset:
+        token: $GITHUB_TOKEN
+        file: azure-cloudconfigplugin-linux
         release_id: $WERCKER_GITHUB_CREATE_RELEASE_ID
         content-type: application/x-gzip
 
