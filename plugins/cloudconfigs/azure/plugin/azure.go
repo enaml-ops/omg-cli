@@ -42,12 +42,12 @@ func (c *azureCloudConfig) validateCloudProperties(length, i int) error {
 	return cloudconfigs.CheckRequiredLength(length, i, c.Context, "azure-virtual-network-name-%d", "azure-subnet-name-%d")
 }
 
-//CreateNetworks : Create Azure specific network configuration
+//CreateNetworks : Creates Azure network configuration based on the provided context
 func (c *azureCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error) {
 	return cloudconfigs.CreateNetworks(c.Context, c.validateCloudProperties, c.networkCloudProperties)
 }
 
-//CreateAZs : Create Azure specific availability zone configuration
+//CreateAZs : Creates Azure availability zone configuration based on the provided context
 func (c *azureCloudConfig) CreateAZs() ([]enaml.AZ, error) {
 	azNames := c.Context.StringSlice("az")
 	azs := []enaml.AZ{}
@@ -60,7 +60,7 @@ func (c *azureCloudConfig) CreateAZs() ([]enaml.AZ, error) {
 	return azs, nil
 }
 
-//CreateDiskTypes : Returns Azure disk types
+//CreateDiskTypes : Returns Azure specific Disk types
 func (c *azureCloudConfig) CreateDiskTypes() ([]enaml.DiskType, error) {
 	fileBytes, err := generated.Asset("files/disk_types.yml")
 	if err != nil {
@@ -71,7 +71,7 @@ func (c *azureCloudConfig) CreateDiskTypes() ([]enaml.DiskType, error) {
 	return diskTypes, err
 }
 
-//CreateVMTypes : Create Azure specific VM types
+//CreateVMTypes : Returns Azure specific VM types
 func (c *azureCloudConfig) CreateVMTypes() ([]enaml.VMType, error) {
 	fileBytes, err := generated.Asset("files/vm_types.yml")
 	if err != nil {
@@ -82,7 +82,7 @@ func (c *azureCloudConfig) CreateVMTypes() ([]enaml.VMType, error) {
 	return vmTypes, err
 }
 
-//CreateCompilation : Create Azure specific VM types
+//CreateCompilation : Creates Azure manifest compilation details
 func (c *azureCloudConfig) CreateCompilation() (*enaml.Compilation, error) {
 	return cloudconfigs.CreateCompilation(c.Context)
 }
