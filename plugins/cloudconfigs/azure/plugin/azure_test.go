@@ -79,7 +79,7 @@ var _ = Describe("given AzureCloud Config", func() {
 		It("then the disk type should not contain a nil cloud properties", func() {
 			diskTypes, _ := provider.CreateDiskTypes()
 			for _, diskType := range diskTypes {
-				Ω(diskType.CloudProperties).ShouldNot(BeNil())
+				Ω(diskType.CloudProperties).ShouldNot(BeNil(), "disk type %v", diskType)
 			}
 		})
 		It("then it have a manifest with a compilation", func() {
@@ -88,7 +88,6 @@ var _ = Describe("given AzureCloud Config", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			compilationYml, err := yaml.Marshal(manifest.Compilation)
 			Ω(err).ShouldNot(HaveOccurred())
-
 			Ω(compilationYml).Should(MatchYAML(bytes))
 		})
 	})
