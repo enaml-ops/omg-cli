@@ -20,8 +20,8 @@ import (
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/omg-cli/vsphere-cli"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/registry"
 	"github.com/enaml-ops/pluginlib/pluginutil"
+	"github.com/enaml-ops/pluginlib/registry"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pivotalservices/gtils/osutils"
 	"github.com/xchapter7x/lo"
@@ -50,6 +50,15 @@ func init() {
 func main() {
 	app := (&cli.App{})
 	app.Version = Version
+
+	boshFlags := bosh.GetAuthFlags()
+	otherFlags := []pcli.Flag{
+		pcli.CreateStringFlag("cred", "a connection string for a credential store", ""),
+	}
+	var productFlags []pcli.Flag
+	productFlags = append(productFlags, boshFlags...)
+	productFlags = append(productFlags, otherFlags...)
+
 	app.Commands = []*cli.Command{
 		{
 			Name:   "azure",
@@ -143,13 +152,13 @@ func main() {
 		{
 			Name:        "deploy-cloudconfig",
 			Usage:       "deploy-cloudconfig <cloudconfig-name> [--flags] - deploy a cloudconfig to bosh",
-			Flags:       pluginutil.ToCliFlagArray(bosh.GetAuthFlags()),
+			Flags:       pluginutil.ToCliFlagArray(boshFlags),
 			Subcommands: utils.GetCloudConfigCommands(CloudConfigPluginsDir),
 		},
 		{
 			Name:        "deploy-product",
 			Usage:       "deploy-product <prod-name> [--flags] - deploy a product via bosh",
-			Flags:       pluginutil.ToCliFlagArray(bosh.GetAuthFlags()),
+			Flags:       pluginutil.ToCliFlagArray(productFlags),
 			Subcommands: utils.GetProductCommands(ProductPluginsDir),
 		},
 	}

@@ -1,5 +1,5 @@
 hash: 776e688c0b74074be165f08185dcd2939e922567ee4f727d7271de6889f390da
-updated: 2016-11-07T15:58:07.315913656-07:00
+updated: 2016-11-07T16:02:43.938156695-07:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725

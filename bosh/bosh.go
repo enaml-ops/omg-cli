@@ -7,6 +7,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cred"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/product"
 	"github.com/xchapter7x/lo"
@@ -76,15 +77,25 @@ func CloudConfigAction(c *cli.Context, cc cloudconfig.CloudConfigDeployer) error
 func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) error {
 	bc := getBoshClient(c)
 	ccm, err := bc.GetCloudConfig()
-
 	if err != nil {
 		return err
 	}
+
 	bytes, err := ccm.Bytes()
-
 	if err != nil {
 		return err
 	}
+
+	var cs cred.Store
+	if conn := c.String("cred"); conn != "" {
+		cs, err = cred.NewStore(conn)
+		if err != nil {
+			return err
+		}
+	}
+
+	_ = cs
+	// TODO: switch over to productv1.GetProduct() and pass in cs
 
 	var manifest []byte
 	if manifest, err = productDeployment.GetProduct(c.Args().Slice(), bytes); err != nil {
