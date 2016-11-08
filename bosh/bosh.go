@@ -9,7 +9,7 @@ import (
 	"github.com/enaml-ops/pluginlib/cloudconfig"
 	"github.com/enaml-ops/pluginlib/cred"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/product"
+	"github.com/enaml-ops/pluginlib/productv1"
 	"github.com/xchapter7x/lo"
 	"gopkg.in/urfave/cli.v2"
 )
@@ -94,11 +94,8 @@ func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) er
 		}
 	}
 
-	_ = cs
-	// TODO: switch over to productv1.GetProduct() and pass in cs
-
 	var manifest []byte
-	if manifest, err = productDeployment.GetProduct(c.Args().Slice(), bytes); err != nil {
+	if manifest, err = productDeployment.GetProduct(c.Args().Slice(), bytes, cs); err != nil {
 		lo.G.Errorf("there was an error calling get product: '%v' - '%v'", err.Error(), err)
 		return err
 	}
