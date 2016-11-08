@@ -232,8 +232,8 @@ var _ = Describe("bosh", func() {
 			server.Close()
 		})
 
-		Context("when the productdeployer's GetProduct() method returns an error", func() {
-			var pd product.ProductDeployer
+		Context("when the Deployer's GetProduct() method returns an error", func() {
+			var pd product.Deployer
 			var c *cli.Context
 			var deploymentPostBody []byte
 
@@ -268,8 +268,8 @@ var _ = Describe("bosh", func() {
 			})
 		})
 
-		Context("when the productdeployer's GetProduct() method DOES NOT return an error", func() {
-			var pd product.ProductDeployer
+		Context("when the Deployer's GetProduct() method DOES NOT return an error", func() {
+			var pd product.Deployer
 			BeforeEach(func() {
 				pd = FakeProductDeployer{}
 			})

@@ -74,7 +74,7 @@ func CloudConfigAction(c *cli.Context, cc cloudconfig.CloudConfigDeployer) error
 }
 
 // ProductAction is the action that is executed for each product command
-func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) error {
+func ProductAction(c *cli.Context, productDeployment product.Deployer) error {
 	bc := getBoshClient(c)
 	ccm, err := bc.GetCloudConfig()
 	if err != nil {

@@ -43,7 +43,7 @@ import:
 - package: github.com/onsi/gomega
   version: master
 - package: github.com/enaml-ops/pluginlib
-  version: 4191689948fc9fd4d3c17071001a2c80e20b46c8
+  version: 2c6f71179c5f5d33fd5c13fc2abfeeb68e224005
 - package: golang.org/x/oauth2
 - package: golang.org/x/net
   subpackages:
