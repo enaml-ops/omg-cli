@@ -7,8 +7,9 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cred"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/product"
+	"github.com/enaml-ops/pluginlib/productv1"
 	"github.com/xchapter7x/lo"
 	"gopkg.in/urfave/cli.v2"
 )
@@ -73,21 +74,28 @@ func CloudConfigAction(c *cli.Context, cc cloudconfig.CloudConfigDeployer) error
 }
 
 // ProductAction is the action that is executed for each product command
-func ProductAction(c *cli.Context, productDeployment product.ProductDeployer) error {
+func ProductAction(c *cli.Context, productDeployment product.Deployer) error {
 	bc := getBoshClient(c)
 	ccm, err := bc.GetCloudConfig()
-
 	if err != nil {
 		return err
 	}
-	bytes, err := ccm.Bytes()
 
+	bytes, err := ccm.Bytes()
 	if err != nil {
 		return err
+	}
+
+	var cs cred.Store
+	if conn := c.String("cred"); conn != "" {
+		cs, err = cred.NewStore(conn)
+		if err != nil {
+			return err
+		}
 	}
 
 	var manifest []byte
-	if manifest, err = productDeployment.GetProduct(c.Args().Slice(), bytes); err != nil {
+	if manifest, err = productDeployment.GetProduct(c.Args().Slice(), bytes, cs); err != nil {
 		lo.G.Errorf("there was an error calling get product: '%v' - '%v'", err.Error(), err)
 		return err
 	}

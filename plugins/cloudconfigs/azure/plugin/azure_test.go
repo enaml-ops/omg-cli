@@ -76,13 +76,18 @@ var _ = Describe("given AzureCloud Config", func() {
 			Ω(diskTypes).Should(HaveLen(19))
 			Ω(utils.GetDiskTypeNames(diskTypes)).Should(ConsistOf("1024", "2048", "5120", "10240", "20480", "30720", "51200", "76800", "102400", "153600", "204800", "307200", "512000", "768000", "1048576", "2097152", "5242880", "10485760", "16777216"))
 		})
+		It("then the disk type should not contain a nil cloud properties", func() {
+			diskTypes, _ := provider.CreateDiskTypes()
+			for _, diskType := range diskTypes {
+				Ω(diskType.CloudProperties).ShouldNot(BeNil(), "disk type %v", diskType)
+			}
+		})
 		It("then it have a manifest with a compilation", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			bytes, err := ioutil.ReadFile("fixtures/azure-compilation.yml")
 			Ω(err).ShouldNot(HaveOccurred())
 			compilationYml, err := yaml.Marshal(manifest.Compilation)
 			Ω(err).ShouldNot(HaveOccurred())
-
 			Ω(compilationYml).Should(MatchYAML(bytes))
 		})
 	})

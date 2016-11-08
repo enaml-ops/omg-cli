@@ -37,7 +37,7 @@ func (s *Plugin) GetMeta() cloudconfig.Meta {
 	}
 }
 
-//GetCloudConfig - get a serialized form of vCenter cloud configuration
+//GetCloudConfig - get a serialized form of azure cloud configuration
 func (s *Plugin) GetCloudConfig(args []string) (b []byte) {
 	var err error
 	c := pluginutil.NewContext(args, pluginutil.ToCliFlagArray(s.GetFlags()))

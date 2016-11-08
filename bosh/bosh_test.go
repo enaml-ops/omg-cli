@@ -20,9 +20,10 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
 	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cred"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/product"
 	"github.com/enaml-ops/pluginlib/pluginutil"
+	"github.com/enaml-ops/pluginlib/productv1"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/ghttp"
@@ -76,7 +77,7 @@ func (f FakeProductDeployer) GetFlags() []pcli.Flag {
 	return []pcli.Flag{}
 }
 
-func (f FakeProductDeployer) GetProduct(args []string, cloudConfig []byte) ([]byte, error) {
+func (f FakeProductDeployer) GetProduct(args []string, cloudConfig []byte, cs cred.Store) ([]byte, error) {
 	return []byte(controlProduct), f.ErrControl
 }
 
@@ -231,8 +232,8 @@ var _ = Describe("bosh", func() {
 			server.Close()
 		})
 
-		Context("when the productdeployer's GetProduct() method returns an error", func() {
-			var pd product.ProductDeployer
+		Context("when the Deployer's GetProduct() method returns an error", func() {
+			var pd product.Deployer
 			var c *cli.Context
 			var deploymentPostBody []byte
 
@@ -267,8 +268,8 @@ var _ = Describe("bosh", func() {
 			})
 		})
 
-		Context("when the productdeployer's GetProduct() method DOES NOT return an error", func() {
-			var pd product.ProductDeployer
+		Context("when the Deployer's GetProduct() method DOES NOT return an error", func() {
+			var pd product.Deployer
 			BeforeEach(func() {
 				pd = FakeProductDeployer{}
 			})

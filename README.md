@@ -33,6 +33,17 @@ composes bosh-init, enaml and plugins to create a simple cli installer
 $> wget -O omg https://github.com/enaml-ops/omg-cli/releases/download/v0.0.25/omg-osx && chmod +x omg
 ```
 
+```
+# the below dependencies only apply if you are looking to install a BOSH Director with omg-cli
+$> sudo apt-get update
+$> sudo apt-get install -y build-essential zlibc zlib1g-dev ruby ruby-dev openssl libxslt-dev libxml2-dev libssl-dev libreadline6 libreadline6-dev libyaml-dev libsqlite3-dev sqlite3
+
+or 
+
+$> xcode-select --install
+$> brew install openssl
+```
+
 ```bash
 # deploy your bosh using the omg cli
 $> ./omg aws \
