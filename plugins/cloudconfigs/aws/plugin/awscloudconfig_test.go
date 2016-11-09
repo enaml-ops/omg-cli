@@ -52,8 +52,9 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 		})
 		Context("when GetCloudConfig is called with valid args for a single az & network", func() {
 			var mycloud []byte
+			var err error
 			BeforeEach(func() {
-				mycloud = myplugin.GetCloudConfig([]string{
+				mycloud, err = myplugin.GetCloudConfig([]string{
 					"test",
 					"--aws-region", "us-east-1",
 					"--aws-security-group", "bosh",
@@ -67,6 +68,9 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 					"--bosh-reserve-range-1", "10.0.0.1-10.0.0.10",
 					"--bosh-reserve-range-1", "10.0.0.20-10.0.0.30",
 				})
+			})
+			It("then it should not return an error", func() {
+				Ω(err).ShouldNot(HaveOccurred())
 			})
 			It("then it should return the bytes representation of the object", func() {
 				Ω(mycloud).ShouldNot(BeEmpty())
@@ -87,8 +91,9 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 		})
 		Context("when GetCloudConfig is called with valid args for a multi az & network", func() {
 			var mycloud []byte
+			var err error
 			BeforeEach(func() {
-				mycloud = myplugin.GetCloudConfig([]string{
+				mycloud, err = myplugin.GetCloudConfig([]string{
 					"test",
 					"--aws-region", "us-east-1",
 					"--aws-security-group", "bosh",
@@ -110,12 +115,14 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 					"--bosh-reserve-range-2", "10.1.0.20-10.1.0.30",
 				})
 			})
+			It("then it should not return an error", func() {
+				Ω(err).ShouldNot(HaveOccurred())
+			})
 			It("then it should return the bytes representation of the object", func() {
 				Ω(mycloud).ShouldNot(BeEmpty())
 			})
 			It("then should contain the correct number of networks and azs", func() {
 				var mynetwork = new(enaml.ManualNetwork)
-				//fmt.Println(string(mycloud))
 				ccManifest := enaml.NewCloudConfigManifest(mycloud)
 				testNetwork, _ := yaml.Marshal(ccManifest.Networks[0])
 				yaml.Unmarshal(testNetwork, mynetwork)
@@ -128,8 +135,9 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 
 		Context("when GetCloudConfig is called with flags for static ranges", func() {
 			var mycloud []byte
+			var err error
 			BeforeEach(func() {
-				mycloud = myplugin.GetCloudConfig([]string{
+				mycloud, err = myplugin.GetCloudConfig([]string{
 					"test",
 					"--aws-region", "us-east-1",
 					"--aws-security-group", "bosh",
@@ -154,6 +162,9 @@ var _ = Describe("given AWSCloudConfig Plugin", func() {
 			})
 			It("then it should return the bytes representation of the object", func() {
 				Ω(mycloud).ShouldNot(BeEmpty())
+			})
+			It("then it should not return an error", func() {
+				Ω(err).ShouldNot(HaveOccurred())
 			})
 			It("then should contain static record for the subnet", func() {
 				var subnet1 = new(enaml.ManualNetwork)
