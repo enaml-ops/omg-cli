@@ -4,7 +4,7 @@ import (
 	"strconv"
 
 	aws "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/cloud-config"
-	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cloudconfigv1"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/pluginutil"
 	"github.com/xchapter7x/lo"
@@ -54,18 +54,18 @@ func (s *AWSCloudConfig) GetMeta() cloudconfig.Meta {
 }
 
 //GetCloudConfig - get a serialized form of AWS cloud configuration
-func (s *AWSCloudConfig) GetCloudConfig(args []string) (b []byte) {
-	var err error
+func (s *AWSCloudConfig) GetCloudConfig(args []string) ([]byte, error) {
 	c := pluginutil.NewContext(args, pluginutil.ToCliFlagArray(s.GetFlags()))
 	cloud := aws.NewAWSCloudConfig(
 		c.String("aws-region"),
 		c.StringSlice("aws-security-group"),
 		getSubnetBucketList(c),
 	)
-	if b, err = cloud.Bytes(); err != nil {
-		lo.G.Error("cloud bytes call yielded error: ", err)
+	b, err := cloud.Bytes()
+	if err != nil {
+		lo.G.Debug("cloud bytes call yielded error: ", err)
 	}
-	return b
+	return b, err
 }
 
 func getSubnetBucketList(c *cli.Context) (bucket []aws.SubnetBucket) {
