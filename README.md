@@ -38,7 +38,7 @@ $> wget -O omg https://github.com/enaml-ops/omg-cli/releases/download/v0.0.25/om
 $> sudo apt-get update
 $> sudo apt-get install -y build-essential zlibc zlib1g-dev ruby ruby-dev openssl libxslt-dev libxml2-dev libssl-dev libreadline6 libreadline6-dev libyaml-dev libsqlite3-dev sqlite3
 
-or 
+or
 
 $> xcode-select --install
 $> brew install openssl
@@ -92,16 +92,26 @@ $> ./omg deploy-cloudconfig \
 --bosh-url https://bosh.url.com --bosh-port 25555 \
 --bosh-user admin --bosh-pass admin --ssl-ignore \
 aws-cloudconfigplugin-osx \
---aws-region us-east-1 \
---aws-security-group bosh \
---bosh-az-name-1 z1 \
---cidr-1 10.0.0.0/24 \
---gateway-1 10.0.0.1 \
---dns-1 10.0.0.2 \
---aws-az-name-1 us-east-1a \
---aws-subnet-name-1 aws-subnet-1 \
---bosh-reserve-range-1 "10.0.0.1-10.0.0.10"
-
+--az z1 \
+--aws-availablity-zone us-east-1a \
+--network-name-1 deployment \
+--network-az-1 z1 \
+--network-cidr-1 10.0.16.0/20 \
+--network-gateway-1 10.0.16.1 \
+--network-dns-1 10.0.0.2 \
+--network-reserved-1 10.0.16.2-10.0.16.10 \
+--network-static-1 10.0.16.11 \
+--aws-subnet-name-1 subnet-1 \
+--aws-security-group-1 sg-1234
+--network-name-2 deployment \
+--network-az-2 z2 \
+--network-cidr-2 10.0.32.0/20 \
+--network-gateway-2 10.0.32.1 \
+--network-dns-2 10.0.0.2 \
+--network-reserved-2 10.0.32.2-10.0.32.10 \
+--network-static-2 10.0.32.11 \
+--aws-subnet-name-2 subnet-2 \
+--aws-security-group-2 sg-1234
 ```
 
 *for information on other options and flags:*

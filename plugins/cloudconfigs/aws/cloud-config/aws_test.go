@@ -1,194 +1,130 @@
 package cloudconfig_test
 
 import (
-	"errors"
-	"fmt"
+	"io/ioutil"
 
 	"github.com/enaml-ops/enaml"
-	"github.com/enaml-ops/enaml/cloudproperties/aws"
+	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
 	. "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/cloud-config"
+	. "github.com/enaml-ops/omg-cli/plugins/cloudconfigs/aws/plugin"
+	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs/utils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"gopkg.in/yaml.v2"
 )
 
 var _ = Describe("given CloudConfig Deployment for AWS", func() {
-	var awsConfig *enaml.CloudConfigManifest
-	BeforeEach(func() {
-		subnets := []SubnetBucket{
-			SubnetBucket{
-				BoshAZName: "bosh-az1",
-				Cidr: "10.0.0.0/24",
-				Gateway: "10.0.0.1",
-				DNS: []string{"10.1.1.1"},
-				AWSAZName: "us-east-1c",
-				AWSSubnetName: "subnet-124kjlq3t",
-				BoshReserveRange: []string{"10.0.0.1-10.0.0.10"},
-			},
-		}
-		awsConfig = NewAWSCloudConfig(awscloudproperties.USWest, []string{"security-group-for-something-secure"}, subnets)
-	})
-
-	Context("when AZs are defined", func() {
-		It("then each AZ definition should map to a unique aws AZ", func() {
-			err := checkUniqueAZs(awsConfig.AZs)
+	Context("when calling CreateManifest", func() {
+		var provider cloudconfigs.CloudConfigProvider
+		var manifest *enaml.CloudConfigManifest
+		var err error
+		BeforeEach(func() {
+			p := new(Plugin)
+			c := p.GetContext([]string{"aws-cloud-config",
+				"--az", "z1",
+				"--az", "z2",
+				"--az", "z3",
+				"--aws-availablity-zone", "us-east-1a",
+				"--aws-availablity-zone", "us-east-1b",
+				"--aws-availablity-zone", "us-east-1c",
+				"--network-name-1", "deployment",
+				"--network-az-1", "z1",
+				"--network-cidr-1", "10.0.16.0/20",
+				"--network-gateway-1", "10.0.16.1",
+				"--network-dns-1", "10.0.0.2",
+				"--network-reserved-1", "10.0.16.2-10.0.16.10",
+				"--network-static-1", "10.0.16.11",
+				"--aws-subnet-name-1", "subnet-1",
+				"--aws-security-group-1", "sg-deployment",
+				"--network-name-2", "deployment",
+				"--network-az-2", "z2",
+				"--network-cidr-2", "10.0.32.0/20",
+				"--network-gateway-2", "10.0.32.1",
+				"--network-dns-2", "10.0.0.2",
+				"--network-reserved-2", "10.0.32.2-10.0.32.10",
+				"--network-static-2", "10.0.32.11",
+				"--aws-subnet-name-2", "subnet-2",
+				"--aws-security-group-2", "sg-deployment",
+				"--network-name-3", "deployment",
+				"--network-az-3", "z3",
+				"--network-cidr-3", "10.0.48.0/20",
+				"--network-gateway-3", "10.0.48.1",
+				"--network-dns-3", "10.0.0.2",
+				"--network-reserved-3", "10.0.48.2-10.0.48.10",
+				"--network-static-3", "10.0.48.11",
+				"--aws-subnet-name-3", "subnet-3",
+				"--aws-security-group-3", "sg-deployment",
+				"--network-name-4", "services",
+				"--network-az-4", "z1",
+				"--network-cidr-4", "10.0.64.0/20",
+				"--network-gateway-4", "10.0.64.1",
+				"--network-dns-4", "10.0.0.2",
+				"--network-reserved-4", "10.0.64.2-10.0.64.10",
+				"--network-static-4", "10.0.64.11",
+				"--aws-subnet-name-4", "subnet-4",
+				"--aws-security-group-4", "sg-services",
+				"--network-name-5", "services",
+				"--network-az-5", "z2",
+				"--network-cidr-5", "10.0.80.0/20",
+				"--network-gateway-5", "10.0.80.1",
+				"--network-dns-5", "10.0.0.2",
+				"--network-reserved-5", "10.0.80.2-10.0.80.10",
+				"--network-static-5", "10.0.80.11",
+				"--aws-subnet-name-5", "subnet-5",
+				"--aws-security-group-5", "sg-services",
+				"--network-name-6", "services",
+				"--network-az-6", "z3",
+				"--network-cidr-6", "10.0.96.0/20",
+				"--network-gateway-6", "10.0.96.1",
+				"--network-dns-6", "10.0.0.2",
+				"--network-reserved-6", "10.0.96.2-10.0.96.10",
+				"--network-static-6", "10.0.96.11",
+				"--aws-subnet-name-6", "subnet-6",
+				"--aws-security-group-6", "sg-services",
+			})
+			provider = NewAWSCloudConfig(c)
+			manifest, err = cloudconfigs.CreateCloudConfigManifest(provider)
+		})
+		It("then it have a manifest with 3 azs", func() {
 			Ω(err).ShouldNot(HaveOccurred())
-		})
-	})
+			Ω(manifest.ContainsAZName("z1")).Should(BeTrue())
+			Ω(manifest.ContainsAZName("z2")).Should(BeTrue())
+			Ω(manifest.ContainsAZName("z3")).Should(BeTrue())
 
-	Context("when a user of the iaas would like to define vm types", func() {
-		It("then there should be 2 vm type options available", func() {
-			Ω(len(awsConfig.VMTypes)).Should(Equal(2))
-		})
-
-		It("then they should have the option of a small VM configuration", func() {
-			_, err := getVmTypeByName(SmallVMName, awsConfig.VMTypes)
+			bytes, err := ioutil.ReadFile("fixtures/aws-az-cloudconfig.yml")
 			Ω(err).ShouldNot(HaveOccurred())
-		})
-
-		Context("when the vmtype is small", func() {
-			var vm enaml.VMType
-			BeforeEach(func() {
-				vm, _ = getVmTypeByName(SmallVMName, awsConfig.VMTypes)
-			})
-			It("then it should use a t2.micro size aws instance", func() {
-				Ω(vm.CloudProperties.(awscloudproperties.VMType).InstanceType).Should(Equal(SmallVMSize))
-			})
-
-			It("then it should use a properly configured ephemeral disk", func() {
-				properSmallDiskSize := SmallEphemeralDiskSize
-				properDiskType := SmallDiskType
-				Ω(vm.CloudProperties.(awscloudproperties.VMType).EphemeralDisk.Size).Should(Equal(properSmallDiskSize))
-				Ω(vm.CloudProperties.(awscloudproperties.VMType).EphemeralDisk.DiskType).Should(Equal(properDiskType))
-			})
-		})
-
-		It("then they should have the option of a large VM configuration", func() {
-			_, err := getVmTypeByName(MediumVMName, awsConfig.VMTypes)
+			azYml, err := yaml.Marshal(manifest.AZs)
 			Ω(err).ShouldNot(HaveOccurred())
+			Ω(azYml).Should(MatchYAML(bytes))
 		})
-
-		Context("when the vmtype is large", func() {
-			var vm enaml.VMType
-			BeforeEach(func() {
-				vm, _ = getVmTypeByName(MediumVMName, awsConfig.VMTypes)
-			})
-			It("then it should use a m3.medium size aws instance", func() {
-				Ω(vm.CloudProperties.(awscloudproperties.VMType).InstanceType).Should(Equal(MediumVMSize))
-			})
-
-			It("then it should use a properly configured ephemeral disk", func() {
-				properMediumDiskSize := MediumEphemeralDiskSize
-				properDiskType := MediumDiskType
-				Ω(vm.CloudProperties.(awscloudproperties.VMType).EphemeralDisk.Size).Should(Equal(properMediumDiskSize))
-				Ω(vm.CloudProperties.(awscloudproperties.VMType).EphemeralDisk.DiskType).Should(Equal(properDiskType))
-			})
-		})
-	})
-
-	Context("when a user of the iaas would like to assign disk", func() {
-		It("then all disk types should be properly configured", func() {
-			for _, v := range awsConfig.DiskTypes {
-				Ω(v.Name).ShouldNot(BeEmpty())
-				Ω(v.DiskSize).Should(BeNumerically(">", 0))
-				Ω(v.CloudProperties).ShouldNot(BeNil())
-			}
-		})
-		It("then they should have the option of a small capacity configuration", func() {
-			err := checkDiskTypeExists(awsConfig.DiskTypes, DiskSmallName)
+		It("then it 2 networks", func() {
 			Ω(err).ShouldNot(HaveOccurred())
-		})
-		It("then they should have the option of a medium capacity configuration", func() {
-			err := checkDiskTypeExists(awsConfig.DiskTypes, DiskMediumName)
+			bytes, err := ioutil.ReadFile("fixtures/aws-network-cloudconfig.yml")
 			Ω(err).ShouldNot(HaveOccurred())
-		})
-		It("then they should have the option of a large capacity configuration", func() {
-			err := checkDiskTypeExists(awsConfig.DiskTypes, DiskLargeName)
+			networkYml, err := yaml.Marshal(manifest.Networks)
 			Ω(err).ShouldNot(HaveOccurred())
+			Ω(networkYml).Should(MatchYAML(bytes))
 		})
-	})
-
-	Context("when a user of the iaas would like to assign a network", func() {
-		It("then they should have a private and a vip network", func() {
-			var networkList []string
-			for _, v := range awsConfig.Networks {
-				switch v.(type) {
-				case enaml.ManualNetwork:
-					networkList = append(networkList, v.(enaml.ManualNetwork).Name)
-				case enaml.VIPNetwork:
-					networkList = append(networkList, v.(enaml.VIPNetwork).Name)
-				case enaml.DynamicNetwork:
-					networkList = append(networkList, v.(enaml.DynamicNetwork).Name)
-				}
-			}
-			Ω(networkList).Should(ContainElement(PrivateNetworkName))
-			Ω(networkList).Should(ContainElement(VIPNetworkName))
+		It("then it should return vmtypes", func() {
+			vmTypes, err := provider.CreateVMTypes()
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(vmTypes).Should(HaveLen(21))
+			Ω(utils.GetVMTypeNames(vmTypes)).Should(ConsistOf("nano", "micro", "micro.ram", "small", "small.disk", "medium", "medium.mem", "medium.disk", "medium.cpu", "large", "large.mem", "large.disk", "large.cpu", "xlarge", "xlarge.mem", "xlarge.disk", "xlarge.cpu", "2xlarge", "2xlarge.mem", "2xlarge.disk", "2xlarge.cpu"))
 		})
+		It("then it return disk types", func() {
+			diskTypes, err := provider.CreateDiskTypes()
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(diskTypes).Should(HaveLen(19))
+			Ω(utils.GetDiskTypeNames(diskTypes)).Should(ConsistOf("1024", "2048", "5120", "10240", "20480", "30720", "51200", "76800", "102400", "153600", "204800", "307200", "512000", "768000", "1048576", "2097152", "5242880", "10485760", "16777216"))
+		})
+		It("then it have a manifest with a compilation", func() {
+			Ω(err).ShouldNot(HaveOccurred())
+			bytes, err := ioutil.ReadFile("fixtures/aws-compilation.yml")
+			Ω(err).ShouldNot(HaveOccurred())
+			compilationYml, err := yaml.Marshal(manifest.Compilation)
+			Ω(err).ShouldNot(HaveOccurred())
 
-		Context("when a user of the iaas is assigning the private network", func() {
-			var privateNetwork enaml.ManualNetwork
-			BeforeEach(func() {
-				for _, v := range awsConfig.Networks {
-					var name string
-					switch v.(type) {
-					case enaml.ManualNetwork:
-						name = v.(enaml.ManualNetwork).Name
-					case enaml.VIPNetwork:
-						name = v.(enaml.VIPNetwork).Name
-					case enaml.DynamicNetwork:
-						name = v.(enaml.DynamicNetwork).Name
-					}
-					if name == PrivateNetworkName {
-						privateNetwork = v.(enaml.ManualNetwork)
-					}
-				}
-			})
-
-			It("then they should have one subnet for each configured AZ", func() {
-				Ω(len(privateNetwork.Subnets)).Should(Equal(len(awsConfig.AZs)))
-			})
-
-			It("then each subnet should be configured w/ required fields", func() {
-				for _, v := range privateNetwork.Subnets {
-					Ω(v.Range).ShouldNot(BeEmpty())
-					Ω(v.AZ).ShouldNot(BeEmpty())
-					Ω(v.Gateway).ShouldNot(BeEmpty())
-					Ω(v.DNS).ShouldNot(BeEmpty())
-				}
-			})
+			Ω(compilationYml).Should(MatchYAML(bytes))
 		})
 	})
 })
-
-func getVmTypeByName(name string, vmTypes []enaml.VMType) (res enaml.VMType, err error) {
-	err = errors.New("no type found")
-	for _, k := range vmTypes {
-		if k.Name == name {
-			err = nil
-			res = k
-		}
-	}
-	return
-}
-
-func checkUniqueAZs(azs []enaml.AZ) error {
-	exists := make(map[string]int)
-	for _, v := range azs {
-		awsAZ := v.CloudProperties.(awscloudproperties.AZ).AvailabilityZoneName
-		if _, alreadyExists := exists[awsAZ]; alreadyExists {
-			return errors.New(fmt.Sprintf("duplicate az assignment to: %s", awsAZ))
-		}
-		exists[awsAZ] = 1
-	}
-	return nil
-}
-
-func checkDiskTypeExists(dsk []enaml.DiskType, name string) (err error) {
-	err = errors.New(name + " capacity configuration not found")
-	for _, v := range dsk {
-		if v.Name == name {
-			err = nil
-			break
-		}
-	}
-	return
-}

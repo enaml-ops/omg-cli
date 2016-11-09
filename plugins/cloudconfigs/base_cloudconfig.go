@@ -88,15 +88,31 @@ func CheckRequiredLength(targetLength, index int, c *cli.Context, names ...strin
 	return nil
 }
 
+//GetNetwork - returns a network if already created with the same name
+func GetNetwork(networks []*enaml.ManualNetwork, networkName string) *enaml.ManualNetwork {
+	for _, manualNetwork := range networks {
+		if manualNetwork.Name == networkName {
+			return manualNetwork
+		}
+	}
+	return nil
+}
+
 func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(int, int) error, cloudPropertiesFunction func(int, int) interface{}) ([]enaml.DeploymentNetwork, error) {
 
 	networks := []enaml.DeploymentNetwork{}
+	manualNetworks := []*enaml.ManualNetwork{}
 	for i := 1; i <= SupportedNetworkCount; i++ {
 		networkFlag := fmt.Sprintf("network-name-%d", i)
+		networkName := context.String(networkFlag)
 		if context.IsSet(networkFlag) {
-			network := enaml.ManualNetwork{
-				Name: context.String(networkFlag),
-				Type: "manual",
+			network := GetNetwork(manualNetworks, networkName)
+			if network == nil {
+				network = &enaml.ManualNetwork{
+					Name: networkName,
+					Type: "manual",
+				}
+				manualNetworks = append(manualNetworks, network)
 			}
 			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
 			multiAssignAZ := context.Bool("multi-assign-az")
@@ -142,8 +158,10 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 					network.AddSubnet(subnet)
 				}
 			}
-			networks = append(networks, network)
 		}
+	}
+	for _, net := range manualNetworks {
+		networks = append(networks, net)
 	}
 	return networks, nil
 }

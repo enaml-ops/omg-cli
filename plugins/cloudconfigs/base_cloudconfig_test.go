@@ -47,7 +47,7 @@ var _ = Describe("cloud config", func() {
 
 			It("should create multiple DNS records in the network list", func() {
 				Ω(len(nets)).Should(Equal(1))
-				mn := nets[0].(enaml.ManualNetwork)
+				mn := nets[0].(*enaml.ManualNetwork)
 				Ω(len(mn.Subnets)).Should(Equal(1))
 				Ω(len(mn.Subnets[0].DNS)).Should(Equal(2))
 			})
@@ -80,7 +80,7 @@ var _ = Describe("cloud config", func() {
 
 			It("should create multiple reserved records in the network list", func() {
 				Ω(len(nets)).Should(Equal(1))
-				mn := nets[0].(enaml.ManualNetwork)
+				mn := nets[0].(*enaml.ManualNetwork)
 				Ω(len(mn.Subnets)).Should(Equal(1))
 				Ω(len(mn.Subnets[0].Reserved)).Should(Equal(2))
 			})
@@ -113,7 +113,7 @@ var _ = Describe("cloud config", func() {
 
 			It("should create multiple static records in the network list", func() {
 				Ω(len(nets)).Should(Equal(1))
-				mn := nets[0].(enaml.ManualNetwork)
+				mn := nets[0].(*enaml.ManualNetwork)
 				Ω(len(mn.Subnets)).Should(Equal(1))
 				Ω(len(mn.Subnets[0].Static)).Should(Equal(2))
 			})

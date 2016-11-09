@@ -1,0 +1,9 @@
+- name: z1
+  cloud_properties:
+    availability_zone: us-east-1a
+- name: z2
+  cloud_properties:
+    availability_zone: us-east-1b
+- name: z3
+  cloud_properties:
+    availability_zone: us-east-1c

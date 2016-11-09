@@ -1,0 +1,147 @@
+- name: nano
+  cloud_properties:
+    instance_type: t2.nano
+    ephemeral_disk:
+      type: gp2
+      size: 8192
+    raw_instance_storage: false
+- name: micro
+  cloud_properties:
+    instance_type: t2.micro
+    ephemeral_disk:
+      type: gp2
+      size: 8192
+    raw_instance_storage: false
+- name: micro.ram
+  cloud_properties:
+    instance_type: t2.micro
+    ephemeral_disk:
+      type: gp2
+      size: 8192
+    raw_instance_storage: false
+- name: small
+  cloud_properties:
+    instance_type: t2.small
+    ephemeral_disk:
+      type: gp2
+      size: 8192
+    raw_instance_storage: false
+- name: small.disk
+  cloud_properties:
+    instance_type: t2.small
+    ephemeral_disk:
+      type: gp2
+      size: 16384
+    raw_instance_storage: false
+- name: medium
+  cloud_properties:
+    instance_type: m3.medium
+    ephemeral_disk:
+      type: gp2
+      size: 8192
+    raw_instance_storage: false
+- name: medium.mem
+  cloud_properties:
+    instance_type: m3.medium
+    ephemeral_disk:
+      type: gp2
+      size: 8192
+    raw_instance_storage: false
+- name: medium.disk
+  cloud_properties:
+    instance_type: m3.medium
+    ephemeral_disk:
+      type: gp2
+      size: 32768
+    raw_instance_storage: false
+- name: medium.cpu
+  cloud_properties:
+    instance_type: m3.medium
+    ephemeral_disk:
+      type: gp2
+      size: 8192
+    raw_instance_storage: false
+- name: large
+  cloud_properties:
+    instance_type: m4.xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 16384
+    raw_instance_storage: false
+- name: large.mem
+  cloud_properties:
+    instance_type: m4.xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 16384
+    raw_instance_storage: false
+- name: large.disk
+  cloud_properties:
+    instance_type: m4.large
+    ephemeral_disk:
+      type: gp2
+      size: 65536
+    raw_instance_storage: false
+- name: large.cpu
+  cloud_properties:
+    instance_type: c4.xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 16384
+    raw_instance_storage: false
+- name: xlarge
+  cloud_properties:
+    instance_type: m4.xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 32768
+    raw_instance_storage: false
+- name: xlarge.mem
+  cloud_properties:
+    instance_type: m4.2xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 32768
+    raw_instance_storage: false
+- name: xlarge.disk
+  cloud_properties:
+    instance_type: m4.xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 131072
+    raw_instance_storage: false
+- name: xlarge.cpu
+  cloud_properties:
+    instance_type: c4.2xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 32768
+    raw_instance_storage: false
+- name: 2xlarge
+  cloud_properties:
+    instance_type: c4.2xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 65536
+    raw_instance_storage: false
+- name: 2xlarge.mem
+  cloud_properties:
+    instance_type: m3.2xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 65536
+    raw_instance_storage: false
+- name: 2xlarge.disk
+  cloud_properties:
+    instance_type: c4.2xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 262144
+    raw_instance_storage: false
+- name: 2xlarge.cpu
+  cloud_properties:
+    instance_type: c4.4xlarge
+    ephemeral_disk:
+      type: gp2
+      size: 65536
+    raw_instance_storage: false
