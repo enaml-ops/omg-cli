@@ -51,3 +51,4 @@ plugins/cloudconfigs/gcp/gcp
 plugins/cloudconfigs/photon/photon
 plugins/cloudconfigs/vsphere/vsphere
 director.pwd
+*-osx
