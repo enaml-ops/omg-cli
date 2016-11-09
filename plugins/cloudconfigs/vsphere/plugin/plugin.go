@@ -39,10 +39,11 @@ func (s *Plugin) GetMeta() cloudconfig.Meta {
 }
 
 //GetCloudConfig - get a serialized form of vCenter cloud configuration
-func (s *Plugin) GetCloudConfig(args []string) (b []byte, err error) {
+func (s *Plugin) GetCloudConfig(args []string) ([]byte, error) {
 	c := pluginutil.NewContext(args, pluginutil.ToCliFlagArray(s.GetFlags()))
 	cloudConfig := NewVSphereCloudConfig(c)
-	if b, err = cloudconfigs.GetDeploymentManifestBytes(cloudConfig); err != nil {
+	b, err := cloudconfigs.GetDeploymentManifestBytes(cloudConfig)
+	if err != nil {
 		return nil, err
 	}
 	return b, nil
