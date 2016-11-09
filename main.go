@@ -203,7 +203,7 @@ func copyPlugin(src io.Reader, dst string) (err error) {
 	if dstPlugin, err = osutils.SafeCreate(dst); err == nil {
 		defer dstPlugin.Close()
 		_, err = io.Copy(dstPlugin, src)
-		os.Chmod(dst, 755)
+		os.Chmod(dst, 0755)
 	}
 	return
 }
