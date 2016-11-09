@@ -67,7 +67,6 @@ var _ = Describe("given GCPCloud Config", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			azYml, err := yaml.Marshal(manifest.AZs)
 			Ω(err).ShouldNot(HaveOccurred())
-
 			Ω(azYml).Should(MatchYAML(bytes))
 		})
 		It("then it should return vmtypes", func() {
@@ -108,5 +107,10 @@ var _ = Describe("given GCPCloud Config", func() {
 
 			Ω(compilationYml).Should(MatchYAML(bytes))
 		})
+
+		It("then it should not return an error", func() {
+			Ω(err).ShouldNot(HaveOccurred())
+		})
+
 	})
 })

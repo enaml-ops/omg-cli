@@ -101,5 +101,10 @@ var _ = Describe("given PhotonCloud Config", func() {
 
 			Ω(compilationYml).Should(MatchYAML(bytes))
 		})
+
+		It("then it should not return an error", func() {
+			Ω(err).ShouldNot(HaveOccurred())
+		})
+
 	})
 })

@@ -4,9 +4,10 @@ import (
 	"fmt"
 
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs"
-	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cloudconfigv1"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/pluginutil"
+	"github.com/xchapter7x/lo"
 	"gopkg.in/urfave/cli.v2"
 )
 
@@ -38,14 +39,14 @@ func (s *Plugin) GetMeta() cloudconfig.Meta {
 }
 
 //GetCloudConfig - get a serialized form of azure cloud configuration
-func (s *Plugin) GetCloudConfig(args []string) (b []byte) {
-	var err error
+func (s *Plugin) GetCloudConfig(args []string) ([]byte, error) {
 	c := pluginutil.NewContext(args, pluginutil.ToCliFlagArray(s.GetFlags()))
 	cloudConfig := NewAzureCloudConfig(c)
-	if b, err = cloudconfigs.GetDeploymentManifestBytes(cloudConfig); err != nil {
-		panic(err)
+	b, err := cloudconfigs.GetDeploymentManifestBytes(cloudConfig)
+	if err != nil {
+		lo.G.Debug("error getting Azure cloud config:", err)
 	}
-	return b
+	return b, err
 }
 
 //GetContext -
