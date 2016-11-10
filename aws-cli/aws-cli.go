@@ -14,7 +14,7 @@ func GetFlags() []pcli.Flag {
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	awsFlags := []pcli.Flag{
 		pcli.CreateStringFlag("aws-instance-size", "the size of aws instance you wish to create", "m3.xlarge"),
-		pcli.CreateStringFlag("aws-availability-zone", "the ec2 az you wish to deploy to", "us-east-1c"),
+		pcli.CreateStringFlag("aws-availability-zone", "the ec2 az you wish to deploy to", "us-east-1a"),
 		pcli.CreateStringFlag("aws-subnet", "your target vpc subnet"),
 		pcli.CreateStringFlag("aws-pem-path", "your aws pem file path"),
 		pcli.CreateStringFlag("aws-access-key", "aws account access key"),
