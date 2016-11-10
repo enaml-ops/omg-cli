@@ -86,7 +86,7 @@ func (s *AWSBosh) resourcePoolCloudProperties() interface{} {
 	return awscloudproperties.ResourcePool{
 		InstanceType: s.cfg.AWSInstanceSize,
 		EphemeralDisk: awscloudproperties.EphemeralDisk{
-			Size:     s.boshbase.PersistentDiskSize,
+			Size:     32768,
 			DiskType: "gp2",
 		},
 		AvailabilityZone: s.cfg.AWSAvailabilityZone,
