@@ -38,13 +38,13 @@ type IAASManifestProvider interface {
 	CreateCPIRelease() enaml.Release
 	CreateCPITemplate() enaml.Template
 	CreateDiskPool() enaml.DiskPool
-	CreateResourcePool() enaml.ResourcePool
+	CreateResourcePool() (*enaml.ResourcePool, error)
 	CreateManualNetwork() enaml.ManualNetwork
 	CreateVIPNetwork() enaml.VIPNetwork
 	CreateJobNetwork() *enaml.Network
 	CreateCloudProvider() enaml.CloudProvider
 	CreateCPIJobProperties() map[string]interface{}
-	CreateDeploymentManifest() *enaml.DeploymentManifest
+	CreateDeploymentManifest() (*enaml.DeploymentManifest, error)
 }
 
 type Postgres interface {

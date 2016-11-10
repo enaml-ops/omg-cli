@@ -25,6 +25,10 @@ const (
 	dbPort         = 5432
 )
 
+type BoshPassword struct {
+	Password string `yaml:"password"`
+}
+
 func (s *BoshBase) InitializePasswords() {
 	s.DirectorPassword = pluginutil.NewPassword(20)
 	s.LoginSecret = pluginutil.NewPassword(20)
@@ -39,30 +43,28 @@ func (s *BoshBase) InitializePasswords() {
 
 func (s *BoshBase) HandleDeployment(provider IAASManifestProvider, boshInitDeploy func(string)) error {
 	var yamlString string
-	var err error
-	manifest := provider.CreateDeploymentManifest()
-
-	lo.G.Debug("Got manifest", manifest)
-	if yamlString, err = enaml.Paint(manifest); err != nil {
+	if manifest, err := provider.CreateDeploymentManifest(); err != nil {
 		lo.G.Error(err.Error())
 		return err
-	}
+	} else {
+		if yamlString, err = enaml.Paint(manifest); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
+		if err = s.CreateAuthenticationFiles(); err != nil {
+			return err
+		}
+		if s.PrintManifest {
+			fmt.Println(yamlString)
+			return nil
+		}
+		if err = s.deployYaml(yamlString, boshInitDeploy); err != nil {
+			lo.G.Error(err.Error())
+			return err
+		}
 
-	if err = s.CreateAuthenticationFiles(); err != nil {
-		return err
-	}
-
-	if s.PrintManifest {
-		fmt.Println(yamlString)
 		return nil
 	}
-
-	if err = s.deployYaml(yamlString, boshInitDeploy); err != nil {
-		lo.G.Error(err.Error())
-		return err
-	}
-
-	return nil
 }
 
 func (s *BoshBase) deployYaml(myYaml string, boshInitDeploy func(string)) error {
@@ -131,6 +133,30 @@ func (s *BoshBase) InitializeKeys() (err error) {
 		s.PrivateKey = privateKey
 	}
 	return
+}
+
+//CreateResourcePool creates the bosh resource pool
+func (s *BoshBase) CreateResourcePool(cloudPropertiesFunction func() interface{}) (*enaml.ResourcePool, error) {
+	if passwordHash, err := SHA512Pass(s.DirectorPassword); err != nil {
+		return nil, err
+	} else {
+		resourcePool := &enaml.ResourcePool{
+			Name:    "vms",
+			Network: "private",
+		}
+		resourcePool.Stemcell = enaml.Stemcell{
+			URL:  s.GOAgentReleaseURL,
+			SHA1: s.GOAgentSHA,
+		}
+		resourcePool.CloudProperties = cloudPropertiesFunction()
+
+		resourcePool.Env = map[string]interface{}{
+			"bosh": BoshPassword{
+				Password: passwordHash,
+			},
+		}
+		return resourcePool, nil
+	}
 }
 
 func (s *BoshBase) CreateDeploymentManifest() *enaml.DeploymentManifest {

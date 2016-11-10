@@ -4,10 +4,11 @@ import (
 	"os"
 	"path"
 
+	"gopkg.in/urfave/cli.v2"
+
 	. "github.com/enaml-ops/omg-cli/utils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"gopkg.in/urfave/cli.v2"
 )
 
 var _ = Describe("utils", func() {

@@ -29,6 +29,9 @@ var _ = Describe("given the vsphere cli", func() {
 				"--vsphere-subnet1-dns", "asdfasdf",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
+				"--dns", "10.0.0.2",
+				"--ntp-server", "10.0.0.2",
+				"--bosh-private-ip", "10.0.10.2",
 			}, pluginutil.ToCliFlagArray(vspherecli.GetFlags()))
 			err := action(ctx)
 			Ω(err).ShouldNot(HaveOccurred())
@@ -64,6 +67,9 @@ var _ = Describe("given the vsphere cli", func() {
 				"--vsphere-subnet1-dns", "asdfasdf",
 				"--gateway", "10.0.0.254",
 				"--cidr", "10.0.0.1/24",
+				"--dns", "10.0.0.2",
+				"--ntp-server", "10.0.0.2",
+				"--bosh-private-ip", "10.0.10.2",
 			}, pluginutil.ToCliFlagArray(vspherecli.GetFlags()))
 			err := action(ctx)
 			Ω(err).ShouldNot(HaveOccurred())

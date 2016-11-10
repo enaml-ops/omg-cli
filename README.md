@@ -93,7 +93,9 @@ $> ./omg deploy-cloudconfig \
 --bosh-user admin --bosh-pass admin --ssl-ignore \
 aws-cloudconfigplugin-osx \
 --az z1 \
+--az z2 \
 --aws-availablity-zone us-east-1a \
+--aws-availablity-zone us-east-1b \
 --network-name-1 deployment \
 --network-az-1 z1 \
 --network-cidr-1 10.0.16.0/20 \

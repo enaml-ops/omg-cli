@@ -6,7 +6,6 @@ import (
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
-	"github.com/xchapter7x/lo"
 )
 
 const (
@@ -34,24 +33,17 @@ type PhotonBosh struct {
 	Base           *BoshBase
 }
 
-func NewPhotonBoshBase(boshBase *BoshBase) *BoshBase {
-	// for now we override any CPI flags that were specified.
-	// until we determine whether or not this is the correct behavior, we should at least warn the user
-	if boshBase.CPIReleaseURL != "" || boshBase.CPIReleaseSHA != "" {
-		lo.G.Warning("You specified Photon CPI flags, but the Photon deployment is overriding them")
+func NewPhotonBoshBase() *BoshBase {
+	return &BoshBase{
+		CPIJobName:         PhotonCPIJobName,
+		CPIReleaseURL:      PhotonCPIURL,
+		CPIReleaseSHA:      PhotonCPISHA,
+		BoshReleaseURL:     PhotonBoshReleaseURL,
+		BoshReleaseSHA:     PhotonBoshReleaseSHA,
+		GOAgentReleaseURL:  PhotonStemcellURL,
+		GOAgentSHA:         PhotonStemcellSHA,
+		PersistentDiskSize: 32768,
 	}
-	if boshBase.BoshReleaseURL != "" || boshBase.BoshReleaseSHA != "" {
-		lo.G.Warning("You specified BOSH release flags, but the Photon deployment is overriding them")
-	}
-	boshBase.CPIReleaseURL = PhotonCPIURL
-	boshBase.CPIReleaseSHA = PhotonCPISHA
-	boshBase.CPIJobName = PhotonCPIJobName
-	boshBase.BoshReleaseURL = PhotonBoshReleaseURL
-	boshBase.BoshReleaseSHA = PhotonBoshReleaseSHA
-	boshBase.GOAgentReleaseURL = PhotonStemcellURL
-	boshBase.GOAgentSHA = PhotonStemcellSHA
-	boshBase.PersistentDiskSize = 32768
-	return boshBase
 }
 
 func NewPhotonIaaSProvider(cfg *PhotonBoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
@@ -86,19 +78,15 @@ func (g *PhotonBosh) CreateDiskPool() enaml.DiskPool {
 	}
 }
 
-func (g *PhotonBosh) CreateResourcePool() enaml.ResourcePool {
-	return enaml.ResourcePool{
-		Name:    "vms",
-		Network: "private",
-		Stemcell: enaml.Stemcell{
-			URL:  PhotonStemcellURL,
-			SHA1: PhotonStemcellSHA,
-		},
-		CloudProperties: map[string]interface{}{
-			"vm_flavor":   g.BoshInitConfig.MachineType,
-			"disk_flavor": "core-200",
-		},
+func (g *PhotonBosh) resourcePoolCloudProperties() interface{} {
+	return map[string]interface{}{
+		"vm_flavor":   g.BoshInitConfig.MachineType,
+		"disk_flavor": "core-200",
 	}
+}
+
+func (g *PhotonBosh) CreateResourcePool() (*enaml.ResourcePool, error) {
+	return g.Base.CreateResourcePool(g.resourcePoolCloudProperties)
 }
 
 func (g *PhotonBosh) CreateManualNetwork() enaml.ManualNetwork {
@@ -162,10 +150,14 @@ func (g *PhotonBosh) CreateCPIJobProperties() map[string]interface{} {
 	}
 }
 
-func (g *PhotonBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
+func (g *PhotonBosh) CreateDeploymentManifest() (*enaml.DeploymentManifest, error) {
 	var manifest = g.Base.CreateDeploymentManifest()
 	manifest.AddRelease(g.CreateCPIRelease())
-	manifest.AddResourcePool(g.CreateResourcePool())
+	if rp, err := g.CreateResourcePool(); err != nil {
+		return nil, err
+	} else {
+		manifest.AddResourcePool(*rp)
+	}
 	manifest.AddDiskPool(g.CreateDiskPool())
 	manifest.AddNetwork(g.CreateManualNetwork())
 	manifest.AddNetwork(g.CreateVIPNetwork())
@@ -181,7 +173,7 @@ func (g *PhotonBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	boshJob.AddProperty("blobstore", g.getJobPropertyBlobstore())
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(g.CreateCloudProvider())
-	return manifest
+	return manifest, nil
 }
 
 func (g *PhotonBosh) getJobPropertyBlobstore() map[string]interface{} {

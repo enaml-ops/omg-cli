@@ -9,11 +9,12 @@ import (
 	"os"
 	"path"
 
+	"gopkg.in/urfave/cli.v2"
+
 	"github.com/enaml-ops/omg-cli/bosh"
 	"github.com/enaml-ops/pluginlib/pluginutil"
 	"github.com/enaml-ops/pluginlib/registry"
 	"github.com/xchapter7x/lo"
-	"gopkg.in/urfave/cli.v2"
 )
 
 // GetCloudConfigCommands builds a list of CLI commands depending on
@@ -82,9 +83,29 @@ func CheckRequired(c *cli.Context, names ...string) error {
 		}
 	}
 	if len(invalidNames) > 0 {
+		lo.G.Debug("Raising error as missing properties")
 		return fmt.Errorf("Sorry you need to provide %v flags to continue", invalidNames)
 	}
 	return nil
+}
+func CheckRequiredStrings(c *cli.Context, names ...string) []string {
+	var invalidNames []string
+	for _, name := range names {
+		if c.String(name) == "" {
+			invalidNames = append(invalidNames, name)
+		}
+	}
+	return invalidNames
+}
+
+func CheckRequiredSlices(c *cli.Context, names ...string) []string {
+	var invalidNames []string
+	for _, name := range names {
+		if len(c.StringSlice(name)) == 0 {
+			invalidNames = append(invalidNames, name)
+		}
+	}
+	return invalidNames
 }
 
 func GetBoshDeployPath() string {

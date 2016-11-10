@@ -32,11 +32,14 @@ var _ = Describe("NewAzureBosh", func() {
 			boshBase.DirectorName = "my-bosh"
 
 			var manifest *enaml.DeploymentManifest
-
+			var err error
 			BeforeEach(func() {
-				manifest = NewAzureIaaSProvider(boshConfig, boshBase).CreateDeploymentManifest()
+				manifest, err = NewAzureIaaSProvider(boshConfig, boshBase).CreateDeploymentManifest()
 			})
 
+			It("then it should not error", func() {
+				Ω(err).ShouldNot(HaveOccurred())
+			})
 			It("then it should be using the azure stemcell", func() {
 				Ω(manifest.ResourcePools[0].Stemcell.URL).Should(ContainSubstring("azure"))
 			})

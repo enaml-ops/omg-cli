@@ -105,21 +105,18 @@ func (v *VSphereBosh) CreateDiskPool() enaml.DiskPool {
 		DiskSize: v.boshbase.PersistentDiskSize,
 	}
 }
-func (v *VSphereBosh) CreateResourcePool() enaml.ResourcePool {
-	return enaml.ResourcePool{
-		Name:    "vms",
-		Network: "private",
-		Stemcell: enaml.Stemcell{
-			URL:  v.boshbase.GOAgentReleaseURL,
-			SHA1: v.boshbase.GOAgentSHA,
-		},
-		CloudProperties: VSpherecloudpropertiesResourcePool{
-			CPU:         2,
-			Disk:        v.boshbase.PersistentDiskSize,
-			RAM:         4096,
-			Datacenters: v.getDataCenters(),
-		},
+
+func (v *VSphereBosh) resourcePoolCloudProperties() interface{} {
+	return VSpherecloudpropertiesResourcePool{
+		CPU:         2,
+		Disk:        v.boshbase.PersistentDiskSize,
+		RAM:         4096,
+		Datacenters: v.getDataCenters(),
 	}
+}
+func (v *VSphereBosh) CreateResourcePool() (*enaml.ResourcePool, error) {
+	return v.boshbase.CreateResourcePool(v.resourcePoolCloudProperties)
+
 }
 func (v *VSphereBosh) CreateManualNetwork() enaml.ManualNetwork {
 	net := enaml.NewManualNetwork("private")
@@ -178,10 +175,14 @@ func (v *VSphereBosh) CreateCPIJobProperties() map[string]interface{} {
 	}
 }
 
-func (v *VSphereBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
+func (v *VSphereBosh) CreateDeploymentManifest() (*enaml.DeploymentManifest, error) {
 	manifest := v.boshbase.CreateDeploymentManifest()
 	manifest.AddRelease(v.CreateCPIRelease())
-	manifest.AddResourcePool(v.CreateResourcePool())
+	if rp, err := v.CreateResourcePool(); err != nil {
+		return nil, err
+	} else {
+		manifest.AddResourcePool(*rp)
+	}
 	manifest.AddDiskPool(v.CreateDiskPool())
 	manifest.AddNetwork(v.CreateManualNetwork())
 	//manifest.AddNetwork(v.CreateVIPNetwork())
@@ -196,7 +197,7 @@ func (v *VSphereBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	}
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(v.CreateCloudProvider())
-	return manifest
+	return manifest, nil
 }
 
 func (v *VSphereBosh) getDataCenters() VSphereDatacenters {

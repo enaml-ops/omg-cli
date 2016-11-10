@@ -23,12 +23,15 @@ var _ = Describe("NewAWSBosh", func() {
 			boshBase.Mode = "uaa"
 			var provider IAASManifestProvider
 			var manifest *enaml.DeploymentManifest
+			var err error
 
 			BeforeEach(func() {
 				provider = NewAWSIaaSProvider(boshConfig, boshBase)
-				manifest = provider.CreateDeploymentManifest()
+				manifest, err = provider.CreateDeploymentManifest()
 			})
-
+			It("then it should not error", func() {
+				Ω(err).ShouldNot(HaveOccurred())
+			})
 			It("then it should be using the aws stemcell", func() {
 				Ω(manifest.ResourcePools[0].Stemcell.URL).ShouldNot(ContainSubstring("azure"))
 				Ω(manifest.ResourcePools[0].Stemcell.URL).Should(ContainSubstring("bosh-aws-xen-hvm-ubuntu-trusty-go_agent"))

@@ -56,10 +56,15 @@ func GetAWSBoshBase() *BoshBase {
 	}
 }
 
-func (s *AWSBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
+func (s *AWSBosh) CreateDeploymentManifest() (*enaml.DeploymentManifest, error) {
 	manifest := s.boshbase.CreateDeploymentManifest()
 	manifest.AddRelease(s.CreateCPIRelease())
-	manifest.AddResourcePool(s.CreateResourcePool())
+	if rp, err := s.CreateResourcePool(); err != nil {
+		return nil, err
+	} else {
+		manifest.AddResourcePool(*rp)
+	}
+
 	manifest.AddDiskPool(s.CreateDiskPool())
 	manifest.AddNetwork(s.CreateManualNetwork())
 	manifest.AddNetwork(s.CreateVIPNetwork())
@@ -74,19 +79,11 @@ func (s *AWSBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	}
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(s.CreateCloudProvider())
-	return manifest
+	return manifest, nil
 }
 
-func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
-	resourcePool = enaml.ResourcePool{
-		Name:    "vms",
-		Network: "private",
-	}
-	resourcePool.Stemcell = enaml.Stemcell{
-		URL:  s.boshbase.GOAgentReleaseURL,
-		SHA1: s.boshbase.GOAgentSHA,
-	}
-	resourcePool.CloudProperties = awscloudproperties.ResourcePool{
+func (s *AWSBosh) resourcePoolCloudProperties() interface{} {
+	return awscloudproperties.ResourcePool{
 		InstanceType: s.cfg.AWSInstanceSize,
 		EphemeralDisk: awscloudproperties.EphemeralDisk{
 			Size:     s.boshbase.PersistentDiskSize,
@@ -94,7 +91,9 @@ func (s *AWSBosh) CreateResourcePool() (resourcePool enaml.ResourcePool) {
 		},
 		AvailabilityZone: s.cfg.AWSAvailabilityZone,
 	}
-	return
+}
+func (s *AWSBosh) CreateResourcePool() (*enaml.ResourcePool, error) {
+	return s.boshbase.CreateResourcePool(s.resourcePoolCloudProperties)
 }
 
 func (s *AWSBosh) CreateCPIRelease() enaml.Release {

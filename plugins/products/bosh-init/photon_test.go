@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
@@ -18,17 +19,15 @@ var _ = Describe("NewPhotonBosh", func() {
 			var boshbase *BoshBase
 			const controlDirectorName = "fake-director-name"
 			BeforeEach(func() {
-				b := &BoshBase{
-					Mode:               "uaa",
-					DirectorName:       controlDirectorName,
-					UAAReleaseSHA:      "uaa-release.com",
-					UAAReleaseURL:      "uaa-release-lkashdjlkgahsdg",
-					NetworkCIDR:        "10.0.0.1/24",
-					NetworkGateway:     "10.0.0.254",
-					PrivateIP:          "10.0.0.4",
-					PersistentDiskSize: 32768,
-				}
-				boshbase = NewPhotonBoshBase(b)
+				boshbase = NewPhotonBoshBase()
+				boshbase.Mode = "uaa"
+				boshbase.DirectorName = controlDirectorName
+				boshbase.UAAReleaseSHA = "uaa-release.com"
+				boshbase.UAAReleaseURL = "uaa-release-lkashdjlkgahsdg"
+				boshbase.NetworkCIDR = "10.0.0.1/24"
+				boshbase.NetworkGateway = "10.0.0.254"
+				boshbase.PrivateIP = "10.0.0.4"
+				boshbase.PersistentDiskSize = 32768
 			})
 			It("then it should give us a boshbase with properly set director name", func() {
 				Ω(boshbase.DirectorName).Should(Equal(controlDirectorName))
@@ -47,7 +46,7 @@ var _ = Describe("NewPhotonBosh", func() {
 				controlURL = "file://example-cpi"
 				controlSHA = "slkjdaslkdjlakjdsk"
 			)
-			var boshBase = NewPhotonBoshBase(new(BoshBase))
+			var boshBase = NewPhotonBoshBase()
 			boshBase.CPIReleaseURL = controlURL
 			boshBase.CPIReleaseSHA = controlSHA
 
@@ -67,7 +66,7 @@ var _ = Describe("NewPhotonBosh", func() {
 
 		Context("when using a bosh config without a CPI URL", func() {
 			cfg := &PhotonBoshInitConfig{}
-			var boshBase = NewPhotonBoshBase(new(BoshBase))
+			var boshBase = NewPhotonBoshBase()
 			var provider IAASManifestProvider
 
 			BeforeEach(func() {
@@ -91,11 +90,10 @@ var _ = Describe("NewPhotonBosh", func() {
 				controlDirectorPassword  = "blah"
 				controlNatsAgentPassword = "bleh"
 			)
-			var boshBase = NewPhotonBoshBase(&BoshBase{
-				PrivateIP:        controlPrivateIP,
-				DirectorPassword: controlDirectorPassword,
-				NatsPassword:     controlNatsAgentPassword,
-			})
+			var boshBase = NewPhotonBoshBase()
+			boshBase.PrivateIP = controlPrivateIP
+			boshBase.DirectorPassword = controlDirectorPassword
+			boshBase.NatsPassword = controlNatsAgentPassword
 			boshBase.CPIReleaseURL = controlURL
 			boshBase.CPIReleaseSHA = controlSHA
 
@@ -103,15 +101,20 @@ var _ = Describe("NewPhotonBosh", func() {
 			var blobstoreOptions map[string]interface{}
 			var bs map[string]interface{}
 			var props *photoncpi.PhotoncpiJob
-
+			var dm *enaml.DeploymentManifest
+			var err error
 			BeforeEach(func() {
 				provider = NewPhotonIaaSProvider(cfg, boshBase)
 				cp := provider.CreateCloudProvider()
 				Ω(cp.Template.Name).Should(Equal("cpi"))
 				props = cp.Properties.(*photoncpi.PhotoncpiJob)
 				blobstoreOptions = props.Blobstore.Options.(map[string]interface{})
-				dm := provider.(*PhotonBosh).CreateDeploymentManifest()
+				dm, err = provider.(*PhotonBosh).CreateDeploymentManifest()
 				bs = dm.GetJobByName("bosh").Properties["blobstore"].(map[string]interface{})
+			})
+
+			It("then it should not error", func() {
+				Ω(err).ShouldNot(HaveOccurred())
 			})
 
 			It("then it should set a valid blobstore port", func() {
@@ -158,7 +161,7 @@ var _ = Describe("NewPhotonBosh", func() {
 				controlURL = "file://example-cpi"
 				controlSHA = "slkjdaslkdjlakjdsk"
 			)
-			var boshBase = NewPhotonBoshBase(new(BoshBase))
+			var boshBase = NewPhotonBoshBase()
 			boshBase.CPIReleaseURL = controlURL
 			boshBase.CPIReleaseSHA = controlSHA
 
@@ -180,7 +183,7 @@ var _ = Describe("NewPhotonBosh", func() {
 			cfg := &PhotonBoshInitConfig{
 				NetworkName: "dwallraff-vnet",
 			}
-			var boshBase = NewPhotonBoshBase(new(BoshBase))
+			var boshBase = NewPhotonBoshBase()
 			boshBase.NetworkDNS = []string{"10.0.0.2"}
 			boshBase.NetworkCIDR = "10.0.0.0/24"
 			boshBase.NetworkGateway = "10.0.0.1"
@@ -229,21 +232,17 @@ var _ = Describe("NewPhotonBosh", func() {
 				},
 				MachineType: "n1-standard-4",
 			}
-			var boshBase = &BoshBase{
-				Mode:               "uaa",
-				CPIJobName:         "bosh-photon-cpi",
-				PrivateIP:          controlPrivateIP,
-				PublicIP:           "1.0.2.3",
-				CPIReleaseSHA:      "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-				NetworkCIDR:        "10.0.0.0/24",
-				NetworkGateway:     "10.0.0.1",
-				NetworkDNS:         []string{"10.0.0.2"},
-				DirectorName:       "my-bosh",
-				NtpServers:         []string{controlNTP},
-				MBusPassword:       controlMbusPass,
-				NatsPassword:       controlNatsPass,
-				PersistentDiskSize: 32768,
-			}
+			var boshBase = NewPhotonBoshBase()
+			boshBase.Mode = "uaa"
+			boshBase.PrivateIP = controlPrivateIP
+			boshBase.PublicIP = "1.0.2.3"
+			boshBase.NetworkCIDR = "10.0.0.0/24"
+			boshBase.NetworkGateway = "10.0.0.1"
+			boshBase.NetworkDNS = []string{"10.0.0.2"}
+			boshBase.NtpServers = []string{controlNTP}
+			boshBase.MBusPassword = controlMbusPass
+			boshBase.NatsPassword = controlNatsPass
+			boshBase.PersistentDiskSize = 32768
 
 			var provider IAASManifestProvider
 
@@ -268,7 +267,8 @@ var _ = Describe("NewPhotonBosh", func() {
 			})
 
 			It("includes the resource pool", func() {
-				r := provider.CreateResourcePool()
+				r, err := provider.CreateResourcePool()
+				Ω(err).ShouldNot(HaveOccurred())
 				Ω(r.Name).Should(Equal("vms"))
 				Ω(r.Network).Should(Equal("private"))
 				Ω(r.Stemcell.URL).Should(Equal(PhotonStemcellURL))
@@ -293,13 +293,15 @@ var _ = Describe("NewPhotonBosh", func() {
 			})
 
 			It("builds a valid manifest", func() {
-				manifest := provider.CreateDeploymentManifest()
+				manifest, err := provider.CreateDeploymentManifest()
 				Ω(manifest).ShouldNot(BeNil())
+				Ω(err).ShouldNot(HaveOccurred())
 			})
 
 			It("builds a manifest with a bosh job containing a single private network", func() {
-				manifest := provider.CreateDeploymentManifest()
+				manifest, err := provider.CreateDeploymentManifest()
 				Ω(manifest).ShouldNot(BeNil())
+				Ω(err).ShouldNot(HaveOccurred())
 
 				var privateNets int
 				for _, n := range manifest.Jobs[0].Networks {

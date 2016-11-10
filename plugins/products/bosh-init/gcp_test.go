@@ -127,20 +127,17 @@ var _ = Describe("NewGCPBosh", func() {
 				MachineType: "n1-standard-4",
 				DiskType:    "pd-standard",
 			}
-			var boshBase = &BoshBase{
-				Mode:           "uaa",
-				CPIJobName:     "bosh-google-cpi",
-				PrivateIP:      controlPrivateIP,
-				PublicIP:       "1.0.2.3",
-				CPIReleaseSHA:  "dc4a0cca3b33dce291e4fbeb9e9948b6a7be3324",
-				NetworkCIDR:    "10.0.0.0/24",
-				NetworkGateway: "10.0.0.1",
-				NetworkDNS:     []string{"10.0.0.2"},
-				DirectorName:   "my-bosh",
-				NtpServers:     []string{controlNTP},
-				MBusPassword:   controlMbusPass,
-				NatsPassword:   controlNatsPass,
-			}
+			var boshBase = NewGCPBoshBase()
+			boshBase.PrivateIP = controlPrivateIP
+			boshBase.PublicIP = "1.0.2.3"
+			boshBase.Mode = "uaa"
+			boshBase.NetworkCIDR = "10.0.0.0/24"
+			boshBase.NetworkGateway = "10.0.0.1"
+			boshBase.NetworkDNS = []string{"10.0.0.2"}
+			boshBase.DirectorName = "my-bosh"
+			boshBase.NtpServers = []string{controlNTP}
+			boshBase.MBusPassword = controlMbusPass
+			boshBase.NatsPassword = controlNatsPass
 
 			var provider IAASManifestProvider
 
@@ -172,7 +169,8 @@ var _ = Describe("NewGCPBosh", func() {
 			})
 
 			It("includes the resource pool", func() {
-				r := provider.CreateResourcePool()
+				r, err := provider.CreateResourcePool()
+				Ω(err).ShouldNot(HaveOccurred())
 				Ω(r.Name).Should(Equal("vms"))
 				Ω(r.Network).Should(Equal("private"))
 				Ω(r.Stemcell.URL).Should(Equal(GCPStemcellURL))
@@ -218,8 +216,9 @@ var _ = Describe("NewGCPBosh", func() {
 			})
 
 			It("builds a valid manifest", func() {
-				manifest := provider.CreateDeploymentManifest()
+				manifest, err := provider.CreateDeploymentManifest()
 				Ω(manifest).ShouldNot(BeNil())
+				Ω(err).ShouldNot(HaveOccurred())
 			})
 		})
 	})

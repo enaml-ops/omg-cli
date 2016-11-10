@@ -1,15 +1,15 @@
-hash: 3ce3be9b1574912738523636d47bc2626ff3c84347a44905a900244fef2cc6ad
-updated: 2016-11-09T09:25:52.19362726-06:00
+hash: 087ef319efeb6704e375c9ed4fda66802fa4b18a3d25cfe49cad54531c15971b
+updated: 2016-11-10T09:18:50.353233433-07:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
   subpackages:
+  - agentclient/http
   - agentclient
   - agentclient/applyspec
-  - agentclient/http
-  - platform/deviceutil
-  - platform/disk
   - settings
+  - platform/disk
+  - platform/deviceutil
 - name: github.com/cloudfoundry/bosh-davcli
   version: 6b59ec2bb903b5fe532104fce7258559d8891ce2
   subpackages:
@@ -20,11 +20,12 @@ imports:
   repo: https://github.com/enaml-ops/bosh-init.git
   vcs: git
   subpackages:
+  - cmd
+  - logger
+  - ui
+  - ui/fmt
   - blobstore
   - cloud
-  - cmd
-  - common/net
-  - common/util
   - config
   - cpi/release
   - crypto
@@ -38,39 +39,38 @@ imports:
   - deployment/vm
   - index
   - installation
-  - installation/blobextract
   - installation/manifest
-  - installation/pkg
   - installation/tarball
-  - logger
   - registry
   - release
-  - release/job
-  - release/job/manifest
-  - release/manifest
-  - release/pkg
   - release/set/manifest
-  - state/job
   - state/pkg
   - stemcell
   - templatescompiler
   - templatescompiler/erbrenderer
-  - ui
-  - ui/fmt
+  - release/job
+  - release/pkg
+  - state/job
+  - common/net
+  - common/util
+  - installation/blobextract
+  - installation/pkg
+  - release/manifest
+  - release/job/manifest
 - name: github.com/cloudfoundry/bosh-utils
   version: 99c230d990674e484143e3b1452576912ab55380
   subpackages:
-  - blobstore
   - errors
-  - fileutil
-  - http
-  - httpclient
   - logger
   - logger/file
-  - property
-  - retrystrategy
   - system
   - uuid
+  - fileutil
+  - httpclient
+  - retrystrategy
+  - property
+  - blobstore
+  - http
 - name: github.com/cloudfoundry/gofileutils
   version: 511ba4f8a696af09fe7637d0f303675a246232ee
   subpackages:
@@ -78,19 +78,20 @@ imports:
 - name: github.com/enaml-ops/enaml
   version: 354a165b4ef98f0e154b6a0d8e8a54138abac102
   subpackages:
+  - enamlbosh
   - cloudproperties/aws
   - cloudproperties/azure
-  - enamlbosh
 - name: github.com/enaml-ops/pluginlib
   version: eac779606d4396dd8f17891305edfa0433d3d025
   subpackages:
-  - cloudconfig
-  - cred
   - pcli
   - pluginutil
-  - product
-  - productv1
   - registry
+  - cloudconfig
+  - cred
+  - productv1
+  - product
+  - cloudconfigv1
 - name: github.com/golang/protobuf
   version: 87c000235d3d852c1628dc9490cd21ab36a7d69f
   subpackages:
@@ -99,6 +100,11 @@ imports:
   version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux
   version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
+- name: github.com/kless/osutil
+  version: 3ac994847c4376a4b905fc0a19f450c5a4bec647
+  subpackages:
+  - user/crypt/sha512_crypt
+  - user/crypt
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/mattn/go-runewidth
@@ -108,39 +114,9 @@ imports:
 - name: github.com/olekukonko/tablewriter
   version: bdcc175572fd7abece6c831e643891b9331bc9e7
 - name: github.com/onsi/ginkgo
-  version: a8ccd817611666211fdf6e6a752174a0db8374a8
-  subpackages:
-  - config
-  - internal/codelocation
-  - internal/containernode
-  - internal/failer
-  - internal/leafnodes
-  - internal/remote
-  - internal/spec
-  - internal/specrunner
-  - internal/suite
-  - internal/testingtproxy
-  - internal/writer
-  - reporters
-  - reporters/stenographer
-  - reporters/stenographer/support/go-colorable
-  - reporters/stenographer/support/go-isatty
-  - types
+  version: c07a44f02cf4a895e331f4f473c0943ee116c668
 - name: github.com/onsi/gomega
   version: ff4bc6b6f9f5affa66635cd04d31d2a7ee21ffd6
-  subpackages:
-  - format
-  - ghttp
-  - internal/assertion
-  - internal/asyncassertion
-  - internal/oraclematcher
-  - internal/testingtsupport
-  - matchers
-  - matchers/support/goraph/bipartitegraph
-  - matchers/support/goraph/edge
-  - matchers/support/goraph/node
-  - matchers/support/goraph/util
-  - types
 - name: github.com/op/go-logging
   version: 970db520ece77730c7e4724c61121037378659d9
 - name: github.com/pivotal-golang/clock
@@ -150,8 +126,8 @@ imports:
 - name: github.com/pivotalservices/gtils
   version: 65c0f332bafc62dc7e1824982ac31b5c21f927b2
   subpackages:
-  - command
   - osutils
+  - command
 - name: github.com/pkg/errors
   version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
 - name: github.com/pkg/sftp
@@ -177,19 +153,15 @@ imports:
 - name: google.golang.org/appengine
   version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
   subpackages:
+  - urlfetch
   - internal
+  - internal/urlfetch
   - internal/base
   - internal/datastore
   - internal/log
   - internal/remote_api
-  - internal/urlfetch
-  - urlfetch
 - name: gopkg.in/urfave/cli.v2
   version: c72728f42438425ffcd487986936357e17ebba3f
 - name: gopkg.in/yaml.v2
   version: a5b47d31c556af34a302ce5d659e6fea44d90de0
-testImports:
-- name: golang.org/x/sys
-  version: c200b10b5d5e122be351b67af224adc6128af5bf
-  subpackages:
-  - unix
+devImports: []

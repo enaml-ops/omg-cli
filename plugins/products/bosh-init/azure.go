@@ -79,19 +79,16 @@ func (a *AzureBosh) CreateDiskPool() enaml.DiskPool {
 		DiskSize: a.boshbase.PersistentDiskSize,
 	}
 }
-func (a *AzureBosh) CreateResourcePool() enaml.ResourcePool {
-	return enaml.ResourcePool{
-		Name:    "vms",
-		Network: "private",
-		Stemcell: enaml.Stemcell{
-			URL:  a.boshbase.GOAgentReleaseURL,
-			SHA1: a.boshbase.GOAgentSHA,
-		},
-		CloudProperties: azurecloudproperties.ResourcePool{
-			InstanceType: a.cfg.AzureInstanceSize,
-		},
+
+func (a *AzureBosh) resourcePoolCloudProperties() interface{} {
+	return azurecloudproperties.ResourcePool{
+		InstanceType: a.cfg.AzureInstanceSize,
 	}
 }
+func (a *AzureBosh) CreateResourcePool() (*enaml.ResourcePool, error) {
+	return a.boshbase.CreateResourcePool(a.resourcePoolCloudProperties)
+}
+
 func (a *AzureBosh) CreateManualNetwork() enaml.ManualNetwork {
 	net := enaml.NewManualNetwork("private")
 	net.AddSubnet(enaml.Subnet{
@@ -164,10 +161,14 @@ func (a *AzureBosh) CreateCPIJobProperties() map[string]interface{} {
 	}
 }
 
-func (a *AzureBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
+func (a *AzureBosh) CreateDeploymentManifest() (*enaml.DeploymentManifest, error) {
 	manifest := a.boshbase.CreateDeploymentManifest()
 	manifest.AddRelease(a.CreateCPIRelease())
-	manifest.AddResourcePool(a.CreateResourcePool())
+	if rp, err := a.CreateResourcePool(); err != nil {
+		return nil, err
+	} else {
+		manifest.AddResourcePool(*rp)
+	}
 	manifest.AddDiskPool(a.CreateDiskPool())
 	manifest.AddNetwork(a.CreateManualNetwork())
 	manifest.AddNetwork(a.CreateVIPNetwork())
@@ -182,5 +183,5 @@ func (a *AzureBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	}
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(a.CreateCloudProvider())
-	return manifest
+	return manifest, nil
 }

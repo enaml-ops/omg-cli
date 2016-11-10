@@ -3,16 +3,17 @@ package photoncli
 import (
 	"errors"
 
+	"gopkg.in/urfave/cli.v2"
+
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/xchapter7x/lo"
-	"gopkg.in/urfave/cli.v2"
 )
 
 func GetFlags() []pcli.Flag {
-	boshdefaults := boshinit.NewPhotonBoshBase(new(boshinit.BoshBase))
+	boshdefaults := boshinit.NewPhotonBoshBase()
 
 	boshFlags := boshinit.BoshFlags(boshdefaults)
 	photonFlags := []pcli.Flag{
@@ -30,28 +31,23 @@ func GetFlags() []pcli.Flag {
 
 func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 	return func(c *cli.Context) (e error) {
-		var b *boshinit.BoshBase
+		var boshBase *boshinit.BoshBase
 		var err error
 
-		if b, err = boshinit.NewBoshBase(c); err != nil {
+		if boshBase, err = boshinit.NewBoshBase(c); err != nil {
 			lo.G.Error(err.Error())
-			return err
-		}
-		boshBase := boshinit.NewPhotonBoshBase(b)
-
-		if boshBase.CPIJobName == "" {
-			lo.G.Error("sorry we could not proceed bc you did not set a cpijobname in your code.")
 			return err
 		}
 
 		lo.G.Debug("Got boshbase", boshBase)
-		if err := utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-network-id"); err != nil {
+		if err = utils.CheckRequired(c, "photon-target", "photon-project-id", "photon-network-id"); err != nil {
 			lo.G.Error(err.Error())
 			return err
 		}
 
 		user := c.IsSet("photon-user")
 		pass := c.IsSet("photon-password")
+
 		if user != pass {
 			lo.G.Error("--photon-user and --photon-password must be specified together")
 			return errors.New("--photon-user and --photon-password must be specified together")
@@ -69,7 +65,7 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 			MachineType: c.String("photon-machine-type"),
 		}, boshBase)
 
-		if err := boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {
+		if err = boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {
 			return err
 		}
 

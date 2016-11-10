@@ -35,6 +35,7 @@ type GCPBosh struct {
 
 func NewGCPBoshBase() *BoshBase {
 	return &BoshBase{
+		CPIJobName:        "bosh-google-cpi",
 		CPIReleaseURL:     GCPCPIURL,
 		CPIReleaseSHA:     GCPCPISHA,
 		NetworkCIDR:       "10.0.0.0/24",
@@ -80,21 +81,16 @@ func (g *GCPBosh) CreateDiskPool() enaml.DiskPool {
 	}
 }
 
-func (g *GCPBosh) CreateResourcePool() enaml.ResourcePool {
-	return enaml.ResourcePool{
-		Name:    "vms",
-		Network: "private",
-		Stemcell: enaml.Stemcell{
-			URL:  GCPStemcellURL,
-			SHA1: GCPStemcellSHA,
-		},
-		CloudProperties: map[string]interface{}{
-			"machine_type":      g.BoshInitConfig.MachineType,
-			"root_disk_size_gb": 50,
-			"root_disk_type":    "pd-standard",
-			"service_scopes":    []string{"compute", "devstorage.full_control"},
-		},
+func (g *GCPBosh) resourcePoolCloudProperties() interface{} {
+	return map[string]interface{}{
+		"machine_type":      g.BoshInitConfig.MachineType,
+		"root_disk_size_gb": 50,
+		"root_disk_type":    "pd-standard",
+		"service_scopes":    []string{"compute", "devstorage.full_control"},
 	}
+}
+func (g *GCPBosh) CreateResourcePool() (*enaml.ResourcePool, error) {
+	return g.Base.CreateResourcePool(g.resourcePoolCloudProperties)
 }
 
 func (g *GCPBosh) CreateManualNetwork() enaml.ManualNetwork {
@@ -189,10 +185,14 @@ func (g *GCPBosh) CreateCPIJobProperties() map[string]interface{} {
 	}
 }
 
-func (g *GCPBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
+func (g *GCPBosh) CreateDeploymentManifest() (*enaml.DeploymentManifest, error) {
 	var manifest = g.Base.CreateDeploymentManifest()
 	manifest.AddRelease(g.CreateCPIRelease())
-	manifest.AddResourcePool(g.CreateResourcePool())
+	if rp, err := g.CreateResourcePool(); err != nil {
+		return nil, err
+	} else {
+		manifest.AddResourcePool(*rp)
+	}
 	manifest.AddDiskPool(g.CreateDiskPool())
 	manifest.AddNetwork(g.CreateManualNetwork())
 	manifest.AddNetwork(g.CreateVIPNetwork())
@@ -207,5 +207,5 @@ func (g *GCPBosh) CreateDeploymentManifest() *enaml.DeploymentManifest {
 	}
 	manifest.Jobs[0] = boshJob
 	manifest.SetCloudProvider(g.CreateCloudProvider())
-	return manifest
+	return manifest, nil
 }

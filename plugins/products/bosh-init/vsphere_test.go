@@ -38,9 +38,13 @@ var _ = Describe("NewVSphereBosh", func() {
 			boshBase.PrivateIP = "172.16.1.6"
 
 			var manifest *enaml.DeploymentManifest
-
+			var err error
 			BeforeEach(func() {
-				manifest = NewVSphereIaaSProvider(boshConfig, boshBase).CreateDeploymentManifest()
+				manifest, err = NewVSphereIaaSProvider(boshConfig, boshBase).CreateDeploymentManifest()
+			})
+
+			It("then error should not occur", func() {
+				Ω(err).ShouldNot(HaveOccurred())
 			})
 
 			It("then it should be using the vsphere esx stemcell", func() {

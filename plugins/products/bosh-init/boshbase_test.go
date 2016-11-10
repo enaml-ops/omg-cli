@@ -14,17 +14,17 @@ import (
 
 type nopIaaSProvider struct{}
 
-func (nopIaaSProvider) CreateCPIRelease() (r enaml.Release)                { return }
-func (nopIaaSProvider) CreateCPITemplate() (r enaml.Template)              { return }
-func (nopIaaSProvider) CreateDiskPool() (r enaml.DiskPool)                 { return }
-func (nopIaaSProvider) CreateResourcePool() (r enaml.ResourcePool)         { return }
-func (nopIaaSProvider) CreateManualNetwork() (r enaml.ManualNetwork)       { return }
-func (nopIaaSProvider) CreateVIPNetwork() (r enaml.VIPNetwork)             { return }
-func (nopIaaSProvider) CreateJobNetwork() (r *enaml.Network)               { return }
-func (nopIaaSProvider) CreateCloudProvider() (r enaml.CloudProvider)       { return }
-func (nopIaaSProvider) CreateCPIJobProperties() (r map[string]interface{}) { return }
-func (nopIaaSProvider) CreateDeploymentManifest() *enaml.DeploymentManifest {
-	return new(enaml.DeploymentManifest)
+func (nopIaaSProvider) CreateCPIRelease() (r enaml.Release)                    { return }
+func (nopIaaSProvider) CreateCPITemplate() (r enaml.Template)                  { return }
+func (nopIaaSProvider) CreateDiskPool() (r enaml.DiskPool)                     { return }
+func (nopIaaSProvider) CreateResourcePool() (r *enaml.ResourcePool, err error) { return }
+func (nopIaaSProvider) CreateManualNetwork() (r enaml.ManualNetwork)           { return }
+func (nopIaaSProvider) CreateVIPNetwork() (r enaml.VIPNetwork)                 { return }
+func (nopIaaSProvider) CreateJobNetwork() (r *enaml.Network)                   { return }
+func (nopIaaSProvider) CreateCloudProvider() (r enaml.CloudProvider)           { return }
+func (nopIaaSProvider) CreateCPIJobProperties() (r map[string]interface{})     { return }
+func (nopIaaSProvider) CreateDeploymentManifest() (*enaml.DeploymentManifest, error) {
+	return &enaml.DeploymentManifest{}, nil
 }
 
 var _ = Describe("given boshbase", func() {
@@ -87,6 +87,18 @@ var _ = Describe("given boshbase", func() {
 			Ω(director.GenerateVmPasswords).Should(BeTrue())
 
 		})
+
+		It("configures password for vm", func() {
+			rp, err := bb.CreateResourcePool(func() interface{} {
+				return nil
+			})
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(rp).ShouldNot(BeNil())
+			Ω(rp.Env).ShouldNot(BeNil())
+			Ω(rp.Env["bosh"]).ShouldNot(BeNil())
+			pwd := rp.Env["bosh"].(boshinit.BoshPassword)
+			Ω(pwd.Password).ShouldNot(BeNil())
+		})
 	})
 
 	Context("when configured for basic auth", func() {
@@ -131,6 +143,17 @@ var _ = Describe("given boshbase", func() {
 			Ω(job.Properties).Should(HaveKey("director"))
 			director := job.Properties["director"].(*director.Director)
 			Ω(director.GenerateVmPasswords).Should(BeTrue())
+		})
+		It("configures password for vm", func() {
+			rp, err := bb.CreateResourcePool(func() interface{} {
+				return nil
+			})
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(rp).ShouldNot(BeNil())
+			Ω(rp.Env).ShouldNot(BeNil())
+			Ω(rp.Env["bosh"]).ShouldNot(BeNil())
+			pwd := rp.Env["bosh"].(boshinit.BoshPassword)
+			Ω(pwd.Password).ShouldNot(BeNil())
 		})
 	})
 

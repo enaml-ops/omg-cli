@@ -1,11 +1,14 @@
 package boshinit
 
 import (
+	"fmt"
 	"strconv"
+
+	"gopkg.in/urfave/cli.v2"
 
 	"github.com/enaml-ops/omg-cli/utils"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"gopkg.in/urfave/cli.v2"
+	"github.com/xchapter7x/lo"
 )
 
 func BoshFlags(defaults *BoshBase) []pcli.Flag {
@@ -38,10 +41,9 @@ func BoshFlags(defaults *BoshBase) []pcli.Flag {
 	}
 }
 
-var RequiredBoshFlags = []string{
+var RequiredStringFlags = []string{
 	"cidr",
 	"gateway",
-	"dns",
 	"bosh-private-ip",
 	"bosh-release-url",
 	"bosh-release-sha",
@@ -52,15 +54,24 @@ var RequiredBoshFlags = []string{
 	"director-name",
 	"uaa-release-url",
 	"uaa-release-sha",
-	"ntp-server",
 	"persistent-disk-size",
 }
+var RequiredSliceFlags = []string{
+	"dns",
+	"ntp-server",
+}
 
-func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
+func NewBoshBase(c *cli.Context) (*BoshBase, error) {
+	var invalidFlags []string
 
-	utils.CheckRequired(c, RequiredBoshFlags...)
+	invalidFlags = append(invalidFlags, utils.CheckRequiredStrings(c, RequiredStringFlags...)...)
+	invalidFlags = append(invalidFlags, utils.CheckRequiredSlices(c, RequiredSliceFlags...)...)
 
-	base = &BoshBase{
+	if len(invalidFlags) > 0 {
+		lo.G.Debug("Raising error as missing properties")
+		return nil, fmt.Errorf("Sorry you need to provide %v flags to continue", invalidFlags)
+	}
+	base := &BoshBase{
 		Mode:               c.String("mode"),
 		NetworkCIDR:        c.String("cidr"),
 		NetworkGateway:     c.String("gateway"),
@@ -89,12 +100,12 @@ func NewBoshBase(c *cli.Context) (base *BoshBase, err error) {
 	}
 	base.InitializePasswords()
 	if base.IsUAA() {
-		if err = base.InitializeCerts(); err != nil {
-			return
+		if err := base.InitializeCerts(); err != nil {
+			return nil, err
 		}
-		if err = base.InitializeKeys(); err != nil {
-			return
+		if err := base.InitializeKeys(); err != nil {
+			return nil, err
 		}
 	}
-	return
+	return base, nil
 }
