@@ -165,17 +165,6 @@ func (g *GCPBosh) createNTP() interface{} {
 	return g.Base.NtpServers
 }
 
-func (g *GCPBosh) createDB() interface{} {
-	return map[string]interface{}{
-		"listen_address": "127.0.0.1",
-		"host":           "127.0.0.1",
-		"user":           "postgres",
-		"password":       g.Base.DBPassword,
-		"database":       "bosh",
-		"adapter":        "postgres",
-	}
-}
-
 func (g *GCPBosh) CreateCPIJobProperties() map[string]interface{} {
 	return map[string]interface{}{
 		"google": g.createGoogleProperties(),

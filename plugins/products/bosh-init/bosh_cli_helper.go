@@ -12,6 +12,9 @@ import (
 )
 
 func BoshFlags(defaults *BoshBase) []pcli.Flag {
+	base := &BoshBase{}
+	base.InitializeDBDefaults()
+
 	return []pcli.Flag{
 		pcli.CreateStringFlag("mode", "what type of bosh director to install.  Options are basic or uaa", "basic"),
 		pcli.CreateStringFlag("cidr", "the network cidr range for your bosh deployment", defaults.NetworkCIDR),
@@ -38,6 +41,16 @@ func BoshFlags(defaults *BoshBase) []pcli.Flag {
 		pcli.CreateStringFlag("syslog-address", "address of syslog server for forwarding heartbeats"),
 		pcli.CreateIntFlag("syslog-port", "port of syslog server", "5514"),
 		pcli.CreateStringFlag("syslog-transport", "transport to syslog server", "tcp"),
+		pcli.CreateBoolFlag("use-external-db", "Specify whether or internal postgres db will be used"),
+		pcli.CreateStringFlag("database-driver", "Database driver", base.DatabaseDriver),
+		pcli.CreateStringFlag("database-scheme", "Database scheme", base.DatabaseScheme),
+		pcli.CreateStringFlag("database-host", "Database host", base.DatabaseHost),
+		pcli.CreateIntFlag("database-port", "Database port", fmt.Sprintf("%d", base.DatabasePort)),
+		pcli.CreateStringFlag("database-user", "Database User", base.DatabaseUsername),
+		pcli.CreateStringFlag("database-password", "Database Password"),
+		pcli.CreateStringFlag("director-database-name", "Director DB Name", base.DirectorDatabaseName),
+		pcli.CreateStringFlag("registry-database-name", "Registry DB Name", base.RegistryDatabaseName),
+		pcli.CreateStringFlag("uaa-database-name", "UAA DB Name", base.UAADatabaseName),
 	}
 }
 
@@ -72,31 +85,41 @@ func NewBoshBase(c *cli.Context) (*BoshBase, error) {
 		return nil, fmt.Errorf("Sorry you need to provide %v flags to continue", invalidFlags)
 	}
 	base := &BoshBase{
-		Mode:               c.String("mode"),
-		NetworkCIDR:        c.String("cidr"),
-		NetworkGateway:     c.String("gateway"),
-		NetworkDNS:         c.StringSlice("dns"),
-		PrivateIP:          c.String("bosh-private-ip"),
-		PublicIP:           c.String("bosh-public-ip"),
-		BoshReleaseSHA:     c.String("bosh-release-sha"),
-		BoshReleaseURL:     c.String("bosh-release-url"),
-		CPIReleaseSHA:      c.String("bosh-cpi-release-sha"),
-		CPIReleaseURL:      c.String("bosh-cpi-release-url"),
-		GOAgentSHA:         c.String("go-agent-release-sha"),
-		GOAgentReleaseURL:  c.String("go-agent-release-url"),
-		DirectorName:       c.String("director-name"),
-		UAAReleaseSHA:      c.String("uaa-release-sha"),
-		UAAReleaseURL:      c.String("uaa-release-url"),
-		NtpServers:         c.StringSlice("ntp-server"),
-		TrustedCerts:       c.String("trusted-certs"),
-		NatsPassword:       c.String("nats-pwd"),
-		PersistentDiskSize: c.Int("persistent-disk-size"),
-		PrintManifest:      c.Bool("print-manifest"),
-		GraphiteAddress:    c.String("hm-graphite-address"),
-		GraphitePort:       c.Int("hm-graphite-port"),
-		SyslogAddress:      c.String("syslog-address"),
-		SyslogPort:         c.Int("syslog-port"),
-		SyslogTransport:    c.String("syslog-transport"),
+		Mode:                 c.String("mode"),
+		NetworkCIDR:          c.String("cidr"),
+		NetworkGateway:       c.String("gateway"),
+		NetworkDNS:           c.StringSlice("dns"),
+		PrivateIP:            c.String("bosh-private-ip"),
+		PublicIP:             c.String("bosh-public-ip"),
+		BoshReleaseSHA:       c.String("bosh-release-sha"),
+		BoshReleaseURL:       c.String("bosh-release-url"),
+		CPIReleaseSHA:        c.String("bosh-cpi-release-sha"),
+		CPIReleaseURL:        c.String("bosh-cpi-release-url"),
+		GOAgentSHA:           c.String("go-agent-release-sha"),
+		GOAgentReleaseURL:    c.String("go-agent-release-url"),
+		DirectorName:         c.String("director-name"),
+		UAAReleaseSHA:        c.String("uaa-release-sha"),
+		UAAReleaseURL:        c.String("uaa-release-url"),
+		NtpServers:           c.StringSlice("ntp-server"),
+		TrustedCerts:         c.String("trusted-certs"),
+		NatsPassword:         c.String("nats-pwd"),
+		PersistentDiskSize:   c.Int("persistent-disk-size"),
+		PrintManifest:        c.Bool("print-manifest"),
+		GraphiteAddress:      c.String("hm-graphite-address"),
+		GraphitePort:         c.Int("hm-graphite-port"),
+		SyslogAddress:        c.String("syslog-address"),
+		SyslogPort:           c.Int("syslog-port"),
+		SyslogTransport:      c.String("syslog-transport"),
+		UseExternalDB:        c.Bool("use-external-db"),
+		DatabaseDriver:       c.String("database-driver"),
+		DatabaseScheme:       c.String("database-scheme"),
+		DatabaseHost:         c.String("database-host"),
+		DatabasePort:         c.Int("database-port"),
+		DatabaseUsername:     c.String("database-user"),
+		DatabasePassword:     c.String("database-password"),
+		DirectorDatabaseName: c.String("director-database-name"),
+		RegistryDatabaseName: c.String("registry-database-name"),
+		UAADatabaseName:      c.String("uaa-database-name"),
 	}
 	base.InitializePasswords()
 	if base.IsUAA() {

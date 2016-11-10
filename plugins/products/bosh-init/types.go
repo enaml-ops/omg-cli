@@ -60,7 +60,6 @@ type BoshBase struct {
 	NetworkDNS           []string
 	DirectorName         string
 	DirectorPassword     string
-	DBPassword           string
 	CPIJobName           string
 	NtpServers           []string
 	PrivateStaticIPs     []string
@@ -93,6 +92,16 @@ type BoshBase struct {
 	SyslogAddress        string
 	SyslogPort           int
 	SyslogTransport      string
+	UseExternalDB        bool
+	DatabaseDriver       string
+	DatabaseHost         string
+	DatabasePort         int
+	DatabaseUsername     string
+	DatabasePassword     string
+	DirectorDatabaseName string
+	RegistryDatabaseName string
+	UAADatabaseName      string
+	DatabaseScheme       string
 }
 
 //UAAClient - Structure to represent map of client priviledges

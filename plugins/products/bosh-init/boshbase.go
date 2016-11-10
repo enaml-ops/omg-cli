@@ -17,16 +17,20 @@ import (
 	"github.com/xchapter7x/lo"
 )
 
-const (
-	directorDBName = "bosh"
-	dbUser         = "postgres"
-	dbAdapter      = "postgres"
-	dbHost         = "127.0.0.1"
-	dbPort         = 5432
-)
-
 type BoshPassword struct {
 	Password string `yaml:"password"`
+}
+
+func (s *BoshBase) InitializeDBDefaults() {
+	s.DatabaseDriver = "postgres"
+	s.DatabaseUsername = "postgres"
+	s.DatabaseScheme = "postgresql"
+	s.DirectorDatabaseName = "bosh"
+	s.RegistryDatabaseName = "registry"
+	s.UAADatabaseName = "uaa"
+	s.DatabasePort = 5432
+	s.DatabaseHost = "127.0.0.1"
+	s.DatabasePassword = pluginutil.NewPassword(20)
 }
 
 func (s *BoshBase) InitializePasswords() {
@@ -34,7 +38,6 @@ func (s *BoshBase) InitializePasswords() {
 	s.LoginSecret = pluginutil.NewPassword(20)
 	s.RegistryPassword = pluginutil.NewPassword(20)
 	s.HealthMonitorSecret = pluginutil.NewPassword(20)
-	s.DBPassword = pluginutil.NewPassword(20)
 	if s.NatsPassword == "" {
 		s.NatsPassword = pluginutil.NewPassword(20)
 	}
@@ -200,17 +203,18 @@ func (s *BoshBase) CreateJob() enaml.Job {
 	boshJob.AddTemplate(enaml.Template{Name: "nats", Release: "bosh"})
 	boshJob.AddProperty("nats", s.createNatsJobProperties())
 
-	boshJob.AddTemplate(enaml.Template{Name: "postgres", Release: "bosh"})
-	boshJob.AddProperty("postgres", s.createPostgresJobProperties())
-
+	if !s.UseExternalDB {
+		boshJob.AddTemplate(enaml.Template{Name: "postgres", Release: "bosh"})
+		boshJob.AddProperty("postgres", s.createPostgresJobProperties())
+	}
 	boshJob.AddTemplate(enaml.Template{Name: "registry", Release: "bosh"})
 	boshJob.AddProperty("registry", s.createRegistryJobProperties())
 
 	boshJob.AddTemplate(enaml.Template{Name: "director", Release: "bosh"})
 	if s.IsUAA() {
-		boshJob.AddProperty("director", s.createDirectorUAAProperties())
+		boshJob.AddProperty("director", s.createDirectorProperties(s.sslFunction, s.uaaUserManagement))
 	} else {
-		boshJob.AddProperty("director", s.createDirectorProperties())
+		boshJob.AddProperty("director", s.createDirectorProperties(s.noSSlFunction, s.localUserManagement))
 	}
 	boshJob.AddProperty("ntp", s.NtpServers)
 
@@ -300,40 +304,41 @@ func (s *BoshBase) createRegistryJobProperties() *registry.Registry {
 			Port:     25777,
 		},
 		Db: &registry.Db{
-			User:     dbUser,
-			Password: s.DBPassword,
-			Port:     dbPort,
-			Adapter:  dbAdapter,
-			Database: "registry",
+			User:     s.DatabaseUsername,
+			Password: s.DatabasePassword,
+			Port:     s.DatabasePort,
+			Adapter:  s.DatabaseDriver,
+			Database: s.RegistryDatabaseName,
+			Host:     s.DatabaseHost,
 		},
 	}
 }
 
 func (s *BoshBase) createPostgresJobProperties() *postgres.Postgres {
 	return &postgres.Postgres{
-		ListenAddress:       dbHost,
-		User:                dbUser,
-		Password:            s.DBPassword,
-		Database:            directorDBName,
-		AdditionalDatabases: []string{"uaa", "registry"},
+		ListenAddress:       s.DatabaseHost,
+		User:                s.DatabaseUsername,
+		Password:            s.DatabasePassword,
+		Database:            s.DirectorDatabaseName,
+		AdditionalDatabases: []string{s.UAADatabaseName, s.RegistryDatabaseName},
 	}
 }
 
 func (s *BoshBase) createUAADBProperties() *uaa.Uaadb {
 	return &uaa.Uaadb{
-		Address:  dbHost,
-		DbScheme: "postgresql",
-		Port:     dbPort,
+		Address:  s.DatabaseHost,
+		DbScheme: s.DatabaseScheme,
+		Port:     s.DatabasePort,
 		Databases: []interface{}{
 			map[string]string{
-				"name": "uaa",
+				"name": s.UAADatabaseName,
 				"tag":  "uaa",
 			},
 		},
 		Roles: []interface{}{
 			map[string]string{
-				"name":     dbUser,
-				"password": s.DBPassword,
+				"name":     s.DatabaseUsername,
+				"password": s.DatabasePassword,
 				"tag":      "admin",
 			},
 		},
@@ -427,63 +432,61 @@ func (s *BoshBase) createUAAProperties() *uaa.Uaa {
 	}
 }
 
-func (s *BoshBase) createDirectorUAAProperties() *director.Director {
-	return &director.Director{
-		Address:      s.GetRoutableIP(),
-		Name:         s.DirectorName,
-		CpiJob:       s.CPIJobName,
-		MaxThreads:   10,
-		TrustedCerts: s.TrustedCerts,
-		Db: &director.DirectorDb{
-			User:     dbUser,
-			Password: s.DBPassword,
-			Adapter:  dbAdapter,
-			Port:     dbPort,
-			Host:     dbHost,
+func (s *BoshBase) uaaUserManagement() *director.UserManagement {
+	return &director.UserManagement{
+		Provider: "uaa",
+		Uaa: &director.Uaa{
+			PublicKey: s.PublicKey,
+			Url:       fmt.Sprintf("https://%s:8443", s.GetRoutableIP()),
 		},
-		Ssl: &director.Ssl{
-			Cert: s.SSLCert,
-			Key:  s.SSLKey,
-		},
-		UserManagement: &director.UserManagement{
-			Provider: "uaa",
-			Uaa: &director.Uaa{
-				PublicKey: s.PublicKey,
-				Url:       fmt.Sprintf("https://%s:8443", s.GetRoutableIP()),
-			},
-		},
-		GenerateVmPasswords: true,
 	}
 }
-func (s *BoshBase) createDirectorProperties() *director.Director {
-	return &director.Director{
-		Address:      s.GetRoutableIP(),
-		Name:         s.DirectorName,
-		CpiJob:       s.CPIJobName,
-		MaxThreads:   10,
-		TrustedCerts: s.TrustedCerts,
-		Db: &director.DirectorDb{
-			User:     dbUser,
-			Password: s.DBPassword,
-			Adapter:  dbAdapter,
-			Port:     dbPort,
-			Host:     dbHost,
-		},
-		UserManagement: &director.UserManagement{
-			Provider: "local",
-			Local: &director.Local{
-				Users: []user{
-					user{
-						Name:     "director",
-						Password: s.DirectorPassword,
-					},
-					user{
-						Name:     "hm",
-						Password: s.HealthMonitorSecret,
-					},
+
+func (s *BoshBase) localUserManagement() *director.UserManagement {
+	return &director.UserManagement{
+		Provider: "local",
+		Local: &director.Local{
+			Users: []user{
+				user{
+					Name:     "director",
+					Password: s.DirectorPassword,
+				},
+				user{
+					Name:     "hm",
+					Password: s.HealthMonitorSecret,
 				},
 			},
 		},
+	}
+}
+
+func (s *BoshBase) sslFunction() *director.Ssl {
+	return &director.Ssl{
+		Cert: s.SSLCert,
+		Key:  s.SSLKey,
+	}
+}
+func (s *BoshBase) noSSlFunction() *director.Ssl {
+	return nil
+}
+
+func (s *BoshBase) createDirectorProperties(sslFunction func() *director.Ssl, userManagementFunction func() *director.UserManagement) *director.Director {
+	return &director.Director{
+		Address:      s.GetRoutableIP(),
+		Name:         s.DirectorName,
+		CpiJob:       s.CPIJobName,
+		MaxThreads:   10,
+		TrustedCerts: s.TrustedCerts,
+		Ssl:          sslFunction(),
+		Db: &director.DirectorDb{
+			User:     s.DatabaseUsername,
+			Password: s.DatabasePassword,
+			Adapter:  s.DatabaseDriver,
+			Port:     s.DatabasePort,
+			Host:     s.DatabaseHost,
+			Database: s.DirectorDatabaseName,
+		},
+		UserManagement:      userManagementFunction(),
 		GenerateVmPasswords: true,
 	}
 }

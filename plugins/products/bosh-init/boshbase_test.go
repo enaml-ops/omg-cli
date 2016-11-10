@@ -7,6 +7,7 @@ import (
 	boshinit "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/director"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/health_monitor"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/registry"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/uaa"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -35,7 +36,115 @@ var _ = Describe("given boshbase", func() {
 		controlGraphiteAddress = "graphite.your.org"
 		controlSyslogAddress   = "syslog.your.org"
 	)
+	Context("when configured for Internal Postgresql DB", func() {
+		var bb *boshinit.BoshBase
+		var job enaml.Job
+		BeforeEach(func() {
+			bb = &boshinit.BoshBase{
+				UseExternalDB: false,
+				Mode:          "uaa",
+			}
+			bb.InitializeDBDefaults()
+			job = bb.CreateJob()
+			Ω(job).ShouldNot(BeNil())
+		})
 
+		It("should configure bosh to use internal postgresql for director", func() {
+			Ω(job.Properties).Should(HaveKey("postgres"))
+			Ω(job.Properties).Should(HaveKey("director"))
+			director := job.Properties["director"].(*director.Director)
+			Ω(director.Db.Adapter).Should(Equal("postgres"))
+			Ω(director.Db.Host).Should(Equal("127.0.0.1"))
+			Ω(director.Db.Port).Should(Equal(5432))
+			Ω(director.Db.User).Should(Equal("postgres"))
+			Ω(director.Db.Password).ShouldNot(BeNil())
+			Ω(director.Db.Database).Should(Equal("bosh"))
+		})
+
+		It("should configure bosh to use internal postgresql for registry", func() {
+			Ω(job.Properties).Should(HaveKey("postgres"))
+			Ω(job.Properties).Should(HaveKey("registry"))
+			registry := job.Properties["registry"].(*registry.Registry)
+			Ω(registry.Db.Adapter).Should(Equal("postgres"))
+			Ω(registry.Db.Host).Should(Equal("127.0.0.1"))
+			Ω(registry.Db.Port).Should(Equal(5432))
+			Ω(registry.Db.User).Should(Equal("postgres"))
+			Ω(registry.Db.Password).ShouldNot(BeNil())
+			Ω(registry.Db.Database).Should(Equal("registry"))
+		})
+
+		It("should configure uaa to use internal postgresql for uaa db", func() {
+			Ω(job.Properties).Should(HaveKey("postgres"))
+			Ω(job.Properties).Should(HaveKey("uaadb"))
+			uaaDB := job.Properties["uaadb"].(*uaa.Uaadb)
+			Ω(uaaDB.DbScheme).Should(Equal("postgresql"))
+			Ω(uaaDB.Address).Should(Equal("127.0.0.1"))
+			Ω(uaaDB.Port).Should(Equal(5432))
+			roles := uaaDB.Roles.([]interface{})[0].(map[string]string)
+			Ω(roles["name"]).Should(Equal("postgres"))
+			Ω(roles["password"]).ShouldNot(BeNil())
+			dbs := uaaDB.Databases.([]interface{})[0].(map[string]string)
+			Ω(dbs["name"]).Should(Equal("uaa"))
+		})
+	})
+	Context("when configured for External DB", func() {
+		var bb *boshinit.BoshBase
+		var job enaml.Job
+		BeforeEach(func() {
+			bb = &boshinit.BoshBase{
+				Mode:                 "uaa",
+				UseExternalDB:        true,
+				DatabaseDriver:       "mysql2",
+				DatabaseHost:         "random.com",
+				DatabasePort:         3306,
+				DirectorDatabaseName: "bosh",
+				RegistryDatabaseName: "registry",
+				UAADatabaseName:      "uaa",
+				DatabasePassword:     "db.password",
+				DatabaseUsername:     "db.user",
+				DatabaseScheme:       "mysql",
+			}
+			job = bb.CreateJob()
+			Ω(job).ShouldNot(BeNil())
+		})
+
+		It("should configure bosh to use exernal db for bosh db", func() {
+			Ω(job.Properties).ShouldNot(HaveKey("postgres"))
+			Ω(job.Properties).Should(HaveKey("director"))
+			director := job.Properties["director"].(*director.Director)
+			Ω(director.Db.Adapter).Should(Equal("mysql2"))
+			Ω(director.Db.Host).Should(Equal("random.com"))
+			Ω(director.Db.Port).Should(Equal(3306))
+			Ω(director.Db.User).Should(Equal("db.user"))
+			Ω(director.Db.Password).Should(Equal("db.password"))
+			Ω(director.Db.Database).Should(Equal("bosh"))
+		})
+
+		It("should configure bosh to use exernal db for registry db", func() {
+			Ω(job.Properties).ShouldNot(HaveKey("postgres"))
+			Ω(job.Properties).Should(HaveKey("registry"))
+			registry := job.Properties["registry"].(*registry.Registry)
+			Ω(registry.Db.Adapter).Should(Equal("mysql2"))
+			Ω(registry.Db.Port).Should(Equal(3306))
+			Ω(registry.Db.User).Should(Equal("db.user"))
+			Ω(registry.Db.Password).Should(Equal("db.password"))
+			Ω(registry.Db.Database).Should(Equal("registry"))
+		})
+
+		It("should configure uaa to use external db for uaa db", func() {
+			Ω(job.Properties).Should(HaveKey("uaadb"))
+			uaaDB := job.Properties["uaadb"].(*uaa.Uaadb)
+			Ω(uaaDB.DbScheme).Should(Equal("mysql"))
+			Ω(uaaDB.Address).Should(Equal("random.com"))
+			Ω(uaaDB.Port).Should(Equal(3306))
+			roles := uaaDB.Roles.([]interface{})[0].(map[string]string)
+			Ω(roles["name"]).Should(Equal("db.user"))
+			Ω(roles["password"]).Should(Equal("db.password"))
+			dbs := uaaDB.Databases.([]interface{})[0].(map[string]string)
+			Ω(dbs["name"]).Should(Equal("uaa"))
+		})
+
+	})
 	Context("when configured for UAA", func() {
 		var bb *boshinit.BoshBase
 		var job enaml.Job
