@@ -422,6 +422,7 @@ func (s *BoshBase) createDirectorUAAProperties() *director.Director {
 				Url:       fmt.Sprintf("https://%s:8443", s.GetRoutableIP()),
 			},
 		},
+		GenerateVmPasswords: true,
 	}
 }
 func (s *BoshBase) createDirectorProperties() *director.Director {
@@ -453,6 +454,7 @@ func (s *BoshBase) createDirectorProperties() *director.Director {
 				},
 			},
 		},
+		GenerateVmPasswords: true,
 	}
 }
 

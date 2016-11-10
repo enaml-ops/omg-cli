@@ -5,6 +5,7 @@ import (
 
 	"github.com/enaml-ops/enaml"
 	boshinit "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/director"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/health_monitor"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/uaa"
 	. "github.com/onsi/ginkgo"
@@ -79,6 +80,13 @@ var _ = Describe("given boshbase", func() {
 			Ω(hm.SyslogEventForwarderEnabled).Should(BeNil())
 			Ω(hm.SyslogEventForwarder).Should(BeNil())
 		})
+
+		It("configures director", func() {
+			Ω(job.Properties).Should(HaveKey("director"))
+			director := job.Properties["director"].(*director.Director)
+			Ω(director.GenerateVmPasswords).Should(BeTrue())
+
+		})
 	})
 
 	Context("when configured for basic auth", func() {
@@ -117,6 +125,12 @@ var _ = Describe("given boshbase", func() {
 			Ω(hm.SyslogEventForwarder.Address).Should(Equal(controlSyslogAddress))
 			Ω(hm.SyslogEventForwarder.Port).Should(Equal(5514))
 			Ω(hm.SyslogEventForwarder.Transport).Should(Equal("tcp"))
+		})
+
+		It("configures director", func() {
+			Ω(job.Properties).Should(HaveKey("director"))
+			director := job.Properties["director"].(*director.Director)
+			Ω(director.GenerateVmPasswords).Should(BeTrue())
 		})
 	})
 
