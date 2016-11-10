@@ -6,7 +6,7 @@ import (
 
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
-	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cloudconfigv1"
 	"github.com/enaml-ops/pluginlib/cred"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/productv1"
@@ -62,8 +62,11 @@ func GetAuthFlags() []pcli.Flag {
 
 // CloudConfigAction is the action that is executed for
 // each cloud config command
-func CloudConfigAction(c *cli.Context, cc cloudconfig.CloudConfigDeployer) error {
-	manifest := cc.GetCloudConfig(c.Args().Slice())
+func CloudConfigAction(c *cli.Context, cc cloudconfig.Deployer) error {
+	manifest, err := cc.GetCloudConfig(c.Args().Slice())
+	if err != nil {
+		return err
+	}
 	lo.G.Debug("we found a manifest and context: ", manifest, c)
 	if c.Bool("print-manifest") {
 		UIPrint(string(manifest))

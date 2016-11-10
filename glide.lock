@@ -1,5 +1,5 @@
-hash: 3ce3be9b1574912738523636d47bc2626ff3c84347a44905a900244fef2cc6ad
-updated: 2016-11-09T09:25:52.19362726-06:00
+hash: e9e1ff99543c441c5422b9253e20c12a474d18c70e7349e00b03299ee58c84de
+updated: 2016-11-10T11:51:57.228809778-07:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -82,9 +82,10 @@ imports:
   - cloudproperties/azure
   - enamlbosh
 - name: github.com/enaml-ops/pluginlib
-  version: eac779606d4396dd8f17891305edfa0433d3d025
+  version: 0aef30e4611e3f1362c804e6fc8a35cee4e002b4
   subpackages:
   - cloudconfig
+  - cloudconfigv1
   - cred
   - pcli
   - pluginutil
@@ -108,7 +109,7 @@ imports:
 - name: github.com/olekukonko/tablewriter
   version: bdcc175572fd7abece6c831e643891b9331bc9e7
 - name: github.com/onsi/ginkgo
-  version: a8ccd817611666211fdf6e6a752174a0db8374a8
+  version: c07a44f02cf4a895e331f4f473c0943ee116c668
   subpackages:
   - config
   - internal/codelocation

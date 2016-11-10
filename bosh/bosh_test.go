@@ -19,7 +19,7 @@ import (
 
 	"github.com/enaml-ops/enaml"
 	"github.com/enaml-ops/enaml/enamlbosh"
-	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cloudconfigv1"
 	"github.com/enaml-ops/pluginlib/cred"
 	"github.com/enaml-ops/pluginlib/pcli"
 	"github.com/enaml-ops/pluginlib/pluginutil"
@@ -61,8 +61,8 @@ func (f FakeCloudConfigDeployer) GetFlags() []pcli.Flag {
 	return []pcli.Flag{}
 }
 
-func (f FakeCloudConfigDeployer) GetCloudConfig(args []string) []byte {
-	return []byte(controlCloudConfig)
+func (f FakeCloudConfigDeployer) GetCloudConfig(args []string) ([]byte, error) {
+	return []byte(controlCloudConfig), nil
 }
 
 type FakeProductDeployer struct {
@@ -136,7 +136,7 @@ var _ = Describe("bosh", func() {
 	})
 
 	Describe("CloudConfigAction", func() {
-		var ccd cloudconfig.CloudConfigDeployer
+		var ccd cloudconfig.Deployer
 		var server *ghttp.Server
 
 		BeforeEach(func() {
