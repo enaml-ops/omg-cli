@@ -175,11 +175,13 @@ var _ = Describe("given boshbase", func() {
 
 			Ω("./rootCA.pem").ShouldNot(BeAnExistingFile())
 			Ω("./director.pwd").ShouldNot(BeAnExistingFile())
+			Ω("./nats.pwd").ShouldNot(BeAnExistingFile())
 		})
 
 		AfterEach(func() {
 			os.Remove("./rootCA.pem")
 			os.Remove("./director.pwd")
+			os.Remove("./nats.pwd")
 		})
 
 		It("creates authentication files when configured to print manfiest", func() {
@@ -188,6 +190,7 @@ var _ = Describe("given boshbase", func() {
 
 			Ω("./rootCA.pem").Should(BeAnExistingFile())
 			Ω("./director.pwd").Should(BeAnExistingFile())
+			Ω("./nats.pwd").Should(BeAnExistingFile())
 		})
 
 		It("creates authentication files when configured to deploy", func() {
@@ -196,6 +199,7 @@ var _ = Describe("given boshbase", func() {
 
 			Ω("./rootCA.pem").Should(BeAnExistingFile())
 			Ω("./director.pwd").Should(BeAnExistingFile())
+			Ω("./nats.pwd").Should(BeAnExistingFile())
 		})
 	})
 })

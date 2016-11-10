@@ -101,6 +101,10 @@ func (s *BoshBase) CreateAuthenticationFiles() error {
 		lo.G.Error(err.Error())
 		return err
 	}
+	if err := ioutil.WriteFile("./nats.pwd", []byte(s.NatsPassword), 0666); err != nil {
+		lo.G.Error(err.Error())
+		return err
+	}
 	return nil
 }
 
