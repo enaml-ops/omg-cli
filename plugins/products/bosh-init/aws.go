@@ -50,9 +50,9 @@ func GetAWSBoshBase() *BoshBase {
 		GOAgentReleaseURL:  "https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent?v=3262.7",
 		GOAgentSHA:         "bf44a5f81d29346af6a309199d2e012237dd222c",
 		PrivateIP:          "10.0.0.6",
-		NtpServers:         []string{"0.pool.ntp.org", "1.pool.ntp.org"},
+		NtpServers:         []string{"0.amazon.pool.ntp.org", "1.amazon.pool.ntp.org", "2.amazon.pool.ntp.org", "3.amazon.pool.ntp.org"},
 		CPIJobName:         awsCPIJobName,
-		PersistentDiskSize: 25000,
+		PersistentDiskSize: 51200,
 	}
 }
 
