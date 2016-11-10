@@ -36,6 +36,24 @@ var _ = Describe("given boshbase", func() {
 		controlGraphiteAddress = "graphite.your.org"
 		controlSyslogAddress   = "syslog.your.org"
 	)
+
+	Context("when configured for Internal Blobstore", func() {
+		var bb *boshinit.BoshBase
+		var job enaml.Job
+		BeforeEach(func() {
+			bb = &boshinit.BoshBase{}
+			bb.InitializeDBDefaults()
+
+			job = bb.CreateJob()
+			Ω(job).ShouldNot(BeNil())
+		})
+
+		It("should configure bosh to use internal blobstore job", func() {
+			Ω(job.Templates).Should(ContainElement(enaml.Template{Name: "blobstore", Release: "bosh"}))
+			Ω(job.Properties).Should(HaveKey("blobstore"))
+		})
+	})
+
 	Context("when configured for Internal Postgresql DB", func() {
 		var bb *boshinit.BoshBase
 		var job enaml.Job
@@ -50,6 +68,7 @@ var _ = Describe("given boshbase", func() {
 		})
 
 		It("should configure bosh to use internal postgresql for director", func() {
+			Ω(job.Templates).Should(ContainElement(enaml.Template{Name: "postgres", Release: "bosh"}))
 			Ω(job.Properties).Should(HaveKey("postgres"))
 			Ω(job.Properties).Should(HaveKey("director"))
 			director := job.Properties["director"].(*director.Director)
@@ -62,6 +81,7 @@ var _ = Describe("given boshbase", func() {
 		})
 
 		It("should configure bosh to use internal postgresql for registry", func() {
+			Ω(job.Templates).Should(ContainElement(enaml.Template{Name: "postgres", Release: "bosh"}))
 			Ω(job.Properties).Should(HaveKey("postgres"))
 			Ω(job.Properties).Should(HaveKey("registry"))
 			registry := job.Properties["registry"].(*registry.Registry)
@@ -74,6 +94,7 @@ var _ = Describe("given boshbase", func() {
 		})
 
 		It("should configure uaa to use internal postgresql for uaa db", func() {
+			Ω(job.Templates).Should(ContainElement(enaml.Template{Name: "postgres", Release: "bosh"}))
 			Ω(job.Properties).Should(HaveKey("postgres"))
 			Ω(job.Properties).Should(HaveKey("uaadb"))
 			uaaDB := job.Properties["uaadb"].(*uaa.Uaadb)
@@ -109,6 +130,7 @@ var _ = Describe("given boshbase", func() {
 		})
 
 		It("should configure bosh to use exernal db for bosh db", func() {
+			Ω(job.Templates).ShouldNot(ContainElement(enaml.Template{Name: "postgres", Release: "bosh"}))
 			Ω(job.Properties).ShouldNot(HaveKey("postgres"))
 			Ω(job.Properties).Should(HaveKey("director"))
 			director := job.Properties["director"].(*director.Director)
@@ -121,6 +143,7 @@ var _ = Describe("given boshbase", func() {
 		})
 
 		It("should configure bosh to use exernal db for registry db", func() {
+			Ω(job.Templates).ShouldNot(ContainElement(enaml.Template{Name: "postgres", Release: "bosh"}))
 			Ω(job.Properties).ShouldNot(HaveKey("postgres"))
 			Ω(job.Properties).Should(HaveKey("registry"))
 			registry := job.Properties["registry"].(*registry.Registry)
@@ -132,6 +155,7 @@ var _ = Describe("given boshbase", func() {
 		})
 
 		It("should configure uaa to use external db for uaa db", func() {
+			Ω(job.Templates).ShouldNot(ContainElement(enaml.Template{Name: "postgres", Release: "bosh"}))
 			Ω(job.Properties).Should(HaveKey("uaadb"))
 			uaaDB := job.Properties["uaadb"].(*uaa.Uaadb)
 			Ω(uaaDB.DbScheme).Should(Equal("mysql"))
