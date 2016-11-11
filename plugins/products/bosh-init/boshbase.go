@@ -30,7 +30,6 @@ func (s *BoshBase) InitializeDBDefaults() {
 	s.UAADatabaseName = "uaa"
 	s.DatabasePort = 5432
 	s.DatabaseHost = "127.0.0.1"
-	s.DatabasePassword = pluginutil.NewPassword(20)
 }
 
 func (s *BoshBase) InitializePasswords() {
@@ -38,10 +37,13 @@ func (s *BoshBase) InitializePasswords() {
 	s.LoginSecret = pluginutil.NewPassword(20)
 	s.RegistryPassword = pluginutil.NewPassword(20)
 	s.HealthMonitorSecret = pluginutil.NewPassword(20)
+	s.MBusPassword = pluginutil.NewPassword(20)
 	if s.NatsPassword == "" {
 		s.NatsPassword = pluginutil.NewPassword(20)
 	}
-	s.MBusPassword = pluginutil.NewPassword(20)
+	if s.DatabasePassword == "" {
+		s.DatabasePassword = pluginutil.NewPassword(20)
+	}
 }
 
 func (s *BoshBase) HandleDeployment(provider IAASManifestProvider, boshInitDeploy func(string)) error {
@@ -187,7 +189,10 @@ func (s *BoshBase) CreateDeploymentManifest() *enaml.DeploymentManifest {
 }
 
 func (s *BoshBase) CreateJob() enaml.Job {
-	boshJob := enaml.Job{
+	if s.ConfigureBlobstore == nil {
+		s.ConfigureBlobstore = s.configureBlobstore
+	}
+	boshJob := &enaml.Job{
 		Name:               "bosh",
 		Instances:          1,
 		ResourcePool:       "vms",
@@ -216,11 +221,8 @@ func (s *BoshBase) CreateJob() enaml.Job {
 	} else {
 		boshJob.AddProperty("director", s.createDirectorProperties(s.noSSlFunction, s.localUserManagement))
 	}
+	s.ConfigureBlobstore(boshJob)
 	boshJob.AddProperty("ntp", s.NtpServers)
-
-	boshJob.AddTemplate(enaml.Template{Name: "blobstore", Release: "bosh"})
-	boshJob.AddProperty("blobstore", s.createBlobStoreJobProperties())
-
 	boshJob.AddTemplate(enaml.Template{Name: "health_monitor", Release: "bosh"})
 	hm := s.createHealthMonitorJobProperties()
 	if s.IsUAA() {
@@ -236,7 +238,7 @@ func (s *BoshBase) CreateJob() enaml.Job {
 		StaticIPs: staticIPs,
 		Default:   []interface{}{"dns", "gateway"},
 	})
-	return boshJob
+	return *boshJob
 }
 
 func (s *BoshBase) createHealthMonitorJobProperties() *health_monitor.Hm {
@@ -277,8 +279,9 @@ func (s *BoshBase) addHealthMonitorBasicAuth(hm *health_monitor.Hm) {
 	}
 }
 
-func (s *BoshBase) createBlobStoreJobProperties() *director.Blobstore {
-	return &director.Blobstore{
+func (s *BoshBase) configureBlobstore(boshJob *enaml.Job) {
+	boshJob.AddTemplate(enaml.Template{Name: "blobstore", Release: "bosh"})
+	boshJob.AddProperty("blobstore", &director.Blobstore{
 		Port:    25250,
 		Address: s.PrivateIP,
 		Director: &director.BlobstoreDirector{
@@ -289,7 +292,7 @@ func (s *BoshBase) createBlobStoreJobProperties() *director.Blobstore {
 			User:     "agent",
 			Password: s.NatsPassword,
 		},
-	}
+	})
 }
 
 func (s *BoshBase) createRegistryJobProperties() *registry.Registry {

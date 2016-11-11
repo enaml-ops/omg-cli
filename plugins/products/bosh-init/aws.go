@@ -13,16 +13,35 @@ const (
 	awsCPIReleaseName = "bosh-aws-cpi"
 )
 
+var (
+	s3Hosts = map[string]string{
+		"us-east-1":      "s3.amazonaws.com",
+		"us-east-2":      "s3.us-east-2.amazonaws.com",
+		"us-west-1":      "s3-us-west-1.amazonaws.com",
+		"us-west-2":      "s3-us-west-2.amazonaws.com",
+		"ap-south-1":     "s3.ap-south-1.amazonaws.com",
+		"ap-northeast-2": "s3.ap-northeast-2.amazonaws.com",
+		"ap-southeast-1": "s3-ap-southeast-1.amazonaws.com",
+		"ap-southeast-2": "s3-ap-southeast-2.amazonaws.com",
+		"ap-northeast-1": "s3-ap-northeast-1.amazonaws.com",
+		"eu-central-1":   "s3.eu-central-1.amazonaws.com",
+		"eu-west-1":      "s3-eu-west-1.amazonaws.com",
+		"sa-east-1":      "s3-sa-east-1.amazonaws.com",
+	}
+)
+
 type AWSInitConfig struct {
-	AWSAvailabilityZone string
-	AWSInstanceSize     string
-	AWSSubnet           string
-	AWSPEMFilePath      string
-	AWSAccessKeyID      string
-	AWSSecretKey        string
-	AWSRegion           string
-	AWSSecurityGroups   []string
-	AWSKeyName          string
+	AWSAvailabilityZone  string
+	AWSInstanceSize      string
+	AWSSubnet            string
+	AWSPEMFilePath       string
+	AWSAccessKeyID       string
+	AWSSecretKey         string
+	AWSRegion            string
+	AWSSecurityGroups    []string
+	AWSKeyName           string
+	UseExternalBlobStore bool
+	BlobstoreBucketName  string
 }
 
 type AWSBosh struct {
@@ -56,7 +75,22 @@ func GetAWSBoshBase() *BoshBase {
 	}
 }
 
+func (s *AWSBosh) configureBlobStoreJobProperties(boshJob *enaml.Job) {
+	boshJob.AddProperty("blobstore", &aws_cpi.Blobstore{
+		Provider:        "s3",
+		AccessKeyId:     s.cfg.AWSAccessKeyID,
+		SecretAccessKey: s.cfg.AWSSecretKey,
+		S3Port:          443,
+		UseSsl:          true,
+		BucketName:      s.cfg.BlobstoreBucketName,
+		Host:            s3Hosts[s.cfg.AWSRegion],
+	})
+}
+
 func (s *AWSBosh) CreateDeploymentManifest() (*enaml.DeploymentManifest, error) {
+	if s.cfg.UseExternalBlobStore {
+		s.boshbase.ConfigureBlobstore = s.configureBlobStoreJobProperties
+	}
 	manifest := s.boshbase.CreateDeploymentManifest()
 	manifest.AddRelease(s.CreateCPIRelease())
 	if rp, err := s.CreateResourcePool(); err != nil {

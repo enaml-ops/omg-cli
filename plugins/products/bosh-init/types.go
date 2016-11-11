@@ -102,6 +102,7 @@ type BoshBase struct {
 	RegistryDatabaseName string
 	UAADatabaseName      string
 	DatabaseScheme       string
+	ConfigureBlobstore   func(*enaml.Job)
 }
 
 //UAAClient - Structure to represent map of client priviledges

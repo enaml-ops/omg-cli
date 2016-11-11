@@ -22,6 +22,8 @@ func GetFlags() []pcli.Flag {
 		pcli.CreateStringFlag("aws-secret", "aws account secret key"),
 		pcli.CreateStringFlag("aws-region", "ec2 region to deploy on", "us-east-1"),
 		pcli.CreateStringSliceFlag("aws-security-group", "this is for security groups to apply to your VM. you can add as many security group flags as you like", "bosh"),
+		pcli.CreateBoolFlag("use-external-blobstore", "whether to use external s3 blobstore"),
+		pcli.CreateStringFlag("blobstore-bucket", "s3 bucket to use", "bosh"),
 	}
 	for _, flag := range awsFlags {
 		boshFlags = append(boshFlags, flag)
@@ -43,15 +45,17 @@ func GetAction(boshInitDeploy func(string)) func(c *cli.Context) error {
 		}
 
 		provider := boshinit.NewAWSIaaSProvider(boshinit.AWSInitConfig{
-			AWSInstanceSize:     c.String("aws-instance-size"),
-			AWSAvailabilityZone: c.String("aws-availability-zone"),
-			AWSSubnet:           c.String("aws-subnet"),
-			AWSPEMFilePath:      c.String("aws-pem-path"),
-			AWSAccessKeyID:      c.String("aws-access-key"),
-			AWSSecretKey:        c.String("aws-secret"),
-			AWSRegion:           c.String("aws-region"),
-			AWSKeyName:          c.String("aws-keyname"),
-			AWSSecurityGroups:   c.StringSlice("aws-security-group"),
+			AWSInstanceSize:      c.String("aws-instance-size"),
+			AWSAvailabilityZone:  c.String("aws-availability-zone"),
+			AWSSubnet:            c.String("aws-subnet"),
+			AWSPEMFilePath:       c.String("aws-pem-path"),
+			AWSAccessKeyID:       c.String("aws-access-key"),
+			AWSSecretKey:         c.String("aws-secret"),
+			AWSRegion:            c.String("aws-region"),
+			AWSKeyName:           c.String("aws-keyname"),
+			AWSSecurityGroups:    c.StringSlice("aws-security-group"),
+			UseExternalBlobStore: c.Bool(("use-external-blobstore")),
+			BlobstoreBucketName:  c.String(("blobstore-bucket")),
 		}, boshBase)
 
 		if err := boshBase.HandleDeployment(provider, boshInitDeploy); err != nil {
