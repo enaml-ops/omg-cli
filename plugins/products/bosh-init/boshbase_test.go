@@ -105,7 +105,7 @@ var _ = Describe("given boshbase", func() {
 			Ω(roles["name"]).Should(Equal("postgres"))
 			Ω(roles["password"]).ShouldNot(BeNil())
 			dbs := uaaDB.Databases.([]interface{})[0].(map[string]string)
-			Ω(dbs["name"]).Should(Equal("uaa"))
+			Ω(dbs["name"]).Should(Equal("bosh_uaa"))
 		})
 	})
 	Context("when configured for External DB", func() {

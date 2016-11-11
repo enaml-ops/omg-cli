@@ -27,7 +27,7 @@ func (s *BoshBase) InitializeDBDefaults() {
 	s.DatabaseScheme = "postgresql"
 	s.DirectorDatabaseName = "bosh"
 	s.RegistryDatabaseName = "registry"
-	s.UAADatabaseName = "uaa"
+	s.UAADatabaseName = "bosh_uaa"
 	s.DatabasePort = 5432
 	s.DatabaseHost = "127.0.0.1"
 }
