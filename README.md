@@ -17,6 +17,12 @@ omg is a cli tool. It natively allows users to:
 *download a bundled plugin from a omg release or build your own*
 *available plugin types are `cloudconfig` or `product` for more info about how to build a plugin take a look at one of the bundled plugins (ie. https://github.com/enaml-ops/omg-cli/tree/master/cloudconfigs/aws)*
 
+### Version Compatibility
+
+currently uses pluginlib v1 w/ protocol version 2. will not work with plugins
+prior to version 1.
+
+
 ### how we do bosh / cloud config / deployments
 composes bosh-init, enaml and plugins to create a simple cli installer
 
