@@ -1,8 +1,9 @@
 package main
 
 import (
+	"github.com/enaml-ops/pluginlib/cred"
 	"github.com/enaml-ops/pluginlib/pcli"
-	"github.com/enaml-ops/pluginlib/product"
+	"github.com/enaml-ops/pluginlib/productv1"
 )
 
 func main() {
@@ -21,6 +22,6 @@ func (s *MyProduct) GetMeta() product.Meta {
 	}
 }
 
-func (s *MyProduct) GetProduct(args []string, cloudconfig []byte) ([]byte, error) {
+func (s *MyProduct) GetProduct(args []string, cloudconfig []byte, cs cred.Store) ([]byte, error) {
 	return []byte(""), nil
 }

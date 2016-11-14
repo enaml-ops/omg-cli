@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/enaml-ops/pluginlib/cloudconfig"
+	"github.com/enaml-ops/pluginlib/cloudconfigv1"
 	"github.com/enaml-ops/pluginlib/pcli"
 )
 
@@ -21,6 +21,6 @@ func (s *MyCloudConfig) GetMeta() cloudconfig.Meta {
 	}
 }
 
-func (s *MyCloudConfig) GetCloudConfig(args []string) []byte {
-	return []byte("")
+func (s *MyCloudConfig) GetCloudConfig(args []string) ([]byte, error) {
+	return []byte(""), nil
 }
