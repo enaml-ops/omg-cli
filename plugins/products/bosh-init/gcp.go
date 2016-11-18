@@ -35,7 +35,7 @@ type GCPBosh struct {
 
 func NewGCPBoshBase() *BoshBase {
 	return &BoshBase{
-		CPIJobName:        "bosh-google-cpi",
+		CPIJobName:        GCPCPIJobName,
 		CPIReleaseURL:     GCPCPIURL,
 		CPIReleaseSHA:     GCPCPISHA,
 		NetworkCIDR:       "10.0.0.0/24",
@@ -50,6 +50,7 @@ func NewGCPBoshBase() *BoshBase {
 	}
 }
 func NewGCPIaaSProvider(cfg *GCPBoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
+	boshBase.CPIJobName = GCPCPIJobName
 	return &GCPBosh{
 		BoshInitConfig: cfg,
 		Base:           boshBase,
@@ -66,7 +67,7 @@ func (g *GCPBosh) CreateCPIRelease() enaml.Release {
 
 func (g *GCPBosh) CreateCPITemplate() enaml.Template {
 	return enaml.Template{
-		Name:    GCPCPIJobName,
+		Name:    g.Base.CPIJobName,
 		Release: GCPCPIReleaseName,
 	}
 }

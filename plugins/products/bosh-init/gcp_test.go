@@ -12,6 +12,20 @@ import (
 )
 
 var _ = Describe("NewGCPBosh", func() {
+	Describe("NewGCPIaaSProvider", func() {
+		Context("when called", func() {
+			var provider *GCPBosh
+			BeforeEach(func() {
+				cfg := &GCPBoshInitConfig{}
+				boshBase := new(BoshBase)
+				provider = NewGCPIaaSProvider(cfg, boshBase).(*GCPBosh)
+			})
+			It("should properly set the jobname for gcp", func() {
+				Ω(provider.Base.CPIJobName).Should(Equal(GCPCPIJobName))
+			})
+		})
+	})
+
 	Describe("given NewGCPBosh", func() {
 		Context("when using a bosh config with a CPI URL", func() {
 			cfg := &GCPBoshInitConfig{}
@@ -186,7 +200,7 @@ var _ = Describe("NewGCPBosh", func() {
 
 			It("creates the cloud provider", func() {
 				cp := provider.CreateCloudProvider()
-				Ω(cp.Template.Name).Should(Equal(GCPCPIReleaseName))
+				Ω(cp.Template.Name).Should(Equal(GCPCPIJobName))
 				Ω(cp.Template.Release).Should(Equal(GCPCPIReleaseName))
 
 				Ω(cp.SSHTunnel.Host).Should(Equal(controlPrivateIP))
