@@ -1,5 +1,5 @@
-hash: 365c3313fcc24a746f51c15f1e6d64d4baffbdddac686cbd10b053fd2897c2b0
-updated: 2016-11-14T13:44:13.3907026-05:00
+hash: 142c02f7ded72aea8273c19c0e967e8f2060777f884ac4e0f16635388e0ba266
+updated: 2016-12-01T16:01:19.616110086-07:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -76,7 +76,7 @@ imports:
   subpackages:
   - glob
 - name: github.com/enaml-ops/enaml
-  version: 354a165b4ef98f0e154b6a0d8e8a54138abac102
+  version: daa906ffdfea29e28f26a5965100f645736de450
   subpackages:
   - cloudproperties/aws
   - cloudproperties/azure
@@ -84,12 +84,10 @@ imports:
 - name: github.com/enaml-ops/pluginlib
   version: 399f71c718525e0b9481a633bbfde9c888638961
   subpackages:
-  - cloudconfig
   - cloudconfigv1
   - cred
   - pcli
   - pluginutil
-  - product
   - productv1
   - registry
 - name: github.com/golang/protobuf
@@ -100,12 +98,6 @@ imports:
   version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux
   version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
-- name: github.com/kless/osutil
-  version: 3ac994847c4376a4b905fc0a19f450c5a4bec647
-  subpackages:
-  - user/crypt
-  - user/crypt/common
-  - user/crypt/sha512_crypt
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/mattn/go-runewidth
@@ -115,7 +107,7 @@ imports:
 - name: github.com/olekukonko/tablewriter
   version: bdcc175572fd7abece6c831e643891b9331bc9e7
 - name: github.com/onsi/ginkgo
-  version: a8ccd817611666211fdf6e6a752174a0db8374a8
+  version: 00054c0bb96fc880d4e0be1b90937fad438c5290
   subpackages:
   - config
   - internal/codelocation
@@ -134,7 +126,7 @@ imports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: e46a88d81f5164c47e2d51c1c3d863dde7997993
+  version: ff4bc6b6f9f5affa66635cd04d31d2a7ee21ffd6
   subpackages:
   - format
   - ghttp
@@ -155,12 +147,12 @@ imports:
 - name: github.com/pivotal-golang/yaml
   version: 8b09e4a33107d942293b5ef6f32254124ccaf8a8
 - name: github.com/pivotalservices/gtils
-  version: 2605eda5a33230d9613738bba5271d1c040e4a15
+  version: 65c0f332bafc62dc7e1824982ac31b5c21f927b2
   subpackages:
   - command
   - osutils
 - name: github.com/pkg/errors
-  version: 839d9e913e063e28dfd0e6c7b7512793e0a48be9
+  version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
 - name: github.com/pkg/sftp
   version: 4d0e916071f68db74f8a73926335f809396d6b42
 - name: github.com/square/certstrap
@@ -182,7 +174,7 @@ imports:
   subpackages:
   - internal
 - name: google.golang.org/appengine
-  version: 45688856612892bdabe348fff413e5075ac72f46
+  version: 4f7eeb5305a4ba1966344836ba4af9996b7b4e05
   subpackages:
   - internal
   - internal/base

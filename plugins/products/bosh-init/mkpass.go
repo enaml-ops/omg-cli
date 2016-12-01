@@ -1,13 +1,14 @@
 package boshinit
 
-import sha512 "github.com/kless/osutil/user/crypt/sha512_crypt"
+import (
+	"crypto/sha512"
+	"fmt"
+)
 
 //SHA512Pass creates a sha-512 password
 func SHA512Pass(password string) (string, error) {
-	c := sha512.New()
-	if shadowHash, err := c.Generate([]byte(password), []byte("")); err != nil {
-		return "", err
-	} else {
-		return shadowHash, nil
-	}
+	h := sha512.New()
+	h.Write([]byte(password))
+	bytes := h.Sum(nil)
+	return fmt.Sprintf("%x", bytes), nil
 }

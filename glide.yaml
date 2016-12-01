@@ -49,7 +49,3 @@ import:
   subpackages:
   - context
 - package: github.com/olekukonko/tablewriter
-- package: github.com/kless/osutil
-  subpackages:
-  - user/crypt/sha512_crypt
-  - user/crypt
