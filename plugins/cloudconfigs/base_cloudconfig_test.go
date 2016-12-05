@@ -35,6 +35,48 @@ var _ = Describe("cloud config", func() {
 		})
 	})
 
+	Context("when creating networks with --multi-assign-az", func() {
+		It("returns an error if ranges are missing", func() {
+			nop := func(f []pcli.Flag, i int) []pcli.Flag { return f }
+			c := pluginutil.NewContext([]string{
+				"foo",
+				"--multi-assign-az",
+				"--network-name-1", "private",
+				"--network-az-1", "az1",
+				"--network-gateway-1", "10.180.132.254",
+				"--network-reserved-1", "10.180.134.0-10.180.135.250",
+				"--network-reserved-1", "10.180.134.0-10.180.135.251",
+				"--network-static-1", "MyStaticNetwork",
+				"--network-dns-1", "10.148.20.6",
+			}, pluginutil.ToCliFlagArray(cloudconfigs.CreateNetworkFlags(nil, nop)))
+			_, err := cloudconfigs.CreateNetworks(c,
+				func(int, int) error { return nil },
+				func(int, int) interface{} { return nil },
+			)
+			Ω(err).Should(HaveOccurred())
+		})
+
+		It("returns an error if gateways are missing", func() {
+			nop := func(f []pcli.Flag, i int) []pcli.Flag { return f }
+			c := pluginutil.NewContext([]string{
+				"foo",
+				"--multi-assign-az",
+				"--network-name-1", "private",
+				"--network-az-1", "az1",
+				"--network-cidr-1", "10.180.132.0/22",
+				"--network-reserved-1", "10.180.134.0-10.180.135.250",
+				"--network-reserved-1", "10.180.134.0-10.180.135.251",
+				"--network-static-1", "MyStaticNetwork",
+				"--network-dns-1", "10.148.20.6",
+			}, pluginutil.ToCliFlagArray(cloudconfigs.CreateNetworkFlags(nil, nop)))
+			_, err := cloudconfigs.CreateNetworks(c,
+				func(int, int) error { return nil },
+				func(int, int) interface{} { return nil },
+			)
+			Ω(err).Should(HaveOccurred())
+		})
+	})
+
 	Context("when creating a cloud config with a single AZ", func() {
 
 		validateCP := func(i, j int) error {
