@@ -10,10 +10,31 @@ import (
 	"github.com/enaml-ops/omg-cli/plugins/cloudconfigs/utils"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	cli "gopkg.in/urfave/cli.v2"
 	"gopkg.in/yaml.v2"
 )
 
 var _ = Describe("given CloudConfig Deployment for AWS", func() {
+	Context("when called with invalid AZ flags", func() {
+		var c *cli.Context
+
+		BeforeEach(func() {
+			p := new(Plugin)
+			c = p.GetContext([]string{
+				"aws-cloud-config",
+				"--az", "az1",
+				"--az", "az2",
+				"--aws-availablity-zone", "aws-az1",
+			})
+		})
+
+		It("should return an error when creating AZs", func() {
+			a := &AWSCloudConfig{Context: c}
+			_, err := a.CreateAZs()
+			Ω(err).Should(HaveOccurred())
+		})
+	})
+
 	Context("when calling CreateManifest", func() {
 		var provider cloudconfigs.CloudConfigProvider
 		var manifest *enaml.CloudConfigManifest
@@ -85,6 +106,7 @@ var _ = Describe("given CloudConfig Deployment for AWS", func() {
 			provider = NewAWSCloudConfig(c)
 			manifest, err = cloudconfigs.CreateCloudConfigManifest(provider)
 		})
+
 		It("then it have a manifest with 3 azs", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(manifest.ContainsAZName("z1")).Should(BeTrue())
@@ -97,7 +119,8 @@ var _ = Describe("given CloudConfig Deployment for AWS", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(azYml).Should(MatchYAML(bytes))
 		})
-		It("then it 2 networks", func() {
+
+		It("then it should have 2 networks", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			bytes, err := ioutil.ReadFile("fixtures/aws-network-cloudconfig.yml")
 			Ω(err).ShouldNot(HaveOccurred())
@@ -105,25 +128,27 @@ var _ = Describe("given CloudConfig Deployment for AWS", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(networkYml).Should(MatchYAML(bytes))
 		})
+
 		It("then it should return vmtypes", func() {
 			vmTypes, err := provider.CreateVMTypes()
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(vmTypes).Should(HaveLen(21))
 			Ω(utils.GetVMTypeNames(vmTypes)).Should(ConsistOf("nano", "micro", "micro.ram", "small", "small.disk", "medium", "medium.mem", "medium.disk", "medium.cpu", "large", "large.mem", "large.disk", "large.cpu", "xlarge", "xlarge.mem", "xlarge.disk", "xlarge.cpu", "2xlarge", "2xlarge.mem", "2xlarge.disk", "2xlarge.cpu"))
 		})
+
 		It("then it return disk types", func() {
 			diskTypes, err := provider.CreateDiskTypes()
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(diskTypes).Should(HaveLen(19))
 			Ω(utils.GetDiskTypeNames(diskTypes)).Should(ConsistOf("1024", "2048", "5120", "10240", "20480", "30720", "51200", "76800", "102400", "153600", "204800", "307200", "512000", "768000", "1048576", "2097152", "5242880", "10485760", "16777216"))
 		})
+
 		It("then it have a manifest with a compilation", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			bytes, err := ioutil.ReadFile("fixtures/aws-compilation.yml")
 			Ω(err).ShouldNot(HaveOccurred())
 			compilationYml, err := yaml.Marshal(manifest.Compilation)
 			Ω(err).ShouldNot(HaveOccurred())
-
 			Ω(compilationYml).Should(MatchYAML(bytes))
 		})
 	})

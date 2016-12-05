@@ -31,8 +31,11 @@ func NewAWSCloudConfig(c *cli.Context) cloudconfigs.CloudConfigProvider {
 func (c *AWSCloudConfig) CreateAZs() ([]enaml.AZ, error) {
 	azNames := c.Context.StringSlice("az")
 	availablityZones := c.Context.StringSlice("aws-availablity-zone")
-	azs := []enaml.AZ{}
+	if len(azNames) != len(availablityZones) {
+		return nil, fmt.Errorf("you must specify one --aws-availability-zone flag for each --az flag")
+	}
 
+	azs := []enaml.AZ{}
 	for i, azName := range azNames {
 		az := enaml.AZ{
 			Name: azName,
