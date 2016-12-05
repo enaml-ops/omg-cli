@@ -1,6 +1,7 @@
 package cloudconfigs
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -105,60 +106,64 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 	for i := 1; i <= SupportedNetworkCount; i++ {
 		networkFlag := fmt.Sprintf("network-name-%d", i)
 		networkName := context.String(networkFlag)
-		if context.IsSet(networkFlag) {
-			network := GetNetwork(manualNetworks, networkName)
-			if network == nil {
-				network = &enaml.ManualNetwork{
-					Name: networkName,
-					Type: "manual",
-				}
-				manualNetworks = append(manualNetworks, network)
+		if !context.IsSet(networkFlag) {
+			continue
+		}
+
+		network := GetNetwork(manualNetworks, networkName)
+		if network == nil {
+			network = &enaml.ManualNetwork{
+				Name: networkName,
+				Type: "manual",
 			}
-			azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
-			multiAssignAZ := context.Bool("multi-assign-az")
-			if multiAssignAZ {
-				if err := CheckRequiredLength(1, i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
-					return nil, err
-				}
-			} else {
-				if err := CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
-					return nil, err
-				}
-			}
-			ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
-			gateways := context.StringSlice(fmt.Sprintf("network-gateway-%d", i))
-			dnsServers := context.StringSlice(fmt.Sprintf("network-dns-%d", i))
-			reservedRanges := context.StringSlice(fmt.Sprintf("network-reserved-%d", i))
-			staticIPs := context.StringSlice(fmt.Sprintf("network-static-%d", i))
-			if err := validateCloudPropertiesFunction(len(azs), i); err != nil {
+			manualNetworks = append(manualNetworks, network)
+		}
+
+		azs := context.StringSlice(fmt.Sprintf("network-az-%d", i))
+		multiAssignAZ := context.Bool("multi-assign-az")
+		if multiAssignAZ {
+			if err := CheckRequiredLength(1, i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
 				return nil, err
 			}
-			if multiAssignAZ {
+		} else {
+			if err := CheckRequiredLength(len(azs), i, context, "network-cidr-%d", "network-gateway-%d"); err != nil {
+				return nil, err
+			}
+		}
+		ranges := context.StringSlice(fmt.Sprintf("network-cidr-%d", i))
+		gateways := context.StringSlice(fmt.Sprintf("network-gateway-%d", i))
+		dnsServers := context.StringSlice(fmt.Sprintf("network-dns-%d", i))
+		reservedRanges := context.StringSlice(fmt.Sprintf("network-reserved-%d", i))
+		staticIPs := context.StringSlice(fmt.Sprintf("network-static-%d", i))
+		if err := validateCloudPropertiesFunction(len(azs), i); err != nil {
+			return nil, err
+		}
+		if multiAssignAZ {
+			subnet := enaml.Subnet{
+				AZs:             azs,
+				Range:           ranges[0],
+				Gateway:         gateways[0],
+				DNS:             dnsServers,
+				Reserved:        reservedRanges,
+				Static:          staticIPs,
+				CloudProperties: cloudPropertiesFunction(i, 0),
+			}
+			network.AddSubnet(subnet)
+		} else {
+			for index, az := range azs {
 				subnet := enaml.Subnet{
-					AZs:             azs,
-					Range:           ranges[0],
-					Gateway:         gateways[0],
+					AZ:              az,
+					Range:           ranges[index],
+					Gateway:         gateways[index],
 					DNS:             dnsServers,
 					Reserved:        reservedRanges,
 					Static:          staticIPs,
-					CloudProperties: cloudPropertiesFunction(i, 0),
+					CloudProperties: cloudPropertiesFunction(i, index),
 				}
 				network.AddSubnet(subnet)
-			} else {
-				for index, az := range azs {
-					subnet := enaml.Subnet{
-						AZ:              az,
-						Range:           ranges[index],
-						Gateway:         gateways[index],
-						DNS:             dnsServers,
-						Reserved:        reservedRanges,
-						Static:          staticIPs,
-						CloudProperties: cloudPropertiesFunction(i, index),
-					}
-					network.AddSubnet(subnet)
-				}
 			}
 		}
+
 	}
 	for _, net := range manualNetworks {
 		networks = append(networks, net)
@@ -167,12 +172,20 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 }
 
 func CreateCompilation(c *cli.Context) (*enaml.Compilation, error) {
+	azs := c.StringSlice("network-az-1")
+	if len(azs) == 0 {
+		return nil, errors.New("missing required --network-az-1 flag")
+	}
+	net := c.String("network-name-1")
+	if net == "" {
+		return nil, errors.New("missing required --network-name-1 flag")
+	}
 	compilation := &enaml.Compilation{
 		Workers:             8,
 		ReuseCompilationVMs: true,
-		AZ:                  c.StringSlice("network-az-1")[0],
+		AZ:                  azs[0],
 		VMType:              "medium",
-		Network:             c.String("network-name-1"),
+		Network:             net,
 	}
 	return compilation, nil
 }

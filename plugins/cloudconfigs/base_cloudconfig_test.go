@@ -11,6 +11,30 @@ import (
 )
 
 var _ = Describe("cloud config", func() {
+	Context("when creating compilation with invalid AZ flags", func() {
+		It("returns an error when --network-az-1 is missing", func() {
+			nop := func(f []pcli.Flag, i int) []pcli.Flag { return f }
+			c := pluginutil.NewContext([]string{
+				"foo",
+				"--network-name-1", "net1",
+			}, pluginutil.ToCliFlagArray(cloudconfigs.CreateNetworkFlags(
+				nil, nop)))
+			_, err := cloudconfigs.CreateCompilation(c)
+			Ω(err).Should(HaveOccurred())
+		})
+
+		It("returns an error when --network-name-1 is missing", func() {
+			nop := func(f []pcli.Flag, i int) []pcli.Flag { return f }
+			c := pluginutil.NewContext([]string{
+				"foo",
+				"--network-az-1", "az1",
+			}, pluginutil.ToCliFlagArray(cloudconfigs.CreateNetworkFlags(
+				nil, nop)))
+			_, err := cloudconfigs.CreateCompilation(c)
+			Ω(err).Should(HaveOccurred())
+		})
+	})
+
 	Context("when creating a cloud config with a single AZ", func() {
 
 		validateCP := func(i, j int) error {
