@@ -7,6 +7,7 @@ import (
 	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/blobstore"
+	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/director"
 	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/photoncpi"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -15,6 +16,23 @@ import (
 
 var _ = Describe("NewPhotonBosh", func() {
 	Describe("given a NewPhotonBoshBase function", func() {
+		Context("When creating the bosh job", func() {
+			cfg := &PhotonBoshInitConfig{}
+			base := &BoshBase{}
+			provider := NewPhotonIaaSProvider(cfg, base)
+
+			It("sets the CPI job name", func() {
+				manifest, err := provider.CreateDeploymentManifest()
+				Ω(err).ShouldNot(HaveOccurred())
+
+				job := manifest.GetJobByName("bosh")
+				Ω(job).ShouldNot(BeNil())
+
+				director := job.Properties["director"].(*director.Director)
+				Ω(director.CpiJob).Should(Equal(PhotonCPIJobName))
+			})
+		})
+
 		Context("when called with a valid boshbase for uaa", func() {
 			var boshbase *BoshBase
 			const controlDirectorName = "fake-director-name"

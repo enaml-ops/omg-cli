@@ -9,8 +9,9 @@ import (
 )
 
 const (
-	PhotonCPIReleaseName = "bosh-photon-cpi"
-	PhotonCPIJobName     = "cpi"
+	PhotonCPIReleaseName     = "bosh-photon-cpi"
+	PhotonCPIJobName         = "cpi"
+	PhotonPersistentDiskSize = 32768
 
 	PhotonCPIURL = "https://s3.amazonaws.com/concourse-photon/bosh-photon-cpi-1.0.0.tgz"
 	PhotonCPISHA = "71626961a8505447fa34ca569f97f8c70a0ef39a"
@@ -33,6 +34,7 @@ type PhotonBosh struct {
 	Base           *BoshBase
 }
 
+// NewPhotonBoshBase creates a BoshBase initialized with Photon defaults.
 func NewPhotonBoshBase() *BoshBase {
 	return &BoshBase{
 		CPIJobName:         PhotonCPIJobName,
@@ -42,11 +44,12 @@ func NewPhotonBoshBase() *BoshBase {
 		BoshReleaseSHA:     PhotonBoshReleaseSHA,
 		GOAgentReleaseURL:  PhotonStemcellURL,
 		GOAgentSHA:         PhotonStemcellSHA,
-		PersistentDiskSize: 32768,
+		PersistentDiskSize: PhotonPersistentDiskSize,
 	}
 }
 
 func NewPhotonIaaSProvider(cfg *PhotonBoshInitConfig, boshBase *BoshBase) IAASManifestProvider {
+	boshBase.CPIJobName = PhotonCPIJobName
 	return &PhotonBosh{
 		BoshInitConfig: cfg,
 		Base:           boshBase,
