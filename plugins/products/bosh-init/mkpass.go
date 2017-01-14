@@ -1,14 +1,11 @@
 package boshinit
 
 import (
-	"crypto/sha512"
-	"fmt"
+	"github.com/tredoe/osutil/user/crypt/sha512_crypt"
 )
 
 //SHA512Pass creates a sha-512 password
 func SHA512Pass(password string) (string, error) {
-	h := sha512.New()
-	h.Write([]byte(password))
-	bytes := h.Sum(nil)
-	return fmt.Sprintf("%x", bytes), nil
+	c := sha512_crypt.New()
+	return c.Generate([]byte(password), nil)
 }

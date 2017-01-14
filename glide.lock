@@ -1,5 +1,5 @@
-hash: 142c02f7ded72aea8273c19c0e967e8f2060777f884ac4e0f16635388e0ba266
-updated: 2016-12-01T16:01:19.616110086-07:00
+hash: 5930abec4e0c23367d84ea85da5e6c7eba1640abbe04354e31c4ce19e9c06c58
+updated: 2017-01-13T19:28:03.252595985-07:00
 imports:
 - name: github.com/cloudfoundry/bosh-agent
   version: c3f3bc8ffd6053d1b5b367514f91c0ccb6d85725
@@ -98,6 +98,11 @@ imports:
   version: 8cf118f7a2f0c7ef1c82f66d4f6ac77c7e27dc12
 - name: github.com/hashicorp/yamux
   version: d1caa6c97c9fc1cc9e83bbe34d0603f9ff0ce8bd
+- name: github.com/kless/osutil
+  version: 7d3ee1afa71c90fd1514c8f557ae6c5f414208eb
+  subpackages:
+  - user/crypt
+  - user/crypt/sha512_crypt
 - name: github.com/kr/fs
   version: 2788f0dbd16903de03cb8186e5c7d97b69ad387b
 - name: github.com/mattn/go-runewidth
@@ -107,7 +112,7 @@ imports:
 - name: github.com/olekukonko/tablewriter
   version: bdcc175572fd7abece6c831e643891b9331bc9e7
 - name: github.com/onsi/ginkgo
-  version: 00054c0bb96fc880d4e0be1b90937fad438c5290
+  version: a23f924ce96d61f963fb6219b8ff069d8d768cc2
   subpackages:
   - config
   - internal/codelocation
@@ -126,7 +131,7 @@ imports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: ff4bc6b6f9f5affa66635cd04d31d2a7ee21ffd6
+  version: e85f63af4302dc0e4277c6008ecf803f1d80e4f0
   subpackages:
   - format
   - ghttp
@@ -154,11 +159,16 @@ imports:
 - name: github.com/pkg/errors
   version: 248dadf4e9068a0b3e79f02ed0a610d935de5302
 - name: github.com/pkg/sftp
-  version: 4d0e916071f68db74f8a73926335f809396d6b42
+  version: e59687e8fa2ed36b4c997df28621fb8720ffc767
 - name: github.com/square/certstrap
   version: b6aef507a0840bf78bac99e7ffa6e6eb5c2c3c9f
   subpackages:
   - pkix
+- name: github.com/tredoe/osutil
+  version: 7d3ee1afa71c90fd1514c8f557ae6c5f414208eb
+  subpackages:
+  - user/crypt
+  - user/crypt/common
 - name: github.com/xchapter7x/lo
   version: e33b245fc7a8186582208abc2458c2691bff681c
 - name: golang.org/x/crypto
