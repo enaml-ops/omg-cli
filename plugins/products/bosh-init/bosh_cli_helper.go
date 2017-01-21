@@ -19,7 +19,7 @@ func BoshFlags(defaults *BoshBase) []pcli.Flag {
 		pcli.CreateStringFlag("mode", "what type of bosh director to install.  Options are basic or uaa", "basic"),
 		pcli.CreateStringFlag("cidr", "the network cidr range for your bosh deployment", defaults.NetworkCIDR),
 		pcli.CreateStringFlag("gateway", "the gateway ip", defaults.NetworkGateway),
-		pcli.CreateStringSliceFlag("dns", "the dns ip", defaults.NetworkDNS...),
+		pcli.CreateStringSliceFlag("dns", "the dns ip(s)", defaults.NetworkDNS...),
 		pcli.CreateStringFlag("bosh-private-ip", "the private ip for the bosh vm to be created", defaults.PrivateIP),
 		pcli.CreateStringFlag("bosh-public-ip", "the public ip for the bosh vm to be created"),
 		pcli.CreateStringFlag("bosh-release-sha", "sha1 of the bosh release being used (found on bosh.io)", defaults.BoshReleaseSHA),

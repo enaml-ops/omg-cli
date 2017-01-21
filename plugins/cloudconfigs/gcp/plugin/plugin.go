@@ -25,7 +25,7 @@ func networkFlags(flags []pcli.Flag, i int) []pcli.Flag {
 	flags = append(flags,
 		pcli.CreateStringSliceFlag(cloudconfigs.CreateFlagnameWithSuffix("gcp-network-name", i), fmt.Sprintf("gcp network name for network %d", i)),
 		pcli.CreateStringSliceFlag(cloudconfigs.CreateFlagnameWithSuffix("gcp-subnetwork-name", i), fmt.Sprintf("gcp subnetwork name for network %d", i)),
-		pcli.CreateStringSliceFlag(cloudconfigs.CreateFlagnameWithSuffix("gcp-network-tag", i), fmt.Sprintf("comma delimited list of gcp network tags for network %d", i)))
+		pcli.CreateStringSliceFlag(cloudconfigs.CreateFlagnameWithSuffix("gcp-network-tag", i), fmt.Sprintf("gcp network tags for network %d", i)))
 	return flags
 }
 

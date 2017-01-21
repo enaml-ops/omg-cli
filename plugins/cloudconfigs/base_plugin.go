@@ -19,9 +19,9 @@ func CreateNetworkFlags(flags []pcli.Flag, iaasNetworkFlagFunction func([]pcli.F
 			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-az", i), fmt.Sprintf("az of network %d", i)),
 			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-cidr", i), fmt.Sprintf("range of network %d", i)),
 			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-gateway", i), fmt.Sprintf("gateway of network %d", i)),
-			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-dns", i), fmt.Sprintf("comma delimited list of DNS servers for network %d", i)),
-			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-reserved", i), fmt.Sprintf("comma delimited list of reserved network ranges for network %d", i)),
-			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-static", i), fmt.Sprintf("comma delimited list of static IP addresses for network %d", i)))
+			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-dns", i), fmt.Sprintf("DNS servers for network %d", i)),
+			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-reserved", i), fmt.Sprintf("reserved network ranges for network %d", i)),
+			pcli.CreateStringSliceFlag(CreateFlagnameWithSuffix("network-static", i), fmt.Sprintf("static IP addresses for network %d", i)))
 
 		flags = iaasNetworkFlagFunction(flags, i)
 	}
