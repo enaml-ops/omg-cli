@@ -81,8 +81,8 @@ $> wget https://github.com/enaml-ops/omg-cli/releases/download/v0.0.25/aws-cloud
 ```bash
 # register the cloud config plugin for your iaas
 $> ./omg register-plugin \
---type cloudconfig \
---pluginpath aws-cloudconfigplugin-osx
+-type cloudconfig \
+-pluginpath aws-cloudconfigplugin-osx
 ```
 
 ```bash
@@ -142,7 +142,7 @@ $> wget https://github.com/enaml-ops/omg-product-bundle/releases/download/v0.0.1
 
 ```bash
 # register concourse product plugin
-$> ./omg register-plugin --type product --pluginpath concourse-plugin-osx
+$> ./omg register-plugin -type product -pluginpath concourse-plugin-osx
 ```
 
 ```bash
