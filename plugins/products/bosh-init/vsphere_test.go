@@ -1,11 +1,13 @@
 package boshinit_test
 
 import (
+	"io/ioutil"
+
 	"github.com/enaml-ops/enaml"
 	. "github.com/enaml-ops/omg-cli/plugins/products/bosh-init"
-	"github.com/enaml-ops/omg-cli/plugins/products/bosh-init/enaml-gen/vsphere_cpi"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	yaml "gopkg.in/yaml.v2"
 )
 
 var _ = Describe("NewVSphereBosh", func() {
@@ -99,23 +101,23 @@ var _ = Describe("NewVSphereBosh", func() {
 				Ω(cloudprops.Name).Should(Equal("PCF_Net1"))
 			})
 
-			XIt("then it should properly define vcenter properties", func() {
-				Ω(manifest.Jobs[0].Properties).Should(HaveKey("vcenter"))
-				var vcenter vsphere_cpi.Vcenter
+			It("then it should properly define vcenter properties", func() {
+				controlYaml, err := ioutil.ReadFile("./fixtures/vsphere-manifest.yml")
+				Ω(err).ShouldNot(HaveOccurred())
+				b, err := yaml.Marshal(manifest.ResourcePools[0].CloudProperties)
+				Ω(err).ShouldNot(HaveOccurred())
+				Ω(b).Should(MatchYAML(string(controlYaml)))
+			})
+			It("then it should properly define vcenter properties with no resource pools", func() {
+				boshConfig.VSphereResourcePool = nil
+				boshConfig.VSphereClusters = []string{"PCF1", "PCF2"}
+				manifest, err = NewVSphereIaaSProvider(boshConfig, boshBase).CreateDeploymentManifest()
 
-				Ω(vcenter.Address).Should(Equal("172.16.1.2"))
-				Ω(vcenter.User).Should(Equal("vsadmin"))
-				Ω(vcenter.Password).Should(Equal("secret"))
-				Ω(vcenter.Datacenters).Should(HaveLen(1))
-				dc := vcenter.Datacenters.(VSphereDatacenters)[0]
-				Ω(dc.Name).Should(Equal("PCF_DC1"))
-				Ω(dc.DatastorePattern).Should(Equal("DS1"))
-				Ω(dc.PersistentDatastorePattern).Should(Equal("DS1_Persistent"))
-				Ω(dc.DiskPath).Should(Equal("pcf_disks"))
-				Ω(dc.TemplateFolder).Should(Equal("pcf_templates"))
-				Ω(dc.VMFolder).Should(Equal("pcf_vms"))
-				Ω(dc.Clusters).Should(HaveLen(1))
-				Ω(dc.Clusters[0]).Should(Equal("PCF1"))
+				controlYaml, err := ioutil.ReadFile("./fixtures/vsphere-manifest-no-resourcepools.yml")
+				Ω(err).ShouldNot(HaveOccurred())
+				b, err := yaml.Marshal(manifest.ResourcePools[0].CloudProperties)
+				Ω(err).ShouldNot(HaveOccurred())
+				Ω(b).Should(MatchYAML(string(controlYaml)))
 			})
 		})
 	})

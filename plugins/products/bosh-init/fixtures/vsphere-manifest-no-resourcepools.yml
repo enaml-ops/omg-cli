@@ -1,0 +1,13 @@
+cpu: 2
+disk: 20000
+ram: 4096
+datacenters:
+- name: PCF_DC1
+  datastore_pattern: ^(DS1)$
+  disk_path: pcf_disks
+  persistent_datastore_pattern: ^(DS1)$
+  template_folder: pcf_templates
+  vm_folder: pcf_vms
+  clusters:
+  - PCF1
+  - PCF2

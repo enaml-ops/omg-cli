@@ -60,13 +60,13 @@ type VSpherecloudpropertiesNetwork struct {
 type VSphereDatacenters []VSphereDatacenter
 
 type VSphereDatacenter struct {
-	Name                       string                    `yaml:"name"`                         // [String, required]: vSphere datacenter name.
-	VMFolder                   string                    `yaml:"vm_folder"`                    // [String, required]: The folder to create PCF VMs in.
-	TemplateFolder             string                    `yaml:"template_folder"`              // [String, required]: The folder to store stemcells in.
-	DatastorePattern           string                    `yaml:"datastore_pattern"`            // [String, required]: The pattern to the vSphere datastore.
-	PersistentDatastorePattern string                    `yaml:"persistent_datastore_pattern"` // [String, required]: The pattern to the vSphere datastore for persistent diskv.
-	DiskPath                   string                    `yaml:"disk_path"`                    // [String, required]: The disk path.
-	Clusters                   []map[string]ResourcePool `yaml:"clusters"`                     // [[]String], required]: The vSphere cluster(s).
+	Name                       string      `yaml:"name"`                         // [String, required]: vSphere datacenter name.
+	VMFolder                   string      `yaml:"vm_folder"`                    // [String, required]: The folder to create PCF VMs in.
+	TemplateFolder             string      `yaml:"template_folder"`              // [String, required]: The folder to store stemcells in.
+	DatastorePattern           string      `yaml:"datastore_pattern"`            // [String, required]: The pattern to the vSphere datastore.
+	PersistentDatastorePattern string      `yaml:"persistent_datastore_pattern"` // [String, required]: The pattern to the vSphere datastore for persistent diskv.
+	DiskPath                   string      `yaml:"disk_path"`                    // [String, required]: The disk path.
+	Clusters                   interface{} `yaml:"clusters"`                     // [[]String], required]: The vSphere cluster(s).
 }
 
 type ResourcePool struct {
@@ -215,19 +215,24 @@ func (v *VSphereBosh) getDataCenters() VSphereDatacenters {
 func (v *VSphereBosh) getDataStorePattern() (pattern string) {
 	return fmt.Sprintf("^(%s)$", v.cfg.VSphereDataStore)
 }
-func (v *VSphereBosh) clusterConfig() (clusters []map[string]ResourcePool) {
-	clusters = make([]map[string]ResourcePool, 0)
+func (v *VSphereBosh) clusterConfig() interface{} {
+	if len(v.cfg.VSphereResourcePool) > 0 {
 
-	for index, clusterName := range v.cfg.VSphereClusters {
-		cluster := make(map[string]ResourcePool)
+		clusters := make([]map[string]*ResourcePool, 0)
 
-		if len(v.cfg.VSphereResourcePool) > index {
-			cluster[clusterName] = ResourcePool{
-				ResourcePool: v.cfg.VSphereResourcePool[index],
+		for index, clusterName := range v.cfg.VSphereClusters {
+			cluster := make(map[string]*ResourcePool)
+
+			if len(v.cfg.VSphereResourcePool) > index {
+				cluster[clusterName] = &ResourcePool{
+					ResourcePool: v.cfg.VSphereResourcePool[index],
+				}
 			}
-		}
-		clusters = append(clusters, cluster)
+			clusters = append(clusters, cluster)
 
+		}
+		return clusters
+	} else {
+		return v.cfg.VSphereClusters
 	}
-	return
 }
