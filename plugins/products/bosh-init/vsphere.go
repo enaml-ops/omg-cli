@@ -216,23 +216,21 @@ func (v *VSphereBosh) getDataStorePattern() (pattern string) {
 	return fmt.Sprintf("^(%s)$", v.cfg.VSphereDataStore)
 }
 func (v *VSphereBosh) clusterConfig() interface{} {
-	if len(v.cfg.VSphereResourcePool) > 0 {
 
-		clusters := make([]map[string]*ResourcePool, 0)
+	clusters := make([]map[string]interface{}, 0)
 
-		for index, clusterName := range v.cfg.VSphereClusters {
-			cluster := make(map[string]*ResourcePool)
+	for index, clusterName := range v.cfg.VSphereClusters {
+		cluster := make(map[string]interface{})
 
-			if len(v.cfg.VSphereResourcePool) > index {
-				cluster[clusterName] = &ResourcePool{
-					ResourcePool: v.cfg.VSphereResourcePool[index],
-				}
+		if len(v.cfg.VSphereResourcePool) > index {
+			cluster[clusterName] = &ResourcePool{
+				ResourcePool: v.cfg.VSphereResourcePool[index],
 			}
-			clusters = append(clusters, cluster)
-
+		} else {
+			cluster[clusterName] = make(map[string]string, 0)
 		}
-		return clusters
-	} else {
-		return v.cfg.VSphereClusters
+		clusters = append(clusters, cluster)
 	}
+	return clusters
+
 }

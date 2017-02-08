@@ -9,5 +9,5 @@ datacenters:
   template_folder: pcf_templates
   vm_folder: pcf_vms
   clusters:
-  - PCF1
-  - PCF2
+  - PCF1: {}
+  - PCF2: {}
