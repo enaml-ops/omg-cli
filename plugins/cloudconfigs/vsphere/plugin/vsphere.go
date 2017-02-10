@@ -15,8 +15,8 @@ type AZCloudProperties struct {
 	DataCenters []DataCenter `yaml:"datacenters"`
 }
 type DataCenter struct {
-	Name     string                    `yaml:"name"`
-	Clusters []map[string]ResourcePool `yaml:"clusters"`
+	Name     string                   `yaml:"name"`
+	Clusters []map[string]interface{} `yaml:"clusters"`
 }
 type ResourcePool struct {
 	ResourcePool string `yaml:"resource_pool"`
@@ -64,10 +64,14 @@ func (c *VSphereCloudConfig) CreateNetworks() ([]enaml.DeploymentNetwork, error)
 	return networks, err
 }
 
-func clusterConfig(clusterName, resourcePoolName string) (clusters []map[string]ResourcePool) {
-	cluster := make(map[string]ResourcePool)
-	cluster[clusterName] = ResourcePool{
-		ResourcePool: resourcePoolName,
+func clusterConfig(clusterName, resourcePoolName string) (clusters []map[string]interface{}) {
+	cluster := make(map[string]interface{})
+	if resourcePoolName != "" {
+		cluster[clusterName] = ResourcePool{
+			ResourcePool: resourcePoolName,
+		}
+	} else {
+		cluster[clusterName] = make(map[string]string, 0)
 	}
 	clusters = append(clusters, cluster)
 	return
@@ -85,18 +89,24 @@ func (c *VSphereCloudConfig) CreateAZs() ([]enaml.AZ, error) {
 		err := fmt.Errorf("Sorry you need to provide the same number of az and vsphere-cluster flags")
 		return nil, err
 	}
-	if len(azNames) != len(resourcePools) {
-		err := fmt.Errorf("Sorry you need to provide the same number of az and vsphere-resource-pool flags")
-		return nil, err
+	if len(resourcePools) > 0 {
+		if len(azNames) != len(resourcePools) {
+			err := fmt.Errorf("Sorry you need to provide the same number of az and vsphere-resource-pool flags")
+			return nil, err
+		}
 	}
 
 	azs := []enaml.AZ{}
 
 	for i, azName := range azNames {
 		azCloudProperties := AZCloudProperties{}
+		var resourcePoolName = ""
+		if len(resourcePools) > 0 {
+			resourcePoolName = resourcePools[i]
+		}
 		dataCenter := DataCenter{
 			Name:     datacenters[i],
-			Clusters: clusterConfig(clusters[i], resourcePools[i]),
+			Clusters: clusterConfig(clusters[i], resourcePoolName),
 		}
 		azCloudProperties.DataCenters = append(azCloudProperties.DataCenters, dataCenter)
 		az := enaml.AZ{

@@ -1,0 +1,18 @@
+- name: z1
+  cloud_properties:
+    datacenters:
+    - name: dc
+      clusters:
+      - vsphere-cluster1: {}
+- name: z2
+  cloud_properties:
+    datacenters:
+    - name: dc
+      clusters:
+      - vsphere-cluster2: {}
+- name: z3
+  cloud_properties:
+    datacenters:
+    - name: dc
+      clusters:
+      - vsphere-cluster3: {}
