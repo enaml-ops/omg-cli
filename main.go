@@ -141,7 +141,10 @@ func main() {
 			Action: func(c *cli.Context) (err error) {
 				if c.String("type") != "" && c.String("pluginpath") != "" {
 					err = registerPlugin(c.String("type"), c.String("pluginpath"))
+				} else {
+					err = errors.New("You must specify both -type and -pluginpath")
 				}
+
 				return
 			},
 			Flags: pluginutil.ToCliFlagArray([]pcli.Flag{
