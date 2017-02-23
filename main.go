@@ -139,10 +139,10 @@ func main() {
 			Name:  "register-plugin",
 			Usage: "register-plugin -type [cloudconfig, product] -pluginpath <plugin-binary>",
 			Action: func(c *cli.Context) (err error) {
-				if c.String("type") != "" && c.String("pluginpath") != "" {
+				if c.String("pluginpath") != "" {
 					err = registerPlugin(c.String("type"), c.String("pluginpath"))
 				} else {
-					err = errors.New("You must specify both -type and -pluginpath")
+					err = errors.New("You must specify -pluginpath")
 				}
 
 				return
