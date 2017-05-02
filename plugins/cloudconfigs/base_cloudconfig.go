@@ -106,7 +106,7 @@ func CreateNetworks(context *cli.Context, validateCloudPropertiesFunction func(i
 	for i := 1; i <= SupportedNetworkCount; i++ {
 		networkFlag := fmt.Sprintf("network-name-%d", i)
 		networkName := context.String(networkFlag)
-		if !context.IsSet(networkFlag) {
+		if !context.IsSet(networkFlag) && networkName == "" {
 			continue
 		}
 
